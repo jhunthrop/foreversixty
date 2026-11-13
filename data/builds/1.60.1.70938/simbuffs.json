@@ -1,0 +1,2313 @@
+{
+  "entries": {
+    "alcohol_gordok_green_grog": {
+      "name": "Gordok Green Grog",
+      "icon": "inv_drink_03",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "alcohol_kreegs_stout_beatdown": {
+      "name": "Kreeg's Stout Beatdown",
+      "icon": "inv_drink_05",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "alcohol_rumsey_rum_black_label": {
+      "name": "Rumsey Rum Black Label",
+      "icon": "inv_drink_04",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "alcohol_rumsey_rum_dark": {
+      "name": "Rumsey Rum Dark",
+      "icon": "inv_drink_04",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "alcohol_rumsey_rum_light": {
+      "name": "Rumsey Rum Light",
+      "icon": "inv_drink_08",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "arcane_brilliance": {
+      "name": "Arcane Brilliance",
+      "icon": "spell_holy_arcaneintellect",
+      "target": false,
+      "stats": {
+        "intellect": 31.0
+      },
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "arcane_elixir": {
+      "name": "Arcane Elixir",
+      "icon": "inv_potion_30",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "aspect_of_the_wild": {
+      "name": "Aspect of the Wild",
+      "icon": "spell_nature_protectionformnature",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "atiesh_druid": {
+      "name": "Atiesh (Druid)",
+      "icon": "inv_staff_medivh",
+      "target": false,
+      "stats": {
+        "mp5": 11.0
+      },
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "atiesh_mage": {
+      "name": "Atiesh (Mage)",
+      "icon": "inv_staff_medivh",
+      "target": false,
+      "stats": {
+        "spell_crit": 2.0
+      },
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "atiesh_priest": {
+      "name": "Atiesh (Priest)",
+      "icon": "inv_staff_medivh",
+      "target": false,
+      "stats": {
+        "healing_power": 62.0,
+        "spell_damage": 19.0
+      },
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "atiesh_warlock": {
+      "name": "Atiesh (Warlock)",
+      "icon": "inv_staff_medivh",
+      "target": false,
+      "stats": {
+        "spell_power": 33.0,
+        "healing_power": 33.0
+      },
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "battle_shout": {
+      "name": "Battle Shout",
+      "icon": "ability_warrior_battleshout",
+      "target": false,
+      "stats": {
+        "attack_power": 112.0
+      },
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "battle_squawk": {
+      "name": "Battle Squawk",
+      "icon": "inv_misc_birdbeck_01",
+      "target": false,
+      "stats": {
+        "melee_haste": 5.0
+      },
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "blessing_of_kings": {
+      "name": "Blessing of Kings",
+      "icon": "spell_magic_magearmor",
+      "target": false,
+      "stats": {
+        "strength": 29.8,
+        "agility": 17.9,
+        "stamina": 23.2,
+        "intellect": 2.6,
+        "spirit": 4.9,
+        "attack_power": 59.6
+      },
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "blessing_of_might": {
+      "name": "Blessing of Might",
+      "icon": "spell_holy_fistofjustice",
+      "target": false,
+      "stats": {
+        "attack_power": 112.0
+      },
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "blessing_of_sanctuary": {
+      "name": "Blessing of Sanctuary",
+      "icon": "spell_nature_lightningshield",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "blessing_of_wisdom": {
+      "name": "Blessing of Wisdom",
+      "icon": "spell_holy_sealofwisdom",
+      "target": false,
+      "stats": {
+        "mp5": 36.0
+      },
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "blood_pact": {
+      "name": "Blood Pact",
+      "icon": "spell_shadow_bloodboil",
+      "target": false,
+      "stats": {
+        "stamina": 54.0
+      },
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "bogling_root": {
+      "name": "Bogling Root",
+      "icon": "inv_misc_herb_07",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "cerebral_cortex_compound": {
+      "name": "Cerebral Cortex Compound",
+      "icon": "inv_potion_32",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "clerics_elixir": {
+      "name": "Cleric's Elixir",
+      "icon": "inv_potion_139",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "conjured_demonic_rune": {
+      "name": "Demonic Rune",
+      "icon": "inv_misc_rune_04",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "conjured_greater_healthstone": {
+      "name": "Greater Healthstone",
+      "icon": "inv_stone_04",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "conjured_healthstone": {
+      "name": "Healthstone",
+      "icon": "inv_stone_04",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "conjured_major_healthstone": {
+      "name": "Major Healthstone",
+      "icon": "inv_stone_04",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "conjured_minor_recombobulator": {
+      "name": "Minor Recombobulator",
+      "icon": "inv_gizmo_07",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "conjured_rogue_thistle_tea": {
+      "name": "Thistle Tea",
+      "icon": "inv_drink_milk_05",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "crystal_yield": {
+      "name": "Crystal Yield",
+      "icon": "inv_misc_gem_amethyst_01",
+      "target": true,
+      "stats": {
+        "target_armor": -200.0
+      },
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "curse_of_elements": {
+      "name": "Curse of the Elements",
+      "icon": "spell_shadow_chilltouch",
+      "target": true,
+      "stats": {},
+      "school_damage": [
+        "fire",
+        "frost"
+      ],
+      "melee_effect": false
+    },
+    "curse_of_recklessness": {
+      "name": "Curse of Recklessness",
+      "icon": "spell_shadow_unholystrength",
+      "target": true,
+      "stats": {
+        "target_armor": -505.0
+      },
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "curse_of_shadow": {
+      "name": "Curse of Shadow",
+      "icon": "spell_shadow_curseofachimonde",
+      "target": true,
+      "stats": {},
+      "school_damage": [
+        "shadow",
+        "arcane"
+      ],
+      "melee_effect": false
+    },
+    "curse_of_weakness": {
+      "name": "Curse of Weakness",
+      "icon": "spell_shadow_curseofmannoroth",
+      "target": true,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "dark_desire": {
+      "name": "Dark Desire",
+      "icon": "inv_valentineschocolate04",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "darnassus_gift_collection": {
+      "name": "Darnassus Gift Collection",
+      "icon": "inv_misc_gift_02",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "demoralizing_roar": {
+      "name": "Demoralizing Roar",
+      "icon": "classic_ability_druid_demoralizingroar",
+      "target": true,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "demoralizing_shout": {
+      "name": "Demoralizing Shout",
+      "icon": "ability_warrior_warcry",
+      "target": true,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "devotion_aura": {
+      "name": "Devotion Aura",
+      "icon": "spell_holy_devotionaura",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "divine_spirit": {
+      "name": "Divine Spirit",
+      "icon": "spell_holy_divinespirit",
+      "target": false,
+      "stats": {
+        "spirit": 40.0
+      },
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "dragon_breath_chili": {
+      "name": "Dragonbreath Chili",
+      "icon": "inv_drink_17",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "elixir_of_agility": {
+      "name": "Elixir of Agility",
+      "icon": "inv_potion_93",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "elixir_of_defense": {
+      "name": "Elixir of Defense",
+      "icon": "inv_potion_64",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "elixir_of_firepower": {
+      "name": "Elixir of Fire Power",
+      "icon": "inv_potion_55",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "elixir_of_fortitude": {
+      "name": "Elixir of Fortitude",
+      "icon": "inv_potion_43",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "elixir_of_frost_power": {
+      "name": "Elixir of Frost Power",
+      "icon": "inv_potion_03",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "elixir_of_giants": {
+      "name": "Elixir of Giants",
+      "icon": "inv_potion_61",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "elixir_of_greater_agility": {
+      "name": "Elixir of Greater Agility",
+      "icon": "inv_potion_94",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "elixir_of_greater_defense": {
+      "name": "Elixir of Greater Defense",
+      "icon": "inv_potion_65",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "elixir_of_greater_firepower": {
+      "name": "Elixir of Greater Firepower",
+      "icon": "inv_potion_60",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "elixir_of_holy_power": {
+      "name": "Elixir of Holy Power",
+      "icon": "inv_potion_62",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "elixir_of_lesser_agility": {
+      "name": "Elixir of Lesser Agility",
+      "icon": "inv_potion_92",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "elixir_of_minor_defense": {
+      "name": "Elixir of Minor Defense",
+      "icon": "inv_potion_63",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "elixir_of_minor_fortitude": {
+      "name": "Elixir of Minor Fortitude",
+      "icon": "inv_potion_42",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "elixir_of_ogres_strength": {
+      "name": "Elixir of Ogre Strength",
+      "icon": "inv_potion_57",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "elixir_of_sages": {
+      "name": "Elixir of Sages",
+      "icon": "inv_potion_165",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "elixir_of_shadow_power": {
+      "name": "Elixir of Shadow Power",
+      "icon": "inv_potion_46",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "elixir_of_superior_defense": {
+      "name": "Elixir of Superior Defense",
+      "icon": "inv_potion_66",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "elixir_of_the_mongoose": {
+      "name": "Elixir of the Mongoose",
+      "icon": "inv_potion_32",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "explosive_dense_dynamite": {
+      "name": "Dense Dynamite",
+      "icon": "inv_misc_bomb_06",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "explosive_goblin_land_mine": {
+      "name": "Goblin Land Mine",
+      "icon": "inv_shield_08",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "explosive_solid_dynamite": {
+      "name": "Solid Dynamite",
+      "icon": "inv_misc_bomb_06",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "explosive_thorium_grenade": {
+      "name": "Thorium Grenade",
+      "icon": "inv_misc_bomb_08",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "expose_armor": {
+      "name": "Expose Armor",
+      "icon": "ability_warrior_riposte",
+      "target": true,
+      "stats": {
+        "target_armor": -2250.0
+      },
+      "school_damage": [],
+      "melee_effect": false,
+      "exclusive_with": {
+        "group": "major_armor",
+        "rank": 2
+      }
+    },
+    "faerie_fire": {
+      "name": "Faerie Fire",
+      "icon": "spell_nature_faeriefire",
+      "target": true,
+      "stats": {
+        "target_armor": -505.0
+      },
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "fire_resistance_aura": {
+      "name": "Fire Resistance Aura",
+      "icon": "spell_fire_sealoffire",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "fire_resistance_totem": {
+      "name": "Fire Resistance Totem",
+      "icon": "spell_fireresistancetotem_01",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "fire_toasted_bun": {
+      "name": "Fire-toasted Bun",
+      "icon": "inv_misc_food_11",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "flametongue_totem": {
+      "name": "Flametongue Totem",
+      "icon": "spell_nature_guardianward",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": true
+    },
+    "flask_of_chromatic_resistance": {
+      "name": "Flask of Chromatic Resistance",
+      "icon": "inv_potion_48",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "flask_of_distilled_wisdom": {
+      "name": "Flask of Distilled Wisdom",
+      "icon": "inv_potion_97",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "flask_of_natural_accuracy": {
+      "name": "Flask of Natural Accuracy",
+      "icon": "inv_potionc_5",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "flask_of_natural_aggression": {
+      "name": "Flask of Natural Aggression",
+      "icon": "inv_potionc_1",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "flask_of_natural_precision": {
+      "name": "Flask of Natural Precision",
+      "icon": "inv_potionc_3",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "flask_of_natural_swiftness": {
+      "name": "Flask of Natural Swiftness",
+      "icon": "inv_potionc_4",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "flask_of_supreme_power": {
+      "name": "Flask of Supreme Power",
+      "icon": "inv_potion_41",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "flask_of_the_titans": {
+      "name": "Flask of the Titans",
+      "icon": "inv_potion_62",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "food_baked_salmon": {
+      "name": "Baked Salmon",
+      "icon": "inv_misc_fish_20",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "food_bless_sunfruit": {
+      "name": "Blessed Sunfruit",
+      "icon": "inv_misc_food_41",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "food_blessed_sunfruit_juice": {
+      "name": "Blessed Sunfruit Juice",
+      "icon": "inv_drink_16",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "food_dirges_kick_chimaerok_chops": {
+      "name": "Dirge's Kickin' Chimaerok Chops",
+      "icon": "inv_misc_food_65",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "food_grilled_squid": {
+      "name": "Grilled Squid",
+      "icon": "inv_misc_fish_13",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "food_hot_wolf_ribs": {
+      "name": "Hot Wolf Ribs",
+      "icon": "inv_misc_food_48",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "food_nightfin_soup": {
+      "name": "Nightfin Soup",
+      "icon": "inv_drink_17",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "food_poached_sunscale_salmon": {
+      "name": "Poached Sunscale Salmon",
+      "icon": "inv_misc_fish_19",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "food_runn_tum_tuber_surprise": {
+      "name": "Runn Tum Tuber Surprise",
+      "icon": "inv_misc_food_63",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "food_sagefish_delight": {
+      "name": "Sagefish Delight",
+      "icon": "inv_misc_fish_21",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "food_sages_tea": {
+      "name": "Sage's Tea",
+      "icon": "inv_drink_15",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "food_smoked_desert_dumpling": {
+      "name": "Smoked Desert Dumplings",
+      "icon": "inv_misc_food_64",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "food_smoked_sagefish": {
+      "name": "Smoked Sagefish",
+      "icon": "inv_misc_fish_20",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "food_tender_wolf_steak": {
+      "name": "Tender Wolf Steak",
+      "icon": "inv_misc_food_47",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "frenzy_potion": {
+      "name": "Frenzy Potion",
+      "icon": "inv_potiond_3",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "frost_resistance_aura": {
+      "name": "Frost Resistance Aura",
+      "icon": "spell_frost_wizardmark",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "frost_resistance_totem": {
+      "name": "Frost Resistance Totem",
+      "icon": "spell_frostresistancetotem_01",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "furious_howl": {
+      "name": "Furious Howl",
+      "icon": "spell_nature_strength",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "gift_of_arthas": {
+      "name": "Gift of Arthas",
+      "icon": "spell_nature_nullifydisease",
+      "target": true,
+      "stats": {},
+      "school_damage": [
+        "physical"
+      ],
+      "melee_effect": false
+    },
+    "gift_of_the_wild": {
+      "name": "Gift of the Wild",
+      "icon": "spell_nature_regeneration",
+      "target": false,
+      "stats": {
+        "strength": 16.0,
+        "agility": 16.0,
+        "stamina": 16.0,
+        "intellect": 16.0,
+        "spirit": 16.0,
+        "attack_power": 32.0
+      },
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "gizzard_gum": {
+      "name": "Gizzard Gum",
+      "icon": "inv_misc_food_30",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "grace_of_air_totem": {
+      "name": "Grace of Air Totem",
+      "icon": "spell_nature_invisibilitytotem",
+      "target": false,
+      "stats": {
+        "agility": 77.0
+      },
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "great_rage_potion": {
+      "name": "Great Rage Potion",
+      "icon": "inv_potion_21",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "greater_arcane_elixir": {
+      "name": "Greater Arcane Elixir",
+      "icon": "inv_potion_25",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "greater_arcane_protection_potion": {
+      "name": "Greater Arcane Protection Potion",
+      "icon": "inv_potion_83",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "greater_clerics_elixir": {
+      "name": "Greater Cleric's Elixir",
+      "icon": "inv_potion_150",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "greater_fire_protection_potion": {
+      "name": "Greater Fire Protection Potion",
+      "icon": "inv_potion_24",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "greater_frost_protection_potion": {
+      "name": "Greater Frost Protection Potion",
+      "icon": "inv_potion_20",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "greater_healing_potion": {
+      "name": "Greater Healing Potion",
+      "icon": "inv_potion_52",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "greater_holy_protection_potion": {
+      "name": "Greater Holy Protection Potion",
+      "icon": "inv_potion_09",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "greater_mageblood_elixir": {
+      "name": "Greater Mageblood Elixir",
+      "icon": "inv_potion_168",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "greater_mana_potion": {
+      "name": "Greater Mana Potion",
+      "icon": "inv_potion_73",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "greater_nature_protection_potion": {
+      "name": "Greater Nature Protection Potion",
+      "icon": "inv_potion_22",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "greater_shadow_protection_potion": {
+      "name": "Greater Shadow Protection Potion",
+      "icon": "inv_potion_23",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "greater_stoneshield_potion": {
+      "name": "Greater Stoneshield Potion",
+      "icon": "inv_potion_69",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "ground_scorpok_assay": {
+      "name": "Ground Scorpok Assay",
+      "icon": "inv_misc_dust_02",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "healing_potion": {
+      "name": "Healing Potion",
+      "icon": "inv_potion_51",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "heart_of_the_lion": {
+      "name": "Heart of the Lion",
+      "icon": "ability_hunter_pet_cat",
+      "target": false,
+      "stats": {
+        "strength": 29.8,
+        "agility": 17.9,
+        "stamina": 23.2,
+        "intellect": 2.6,
+        "spirit": 4.9,
+        "attack_power": 339.6,
+        "ranged_attack_power": 280.0
+      },
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "hunters_mark": {
+      "name": "Hunter's Mark",
+      "icon": "ability_hunter_snipershot",
+      "target": true,
+      "stats": {
+        "ranged_attack_power": 110.0
+      },
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "improved_scorch": {
+      "name": "Improved Scorch",
+      "icon": "spell_fire_soulburn",
+      "target": true,
+      "stats": {},
+      "school_damage": [
+        "fire"
+      ],
+      "melee_effect": false
+    },
+    "improved_shadow_bolt": {
+      "name": "Improved Shadow Bolt",
+      "icon": "spell_shadow_shadowbolt",
+      "target": true,
+      "stats": {},
+      "school_damage": [
+        "shadow"
+      ],
+      "melee_effect": false
+    },
+    "innervates": {
+      "name": "Innervate",
+      "icon": "spell_nature_lightning",
+      "target": false,
+      "stats": {
+        "mp5": 1.0
+      },
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "insect_swarm": {
+      "name": "Insect Swarm",
+      "icon": "spell_nature_insectswarm",
+      "target": true,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "judgement_of_light": {
+      "name": "Judgement of Light",
+      "icon": "spell_holy_healingaura",
+      "target": true,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "judgement_of_the_crusader": {
+      "name": "Judgement of the Crusader",
+      "icon": "spell_holy_holysmite",
+      "target": true,
+      "stats": {},
+      "school_damage": [
+        "holy"
+      ],
+      "melee_effect": false
+    },
+    "judgement_of_wisdom": {
+      "name": "Judgement of Wisdom",
+      "icon": "spell_holy_righteousnessaura",
+      "target": true,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "juju_might": {
+      "name": "Juju Might",
+      "icon": "inv_misc_monsterscales_07",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "juju_power": {
+      "name": "Juju Power",
+      "icon": "inv_misc_monsterscales_11",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "leader_of_the_pack": {
+      "name": "Leader of the Pack",
+      "icon": "spell_nature_unyeildingstamina",
+      "target": false,
+      "stats": {
+        "crit": 3.0
+      },
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "lesser_arcane_elixir": {
+      "name": "Lesser Arcane Elixir",
+      "icon": "inv_potion_108",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "lesser_healing_potion": {
+      "name": "Lesser Healing Potion",
+      "icon": "inv_potion_50",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "lesser_mana_potion": {
+      "name": "Lesser Mana Potion",
+      "icon": "inv_potion_71",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "lesser_stoneshield_potion": {
+      "name": "Lesser Stoneshield Potion",
+      "icon": "inv_potion_67",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "lung_juice_cocktail": {
+      "name": "Lung Juice Cocktail",
+      "icon": "inv_drink_12",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "mageblood_potion": {
+      "name": "Mageblood Potion",
+      "icon": "inv_potion_45",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "magic_resistance_potion": {
+      "name": "Magic Resistance Potion",
+      "icon": "inv_potion_120",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_imbue:blessed_wizard_oil": {
+      "name": "Blessed Wizard Oil",
+      "icon": "inv_potion_26",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_imbue:brilliant_mana_oil": {
+      "name": "Brilliant Mana Oil",
+      "icon": "inv_potion_100",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_imbue:brilliant_wizard_oil": {
+      "name": "Brilliant Wizard Oil",
+      "icon": "inv_potion_105",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_imbue:consecrated_sharpening_stone": {
+      "name": "Consecrated Sharpening Stone",
+      "icon": "inv_stone_sharpeningstone_02",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_imbue:deadly_poison": {
+      "name": "Deadly Poison",
+      "icon": "ability_rogue_dualweild",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_imbue:dense_sharpening_stone": {
+      "name": "Dense Sharpening Stone",
+      "icon": "inv_stone_sharpeningstone_05",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_imbue:dense_weightstone": {
+      "name": "Dense Weightstone",
+      "icon": "inv_stone_weightstone_05",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_imbue:elemental_sharpening_stone": {
+      "name": "Elemental Sharpening Stone",
+      "icon": "inv_stone_02",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_imbue:flametongue_weapon": {
+      "name": "Flametongue Weapon",
+      "icon": "spell_fire_flametounge",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_imbue:frost_oil": {
+      "name": "Frost Oil",
+      "icon": "inv_potion_20",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_imbue:frostbrand_weapon": {
+      "name": "Frostbrand Weapon",
+      "icon": "spell_frost_frostbrand",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_imbue:instant_poison": {
+      "name": "Instant Poison",
+      "icon": "ability_poisons",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_imbue:lesser_mana_oil": {
+      "name": "Lesser Mana Oil",
+      "icon": "inv_potion_99",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_imbue:lesser_wizard_oil": {
+      "name": "Lesser Wizard Oil",
+      "icon": "inv_potion_103",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_imbue:minor_mana_oil": {
+      "name": "Minor Mana Oil",
+      "icon": "inv_potion_98",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_imbue:minor_wizard_oil": {
+      "name": "Minor Wizard Oil",
+      "icon": "inv_poison_mindnumbing",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_imbue:rockbiter_weapon": {
+      "name": "Rockbiter Weapon",
+      "icon": "spell_nature_rockbiter",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_imbue:shadow_oil": {
+      "name": "Shadow Oil",
+      "icon": "inv_potion_23",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_imbue:solid_sharpening_stone": {
+      "name": "Solid Sharpening Stone",
+      "icon": "inv_stone_sharpeningstone_04",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_imbue:solid_weightstone": {
+      "name": "Solid Weightstone",
+      "icon": "inv_stone_weightstone_04",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_imbue:windfury": {
+      "name": "Windfury Totem",
+      "icon": "spell_nature_windfury",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_imbue:windfury_weapon": {
+      "name": "Windfury Weapon",
+      "icon": "spell_nature_cyclone",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_imbue:wizard_oil": {
+      "name": "Wizard Oil",
+      "icon": "inv_potion_104",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_imbue:wound_poison": {
+      "name": "Wound Poison",
+      "icon": "inv_misc_herb_16",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_stone:blessed_wizard_oil": {
+      "name": "Blessed Wizard Oil",
+      "icon": "inv_potion_26",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_stone:brilliant_mana_oil": {
+      "name": "Brilliant Mana Oil",
+      "icon": "inv_potion_100",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_stone:brilliant_wizard_oil": {
+      "name": "Brilliant Wizard Oil",
+      "icon": "inv_potion_105",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_stone:consecrated_sharpening_stone": {
+      "name": "Consecrated Sharpening Stone",
+      "icon": "inv_stone_sharpeningstone_02",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_stone:deadly_poison": {
+      "name": "Deadly Poison",
+      "icon": "ability_rogue_dualweild",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_stone:dense_sharpening_stone": {
+      "name": "Dense Sharpening Stone",
+      "icon": "inv_stone_sharpeningstone_05",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_stone:dense_weightstone": {
+      "name": "Dense Weightstone",
+      "icon": "inv_stone_weightstone_05",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_stone:elemental_sharpening_stone": {
+      "name": "Elemental Sharpening Stone",
+      "icon": "inv_stone_02",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_stone:flametongue_weapon": {
+      "name": "Flametongue Weapon",
+      "icon": "spell_fire_flametounge",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_stone:frost_oil": {
+      "name": "Frost Oil",
+      "icon": "inv_potion_20",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_stone:frostbrand_weapon": {
+      "name": "Frostbrand Weapon",
+      "icon": "spell_frost_frostbrand",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_stone:instant_poison": {
+      "name": "Instant Poison",
+      "icon": "ability_poisons",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_stone:lesser_mana_oil": {
+      "name": "Lesser Mana Oil",
+      "icon": "inv_potion_99",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_stone:lesser_wizard_oil": {
+      "name": "Lesser Wizard Oil",
+      "icon": "inv_potion_103",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_stone:minor_mana_oil": {
+      "name": "Minor Mana Oil",
+      "icon": "inv_potion_98",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_stone:minor_wizard_oil": {
+      "name": "Minor Wizard Oil",
+      "icon": "inv_poison_mindnumbing",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_stone:rockbiter_weapon": {
+      "name": "Rockbiter Weapon",
+      "icon": "spell_nature_rockbiter",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_stone:shadow_oil": {
+      "name": "Shadow Oil",
+      "icon": "inv_potion_23",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_stone:solid_sharpening_stone": {
+      "name": "Solid Sharpening Stone",
+      "icon": "inv_stone_sharpeningstone_04",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_stone:solid_weightstone": {
+      "name": "Solid Weightstone",
+      "icon": "inv_stone_weightstone_04",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_stone:windfury": {
+      "name": "Windfury Totem",
+      "icon": "spell_nature_windfury",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_stone:windfury_weapon": {
+      "name": "Windfury Weapon",
+      "icon": "spell_nature_cyclone",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_stone:wizard_oil": {
+      "name": "Wizard Oil",
+      "icon": "inv_potion_104",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "main_hand_stone:wound_poison": {
+      "name": "Wound Poison",
+      "icon": "inv_misc_herb_16",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "major_frenzy_potion": {
+      "name": "Major Frenzy Potion",
+      "icon": "inv_potione_6",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "major_healing_potion": {
+      "name": "Major Healing Potion",
+      "icon": "inv_potion_54",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "major_mana_potion": {
+      "name": "Major Mana Potion",
+      "icon": "inv_potion_76",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "major_menders_potion": {
+      "name": "Major Mender's Potion",
+      "icon": "inv_potione_2",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "major_spellblasting_potion": {
+      "name": "Major Spellblasting Potion",
+      "icon": "inv_potione_4",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "mana_potion": {
+      "name": "Mana Potion",
+      "icon": "inv_potion_72",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "mana_spring_totem": {
+      "name": "Mana Spring Totem",
+      "icon": "spell_nature_manaregentotem",
+      "target": false,
+      "stats": {
+        "mp5": 25.0
+      },
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "mana_tide_totems": {
+      "name": "Mana Tide Totem",
+      "icon": "spell_frost_summonwaterelemental",
+      "target": false,
+      "stats": {
+        "mp5": 1.0
+      },
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "menders_potion": {
+      "name": "Mender's Potion",
+      "icon": "inv_potiond_6",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "mighty_rage_potion": {
+      "name": "Mighty Rage Potion",
+      "icon": "inv_potion_41",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "moonkin_aura": {
+      "name": "Moonkin Aura",
+      "icon": "spell_nature_moonglow",
+      "target": false,
+      "stats": {
+        "crit": 3.0
+      },
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "nature_resistance_totem": {
+      "name": "Nature Resistance Totem",
+      "icon": "spell_nature_natureresistancetotem",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_imbue:blessed_wizard_oil": {
+      "name": "Blessed Wizard Oil",
+      "icon": "inv_potion_26",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_imbue:brilliant_mana_oil": {
+      "name": "Brilliant Mana Oil",
+      "icon": "inv_potion_100",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_imbue:brilliant_wizard_oil": {
+      "name": "Brilliant Wizard Oil",
+      "icon": "inv_potion_105",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_imbue:consecrated_sharpening_stone": {
+      "name": "Consecrated Sharpening Stone",
+      "icon": "inv_stone_sharpeningstone_02",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_imbue:deadly_poison": {
+      "name": "Deadly Poison",
+      "icon": "ability_rogue_dualweild",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_imbue:dense_sharpening_stone": {
+      "name": "Dense Sharpening Stone",
+      "icon": "inv_stone_sharpeningstone_05",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_imbue:dense_weightstone": {
+      "name": "Dense Weightstone",
+      "icon": "inv_stone_weightstone_05",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_imbue:elemental_sharpening_stone": {
+      "name": "Elemental Sharpening Stone",
+      "icon": "inv_stone_02",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_imbue:flametongue_weapon": {
+      "name": "Flametongue Weapon",
+      "icon": "spell_fire_flametounge",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_imbue:frost_oil": {
+      "name": "Frost Oil",
+      "icon": "inv_potion_20",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_imbue:frostbrand_weapon": {
+      "name": "Frostbrand Weapon",
+      "icon": "spell_frost_frostbrand",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_imbue:instant_poison": {
+      "name": "Instant Poison",
+      "icon": "ability_poisons",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_imbue:lesser_mana_oil": {
+      "name": "Lesser Mana Oil",
+      "icon": "inv_potion_99",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_imbue:lesser_wizard_oil": {
+      "name": "Lesser Wizard Oil",
+      "icon": "inv_potion_103",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_imbue:minor_mana_oil": {
+      "name": "Minor Mana Oil",
+      "icon": "inv_potion_98",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_imbue:minor_wizard_oil": {
+      "name": "Minor Wizard Oil",
+      "icon": "inv_poison_mindnumbing",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_imbue:rockbiter_weapon": {
+      "name": "Rockbiter Weapon",
+      "icon": "spell_nature_rockbiter",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_imbue:shadow_oil": {
+      "name": "Shadow Oil",
+      "icon": "inv_potion_23",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_imbue:solid_sharpening_stone": {
+      "name": "Solid Sharpening Stone",
+      "icon": "inv_stone_sharpeningstone_04",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_imbue:solid_weightstone": {
+      "name": "Solid Weightstone",
+      "icon": "inv_stone_weightstone_04",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_imbue:windfury": {
+      "name": "Windfury Totem",
+      "icon": "spell_nature_windfury",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_imbue:windfury_weapon": {
+      "name": "Windfury Weapon",
+      "icon": "spell_nature_cyclone",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_imbue:wizard_oil": {
+      "name": "Wizard Oil",
+      "icon": "inv_potion_104",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_imbue:wound_poison": {
+      "name": "Wound Poison",
+      "icon": "inv_misc_herb_16",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_stone:blessed_wizard_oil": {
+      "name": "Blessed Wizard Oil",
+      "icon": "inv_potion_26",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_stone:brilliant_mana_oil": {
+      "name": "Brilliant Mana Oil",
+      "icon": "inv_potion_100",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_stone:brilliant_wizard_oil": {
+      "name": "Brilliant Wizard Oil",
+      "icon": "inv_potion_105",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_stone:consecrated_sharpening_stone": {
+      "name": "Consecrated Sharpening Stone",
+      "icon": "inv_stone_sharpeningstone_02",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_stone:deadly_poison": {
+      "name": "Deadly Poison",
+      "icon": "ability_rogue_dualweild",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_stone:dense_sharpening_stone": {
+      "name": "Dense Sharpening Stone",
+      "icon": "inv_stone_sharpeningstone_05",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_stone:dense_weightstone": {
+      "name": "Dense Weightstone",
+      "icon": "inv_stone_weightstone_05",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_stone:elemental_sharpening_stone": {
+      "name": "Elemental Sharpening Stone",
+      "icon": "inv_stone_02",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_stone:flametongue_weapon": {
+      "name": "Flametongue Weapon",
+      "icon": "spell_fire_flametounge",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_stone:frost_oil": {
+      "name": "Frost Oil",
+      "icon": "inv_potion_20",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_stone:frostbrand_weapon": {
+      "name": "Frostbrand Weapon",
+      "icon": "spell_frost_frostbrand",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_stone:instant_poison": {
+      "name": "Instant Poison",
+      "icon": "ability_poisons",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_stone:lesser_mana_oil": {
+      "name": "Lesser Mana Oil",
+      "icon": "inv_potion_99",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_stone:lesser_wizard_oil": {
+      "name": "Lesser Wizard Oil",
+      "icon": "inv_potion_103",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_stone:minor_mana_oil": {
+      "name": "Minor Mana Oil",
+      "icon": "inv_potion_98",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_stone:minor_wizard_oil": {
+      "name": "Minor Wizard Oil",
+      "icon": "inv_poison_mindnumbing",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_stone:rockbiter_weapon": {
+      "name": "Rockbiter Weapon",
+      "icon": "spell_nature_rockbiter",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_stone:shadow_oil": {
+      "name": "Shadow Oil",
+      "icon": "inv_potion_23",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_stone:solid_sharpening_stone": {
+      "name": "Solid Sharpening Stone",
+      "icon": "inv_stone_sharpeningstone_04",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_stone:solid_weightstone": {
+      "name": "Solid Weightstone",
+      "icon": "inv_stone_weightstone_04",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_stone:windfury": {
+      "name": "Windfury Totem",
+      "icon": "spell_nature_windfury",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_stone:windfury_weapon": {
+      "name": "Windfury Weapon",
+      "icon": "spell_nature_cyclone",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_stone:wizard_oil": {
+      "name": "Wizard Oil",
+      "icon": "inv_potion_104",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "off_hand_stone:wound_poison": {
+      "name": "Wound Poison",
+      "icon": "inv_misc_herb_16",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "power_infusions": {
+      "name": "Power Infusion",
+      "icon": "spell_holy_powerinfusion",
+      "target": false,
+      "stats": {
+        "spell_power": 1.0
+      },
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "power_word_fortitude": {
+      "name": "Power Word: Fortitude",
+      "icon": "spell_holy_wordfortitude",
+      "target": false,
+      "stats": {
+        "stamina": 70.0
+      },
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "r_o_i_d_s": {
+      "name": "R.O.I.D.S.",
+      "icon": "inv_stone_15",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "rage_potion": {
+      "name": "Rage Potion",
+      "icon": "inv_potion_24",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "retribution_aura": {
+      "name": "Retribution Aura",
+      "icon": "spell_holy_auraoflight",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "sanctity_aura": {
+      "name": "Sanctity Aura",
+      "icon": "spell_holy_mindvision",
+      "target": false,
+      "stats": {},
+      "school_damage": [
+        "holy"
+      ],
+      "melee_effect": false
+    },
+    "sapper_goblin_sapper": {
+      "name": "Goblin Sapper Charge",
+      "icon": "spell_fire_selfdestruct",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "scorpid_sting": {
+      "name": "Scorpid Sting",
+      "icon": "ability_hunter_criticalshot",
+      "target": true,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "scroll_of_agility": {
+      "name": "Scroll of Agility",
+      "icon": "inv_scroll_02",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "scroll_of_intellect": {
+      "name": "Scroll of Intellect",
+      "icon": "inv_scroll_01",
+      "target": false,
+      "stats": {
+        "intellect": 16.0
+      },
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "scroll_of_protection": {
+      "name": "Scroll of Protection",
+      "icon": "inv_scroll_07",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "scroll_of_spirit": {
+      "name": "Scroll of Spirit",
+      "icon": "inv_scroll_01",
+      "target": false,
+      "stats": {
+        "spirit": 15.0
+      },
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "scroll_of_stamina": {
+      "name": "Scroll of Stamina",
+      "icon": "inv_scroll_07",
+      "target": false,
+      "stats": {
+        "stamina": 16.0
+      },
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "scroll_of_strength": {
+      "name": "Scroll of Strength",
+      "icon": "inv_scroll_02",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "shadow_protection": {
+      "name": "Shadow Protection",
+      "icon": "spell_shadow_antishadow",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "shadow_resistance_aura": {
+      "name": "Shadow Resistance Aura",
+      "icon": "spell_shadow_sealofkings",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "shadow_weaving": {
+      "name": "Shadow Weaving",
+      "icon": "spell_shadow_blackplague",
+      "target": true,
+      "stats": {},
+      "school_damage": [
+        "shadow"
+      ],
+      "melee_effect": false
+    },
+    "sheen_of_zanza": {
+      "name": "Sheen of Zanza",
+      "icon": "inv_potion_29",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "spellblasting_potion": {
+      "name": "Spellblasting Potion",
+      "icon": "inv_potiond_2",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "spirit_of_zanza": {
+      "name": "Spirit of Zanza",
+      "icon": "inv_potion_30",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "stoneskin_totem": {
+      "name": "Stoneskin Totem",
+      "icon": "spell_nature_stoneskintotem",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "stormstrike": {
+      "name": "Stormstrike",
+      "icon": "spell_holy_sealofmight",
+      "target": true,
+      "stats": {},
+      "school_damage": [
+        "nature"
+      ],
+      "melee_effect": false
+    },
+    "strength_of_earth_totem": {
+      "name": "Strength of Earth Totem",
+      "icon": "spell_nature_earthbindtotem",
+      "target": false,
+      "stats": {
+        "strength": 42.0,
+        "attack_power": 84.0
+      },
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "sunder_armor": {
+      "name": "Sunder Armor",
+      "icon": "ability_warrior_sunder",
+      "target": true,
+      "stats": {
+        "target_armor": -2250.0
+      },
+      "school_damage": [],
+      "melee_effect": false,
+      "exclusive_with": {
+        "group": "major_armor",
+        "rank": 1
+      }
+    },
+    "superior_healing_potion": {
+      "name": "Superior Healing Potion",
+      "icon": "inv_potion_53",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "superior_mana_potion": {
+      "name": "Superior Mana Potion",
+      "icon": "inv_potion_74",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "swiftness_of_zanza": {
+      "name": "Swiftness of Zanza",
+      "icon": "inv_potion_31",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "thorns": {
+      "name": "Thorns",
+      "icon": "spell_nature_thorns",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "thunder_clap": {
+      "name": "Thunder Clap",
+      "icon": "spell_nature_thunderclap",
+      "target": true,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "thunderfury": {
+      "name": "Thunderfury",
+      "icon": "spell_nature_cyclone",
+      "target": true,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "trueshot_aura": {
+      "name": "Trueshot Aura",
+      "icon": "ability_trueshot",
+      "target": false,
+      "stats": {
+        "ranged_attack_power": 100.0
+      },
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "windfury_totem": {
+      "name": "Windfury Totem",
+      "icon": "spell_nature_windfury",
+      "target": false,
+      "stats": {
+        "attack_power": 246.0
+      },
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "winterfall_firewater": {
+      "name": "Winterfall Firewater",
+      "icon": "inv_potion_92",
+      "target": false,
+      "stats": {},
+      "school_damage": [],
+      "melee_effect": false
+    },
+    "winters_chill": {
+      "name": "Winter's Chill",
+      "icon": "spell_frost_chillingblast",
+      "target": true,
+      "stats": {},
+      "school_damage": [
+        "frost"
+      ],
+      "melee_effect": false
+    }
+  }
+}

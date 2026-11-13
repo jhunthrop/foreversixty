@@ -1,0 +1,3229 @@
+{
+  "from": "1.60.1.70790",
+  "to": "1.60.1.70938",
+  "entities": {
+    "zones": {
+      "added": [
+        {
+          "id": 16619,
+          "name": "Excavation Site - Bael Modan",
+          "map_id": 3001,
+          "map_name": "The Shaper's Terrace",
+          "parent_id": null,
+          "level_min": null,
+          "level_max": null
+        },
+        {
+          "id": 16620,
+          "name": "Alcaz Prison",
+          "map_id": 2994,
+          "map_name": "Alcaz Prison",
+          "parent_id": null,
+          "level_min": null,
+          "level_max": null
+        },
+        {
+          "id": 16928,
+          "name": "Shaper's Plateau",
+          "map_id": 3001,
+          "map_name": "The Shaper's Terrace",
+          "parent_id": 16667,
+          "level_min": null,
+          "level_max": null
+        },
+        {
+          "id": 16929,
+          "name": "Pillar of Assimilation",
+          "map_id": 3001,
+          "map_name": "The Shaper's Terrace",
+          "parent_id": 16667,
+          "level_min": null,
+          "level_max": null
+        },
+        {
+          "id": 16930,
+          "name": "The Verdant Plains",
+          "map_id": 3001,
+          "map_name": "The Shaper's Terrace",
+          "parent_id": 16667,
+          "level_min": null,
+          "level_max": null
+        },
+        {
+          "id": 16931,
+          "name": "Lost Tar Pits",
+          "map_id": 3001,
+          "map_name": "The Shaper's Terrace",
+          "parent_id": 16667,
+          "level_min": null,
+          "level_max": null
+        },
+        {
+          "id": 16932,
+          "name": "Ruby Spring",
+          "map_id": 3001,
+          "map_name": "The Shaper's Terrace",
+          "parent_id": 16667,
+          "level_min": null,
+          "level_max": null
+        },
+        {
+          "id": 16933,
+          "name": "Walk of Communion",
+          "map_id": 3001,
+          "map_name": "The Shaper's Terrace",
+          "parent_id": 16667,
+          "level_min": null,
+          "level_max": null
+        },
+        {
+          "id": 16934,
+          "name": "The Highlands Causeway",
+          "map_id": 3001,
+          "map_name": "The Shaper's Terrace",
+          "parent_id": 16667,
+          "level_min": null,
+          "level_max": null
+        },
+        {
+          "id": 16935,
+          "name": "Watcher's Overlook",
+          "map_id": 3001,
+          "map_name": "The Shaper's Terrace",
+          "parent_id": 16667,
+          "level_min": null,
+          "level_max": null
+        },
+        {
+          "id": 16937,
+          "name": "Botanical Grounds",
+          "map_id": 3001,
+          "map_name": "The Shaper's Terrace",
+          "parent_id": 16667,
+          "level_min": null,
+          "level_max": null
+        },
+        {
+          "id": 17036,
+          "name": "Crystalline Highlands",
+          "map_id": 3001,
+          "map_name": "The Shaper's Terrace",
+          "parent_id": 16667,
+          "level_min": null,
+          "level_max": null
+        },
+        {
+          "id": 17309,
+          "name": "Defiled Peak",
+          "map_id": 2974,
+          "map_name": "Blackmaw Hold",
+          "parent_id": 16554,
+          "level_min": null,
+          "level_max": null
+        },
+        {
+          "id": 17310,
+          "name": "Festering Grotto",
+          "map_id": 2974,
+          "map_name": "Blackmaw Hold",
+          "parent_id": 16554,
+          "level_min": null,
+          "level_max": null
+        },
+        {
+          "id": 17311,
+          "name": "Blackmaw Grove",
+          "map_id": 2974,
+          "map_name": "Blackmaw Hold",
+          "parent_id": 16554,
+          "level_min": null,
+          "level_max": null
+        },
+        {
+          "id": 17312,
+          "name": "Blackmaw Stillwater",
+          "map_id": 2974,
+          "map_name": "Blackmaw Hold",
+          "parent_id": 16554,
+          "level_min": null,
+          "level_max": null
+        },
+        {
+          "id": 17313,
+          "name": "Bonesnout's Thicket",
+          "map_id": 2974,
+          "map_name": "Blackmaw Hold",
+          "parent_id": 16554,
+          "level_min": null,
+          "level_max": null
+        }
+      ],
+      "removed": [],
+      "changed": [
+        {
+          "id": 16550,
+          "before": {
+            "id": 16550,
+            "name": "The Drowned City",
+            "map_id": 2970,
+            "map_name": "",
+            "parent_id": null,
+            "level_min": null,
+            "level_max": null
+          },
+          "after": {
+            "id": 16550,
+            "name": "The Drowned City",
+            "map_id": 2970,
+            "map_name": "The Drowned City",
+            "parent_id": null,
+            "level_min": null,
+            "level_max": null
+          },
+          "fields": [
+            "map_name"
+          ]
+        },
+        {
+          "id": 16554,
+          "before": {
+            "id": 16554,
+            "name": "Blackmaw Hold",
+            "map_id": 2974,
+            "map_name": "",
+            "parent_id": null,
+            "level_min": null,
+            "level_max": null
+          },
+          "after": {
+            "id": 16554,
+            "name": "Blackmaw Hold",
+            "map_id": 2974,
+            "map_name": "Blackmaw Hold",
+            "parent_id": null,
+            "level_min": null,
+            "level_max": null
+          },
+          "fields": [
+            "map_name"
+          ]
+        },
+        {
+          "id": 16667,
+          "before": {
+            "id": 16667,
+            "name": "The Shaper's Terrace",
+            "map_id": 3001,
+            "map_name": "",
+            "parent_id": null,
+            "level_min": null,
+            "level_max": null
+          },
+          "after": {
+            "id": 16667,
+            "name": "The Shaper's Terrace",
+            "map_id": 3001,
+            "map_name": "The Shaper's Terrace",
+            "parent_id": null,
+            "level_min": null,
+            "level_max": null
+          },
+          "fields": [
+            "map_name"
+          ]
+        },
+        {
+          "id": 16842,
+          "before": {
+            "id": 16842,
+            "name": "Krol'dok Stronghold",
+            "map_id": 3039,
+            "map_name": "",
+            "parent_id": null,
+            "level_min": null,
+            "level_max": null
+          },
+          "after": {
+            "id": 16842,
+            "name": "Krol'dok Stronghold",
+            "map_id": 3039,
+            "map_name": "Krol'dok Stronghold",
+            "parent_id": null,
+            "level_min": null,
+            "level_max": null
+          },
+          "fields": [
+            "map_name"
+          ]
+        },
+        {
+          "id": 17037,
+          "before": {
+            "id": 17037,
+            "name": "Sunken Hollow",
+            "map_id": 2970,
+            "map_name": "",
+            "parent_id": 16550,
+            "level_min": null,
+            "level_max": null
+          },
+          "after": {
+            "id": 17037,
+            "name": "Sunken Hollow",
+            "map_id": 2970,
+            "map_name": "The Drowned City",
+            "parent_id": 16550,
+            "level_min": null,
+            "level_max": null
+          },
+          "fields": [
+            "map_name"
+          ]
+        },
+        {
+          "id": 17038,
+          "before": {
+            "id": 17038,
+            "name": "Flooded Shrine",
+            "map_id": 2970,
+            "map_name": "",
+            "parent_id": 16550,
+            "level_min": null,
+            "level_max": null
+          },
+          "after": {
+            "id": 17038,
+            "name": "Flooded Shrine",
+            "map_id": 2970,
+            "map_name": "The Drowned City",
+            "parent_id": 16550,
+            "level_min": null,
+            "level_max": null
+          },
+          "fields": [
+            "map_name"
+          ]
+        },
+        {
+          "id": 17039,
+          "before": {
+            "id": 17039,
+            "name": "Deep Archives",
+            "map_id": 2970,
+            "map_name": "",
+            "parent_id": 16550,
+            "level_min": null,
+            "level_max": null
+          },
+          "after": {
+            "id": 17039,
+            "name": "Deep Archives",
+            "map_id": 2970,
+            "map_name": "The Drowned City",
+            "parent_id": 16550,
+            "level_min": null,
+            "level_max": null
+          },
+          "fields": [
+            "map_name"
+          ]
+        },
+        {
+          "id": 17040,
+          "before": {
+            "id": 17040,
+            "name": "Altar of the Serpent",
+            "map_id": 2970,
+            "map_name": "",
+            "parent_id": 16550,
+            "level_min": null,
+            "level_max": null
+          },
+          "after": {
+            "id": 17040,
+            "name": "Altar of the Serpent",
+            "map_id": 2970,
+            "map_name": "The Drowned City",
+            "parent_id": 16550,
+            "level_min": null,
+            "level_max": null
+          },
+          "fields": [
+            "map_name"
+          ]
+        },
+        {
+          "id": 17041,
+          "before": {
+            "id": 17041,
+            "name": "Eternal Amphitheater",
+            "map_id": 2970,
+            "map_name": "",
+            "parent_id": 16550,
+            "level_min": null,
+            "level_max": null
+          },
+          "after": {
+            "id": 17041,
+            "name": "Eternal Amphitheater",
+            "map_id": 2970,
+            "map_name": "The Drowned City",
+            "parent_id": 16550,
+            "level_min": null,
+            "level_max": null
+          },
+          "fields": [
+            "map_name"
+          ]
+        },
+        {
+          "id": 17042,
+          "before": {
+            "id": 17042,
+            "name": "Abyssal Dais",
+            "map_id": 2970,
+            "map_name": "",
+            "parent_id": 16550,
+            "level_min": null,
+            "level_max": null
+          },
+          "after": {
+            "id": 17042,
+            "name": "Abyssal Dais",
+            "map_id": 2970,
+            "map_name": "The Drowned City",
+            "parent_id": 16550,
+            "level_min": null,
+            "level_max": null
+          },
+          "fields": [
+            "map_name"
+          ]
+        },
+        {
+          "id": 17043,
+          "before": {
+            "id": 17043,
+            "name": "The Unsinkable",
+            "map_id": 2970,
+            "map_name": "",
+            "parent_id": 16550,
+            "level_min": null,
+            "level_max": null
+          },
+          "after": {
+            "id": 17043,
+            "name": "The Unsinkable",
+            "map_id": 2970,
+            "map_name": "The Drowned City",
+            "parent_id": 16550,
+            "level_min": null,
+            "level_max": null
+          },
+          "fields": [
+            "map_name"
+          ]
+        },
+        {
+          "id": 17046,
+          "before": {
+            "id": 17046,
+            "name": "Ataal'Byzal",
+            "map_id": 2970,
+            "map_name": "",
+            "parent_id": 16550,
+            "level_min": null,
+            "level_max": null
+          },
+          "after": {
+            "id": 17046,
+            "name": "Ataal'Byzal",
+            "map_id": 2970,
+            "map_name": "The Drowned City",
+            "parent_id": 16550,
+            "level_min": null,
+            "level_max": null
+          },
+          "fields": [
+            "map_name"
+          ]
+        }
+      ]
+    },
+    "dungeons": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "items": {
+      "added": [
+        {
+          "id": 18231,
+          "name": "Sleeveless T-Shirt",
+          "quality": 0,
+          "item_level": 1,
+          "required_level": 0,
+          "class_id": 15,
+          "subclass_id": 0,
+          "inventory_type": 4,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 270126,
+          "name": "Conqueror's Pendant",
+          "quality": 3,
+          "item_level": 58,
+          "required_level": 0,
+          "class_id": 4,
+          "subclass_id": 0,
+          "inventory_type": 2,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 276632,
+          "name": "Wit's Edge",
+          "quality": 3,
+          "item_level": 65,
+          "required_level": 57,
+          "class_id": 2,
+          "subclass_id": 7,
+          "inventory_type": 21,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 286573,
+          "name": "Unleashed Swarm",
+          "quality": 3,
+          "item_level": 1,
+          "required_level": 1,
+          "class_id": 15,
+          "subclass_id": 4,
+          "inventory_type": 0,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 286590,
+          "name": "Silithid Queen's Husk",
+          "quality": 3,
+          "item_level": 61,
+          "required_level": 56,
+          "class_id": 4,
+          "subclass_id": 4,
+          "inventory_type": 5,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        }
+      ],
+      "removed": [],
+      "changed": [
+        {
+          "id": 6448,
+          "before": {
+            "id": 6448,
+            "name": "Tail Spike",
+            "quality": 3,
+            "item_level": 21,
+            "required_level": 16,
+            "class_id": 2,
+            "subclass_id": 15,
+            "inventory_type": 13,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 6448,
+            "name": "Tail Spike",
+            "quality": 3,
+            "item_level": 21,
+            "required_level": 17,
+            "class_id": 2,
+            "subclass_id": 15,
+            "inventory_type": 13,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "required_level"
+          ]
+        },
+        {
+          "id": 6480,
+          "before": {
+            "id": 6480,
+            "name": "Slick Deviate Leggings",
+            "quality": 2,
+            "item_level": 20,
+            "required_level": 0,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 7,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 6480,
+            "name": "Slick Deviate Leggings",
+            "quality": 3,
+            "item_level": 20,
+            "required_level": 0,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 7,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "quality"
+          ]
+        },
+        {
+          "id": 6748,
+          "before": {
+            "id": 6748,
+            "name": "Monkey Ring",
+            "quality": 2,
+            "item_level": 32,
+            "required_level": 0,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 11,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 6748,
+            "name": "Monkey Ring",
+            "quality": 3,
+            "item_level": 32,
+            "required_level": 0,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 11,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "quality"
+          ]
+        },
+        {
+          "id": 6750,
+          "before": {
+            "id": 6750,
+            "name": "Snake Hoop",
+            "quality": 3,
+            "item_level": 32,
+            "required_level": 0,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 11,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 6750,
+            "name": "Snake Hoop",
+            "quality": 2,
+            "item_level": 32,
+            "required_level": 0,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 11,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "quality"
+          ]
+        },
+        {
+          "id": 6806,
+          "before": {
+            "id": 6806,
+            "name": "Dancing Flame",
+            "quality": 2,
+            "item_level": 38,
+            "required_level": 0,
+            "class_id": 2,
+            "subclass_id": 19,
+            "inventory_type": 26,
+            "suffixes": [],
+            "faction_restriction": "horde_only",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 6806,
+            "name": "Dancing Flame",
+            "quality": 3,
+            "item_level": 38,
+            "required_level": 0,
+            "class_id": 2,
+            "subclass_id": 19,
+            "inventory_type": 26,
+            "suffixes": [],
+            "faction_restriction": "horde_only",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "quality"
+          ]
+        },
+        {
+          "id": 7000,
+          "before": {
+            "id": 7000,
+            "name": "Heartwood Girdle",
+            "quality": 2,
+            "item_level": 27,
+            "required_level": 0,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 6,
+            "suffixes": [],
+            "faction_restriction": "alliance_only",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 7000,
+            "name": "Heartwood Girdle",
+            "quality": 3,
+            "item_level": 27,
+            "required_level": 0,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 6,
+            "suffixes": [],
+            "faction_restriction": "alliance_only",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "quality"
+          ]
+        },
+        {
+          "id": 7750,
+          "before": {
+            "id": 7750,
+            "name": "Mantle of Woe",
+            "quality": 2,
+            "item_level": 35,
+            "required_level": 0,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 3,
+            "suffixes": [],
+            "faction_restriction": "horde_only",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 7750,
+            "name": "Mantle of Woe",
+            "quality": 3,
+            "item_level": 35,
+            "required_level": 0,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 3,
+            "suffixes": [],
+            "faction_restriction": "horde_only",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "quality"
+          ]
+        },
+        {
+          "id": 9522,
+          "before": {
+            "id": 9522,
+            "name": "Energized Stone Circle",
+            "quality": 3,
+            "item_level": 38,
+            "required_level": 0,
+            "class_id": 4,
+            "subclass_id": 6,
+            "inventory_type": 14,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 9522,
+            "name": "Energized Stone Circle",
+            "quality": 2,
+            "item_level": 38,
+            "required_level": 0,
+            "class_id": 4,
+            "subclass_id": 6,
+            "inventory_type": 14,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "quality"
+          ]
+        },
+        {
+          "id": 12059,
+          "before": {
+            "id": 12059,
+            "name": "Conqueror's Medallion",
+            "quality": 3,
+            "item_level": 58,
+            "required_level": 0,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 2,
+            "suffixes": [],
+            "faction_restriction": "horde_only",
+            "required_level_source": "classic-db",
+            "stats_source": "classic-db",
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 12059,
+            "name": "Conqueror's Medallion",
+            "quality": 3,
+            "item_level": 58,
+            "required_level": 0,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 2,
+            "suffixes": [],
+            "faction_restriction": "horde_only",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
+          "id": 14555,
+          "before": {
+            "id": 14555,
+            "name": "Alcor's Sunrazor",
+            "quality": 4,
+            "item_level": 63,
+            "required_level": 58,
+            "class_id": 2,
+            "subclass_id": 15,
+            "inventory_type": 13,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "classic-db",
+            "stats_source": "classic-db",
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 14555,
+            "name": "Alcor's Sunrazor",
+            "quality": 4,
+            "item_level": 63,
+            "required_level": 58,
+            "class_id": 2,
+            "subclass_id": 15,
+            "inventory_type": 13,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
+          "id": 14557,
+          "before": {
+            "id": 14557,
+            "name": "The Lion Horn of Stormwind",
+            "quality": 4,
+            "item_level": 63,
+            "required_level": 58,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 12,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "classic-db",
+            "stats_source": "classic-db",
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 14557,
+            "name": "The Lion Horn of Stormwind",
+            "quality": 4,
+            "item_level": 63,
+            "required_level": 58,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 12,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
+          "id": 15449,
+          "before": {
+            "id": 15449,
+            "name": "Ghastly Trousers",
+            "quality": 2,
+            "item_level": 18,
+            "required_level": 0,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 7,
+            "suffixes": [],
+            "faction_restriction": "horde_only",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 15449,
+            "name": "Ghastly Trousers",
+            "quality": 3,
+            "item_level": 18,
+            "required_level": 0,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 7,
+            "suffixes": [],
+            "faction_restriction": "horde_only",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "quality"
+          ]
+        },
+        {
+          "id": 17042,
+          "before": {
+            "id": 17042,
+            "name": "Nail Spitter",
+            "quality": 2,
+            "item_level": 38,
+            "required_level": 0,
+            "class_id": 2,
+            "subclass_id": 3,
+            "inventory_type": 26,
+            "suffixes": [],
+            "faction_restriction": "horde_only",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 17042,
+            "name": "Nail Spitter",
+            "quality": 3,
+            "item_level": 38,
+            "required_level": 0,
+            "class_id": 2,
+            "subclass_id": 3,
+            "inventory_type": 26,
+            "suffixes": [],
+            "faction_restriction": "horde_only",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "quality"
+          ]
+        },
+        {
+          "id": 17694,
+          "before": {
+            "id": 17694,
+            "name": "Band of the Fist",
+            "quality": 3,
+            "item_level": 28,
+            "required_level": 0,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 11,
+            "suffixes": [],
+            "faction_restriction": "horde_only",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 17694,
+            "name": "Band of the Fist",
+            "quality": 2,
+            "item_level": 28,
+            "required_level": 0,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 11,
+            "suffixes": [],
+            "faction_restriction": "horde_only",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "quality"
+          ]
+        },
+        {
+          "id": 18348,
+          "before": {
+            "id": 18348,
+            "name": "Quel'Serrar",
+            "quality": 4,
+            "item_level": 71,
+            "required_level": 60,
+            "class_id": 2,
+            "subclass_id": 7,
+            "inventory_type": 21,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "classic-db",
+            "stats_source": "classic-db",
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 18348,
+            "name": "Quel'Serrar",
+            "quality": 4,
+            "item_level": 65,
+            "required_level": 60,
+            "class_id": 2,
+            "subclass_id": 7,
+            "inventory_type": 21,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level",
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
+          "id": 18756,
+          "before": {
+            "id": 18756,
+            "name": "Dreadguard's Protector",
+            "quality": 3,
+            "item_level": 62,
+            "required_level": 57,
+            "class_id": 4,
+            "subclass_id": 6,
+            "inventory_type": 14,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "classic-db",
+            "stats_source": "classic-db",
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 18756,
+            "name": "Dreadguard's Protector",
+            "quality": 3,
+            "item_level": 62,
+            "required_level": 57,
+            "class_id": 4,
+            "subclass_id": 6,
+            "inventory_type": 14,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
+          "id": 22317,
+          "before": {
+            "id": 22317,
+            "name": "Lefty's Brass Knuckle",
+            "quality": 3,
+            "item_level": 61,
+            "required_level": 56,
+            "class_id": 2,
+            "subclass_id": 13,
+            "inventory_type": 13,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "classic-db",
+            "stats_source": "classic-db",
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 22317,
+            "name": "Lefty's Brass Knuckle",
+            "quality": 3,
+            "item_level": 61,
+            "required_level": 56,
+            "class_id": 2,
+            "subclass_id": 13,
+            "inventory_type": 13,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
+          "id": 22318,
+          "before": {
+            "id": 22318,
+            "name": "Malgen's Long Bow",
+            "quality": 3,
+            "item_level": 61,
+            "required_level": 56,
+            "class_id": 2,
+            "subclass_id": 2,
+            "inventory_type": 15,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "classic-db",
+            "stats_source": "classic-db",
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 22318,
+            "name": "Malgen's Long Bow",
+            "quality": 3,
+            "item_level": 61,
+            "required_level": 56,
+            "class_id": 2,
+            "subclass_id": 2,
+            "inventory_type": 15,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
+          "id": 22330,
+          "before": {
+            "id": 22330,
+            "name": "Shroud of Arcane Mastery",
+            "quality": 3,
+            "item_level": 61,
+            "required_level": 56,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 16,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "classic-db",
+            "stats_source": "classic-db",
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 22330,
+            "name": "Shroud of Arcane Mastery",
+            "quality": 3,
+            "item_level": 61,
+            "required_level": 56,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 16,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
+          "id": 251965,
+          "before": {
+            "id": 251965,
+            "name": "Undead Knight's Bracers",
+            "quality": 3,
+            "item_level": 36,
+            "required_level": 0,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 9,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 251965,
+            "name": "Undead Knight's Bracers",
+            "quality": 2,
+            "item_level": 36,
+            "required_level": 0,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 9,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "quality"
+          ]
+        },
+        {
+          "id": 270003,
+          "before": {
+            "id": 270003,
+            "name": "Garrison Cuffs",
+            "quality": 3,
+            "item_level": 18,
+            "required_level": 0,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 9,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 270003,
+            "name": "Garrison Cuffs",
+            "quality": 2,
+            "item_level": 18,
+            "required_level": 0,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 9,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "quality"
+          ]
+        },
+        {
+          "id": 271939,
+          "before": {
+            "id": 271939,
+            "name": "Guerrilla's Jagged Mace",
+            "quality": 3,
+            "item_level": 33,
+            "required_level": 28,
+            "class_id": 2,
+            "subclass_id": 4,
+            "inventory_type": 21,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 271939,
+            "name": "Guerilla's Jagged Mace",
+            "quality": 3,
+            "item_level": 33,
+            "required_level": 28,
+            "class_id": 2,
+            "subclass_id": 4,
+            "inventory_type": 21,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "name"
+          ]
+        },
+        {
+          "id": 273645,
+          "before": {
+            "id": 273645,
+            "name": "Blindwatcher's Sight",
+            "quality": 3,
+            "item_level": 26,
+            "required_level": 21,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 1,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273645,
+            "name": "Blindwatcher's Sight",
+            "quality": 3,
+            "item_level": 26,
+            "required_level": 21,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 1,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "subclass_id"
+          ]
+        },
+        {
+          "id": 277059,
+          "before": {
+            "id": 277059,
+            "name": "Al'Aketh Chain",
+            "quality": 2,
+            "item_level": 9,
+            "required_level": 4,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 6,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 277059,
+            "name": "Al'aketh Chain",
+            "quality": 2,
+            "item_level": 9,
+            "required_level": 4,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 6,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "name"
+          ]
+        },
+        {
+          "id": 277069,
+          "before": {
+            "id": 277069,
+            "name": "Al'Aketh Armguards",
+            "quality": 2,
+            "item_level": 9,
+            "required_level": 4,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 9,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 277069,
+            "name": "Al'aketh Armguards",
+            "quality": 2,
+            "item_level": 9,
+            "required_level": 4,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 9,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "name"
+          ]
+        },
+        {
+          "id": 277079,
+          "before": {
+            "id": 277079,
+            "name": "Al'Aketh Shoes",
+            "quality": 2,
+            "item_level": 10,
+            "required_level": 5,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 8,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 277079,
+            "name": "Al'aketh Shoes",
+            "quality": 2,
+            "item_level": 10,
+            "required_level": 5,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 8,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "name"
+          ]
+        },
+        {
+          "id": 279847,
+          "before": {
+            "id": 279847,
+            "name": "Unstable Power Core",
+            "quality": 2,
+            "item_level": 36,
+            "required_level": 1,
+            "class_id": 2,
+            "subclass_id": 19,
+            "inventory_type": 26,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 279847,
+            "name": "Unstable Power Core",
+            "quality": 3,
+            "item_level": 36,
+            "required_level": 1,
+            "class_id": 2,
+            "subclass_id": 19,
+            "inventory_type": 26,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "quality"
+          ]
+        },
+        {
+          "id": 280095,
+          "before": {
+            "id": 280095,
+            "name": "Cryptwalker Bracers",
+            "quality": 3,
+            "item_level": 17,
+            "required_level": 0,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 9,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 280095,
+            "name": "Cryptwalker Bracers",
+            "quality": 2,
+            "item_level": 17,
+            "required_level": 0,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 9,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "quality"
+          ]
+        },
+        {
+          "id": 285344,
+          "before": {
+            "id": 285344,
+            "name": "Guard Captain's Barrier",
+            "quality": 3,
+            "item_level": 29,
+            "required_level": 24,
+            "class_id": 4,
+            "subclass_id": 6,
+            "inventory_type": 14,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 285344,
+            "name": "Guard Captains Barrier",
+            "quality": 3,
+            "item_level": 29,
+            "required_level": 24,
+            "class_id": 4,
+            "subclass_id": 6,
+            "inventory_type": 14,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "name"
+          ]
+        },
+        {
+          "id": 286735,
+          "before": {
+            "id": 286735,
+            "name": "Sentinel's Slasher",
+            "quality": 1,
+            "item_level": 10,
+            "required_level": 0,
+            "class_id": 2,
+            "subclass_id": 7,
+            "inventory_type": 13,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 286735,
+            "name": "Sentinel's Slasher",
+            "quality": 1,
+            "item_level": 9,
+            "required_level": 0,
+            "class_id": 2,
+            "subclass_id": 7,
+            "inventory_type": 13,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 286745,
+          "before": {
+            "id": 286745,
+            "name": "Furlfeather Ring",
+            "quality": 2,
+            "item_level": 12,
+            "required_level": 7,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 11,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 286745,
+            "name": "Furlfeather Ring",
+            "quality": 2,
+            "item_level": 14,
+            "required_level": 9,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 11,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level",
+            "required_level"
+          ]
+        },
+        {
+          "id": 286750,
+          "before": {
+            "id": 286750,
+            "name": "Wisesight Wand",
+            "quality": 2,
+            "item_level": 12,
+            "required_level": 7,
+            "class_id": 2,
+            "subclass_id": 19,
+            "inventory_type": 26,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 286750,
+            "name": "Wisesight Wand",
+            "quality": 2,
+            "item_level": 10,
+            "required_level": 5,
+            "class_id": 2,
+            "subclass_id": 19,
+            "inventory_type": 26,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level",
+            "required_level"
+          ]
+        },
+        {
+          "id": 286754,
+          "before": {
+            "id": 286754,
+            "name": "Ukta's Conduit",
+            "quality": 2,
+            "item_level": 14,
+            "required_level": 9,
+            "class_id": 2,
+            "subclass_id": 10,
+            "inventory_type": 17,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 286754,
+            "name": "Ukta's Conduit",
+            "quality": 2,
+            "item_level": 12,
+            "required_level": 7,
+            "class_id": 2,
+            "subclass_id": 10,
+            "inventory_type": 17,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level",
+            "required_level"
+          ]
+        }
+      ]
+    },
+    "spells": {
+      "added": [
+        {
+          "id": 1240568,
+          "name": "Bell Turned On Dummy"
+        },
+        {
+          "id": 1267176,
+          "name": "Illusion"
+        },
+        {
+          "id": 1267189,
+          "name": "Summon Arcane Companion"
+        },
+        {
+          "id": 1267192,
+          "name": "Summon Watery Companion"
+        },
+        {
+          "id": 1267194,
+          "name": "Summon Fiery Companion"
+        },
+        {
+          "id": 1271375,
+          "name": "Blizzard"
+        },
+        {
+          "id": 1271394,
+          "name": "Blizzard"
+        },
+        {
+          "id": 1271419,
+          "name": "Intruders!"
+        },
+        {
+          "id": 1271604,
+          "name": "Searing Scales"
+        },
+        {
+          "id": 1271753,
+          "name": "Shadowstep"
+        },
+        {
+          "id": 1271761,
+          "name": "Grievous Garrote"
+        },
+        {
+          "id": 1275847,
+          "name": "Reveal Form"
+        },
+        {
+          "id": 1277741,
+          "name": "Command: Bite!"
+        },
+        {
+          "id": 1280011,
+          "name": "Rending Whirl"
+        },
+        {
+          "id": 1280081,
+          "name": "Force Compliance"
+        },
+        {
+          "id": 1280082,
+          "name": "Force Compliance"
+        },
+        {
+          "id": 1280085,
+          "name": "Force Compliance"
+        },
+        {
+          "id": 1280259,
+          "name": "Convert"
+        },
+        {
+          "id": 1280262,
+          "name": "Shadow Infusion"
+        },
+        {
+          "id": 1280265,
+          "name": "Shadow Infusion"
+        },
+        {
+          "id": 1282071,
+          "name": "Frightening Howl"
+        },
+        {
+          "id": 1282076,
+          "name": "Command: Kill!"
+        },
+        {
+          "id": 1282396,
+          "name": "Crushing Slam"
+        },
+        {
+          "id": 1282397,
+          "name": "Crushing Slam"
+        },
+        {
+          "id": 1282504,
+          "name": "Monstrous Slam"
+        },
+        {
+          "id": 1282511,
+          "name": "Undying Oath"
+        },
+        {
+          "id": 1282517,
+          "name": "Rotted Strike"
+        },
+        {
+          "id": 1282519,
+          "name": "Rotted Strike"
+        },
+        {
+          "id": 1282611,
+          "name": "Healing Wave"
+        },
+        {
+          "id": 1282615,
+          "name": "Harpoon"
+        },
+        {
+          "id": 1282659,
+          "name": "Harpoon"
+        },
+        {
+          "id": 1282746,
+          "name": "Harpoon"
+        },
+        {
+          "id": 1282753,
+          "name": "Harpoon"
+        },
+        {
+          "id": 1282842,
+          "name": "Embrine"
+        },
+        {
+          "id": 1282843,
+          "name": "Embrine"
+        },
+        {
+          "id": 1282844,
+          "name": "Embrine"
+        },
+        {
+          "id": 1282845,
+          "name": "Embrine"
+        },
+        {
+          "id": 1282860,
+          "name": "Waterbolt Volley"
+        },
+        {
+          "id": 1282921,
+          "name": "Blood Rite"
+        },
+        {
+          "id": 1283019,
+          "name": "Poisoned Blood"
+        },
+        {
+          "id": 1283027,
+          "name": "Poisoned Blood"
+        },
+        {
+          "id": 1283033,
+          "name": "Blood Rite"
+        },
+        {
+          "id": 1283034,
+          "name": "Bloodbolt"
+        },
+        {
+          "id": 1283073,
+          "name": "Charge"
+        },
+        {
+          "id": 1283076,
+          "name": "Strike"
+        },
+        {
+          "id": 1283081,
+          "name": "Shield Slam"
+        },
+        {
+          "id": 1283083,
+          "name": "Shield Spike"
+        },
+        {
+          "id": 1283086,
+          "name": "Fireball"
+        },
+        {
+          "id": 1283087,
+          "name": "Curse of Blood"
+        },
+        {
+          "id": 1283233,
+          "name": "Deluge"
+        },
+        {
+          "id": 1283234,
+          "name": "Deluge"
+        },
+        {
+          "id": 1283237,
+          "name": "Deluge"
+        },
+        {
+          "id": 1283238,
+          "name": "Deluge"
+        },
+        {
+          "id": 1283239,
+          "name": "Deluge"
+        },
+        {
+          "id": 1283241,
+          "name": "Deluge"
+        },
+        {
+          "id": 1283250,
+          "name": "Drench"
+        },
+        {
+          "id": 1283266,
+          "name": "Drain Blood"
+        },
+        {
+          "id": 1283269,
+          "name": "Drain Blood"
+        },
+        {
+          "id": 1283295,
+          "name": "Transform"
+        },
+        {
+          "id": 1283313,
+          "name": "Poison Bolt Volley"
+        },
+        {
+          "id": 1283327,
+          "name": "Fatal Bite"
+        },
+        {
+          "id": 1283347,
+          "name": "Horrifying Presence"
+        },
+        {
+          "id": 1283348,
+          "name": "Horrifying Presence"
+        },
+        {
+          "id": 1283361,
+          "name": "Curse of Weakness"
+        },
+        {
+          "id": 1283362,
+          "name": "Shadow Bolt"
+        },
+        {
+          "id": 1283364,
+          "name": "Net"
+        },
+        {
+          "id": 1283365,
+          "name": "Shadow Shot"
+        },
+        {
+          "id": 1283366,
+          "name": "Shadow Shell"
+        },
+        {
+          "id": 1283390,
+          "name": "Sunder Armor"
+        },
+        {
+          "id": 1283405,
+          "name": "Muscle Tear"
+        },
+        {
+          "id": 1283407,
+          "name": "Shield Charge"
+        },
+        {
+          "id": 1283409,
+          "name": "Hex"
+        },
+        {
+          "id": 1283410,
+          "name": "Frostbolt"
+        },
+        {
+          "id": 1283413,
+          "name": "Cleave"
+        },
+        {
+          "id": 1283414,
+          "name": "Mortal Strike"
+        },
+        {
+          "id": 1283416,
+          "name": "Poisonous Stab"
+        },
+        {
+          "id": 1283419,
+          "name": "Frost Armor"
+        },
+        {
+          "id": 1283420,
+          "name": "Frostbolt"
+        },
+        {
+          "id": 1283421,
+          "name": "Lightning Bolt"
+        },
+        {
+          "id": 1283422,
+          "name": "Healing Wave"
+        },
+        {
+          "id": 1283423,
+          "name": "Rend"
+        },
+        {
+          "id": 1283424,
+          "name": "Knock Away"
+        },
+        {
+          "id": 1283425,
+          "name": "War Stomp"
+        },
+        {
+          "id": 1283527,
+          "name": "Navis Mortis"
+        },
+        {
+          "id": 1283531,
+          "name": "Navis Mortis"
+        },
+        {
+          "id": 1283586,
+          "name": "Profane Ritual"
+        },
+        {
+          "id": 1283679,
+          "name": "Shoot"
+        },
+        {
+          "id": 1283680,
+          "name": "Healing Wave"
+        },
+        {
+          "id": 1283681,
+          "name": "Chain Lightning"
+        },
+        {
+          "id": 1283684,
+          "name": "Permanent Feign Death"
+        },
+        {
+          "id": 1283849,
+          "name": "Roll Dice!"
+        },
+        {
+          "id": 1283854,
+          "name": "Seasalt Lager"
+        },
+        {
+          "id": 1283855,
+          "name": "Brilliant Conflagration"
+        },
+        {
+          "id": 1283866,
+          "name": "Fishing"
+        },
+        {
+          "id": 1283934,
+          "name": "Fear"
+        },
+        {
+          "id": 1284543,
+          "name": "Theramore Marine Disguise"
+        },
+        {
+          "id": 1285368,
+          "name": "Gathering Intelligence"
+        },
+        {
+          "id": 1285369,
+          "name": "Standing \"Guard\""
+        },
+        {
+          "id": 1285370,
+          "name": "DNT"
+        },
+        {
+          "id": 1285371,
+          "name": "Remove Disguise"
+        },
+        {
+          "id": 1287127,
+          "name": "Cosmetic Lightning"
+        },
+        {
+          "id": 1287151,
+          "name": "Eating"
+        },
+        {
+          "id": 1287360,
+          "name": "Threatening"
+        },
+        {
+          "id": 1287444,
+          "name": "Stealth"
+        },
+        {
+          "id": 1287747,
+          "name": "Berserk"
+        },
+        {
+          "id": 1287756,
+          "name": "Fiery Talons"
+        },
+        {
+          "id": 1287872,
+          "name": "Tail Lash"
+        },
+        {
+          "id": 1287876,
+          "name": "Trihorn Charge"
+        },
+        {
+          "id": 1287879,
+          "name": "Trihorn Charge"
+        },
+        {
+          "id": 1287886,
+          "name": "Puncture"
+        },
+        {
+          "id": 1289213,
+          "name": "Conjure Spirit"
+        },
+        {
+          "id": 1289276,
+          "name": "Conjure Spirit"
+        },
+        {
+          "id": 1289279,
+          "name": "(DNT) Spawn Visuals"
+        },
+        {
+          "id": 1289280,
+          "name": "Souldrained"
+        },
+        {
+          "id": 1289302,
+          "name": "Conjure Spirit"
+        },
+        {
+          "id": 1289322,
+          "name": "Shadow Bolt"
+        },
+        {
+          "id": 1290463,
+          "name": "Powerful Slam"
+        },
+        {
+          "id": 1290464,
+          "name": "Sonic Screech"
+        },
+        {
+          "id": 1290472,
+          "name": "Crystal Selection"
+        },
+        {
+          "id": 1290506,
+          "name": "Energize"
+        },
+        {
+          "id": 1290507,
+          "name": "Energize"
+        },
+        {
+          "id": 1290508,
+          "name": "Energize"
+        },
+        {
+          "id": 1290509,
+          "name": "Energize"
+        },
+        {
+          "id": 1290510,
+          "name": "Energized"
+        },
+        {
+          "id": 1290511,
+          "name": "Energized"
+        },
+        {
+          "id": 1290512,
+          "name": "Energized"
+        },
+        {
+          "id": 1290513,
+          "name": "Energized"
+        },
+        {
+          "id": 1290533,
+          "name": "Thrash"
+        },
+        {
+          "id": 1290536,
+          "name": "Rend"
+        },
+        {
+          "id": 1290818,
+          "name": "Powering Up"
+        },
+        {
+          "id": 1290819,
+          "name": "Powering Up"
+        },
+        {
+          "id": 1290822,
+          "name": "Powering Up"
+        },
+        {
+          "id": 1290823,
+          "name": "Powering Up"
+        },
+        {
+          "id": 1290858,
+          "name": "Pylon Powered"
+        },
+        {
+          "id": 1290868,
+          "name": "(DNT) Primeval Elemental Freeze Self"
+        },
+        {
+          "id": 1290947,
+          "name": "Blood Bolt"
+        },
+        {
+          "id": 1290978,
+          "name": "Waterbolt"
+        },
+        {
+          "id": 1290980,
+          "name": "Freeze Water"
+        },
+        {
+          "id": 1290983,
+          "name": "Freeze Water"
+        },
+        {
+          "id": 1291167,
+          "name": "Blizzard"
+        },
+        {
+          "id": 1291168,
+          "name": "Blizzard"
+        },
+        {
+          "id": 1291176,
+          "name": "Blast Wave"
+        },
+        {
+          "id": 1291274,
+          "name": "Poison Cloud"
+        },
+        {
+          "id": 1291301,
+          "name": "Poison"
+        },
+        {
+          "id": 1291313,
+          "name": "Poison Cloud"
+        },
+        {
+          "id": 1291380,
+          "name": "Chain Lightning"
+        },
+        {
+          "id": 1291446,
+          "name": "(DNT) Drowned City Pearl Channel Visuals"
+        },
+        {
+          "id": 1291448,
+          "name": "Disrupt Barrier"
+        },
+        {
+          "id": 1291499,
+          "name": "Dismissal"
+        },
+        {
+          "id": 1291515,
+          "name": "Germinate"
+        },
+        {
+          "id": 1291516,
+          "name": "Spores"
+        },
+        {
+          "id": 1291517,
+          "name": "Germinate"
+        },
+        {
+          "id": 1291548,
+          "name": "Germinate"
+        },
+        {
+          "id": 1291554,
+          "name": "Blinded"
+        },
+        {
+          "id": 1291672,
+          "name": "Regenesis"
+        },
+        {
+          "id": 1291692,
+          "name": "Throw Dynamite"
+        },
+        {
+          "id": 1291712,
+          "name": "Head Smash"
+        },
+        {
+          "id": 1291730,
+          "name": "Pierce Armor"
+        },
+        {
+          "id": 1294310,
+          "name": "Mortal Strike"
+        },
+        {
+          "id": 1294312,
+          "name": "Mighty Blow"
+        },
+        {
+          "id": 1294313,
+          "name": "Terrifying Roar"
+        },
+        {
+          "id": 1295543,
+          "name": "Find Players"
+        },
+        {
+          "id": 1296130,
+          "name": "Rending Whirl"
+        },
+        {
+          "id": 1299337,
+          "name": "Disrupt Barrier"
+        },
+        {
+          "id": 1300699,
+          "name": "(DNT) Beam Visuals"
+        },
+        {
+          "id": 1300715,
+          "name": "Frostbolt"
+        },
+        {
+          "id": 1300716,
+          "name": "Frost Nova"
+        },
+        {
+          "id": 1300979,
+          "name": "(DNT) Unstable Components Cosmetic Aura"
+        },
+        {
+          "id": 1300992,
+          "name": "Arcane Explosion"
+        },
+        {
+          "id": 1300993,
+          "name": "Unstable Components"
+        },
+        {
+          "id": 1300996,
+          "name": "Parrotmorph"
+        },
+        {
+          "id": 1301001,
+          "name": "Arcane Fury"
+        },
+        {
+          "id": 1301011,
+          "name": "Summon Arcane Wraith"
+        },
+        {
+          "id": 1301016,
+          "name": "Frost Nova"
+        },
+        {
+          "id": 1301017,
+          "name": "Arcane Idiocy"
+        },
+        {
+          "id": 1301019,
+          "name": "Shrunk"
+        },
+        {
+          "id": 1301023,
+          "name": "Keelhauler's Curse"
+        },
+        {
+          "id": 1301218,
+          "name": "(DNT) Summon Crystal"
+        },
+        {
+          "id": 1301223,
+          "name": "(DNT) Mount Vehicle"
+        },
+        {
+          "id": 1301264,
+          "name": "(DNT) Cosmetic Aura"
+        },
+        {
+          "id": 1301265,
+          "name": "Restorative Essence"
+        },
+        {
+          "id": 1301299,
+          "name": "Blood Ritual"
+        },
+        {
+          "id": 1301343,
+          "name": "(DNT) Deathless Marrow Intro Missiles"
+        },
+        {
+          "id": 1301411,
+          "name": "(DNT) Deathless Marrow Intro Orb"
+        },
+        {
+          "id": 1301471,
+          "name": "(DNT) Deathless Marrow Intro Orb"
+        },
+        {
+          "id": 1302039,
+          "name": "Curse of Tongues"
+        },
+        {
+          "id": 1304536,
+          "name": "Lightning Strike"
+        },
+        {
+          "id": 1304765,
+          "name": "(DNT) Darkness Effect"
+        },
+        {
+          "id": 1304773,
+          "name": "Transform"
+        },
+        {
+          "id": 1304886,
+          "name": "(DNT) Death Transform"
+        },
+        {
+          "id": 1304898,
+          "name": "(DNT) Death Transform"
+        },
+        {
+          "id": 1306734,
+          "name": "Combine Insignias"
+        },
+        {
+          "id": 1306800,
+          "name": "Alcaz Operative"
+        },
+        {
+          "id": 1306816,
+          "name": "Bigger Rock to the Face"
+        },
+        {
+          "id": 1307404,
+          "name": "[DNT] Teleport to The Drowned City"
+        },
+        {
+          "id": 1308151,
+          "name": "Blue Transmutation"
+        },
+        {
+          "id": 1308153,
+          "name": "Red Transmutation"
+        },
+        {
+          "id": 1308154,
+          "name": "Yellow Transmutation"
+        },
+        {
+          "id": 1308155,
+          "name": "Green Transmutation"
+        },
+        {
+          "id": 1308171,
+          "name": "Blue Aura"
+        },
+        {
+          "id": 1308172,
+          "name": "Red Aura"
+        },
+        {
+          "id": 1308174,
+          "name": "Yellow Aura"
+        },
+        {
+          "id": 1308175,
+          "name": "Green Aura"
+        },
+        {
+          "id": 1308215,
+          "name": "Blue Transmutation"
+        },
+        {
+          "id": 1308216,
+          "name": "Blue Infusion"
+        },
+        {
+          "id": 1308220,
+          "name": "Red Transmutation"
+        },
+        {
+          "id": 1308221,
+          "name": "Red Transmutation"
+        },
+        {
+          "id": 1308222,
+          "name": "Yellow Transmutation"
+        },
+        {
+          "id": 1308223,
+          "name": "Yellow Transmutation"
+        },
+        {
+          "id": 1308224,
+          "name": "Green Transmutation"
+        },
+        {
+          "id": 1308225,
+          "name": "Green Transmutation"
+        },
+        {
+          "id": 1309189,
+          "name": "Deathblow"
+        },
+        {
+          "id": 1310142,
+          "name": "Lightning Strike"
+        },
+        {
+          "id": 1310146,
+          "name": "Regenesis"
+        },
+        {
+          "id": 1310148,
+          "name": "Regenesis"
+        },
+        {
+          "id": 1310151,
+          "name": "Regenesis"
+        },
+        {
+          "id": 1310251,
+          "name": "Roar"
+        },
+        {
+          "id": 1310266,
+          "name": "Radiating Heat"
+        },
+        {
+          "id": 1310267,
+          "name": "Radiating Heat"
+        },
+        {
+          "id": 1310353,
+          "name": "Frostbolt"
+        },
+        {
+          "id": 1310354,
+          "name": "Frost Nova"
+        },
+        {
+          "id": 1310365,
+          "name": "Poison Bolt Volley"
+        },
+        {
+          "id": 1310505,
+          "name": "Desaturate"
+        },
+        {
+          "id": 1310506,
+          "name": "Activate"
+        },
+        {
+          "id": 1310507,
+          "name": "Activate"
+        },
+        {
+          "id": 1310508,
+          "name": "Activate"
+        },
+        {
+          "id": 1310509,
+          "name": "Activate"
+        },
+        {
+          "id": 1310512,
+          "name": "Conflagration"
+        },
+        {
+          "id": 1310513,
+          "name": "Chain Lightning"
+        },
+        {
+          "id": 1310514,
+          "name": "Howling Blast"
+        },
+        {
+          "id": 1310515,
+          "name": "Demoralizing Roar"
+        },
+        {
+          "id": 1310516,
+          "name": "Lightning Strike"
+        },
+        {
+          "id": 1311505,
+          "name": "Grounded Electroshocks"
+        },
+        {
+          "id": 1311844,
+          "name": "(DNT) Min'loth Cosmetic Aura"
+        },
+        {
+          "id": 1313392,
+          "name": "Summon Shen'dorei Wisp"
+        },
+        {
+          "id": 1313471,
+          "name": "Fear"
+        },
+        {
+          "id": 1313504,
+          "name": "Create Item"
+        },
+        {
+          "id": 1313543,
+          "name": "Arcane Marker"
+        },
+        {
+          "id": 1313545,
+          "name": "Arcane Marker"
+        },
+        {
+          "id": 1313580,
+          "name": "Arcane Marker"
+        },
+        {
+          "id": 1313642,
+          "name": "Create Item"
+        },
+        {
+          "id": 1313687,
+          "name": "(DNT) Death Transform"
+        },
+        {
+          "id": 1313907,
+          "name": "Dummy"
+        },
+        {
+          "id": 1313969,
+          "name": "Opening"
+        },
+        {
+          "id": 1313978,
+          "name": "Frigid Depths"
+        },
+        {
+          "id": 1313983,
+          "name": "Frigid Depths"
+        },
+        {
+          "id": 1314003,
+          "name": "Arcane Marker"
+        },
+        {
+          "id": 1314004,
+          "name": "Arcane Marker"
+        },
+        {
+          "id": 1314017,
+          "name": "Arcane Marker"
+        },
+        {
+          "id": 1314019,
+          "name": "Arcane Marker"
+        },
+        {
+          "id": 1314025,
+          "name": "Arcane Marker"
+        },
+        {
+          "id": 1314111,
+          "name": "Arcane Marker"
+        },
+        {
+          "id": 1314190,
+          "name": "Cleansing"
+        },
+        {
+          "id": 1314266,
+          "name": "Create Item"
+        },
+        {
+          "id": 1314294,
+          "name": "Tear of Anguish"
+        },
+        {
+          "id": 1314297,
+          "name": "Cleansing"
+        },
+        {
+          "id": 1314330,
+          "name": "Arcanum of Binding"
+        },
+        {
+          "id": 1314331,
+          "name": "Arcanum of Binding"
+        },
+        {
+          "id": 1314699,
+          "name": "Dummy"
+        },
+        {
+          "id": 1314742,
+          "name": "Create Item"
+        },
+        {
+          "id": 1314761,
+          "name": "Dummy"
+        },
+        {
+          "id": 1314774,
+          "name": "Place Ancient Hilt"
+        },
+        {
+          "id": 1314794,
+          "name": "Chilling Breath"
+        },
+        {
+          "id": 1314858,
+          "name": "Chilling Breath"
+        },
+        {
+          "id": 1314922,
+          "name": "Dummy"
+        },
+        {
+          "id": 1314923,
+          "name": "Binding"
+        },
+        {
+          "id": 1314930,
+          "name": "Dummy"
+        },
+        {
+          "id": 1314931,
+          "name": "Binding"
+        },
+        {
+          "id": 1314940,
+          "name": "Dummy"
+        },
+        {
+          "id": 1314956,
+          "name": "Beckon Ancient Spirit"
+        },
+        {
+          "id": 1314960,
+          "name": "Dummy"
+        },
+        {
+          "id": 1314986,
+          "name": "Create Item"
+        },
+        {
+          "id": 1315044,
+          "name": "Dummy"
+        },
+        {
+          "id": 1315045,
+          "name": "Dummy"
+        },
+        {
+          "id": 1315047,
+          "name": "Dummy"
+        },
+        {
+          "id": 1315056,
+          "name": "Ancient Wisdom"
+        },
+        {
+          "id": 1315067,
+          "name": "Ancient Wisdom"
+        },
+        {
+          "id": 1315088,
+          "name": "Ancient Wisdom"
+        },
+        {
+          "id": 1315234,
+          "name": "Dummy"
+        },
+        {
+          "id": 1315246,
+          "name": "Ping Pet"
+        },
+        {
+          "id": 1315261,
+          "name": "Dummy"
+        },
+        {
+          "id": 1315309,
+          "name": "Dummy"
+        },
+        {
+          "id": 1321040,
+          "name": "Create Item"
+        },
+        {
+          "id": 1321097,
+          "name": "Create Item"
+        },
+        {
+          "id": 1323128,
+          "name": "[DNT] FPT - Westfall"
+        },
+        {
+          "id": 1323129,
+          "name": "[DNT] FPT - Arathi"
+        },
+        {
+          "id": 1323130,
+          "name": "[DNT] FPT - Wetlands"
+        },
+        {
+          "id": 1323131,
+          "name": "[DNT] FPT - Badlands"
+        },
+        {
+          "id": 1323132,
+          "name": "[DNT] FPT - Riverglades"
+        },
+        {
+          "id": 1323133,
+          "name": "[DNT] FPT - Redridge"
+        },
+        {
+          "id": 1323134,
+          "name": "[DNT] FPT - Hillsbrad"
+        },
+        {
+          "id": 1323135,
+          "name": "[DNT] FPT - Duskwood"
+        },
+        {
+          "id": 1324335,
+          "name": "[DNT] FPT - Ashenvale"
+        },
+        {
+          "id": 1324336,
+          "name": "[DNT] FPT - Ashenvale, Splintertree Post"
+        },
+        {
+          "id": 1324337,
+          "name": "[DNT] FPT - Ashenvale, Zoram'gar Outpost"
+        },
+        {
+          "id": 1324338,
+          "name": "[DNT] FPT - Azshara"
+        },
+        {
+          "id": 1324339,
+          "name": "[DNT] FPT - Blasted Lands"
+        },
+        {
+          "id": 1324340,
+          "name": "[DNT] FPT - Burning Steppes"
+        },
+        {
+          "id": 1324341,
+          "name": "[DNT] FPT - Darkshore"
+        },
+        {
+          "id": 1324342,
+          "name": "[DNT] FPT - Desolace"
+        },
+        {
+          "id": 1324343,
+          "name": "[DNT] FPT - Dustwallow Marsh"
+        },
+        {
+          "id": 1324344,
+          "name": "[DNT] FPT - Eastern Plaguelands"
+        },
+        {
+          "id": 1324345,
+          "name": "[DNT] FPT - Felwood"
+        },
+        {
+          "id": 1324346,
+          "name": "[DNT] FPT - Feralas"
+        },
+        {
+          "id": 1324347,
+          "name": "[DNT] FPT - Feralas, Feathermoon"
+        },
+        {
+          "id": 1324348,
+          "name": "[DNT] FPT - Feralas,Thalanaar"
+        },
+        {
+          "id": 1324349,
+          "name": "[DNT] FPT - Ironforge"
+        },
+        {
+          "id": 1324350,
+          "name": "[DNT] FPT - Loch Modan"
+        },
+        {
+          "id": 1324351,
+          "name": "[DNT] FPT - Moonglade"
+        },
+        {
+          "id": 1324352,
+          "name": "[DNT] FPT - Mount Hyjal, Summit of Eternity"
+        },
+        {
+          "id": 1324353,
+          "name": "[DNT] FPT - Mount Hyjal, Tainted Foothills"
+        },
+        {
+          "id": 1324354,
+          "name": "[DNT] FPT - Orgrimmar"
+        },
+        {
+          "id": 1324355,
+          "name": "[DNT] FPT - Searing Gorge"
+        },
+        {
+          "id": 1324356,
+          "name": "[DNT] FPT - Silithus"
+        },
+        {
+          "id": 1324357,
+          "name": "[DNT] FPT - Silverpine Forest"
+        },
+        {
+          "id": 1324358,
+          "name": "[DNT] FPT - Stonetalon Mountains"
+        },
+        {
+          "id": 1324359,
+          "name": "[DNT] FPT - Stranglethorn"
+        },
+        {
+          "id": 1324360,
+          "name": "[DNT] FPT - Stranglethorn, Booty Bay"
+        },
+        {
+          "id": 1324361,
+          "name": "[DNT] FPT - Stranglethorn, Grom'gol"
+        },
+        {
+          "id": 1324362,
+          "name": "[DNT] FPT - Swamp of Sorrows"
+        },
+        {
+          "id": 1324363,
+          "name": "[DNT] FPT - Tanaris"
+        },
+        {
+          "id": 1324364,
+          "name": "[DNT] FPT - Teldrassil"
+        },
+        {
+          "id": 1324365,
+          "name": "[DNT] FPT - The Barrens"
+        },
+        {
+          "id": 1324366,
+          "name": "[DNT] FPT - The Barrens, Camp Taurajo"
+        },
+        {
+          "id": 1324367,
+          "name": "[DNT] FPT - The Barrens, Crossroads"
+        },
+        {
+          "id": 1324368,
+          "name": "[DNT] FPT - The Barrens, Ratchet"
+        },
+        {
+          "id": 1324369,
+          "name": "[DNT] FPT - The Hinterlands"
+        },
+        {
+          "id": 1324370,
+          "name": "[DNT] FPT - Thousand Needles"
+        },
+        {
+          "id": 1324371,
+          "name": "[DNT] FPT - Thunder Bluff"
+        },
+        {
+          "id": 1324372,
+          "name": "[DNT] FPT - Undercity"
+        },
+        {
+          "id": 1324373,
+          "name": "[DNT] FPT - Un'Goro Crater"
+        },
+        {
+          "id": 1324374,
+          "name": "[DNT] FPT - Western Plaguelands"
+        },
+        {
+          "id": 1324375,
+          "name": "[DNT] FPT - Winterspring"
+        },
+        {
+          "id": 1324635,
+          "name": "Wormhole"
+        },
+        {
+          "id": 1328862,
+          "name": "Camping"
+        },
+        {
+          "id": 1330734,
+          "name": "Drink"
+        },
+        {
+          "id": 1330741,
+          "name": "Poised"
+        },
+        {
+          "id": 1330746,
+          "name": "Poised"
+        },
+        {
+          "id": 1330763,
+          "name": "Poised"
+        },
+        {
+          "id": 1330765,
+          "name": "Poised"
+        },
+        {
+          "id": 1330836,
+          "name": "Dummy"
+        },
+        {
+          "id": 1330841,
+          "name": "Summon Flare Gun DND"
+        },
+        {
+          "id": 1330842,
+          "name": "Dummy"
+        },
+        {
+          "id": 1330855,
+          "name": "Gloves of Holy Might"
+        }
+      ],
+      "removed": [],
+      "changed": [
+        {
+          "id": 1310077,
+          "before": {
+            "id": 1310077,
+            "name": "Greater Firepower"
+          },
+          "after": {
+            "id": 1310077,
+            "name": "Holy Power"
+          },
+          "fields": [
+            "name"
+          ]
+        }
+      ]
+    },
+    "classes": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "races": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "talents": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "sets": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    }
+  }
+}

@@ -1,0 +1,3718 @@
+{
+  "build": "1.60.1.70938",
+  "racials": {
+    "Artisan's Precision": {
+      "name": "Artisan's Precision",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 0,
+      "channeled": false,
+      "passive": true,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Increases your chance to hit with all spells and attacks by 1%.",
+      "icon": "inv_hammer_09"
+    },
+    "Beast Slaying": {
+      "name": "Beast Slaying",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 0,
+      "channeled": false,
+      "passive": true,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Damage dealt versus Beasts increased by 5%.",
+      "icon": "inv_misc_pelt_bear_ruin_02"
+    },
+    "Berserking": {
+      "name": "Berserking",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 0,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 180000,
+      "range_yd": 0.0,
+      "description": "Increases your spellcasting and attack speed by 10% for 15 sec.",
+      "icon": "racial_troll_berserk"
+    },
+    "Big Game Hunter": {
+      "name": "Big Game Hunter",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 0,
+      "channeled": false,
+      "passive": true,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Damage dealt versus Beasts increased by 5%.",
+      "icon": "inv_weapon_rifle_05"
+    },
+    "Blood Fury": {
+      "name": "Blood Fury",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 0,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 120000,
+      "range_yd": 0.0,
+      "description": "Increases Attack Power and Spell Power by 10% for 15 sec.",
+      "icon": "racial_orc_berserkerstrength"
+    },
+    "Cannibalize": {
+      "name": "Cannibalize",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 0,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 120000,
+      "range_yd": 5.0,
+      "description": "When activated, regenerates 7% of total Health and 7% of total Mana every 2 sec for 10 sec. Only works on Humanoid or Undead corpses within 5 yds. Any movement, action, or damage taken while Cannibalizing will cancel the effect.",
+      "icon": "ability_racial_cannibalize"
+    },
+    "Command": {
+      "name": "Command",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 0,
+      "channeled": false,
+      "passive": true,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Damage dealt by Hunter and Warlock pets increased by 5%.",
+      "icon": "ability_warrior_warcry"
+    },
+    "Cultivation": {
+      "name": "Cultivation",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 0,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 900000,
+      "range_yd": 0.0,
+      "description": "Cultivate a nearby herb, growing a duplicate you can harvest without requiring Herbalism skill. Each herb may only be cultivated once.",
+      "icon": "inv_misc_flower_01"
+    },
+    "Elemental Insight": {
+      "name": "Elemental Insight",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 0,
+      "channeled": false,
+      "passive": true,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Damage dealt versus Elementals increased by 5%.",
+      "icon": "achievement_raidprimalist_windelemental"
+    },
+    "Elune's Light": {
+      "name": "Elune's Light",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 0,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 180000,
+      "range_yd": 0.0,
+      "description": "Increases your critical strike chance with all spells and attacks by 10% for 15 sec.",
+      "icon": "spell_nature_moonglow"
+    },
+    "Endurance": {
+      "name": "Endurance",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 0,
+      "channeled": false,
+      "passive": true,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Total Health increased by 5%.",
+      "icon": "spell_nature_unyeildingstamina"
+    },
+    "Engineering Specialization": {
+      "name": "Engineering Specialization",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 0,
+      "channeled": false,
+      "passive": true,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Your gnomish ingenuity reduces the rate of engineering devices failing or backfiring when you use them by 20%.",
+      "icon": "inv_misc_gear_01"
+    },
+    "Escape Artist": {
+      "name": "Escape Artist",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 0,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 120000,
+      "range_yd": 0.0,
+      "description": "Instantly escape the effects of any movement impairing effect and gain immunity to those effects for 3 sec.",
+      "icon": "ability_rogue_trip"
+    },
+    "Eureka!": {
+      "name": "Eureka!",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 0,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 120000,
+      "range_yd": 0.0,
+      "description": "Your non-periodic damaging abilities have their Energy cost reduced by 10% and deal 10% more damage for 8 sec.",
+      "icon": "inv_gnometoy"
+    },
+    "Expansive Mind": {
+      "name": "Expansive Mind",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 0,
+      "channeled": false,
+      "passive": true,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Maximum Mana increased by 5%.",
+      "icon": "inv_enchant_essenceeternallarge"
+    },
+    "Find Treasure": {
+      "name": "Find Treasure",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 0,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Allows the dwarf to sense nearby treasure, making it appear on the minimap and sometimes increase treasure found. Lasts until canceled.",
+      "icon": "racial_dwarf_findtreasure"
+    },
+    "Hardiness": {
+      "name": "Hardiness",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 0,
+      "channeled": false,
+      "passive": true,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Duration of Stun effects on you reduced by 20%.",
+      "icon": "inv_helmet_23"
+    },
+    "Perception": {
+      "name": "Perception",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 0,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 180000,
+      "range_yd": 0.0,
+      "description": "Dramatically increases stealth detection for 20 sec.",
+      "icon": "spell_nature_sleep"
+    },
+    "Plainsrunning": {
+      "name": "Plainsrunning",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 0,
+      "channeled": false,
+      "passive": true,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Gain 2% increased movement speed every 5 sec spent moving, up to a maximum of 60% increase. Taking damage or standing still will reduce this effect.",
+      "icon": "achievement_zone_barrens_01"
+    },
+    "Quickness": {
+      "name": "Quickness",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 0,
+      "channeled": false,
+      "passive": true,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Dodge chance increased by 1% and movement speed increased by 2%. Night Elf Rogues and Druids are harder to detect in Stealth as if they were 1 level higher.",
+      "icon": "ability_racial_shadowmeld"
+    },
+    "Quickness Passive": {
+      "name": "Quickness Passive",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 0,
+      "channeled": false,
+      "passive": true,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "",
+      "icon": "ability_ambush"
+    },
+    "Rapid Regeneration": {
+      "name": "Rapid Regeneration",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 0,
+      "channeled": true,
+      "passive": false,
+      "cooldown_ms": 180000,
+      "range_yd": 0.0,
+      "description": "Regenerate 50% of your maximum Health over 6 sec. Any movement, action, or damage taken will cancel the effect.",
+      "icon": "ability_racial_regeneratin"
+    },
+    "Read Leyline": {
+      "name": "Read Leyline",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 500,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 120000,
+      "range_yd": 0.0,
+      "description": "Attempt to tap into the power of a nearby leyline, increasing your Health and Mana regeneration by 50% for 15 sec. If a leyline is nearby, you will become Attuned for the next 60 min and the effect of this ability will be increased by 100%.",
+      "icon": "ability_mage_incantersabsorbtion"
+    },
+    "Regeneration": {
+      "name": "Regeneration",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 0,
+      "channeled": false,
+      "passive": true,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Health regeneration rate increased by 20%. In addition, 20% of total Health regeneration will continue during combat.",
+      "icon": "spell_nature_regenerate"
+    },
+    "Ruthless": {
+      "name": "Ruthless",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 0,
+      "channeled": false,
+      "passive": true,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Increases your critical strike chance with all spells and attacks by 1%.",
+      "icon": "ability_rogue_eviscerate"
+    },
+    "Shadowmeld": {
+      "name": "Shadowmeld",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 0,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 10000,
+      "range_yd": 0.0,
+      "description": "Activate to slip into the shadows, reducing the chance for enemies to detect your presence. Lasts until cancelled or upon moving. Using this ability in combat discourages enemies from attacking you, but increases the cooldown to 2 min.",
+      "icon": "ability_ambush"
+    },
+    "Shatter Curse": {
+      "name": "Shatter Curse",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 0,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 180000,
+      "range_yd": 0.0,
+      "description": "Instantly removes all Curses and Banes, and reduces all Magical damage taken by 5% for 8 sec.",
+      "icon": "spell_nature_removecurse"
+    },
+    "Skysight": {
+      "name": "Skysight",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 500,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 120000,
+      "range_yd": 0.0,
+      "description": "Attempt to draw power from a convergence of elements and receive its blessing, increasing your movement and mounted movement speeds by 15% for 30 sec. If an elemental convergence is nearby, you will become Charged for the next 60 min and the effect of this ability will be increased by 100%.",
+      "icon": "ability_skyreach_lens_flare"
+    },
+    "Stoneform": {
+      "name": "Stoneform",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 0,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 180000,
+      "range_yd": 0.0,
+      "description": "Instantly removes and grants immunity to all Bleed, Poison, and Disease effects, and reduces all Physical damage taken by 10% for 8 sec.",
+      "icon": "spell_shadow_unholystrength"
+    },
+    "The Human Spirit": {
+      "name": "The Human Spirit",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 0,
+      "channeled": false,
+      "passive": true,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Spirit increased by 10%.",
+      "icon": "inv_enchant_shardbrilliantsmall"
+    },
+    "Touch of the Grave": {
+      "name": "Touch of the Grave",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 0,
+      "channeled": false,
+      "passive": true,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Your spells and attacks have a 20% chance to drain Health from the target, up to 5% of your maximum Health.",
+      "icon": "spell_shadow_fingerofdeath"
+    },
+    "Underwater Breathing": {
+      "name": "Underwater Breathing",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 0,
+      "channeled": false,
+      "passive": true,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Underwater breath lasts 300% longer than normal.",
+      "icon": "spell_shadow_demonbreath"
+    },
+    "Walk on Air": {
+      "name": "Walk on Air",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 0,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 90000,
+      "range_yd": 0.0,
+      "description": "Glide downward through the air for 10 sec while controlling your direction of travel.",
+      "icon": "inv_elemental_primal_air"
+    },
+    "War Stomp": {
+      "name": "War Stomp",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 500,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 90000,
+      "range_yd": 0.0,
+      "description": "Stuns up to 5 enemies within 8 yds for 2 sec.",
+      "icon": "ability_warstomp"
+    },
+    "Will of the Forsaken": {
+      "name": "Will of the Forsaken",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 0,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 120000,
+      "range_yd": 0.0,
+      "description": "Instantly removes all Charm, Fear and Sleep effects.",
+      "icon": "spell_shadow_raisedead"
+    },
+    "Will to Survive": {
+      "name": "Will to Survive",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 0,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 180000,
+      "range_yd": 0.0,
+      "description": "Instantly removes all Stun effects.",
+      "icon": "spell_shadow_charm"
+    },
+    "Wind Blessed": {
+      "name": "Wind Blessed",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 0,
+      "channeled": false,
+      "passive": true,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Increases your spellcasting, melee, and ranged Haste by 2%.",
+      "icon": "inv_misc_volatileair"
+    },
+    "Wisp Spirit": {
+      "name": "Wisp Spirit",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 0,
+      "channeled": false,
+      "passive": true,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Transform into a wisp upon death, increasing movement speed by 75%.",
+      "icon": "spell_nature_wispsplode"
+    }
+  },
+  "enchants": {
+    "15": {
+      "name": "Armor +8, Stamina +1",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 3000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently increase the Stamina value by 1 and the Armor value by 8 of an item worn on the chest, legs, hands or feet.",
+      "icon": "temp"
+    },
+    "24": {
+      "name": "Enchant Chest - Minor Intellect",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a piece of chest armor so that it increases the Intellect of the wearer by 2.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "30": {
+      "name": "Crude Scope",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 3000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Attaches a permanent scope to a bow or gun that increases its damage by 1.",
+      "icon": "temp"
+    },
+    "32": {
+      "name": "Standard Scope",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 3000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Attaches a permanent scope to a bow or gun that increases its damage by 2.",
+      "icon": "temp"
+    },
+    "33": {
+      "name": "Accurate Scope",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 3000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Attaches a permanent scope to a bow or gun that increases its damage by 3.",
+      "icon": "temp"
+    },
+    "34": {
+      "name": "Weapon Counterweight",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 3000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Attaches a counterweight to a two-handed sword, mace, axe or polearm making it 3% faster.",
+      "icon": "temp"
+    },
+    "36": {
+      "name": "Enchant: Fiery Blaze",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 3000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Enchants a weapon to have a 15% chance to inflict 9 to 13 Fire damage to all enemies within 3 yards.",
+      "icon": "inv_jewelry_talisman_01"
+    },
+    "41": {
+      "name": "Enchant Chest - Inferior Stamina",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a piece of chest armor so that it increases the Stamina of the wearer by 2.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "44": {
+      "name": "Enchant Chest - Minor Absorption",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Enchant a piece of chest armor so it has a 2% chance per hit of giving you 10 points of damage absorption. Cannot occur more often than once every 5 sec.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "63": {
+      "name": "Enchant Chest - Lesser Absorption",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Enchant a piece of chest armor so it has a 5% chance per hit of giving you 25 points of damage absorption. Cannot occur more often than once every 5 sec.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "65": {
+      "name": "Enchant Cloak - Minor Resistance",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a cloak so that it increases the resistance to all schools of magic by 2.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "66": {
+      "name": "Enchant Boots - Minor Stamina",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a pair of boots so they increase the wearer's Stamina by 3.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "241": {
+      "name": "Enchant Weapon - Lesser Striking",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a Melee Weapon to do 2 additional points of damage.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "242": {
+      "name": "Enchant Chest - Lesser Stamina",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a piece of chest armor so that it increases the Stamina of the wearer by 3.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "243": {
+      "name": "Enchant Bracer - Minor Spirit",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant bracers so they increase the wearer's Spirit by 3.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "246": {
+      "name": "Enchant Chest - Lesser Intellect",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a piece of chest armor so that it increases the Intellect of the wearer by 3.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "247": {
+      "name": "Enchant Cloak - Minor Agility",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a cloak to grant +3 Agility.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "248": {
+      "name": "Enchant Bracer - Minor Strength",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant bracers so they increase the wearer's Strength by 3.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "249": {
+      "name": "Enchant Weapon - Minor Beastslayer",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a Melee Weapon to do 2 additional points of damage to Beasts.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "250": {
+      "name": "Enchant Weapon - Minor Striking",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a Melee Weapon to do 1 additional point of damage.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "254": {
+      "name": "Enchant Boots - Lesser Stamina",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant boots to give +4 Stamina.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "256": {
+      "name": "Enchant Cloak - Lesser Fire Resistance",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a cloak so that it increases resistance to fire by 10.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "663": {
+      "name": "Deadly Scope",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 3000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Attaches a permanent scope to a bow or gun that increases its damage by 5.",
+      "icon": "temp"
+    },
+    "664": {
+      "name": "Sniper Scope",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 3000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Attaches a permanent scope to a bow or gun that increases its damage by 7.",
+      "icon": "temp"
+    },
+    "723": {
+      "name": "Enchant 2H Weapon - Lesser Intellect",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a Two-Handed Melee Weapon to add 5 to Intellect.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "744": {
+      "name": "Enchant Cloak - Lesser Protection",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a cloak to increase armor by 20.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "783": {
+      "name": "Enchant Cloak - Minor Protection",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a cloak to increase armor by 10.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "803": {
+      "name": "Enchant Weapon - Fiery Weapon",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a melee weapon to often strike for 40 additional fire damage.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "804": {
+      "name": "Enchant Cloak - Lesser Shadow Resistance",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a cloak so that it increases resistance to shadow by 10.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "805": {
+      "name": "Enchant Weapon - Greater Striking",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a Melee Weapon to do 4 additional points of damage.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "823": {
+      "name": "Enchant Bracer - Lesser Strength",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a bracer so it increases the wearer's Strength by 4.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "843": {
+      "name": "Enchant Chest - Intellect",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a piece of chest armor to increase the Intellect of the wearer by 4.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "844": {
+      "name": "Enchant Gloves - Mining",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant gloves to grant +2 mining skill.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "845": {
+      "name": "Enchant Gloves - Herbalism",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant gloves to grant +2 herbalism skill.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "846": {
+      "name": "Enchant Gloves - Fishing",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant gloves to grant +2 fishing skill.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "847": {
+      "name": "Enchant Chest - Minor Stats",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a piece of chest armor to grant +1 to all stats.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "848": {
+      "name": "Enchant Cloak - Defense",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a cloak to give 30 additional armor.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "849": {
+      "name": "Enchant Cloak - Lesser Agility",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a cloak to give 3 Agility.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "850": {
+      "name": "Enchant Chest - Greater Stamina",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a piece of chest armor to give +6 Stamina.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "851": {
+      "name": "Enchant Boots - Spirit",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant boots to give +5 Spirit.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "852": {
+      "name": "Enchant Boots - Stamina",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant boots to give +5 Stamina.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "853": {
+      "name": "Enchant Weapon - Lesser Beastslayer",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a Melee Weapon to do 6 additional points of damage to Beasts.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "854": {
+      "name": "Enchant Weapon - Lesser Elemental Slayer",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a Melee Weapon to do 6 additional damage against Elementals.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "856": {
+      "name": "Enchant Necklace - Strength",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a necklace to increase Strength by 5.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "857": {
+      "name": "Enchant Chest - Greater Intellect",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a piece of chest armor to give +6 Intellect.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "863": {
+      "name": "Enchant Shield - Lesser Block",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a shield to give +2% chance to block.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "865": {
+      "name": "Enchant Gloves - Skinning",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant gloves to grant +5 skinning skill.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "866": {
+      "name": "Enchant Chest - Lesser Stats",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a piece of chest armor to grant +2 to all stats.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "884": {
+      "name": "Enchant Cloak - Greater Defense",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a cloak to give 60 additional armor.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "903": {
+      "name": "Enchant Cloak - Resistance",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a cloak to give 3 to all resistances.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "904": {
+      "name": "Enchant Necklace - Agility",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a necklace to increase Agility by 5.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "905": {
+      "name": "Enchant Bracer - Intellect",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant bracers to give +5 Intellect.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "906": {
+      "name": "Enchant Gloves - Advanced Mining",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant gloves to grant +5 mining skill.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "907": {
+      "name": "Enchant Bracer - Greater Spirit",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant bracers to give +7 Spirit.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "908": {
+      "name": "Enchant Chest - Superior Stamina",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a piece of chest armor to grant +8 Stamina.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "909": {
+      "name": "Enchant Gloves - Advanced Herbalism",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant gloves to grant +5 herbalism skill.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "910": {
+      "name": "Enchant Cloak - Stealth",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a cloak to give an increase to your stealth as if you were 1 level higher.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "911": {
+      "name": "Enchant Boots - Minor Speed",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant boots to increase movement speed by 4%.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "912": {
+      "name": "Enchant Weapon - Demonslaying",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a melee weapon to have a chance of stunning and doing heavy damage to demons.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "913": {
+      "name": "Enchant Chest - Superior Intellect",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a piece of chest armor to give +8 Intellect.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "923": {
+      "name": "Enchant Bracer - Deflection",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant bracers to give +7 Defense.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "924": {
+      "name": "Enchant Bracer - Minor Deflect",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant bracers so that the defense skill of the wearer is increased by 3.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "925": {
+      "name": "Enchant Bracer - Lesser Deflection",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant bracers to give +5 Defense.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "926": {
+      "name": "Enchant Shield - Frost Resistance",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a shield to give +8 Frost Resistance.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "927": {
+      "name": "Enchant Bracer - Greater Strength",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant bracers to give +7 Strength.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "928": {
+      "name": "Enchant Chest - Stats",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a piece of chest armor to grant +3 to all stats.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "929": {
+      "name": "Enchant Boots - Greater Stamina",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant boots to give +7 Stamina.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "930": {
+      "name": "Enchant Gloves - Riding Skill",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant gloves to grant a minor movement bonus while mounted.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "931": {
+      "name": "Enchant Gloves - Minor Haste",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant gloves to grant a +1% attack and casting speed bonus.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "943": {
+      "name": "Enchant Weapon - Striking",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a Melee Weapon to do 3 additional points of damage.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "963": {
+      "name": "Enchant 2H Weapon - Greater Impact",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a two-handed melee weapon to do +7 damage.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "1483": {
+      "name": "Lesser Arcane Amalgamation",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 4000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently adds 150 mana to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
+      "icon": "temp"
+    },
+    "1503": {
+      "name": "Lesser Arcane Amalgamation",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 4000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently adds 100 hit points to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
+      "icon": "temp"
+    },
+    "1504": {
+      "name": "Lesser Arcane Amalgamation",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 4000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently adds 125 armor to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
+      "icon": "temp"
+    },
+    "1505": {
+      "name": "Lesser Arcane Amalgamation",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 4000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently adds 20 fire resistance to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
+      "icon": "temp"
+    },
+    "1506": {
+      "name": "Lesser Arcane Amalgamation",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 4000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently adds 8 strength to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
+      "icon": "temp"
+    },
+    "1507": {
+      "name": "Lesser Arcane Amalgamation",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 4000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently adds 8 stamina to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
+      "icon": "temp"
+    },
+    "1508": {
+      "name": "Lesser Arcane Amalgamation",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 4000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently adds 8 agility to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
+      "icon": "temp"
+    },
+    "1509": {
+      "name": "Lesser Arcane Amalgamation",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 4000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently adds 8 intellect to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
+      "icon": "temp"
+    },
+    "1510": {
+      "name": "Lesser Arcane Amalgamation",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 4000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently adds 8 spirit to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
+      "icon": "temp"
+    },
+    "1883": {
+      "name": "Enchant Bracer - Greater Intellect",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant bracers to give +7 Intellect.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "1884": {
+      "name": "Enchant Bracer - Superior Spirit",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant bracers to give +9 Spirit.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "1885": {
+      "name": "Enchant Bracer - Superior Strength",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant bracers to give +9 Strength.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "1886": {
+      "name": "Enchant Shield - Greater Stamina",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a shield to give +9 Stamina.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "1887": {
+      "name": "Enchant Boots - Greater Agility",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant boots to give +7 Agility.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "1888": {
+      "name": "Enchant Cloak - Greater Resistance",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a cloak to give 5 to all resistances.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "1889": {
+      "name": "Enchant Cloak - Superior Defense",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a cloak to give 70 additional armor.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "1890": {
+      "name": "Enchant Shield - Superior Spirit",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a shield to give +9 Spirit.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "1891": {
+      "name": "Enchant Chest - Greater Stats",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a piece of chest armor to grant +4 to all stats.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "1892": {
+      "name": "Enchant Chest - Major Stamina",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a piece of chest armor to grant +10 Stamina.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "1893": {
+      "name": "Enchant Chest - Major Intellect",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a piece of chest armor to give +10 Intellect.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "1894": {
+      "name": "Enchant Weapon - Icy Chill",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a melee weapon to often chill the target reducing their movement and attack speed.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "1896": {
+      "name": "Enchant 2H Weapon - Superior Impact",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a two-handed melee weapon to do +9 damage.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "1897": {
+      "name": "Enchant Weapon - Superior Striking",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a Melee Weapon to do 5 additional points of damage.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "1898": {
+      "name": "Enchant Weapon - Lifestealing",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a melee weapon to often steal life from the enemy and give it to the wielder.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "1899": {
+      "name": "Enchant Weapon - Unholy Weapon",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a melee weapon to often inflict a curse on the target reducing their melee damage.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "1900": {
+      "name": "Enchant Weapon - Crusader",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a melee weapon so that often when attacking in melee it heals for 75 to 125 and increases Strength by 100 for 15 sec.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "1901": {
+      "name": "Enchant Bracer - Superior Intellect",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant bracers to give +9 Intellect.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "1903": {
+      "name": "Enchant 2H Weapon - Major Spirit",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a Two-Handed Melee Weapon to add 9 to Spirit.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "1904": {
+      "name": "Enchant 2H Weapon - Major Intellect",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a Two-Handed Melee Weapon to add 9 to intellect.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "2443": {
+      "name": "Enchant Weapon - Winter's Might",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a weapon to grant up to 15 additional frost damage when casting frost spells.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "2463": {
+      "name": "Enchant Cloak - Fire Resistance",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a cloak to give 12 Fire Resistance.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "2503": {
+      "name": "Core Armor Kit",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 3000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently increase the defense value of an item worn on the chest, legs, hands or feet by 3. Only usable on items level 45 and above.",
+      "icon": "temp"
+    },
+    "2504": {
+      "name": "Enchant Weapon - Spell Power",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a Melee Weapon to add up to 30 damage to spells.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "2505": {
+      "name": "Enchant Weapon - Healing Power",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a Melee Weapon to add up to 55 points of healing to healing spells and up to 19 points of damage to damage spells.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "2523": {
+      "name": "Biznicks 247x128 Accurascope",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 3000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Attaches a permanent scope to a bow or gun that increases its chance to hit by 3%.",
+      "icon": "temp"
+    },
+    "2543": {
+      "name": "Arcanum of Rapidity",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 4000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently adds 1% haste to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
+      "icon": "temp"
+    },
+    "2544": {
+      "name": "Arcanum of Focus",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 4000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently adds +8 to your Healing and Damage from spells to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
+      "icon": "temp"
+    },
+    "2545": {
+      "name": "Arcanum of Protection",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 4000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently adds 1% dodge to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
+      "icon": "temp"
+    },
+    "2563": {
+      "name": "Enchant Gloves - Superior Strength",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant gloves to increase Strength by 15.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "2564": {
+      "name": "Enchant Gloves - Superior Agility",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant gloves to increase agility by 15.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "2565": {
+      "name": "Enchant Bracer - Mana Regeneration",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant bracers to restore 4 mana every 5 seconds.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "2566": {
+      "name": "Enchant Bracer - Healing Power",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant bracers to increase the effects of your healing spells by up to 24 and the effects of your damage spells by up to 8.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "2567": {
+      "name": "Enchant Weapon - Mighty Spirit",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a melee weapon to grant +22 Spirit.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "2568": {
+      "name": "Enchant Weapon - Mighty Intellect",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a melee weapon to grant +22 Intellect.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "2583": {
+      "name": "Presence of Might",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 4000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently adds 10 Stamina, 7 Defense, and 15 Shield Block value to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
+      "icon": "temp"
+    },
+    "2584": {
+      "name": "Syncretist's Sigil",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 4000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently adds 10 Stamina, 7 Defense, and increases healing by up to 24 to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
+      "icon": "temp"
+    },
+    "2585": {
+      "name": "Death's Embrace",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 4000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently adds 28 Attack Power and 1% Dodge to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
+      "icon": "temp"
+    },
+    "2586": {
+      "name": "Falcon's Call",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 4000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently adds 24 Ranged Attack Power, 10 Stamina, and 1% Chance to Hit to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
+      "icon": "temp"
+    },
+    "2587": {
+      "name": "Vodouisant's Vigilant Embrace",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 4000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently adds 15 Intellect and increases all healing and spell damage by up to 13 to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
+      "icon": "temp"
+    },
+    "2588": {
+      "name": "Presence of Sight",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 4000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently adds 18 to all healing and damage spells and 1% chance to hit with spells to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
+      "icon": "temp"
+    },
+    "2589": {
+      "name": "Hoodoo Hex",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 4000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently adds 10 Stamina and increases spell damage and healing by up to 18 to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
+      "icon": "temp"
+    },
+    "2590": {
+      "name": "Prophetic Aura",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 4000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently adds 10 Stamina, 4 mana per 5 sec., and increases healing by up to 24 to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
+      "icon": "temp"
+    },
+    "2591": {
+      "name": "Animist's Caress",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 4000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently adds 10 Stamina, 10 Intellect, and increases healing by up to 24 to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
+      "icon": "temp"
+    },
+    "2604": {
+      "name": "Zandalar Signet of Serenity",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently adds to a shoulder slot item increased healing done by spells and effects up to 33.",
+      "icon": "temp"
+    },
+    "2605": {
+      "name": "Zandalar Signet of Mojo",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently adds to a shoulder slot item increased damage and healing done by magical spells and effects up to 18.",
+      "icon": "temp"
+    },
+    "2606": {
+      "name": "Zandalar Signet of Might",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently adds 30 attack power to a shoulder slot item.",
+      "icon": "temp"
+    },
+    "2613": {
+      "name": "Enchant Gloves - Threat",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant gloves to increase threat from all attacks and spells by 2%.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "2614": {
+      "name": "Enchant Gloves - Shadow Power",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant gloves to increase shadow damage by up to 20.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "2615": {
+      "name": "Enchant Gloves - Frost Power",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant gloves to increase frost damage by up to 20.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "2616": {
+      "name": "Enchant Gloves - Fire Power",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant gloves to increase fire damage by up to 20.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "2617": {
+      "name": "Enchant Gloves - Healing Power",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant gloves to increase the caster's healing spells by up to 35 and damage spells by up to 12.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "2619": {
+      "name": "Enchant Cloak - Greater Fire Resistance",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a cloak to give 15 fire resistance.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "2620": {
+      "name": "Enchant Cloak - Greater Nature Resistance",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a cloak to give 15 nature resistance.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "2621": {
+      "name": "Enchant Cloak - Subtlety",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a cloak to decrease threat caused by the wearer by 2%.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "2622": {
+      "name": "Enchant Cloak - Dodge",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a cloak to give a 1% chance to dodge.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "2646": {
+      "name": "Enchant 2H Weapon - Agility",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a two-handed melee weapon to grant +25 Agility.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "2681": {
+      "name": "Savage Guard",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 4000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently adds 10 nature resistance to a leg or head slot item. Does not stack with other enchantments for the selected equipment slot.",
+      "icon": "temp"
+    },
+    "2715": {
+      "name": "Resilience of the Scourge",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently adds to a shoulder slot item increased healing done by magical spells and effects up to 31 and also increases your mana regen by 5 mana per 5 sec.",
+      "icon": "temp"
+    },
+    "2716": {
+      "name": "Fortitude of the Scourge",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently adds to a shoulder slot item increased Stamina by 16 and also grants 100 armor.",
+      "icon": "temp"
+    },
+    "2717": {
+      "name": "Might of the Scourge",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently adds to a shoulder slot item increased Attack Power by 26 and also increases your chance to land a critical strike by 1%.",
+      "icon": "temp"
+    },
+    "2721": {
+      "name": "Power of the Scourge",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently adds to a shoulder slot item increased damage and healing done by magical spells and effects up to 15 and also increases your chance to land a critical strike with spells by 1%.",
+      "icon": "temp"
+    },
+    "7210": {
+      "name": "Enchant Weapon - Dismantle",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a Weapon to cause all spells and attacks to sometimes deal 60 to 90 additional damage to mechanical creatures.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "7223": {
+      "name": "Enchant Chest - Retricutioner",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Teaches you how to permanently enchant a piece of chest armor to reflect 9 damage back to the attacker when the bearer is struck in Melee.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "7603": {
+      "name": "Enchant Shield - Law of Nature",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a Shield to add up to 30 damage to spells and up to 55 points of healing to healing spells.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "7646": {
+      "name": "Enchant Gloves - Holy Power",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant gloves to increase holy damage by up to 20.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "7647": {
+      "name": "Enchant Gloves - Arcane Power",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant gloves to increase arcane damage by up to 20.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "7662": {
+      "name": "Enchant 2H Weapon - Spellblasting",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a 2H Weapon to add 65 Spell Power.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "7665": {
+      "name": "Enchant Bracer - Greater Spellpower",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant Bracers to add 16 to spell power.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "7667": {
+      "name": "Enchant Cloak - Agility",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a Cloak to add 5 to agility.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "8203": {
+      "name": "Enchant Boots - Lesser Spirit",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant boots to give +4 Spirit.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "8204": {
+      "name": "Enchant Boots - Lesser Agility",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant boots to give +4 Agility.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "8205": {
+      "name": "Enchant 2H Weapon - Impact",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a Two-handed Melee Weapon to do 6 additional points of damage.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "8206": {
+      "name": "Enchant Gloves - Greater Agility",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant gloves to grant +10 Agility.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "8207": {
+      "name": "Enchant Gloves - Greater Strength",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant gloves to grant +10 Strength.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "8211": {
+      "name": "Enchant 2H Weapon - Mighty Spell Power",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a two-handed melee weapon to increase damage and healing by up to 55.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "8212": {
+      "name": "Enchant 2H Weapon - Mighty Healing Power",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a two-handed melee weapon to increase healing by up to 100 and damage by up to 34.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "8213": {
+      "name": "Enchant Gloves - Natural Power",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant gloves to increase Nature damage by up to 20.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "8218": {
+      "name": "Enchant Necklace - Spell Power",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a necklace to increase spell damage and healing by up to 6.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "8219": {
+      "name": "Enchant Necklace - Healing Power",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a necklace to increase healing by up to 11 and spell damage by up to 4.",
+      "icon": "spell_holy_greaterheal"
+    },
+    "8481": {
+      "name": "Armor +16, Stamina +2",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 3000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently increase the Stamina value by 2 and the armor value by 16 of an item worn on the chest, legs, hands or feet.",
+      "icon": "temp"
+    },
+    "8484": {
+      "name": "Heavy Armor Kit",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 3000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently increase the Stamina value by 3 and armor value by 24 of an item worn on the chest, legs, hands or feet. Only usable on items level 15 and above.",
+      "icon": "temp"
+    },
+    "8487": {
+      "name": "Thick Armor Kit",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 3000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently increase the Stamina value by 4 and armor value by 32 of an item worn on the chest, legs, hands or feet. Only usable on items level 25 and above.",
+      "icon": "temp"
+    },
+    "8490": {
+      "name": "Rugged Armor Kit",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 3000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently increase the Stamina value by 5 and armor value by 40 of an item worn on the chest, legs, hands or feet. Only usable on items level 35 and above.",
+      "icon": "temp"
+    },
+    "8492": {
+      "name": "Mystic Rugged Armor Kit",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 3000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently increase the Spell Power value by 6 and armor value by 40 of an item worn on the chest, legs, hands, or feet. Only usable on items level 35 and above.",
+      "icon": "temp"
+    },
+    "8734": {
+      "name": "Enchant Bracer - Lesser Intellect",
+      "rank": 0,
+      "cost": 0,
+      "cost_type": 0,
+      "cost_pct": 0.0,
+      "cast_time_ms": 5000,
+      "channeled": false,
+      "passive": false,
+      "cooldown_ms": 0,
+      "range_yd": 0.0,
+      "description": "Permanently enchant a bracer so it increases the wearer's Intellect by 3.",
+      "icon": "spell_holy_greaterheal"
+    }
+  },
+  "consumables": {
+    "alcohol_gordok_green_grog": {
+      "item_id": 18269,
+      "spell_id": 22789,
+      "use": "Increases Stamina by 10 for 15 min and gets you drunk to boot.  Green means it's good!"
+    },
+    "alcohol_kreegs_stout_beatdown": {
+      "item_id": 18284,
+      "spell_id": 22790,
+      "use": "Increases Spirit by 25, but decreases Intelligence by 5 for 15 min.  Smoooooth."
+    },
+    "alcohol_rumsey_rum_black_label": {
+      "item_id": 21151,
+      "spell_id": 25804,
+      "use": "Increases Stamina by 15 for 15 min and gets you drunk to boot!"
+    },
+    "alcohol_rumsey_rum_light": {
+      "item_id": 20709,
+      "spell_id": 25037,
+      "use": "Increases Stamina by 5 for 15 min and gets you drunk to boot!"
+    },
+    "arcane_elixir": {
+      "item_id": 9155,
+      "spell_id": 11390,
+      "use": "Increases spell damage by up to 20 for 30 min."
+    },
+    "bogling_root": {
+      "item_id": 5206,
+      "spell_id": 5665,
+      "use": "Increases physical damage by 1 for 10 min."
+    },
+    "cerebral_cortex_compound": {
+      "item_id": 8423,
+      "spell_id": 10692,
+      "use": "Increases Intellect by 25 when consumed. Effect lasts for 60 minutes."
+    },
+    "clerics_elixir": {
+      "item_id": 250332,
+      "spell_id": 1250925,
+      "use": "Drink to increase healing done by spells and effects by up to 30. Lasts 30 min."
+    },
+    "conjured_demonic_rune": {
+      "item_id": 12662,
+      "spell_id": 16666,
+      "use": "Restores 900 to 1500 mana at the cost of 600 to 1000 life."
+    },
+    "conjured_minor_recombobulator": {
+      "item_id": 4381,
+      "spell_id": 18805,
+      "use": "Dispels Polymorph effects on a friendly target.  Also restores 203 to 338 Health and 96 to 160 Mana."
+    },
+    "conjured_rogue_thistle_tea": {
+      "item_id": 7676,
+      "spell_id": 9512,
+      "use": "Instantly restores 100 energy."
+    },
+    "crystal_yield": {
+      "item_id": 11565,
+      "spell_id": 15235,
+      "use": "Decreases an enemy target's Armor by 200 for 2 min."
+    },
+    "dark_desire": {
+      "item_id": 22237,
+      "spell_id": 27723,
+      "use": "Improves your chance to hit with attacks by 2% for 60 min."
+    },
+    "darnassus_gift_collection": {
+      "item_id": 22133,
+      "spell_id": 27667,
+      "use": "Combines a Darnassus Gift Collection, Ironforge Gift Collection and Stormwind Gift Collection into an Alliance Gift Collection."
+    },
+    "dragon_breath_chili": {
+      "item_id": 12217,
+      "spell_id": 15852,
+      "use": "Occasionally belch flame at enemies struck in melee for the next 10 min."
+    },
+    "elixir_of_agility": {
+      "item_id": 8949,
+      "spell_id": 11328,
+      "use": "Increases Agility by 15 for 60 min."
+    },
+    "elixir_of_defense": {
+      "item_id": 8951,
+      "spell_id": 11349,
+      "use": "Increases armor by 250 for 60 min."
+    },
+    "elixir_of_firepower": {
+      "item_id": 6373,
+      "spell_id": 7844,
+      "use": "Increases spell fire damage by up to 10 for 30 min."
+    },
+    "elixir_of_fortitude": {
+      "item_id": 250334,
+      "spell_id": 1250928,
+      "use": "Drink to increase your maximum health by 200. Lasts for 30 min."
+    },
+    "elixir_of_frost_power": {
+      "item_id": 17708,
+      "spell_id": 21920,
+      "use": "Increases spell frost damage by up to 15 for 30 min."
+    },
+    "elixir_of_greater_agility": {
+      "item_id": 9187,
+      "spell_id": 11334,
+      "use": "Increases Agility by 25 for 60 min."
+    },
+    "elixir_of_greater_defense": {
+      "item_id": 13445,
+      "spell_id": 11348,
+      "use": "Increases armor by 450 for 60 min."
+    },
+    "elixir_of_holy_power": {
+      "item_id": 21546,
+      "spell_id": 1310077,
+      "use": "Increases spell Holy damage by up to 40 for 30 min."
+    },
+    "elixir_of_lesser_agility": {
+      "item_id": 3390,
+      "spell_id": 3160,
+      "use": "Increases Agility by 8 for 60 min."
+    },
+    "elixir_of_minor_defense": {
+      "item_id": 5997,
+      "spell_id": 673,
+      "use": "Increases armor by 50 for 60 min."
+    },
+    "elixir_of_minor_fortitude": {
+      "item_id": 2458,
+      "spell_id": 2378,
+      "use": "Increases the player's maximum health by 27 for 60 min."
+    },
+    "elixir_of_ogres_strength": {
+      "item_id": 3391,
+      "spell_id": 3164,
+      "use": "Increases Strength by 8 for 60 min."
+    },
+    "elixir_of_sages": {
+      "item_id": 250338,
+      "spell_id": 1250941,
+      "use": "Drink to increase your Spirit by 25 and chance to critically hit by 2%. Lasts for 30 min."
+    },
+    "elixir_of_shadow_power": {
+      "item_id": 9264,
+      "spell_id": 11474,
+      "use": "Increases spell shadow damage by up to 40 for 30 min."
+    },
+    "elixir_of_the_mongoose": {
+      "item_id": 13452,
+      "spell_id": 17538,
+      "use": "Increases Agility by 25 and chance to get a critical hit by 2%. Lasts for 30 min."
+    },
+    "explosive_dense_dynamite": {
+      "item_id": 18641,
+      "spell_id": 23063,
+      "use": "Inflicts 340 to 460 Fire damage in a 5 yard radius."
+    },
+    "explosive_goblin_land_mine": {
+      "item_id": 4395,
+      "spell_id": 4100,
+      "use": "Places the Goblin Land Mine on the ground. It will explode for 394 to 506 Fire damage the next time a hostile creature passes near it. The mine has a duration of 1 min."
+    },
+    "explosive_solid_dynamite": {
+      "item_id": 10507,
+      "spell_id": 12419,
+      "use": "Inflicts 213 to 287 Fire damage in a 5 yard radius."
+    },
+    "explosive_thorium_grenade": {
+      "item_id": 15993,
+      "spell_id": 19769,
+      "use": "Inflicts 300 to 500 Fire damage and stuns targets for 3 sec in a 3 yard radius. Any damage will break the effect."
+    },
+    "fire_toasted_bun": {
+      "item_id": 23327,
+      "spell_id": 29332,
+      "use": "Improves your chance to hit with attacks by 2% for 60 min."
+    },
+    "flask_of_chromatic_resistance": {
+      "item_id": 13513,
+      "spell_id": 17629,
+      "use": "Increases your resistance to all schools of magic by 25 for 120 min. You can only have the effect of one flask at a time. This effect persists through death and stacks with all other resistance spells and items."
+    },
+    "flask_of_distilled_wisdom": {
+      "item_id": 13511,
+      "spell_id": 17627,
+      "use": "Increases the player's maximum Mana by 2000 for 120 min. You can only have the effect of one flask at a time. This effect persists through death."
+    },
+    "flask_of_natural_accuracy": {
+      "item_id": 274273,
+      "spell_id": 1293740,
+      "use": "Increases your Stamina by 30. While in Mount Hyjal, Hyjal Summit, and the Barrow Deeps, you also gain 2% Hit Chance.\r\n\r\nLasts for 120 min. You can only have the effect of one flask at a time. This effect persists through death."
+    },
+    "flask_of_natural_aggression": {
+      "item_id": 274274,
+      "spell_id": 1293741,
+      "use": "Increases your Stamina by 30. While in Mount Hyjal, Hyjal Summit, and the Barrow Deeps, you also gain 2% Critical Strike Chance.\r\n\r\nLasts for 120 min. You can only have the effect of one flask at a time. This effect persists through death."
+    },
+    "flask_of_natural_precision": {
+      "item_id": 274275,
+      "spell_id": 1293742,
+      "use": "Increases your Stamina by 30. While in Mount Hyjal, Hyjal Summit, and the Barrow Deeps, you also gain 2% reduced chance to be dodged or parried.\r\n\r\nLasts for 120 min. You can only have the effect of one flask at a time. This effect persists through death."
+    },
+    "flask_of_natural_swiftness": {
+      "item_id": 274276,
+      "spell_id": 1293743,
+      "use": "Increases your Stamina by 30. While in Mount Hyjal, Hyjal Summit, and the Barrow Deeps, you also gain 2% Haste.\r\n\r\nLasts for 120 min. You can only have the effect of one flask at a time. This effect persists through death."
+    },
+    "flask_of_supreme_power": {
+      "item_id": 13512,
+      "spell_id": 17628,
+      "use": "Increases damage done by magical spells and effects by up to 150 for 120 min. You can only have the effect of one flask at a time. This effect persists through death."
+    },
+    "flask_of_the_titans": {
+      "item_id": 13510,
+      "spell_id": 17626,
+      "use": "Increases the player's maximum health by 1200 for 120 min. You can only have the effect of one flask at a time. This effect persists through death."
+    },
+    "food_baked_salmon": {
+      "item_id": 13935,
+      "spell_id": 1249516,
+      "use": "Restores 2065 health over 30 sec.  Must remain seated while eating. If you spend at least 10 sec eating, you will become well fed and gain 28 Spell Damage for 15 min."
+    },
+    "food_bless_sunfruit": {
+      "item_id": 13810,
+      "spell_id": 18124,
+      "use": "Restores 1859 health over 27 sec.  Must remain seated while eating. Also increases your Strength by 10 for 10 min."
+    },
+    "food_blessed_sunfruit_juice": {
+      "item_id": 13813,
+      "spell_id": 18140,
+      "use": "Restores 4240 mana over 30 sec.  Must remain seated while drinking. Also increases your Spirit by 10 for 10 min."
+    },
+    "food_dirges_kick_chimaerok_chops": {
+      "item_id": 21023,
+      "spell_id": 25660,
+      "use": "Restores 2452 health over 30 sec.  Must remain seated while eating.  If you spend at least 10 seconds eating you will become well fed and gain 25 Stamina for 15 min."
+    },
+    "food_hot_wolf_ribs": {
+      "item_id": 13851,
+      "spell_id": 1248391,
+      "use": "Restores 841 health over 27 sec.  Must remain seated while eating. If you spend at least 10 sec eating, you will become well fed and gain 10 Agility for 15 min."
+    },
+    "food_nightfin_soup": {
+      "item_id": 13931,
+      "spell_id": 1249513,
+      "use": "Restores 1338 health over 30 sec.  Must remain seated while eating. If you spend at least 10 sec eating, you will become well fed and gain 22 Spell Damage for 15 min."
+    },
+    "food_poached_sunscale_salmon": {
+      "item_id": 13932,
+      "spell_id": 1249515,
+      "use": "Restores 2065 health over 30 sec.  Must remain seated while eating. If you spend at least 10 sec eating, you will become well fed and gain 40 Attack Power for 15 min."
+    },
+    "food_runn_tum_tuber_surprise": {
+      "item_id": 18254,
+      "spell_id": 1248396,
+      "use": "Restores 1338 health over 30 sec.  Must remain seated while eating. If you spend at least 10 sec eating, you will become well fed and gain 15 Intellect for 15 min."
+    },
+    "food_sagefish_delight": {
+      "item_id": 21217,
+      "spell_id": 1249507,
+      "use": "Restores 531 health over 24 sec.  Must remain seated while eating. If you spend at least 10 sec eating, you will become well fed and gain 7 Spell Damage for 15 min."
+    },
+    "food_sages_tea": {
+      "item_id": 249870,
+      "spell_id": 1249925,
+      "use": "Restores 2821 mana over 30 sec.  Must remain seated while drinking. If you spend at least 10 sec eating, you will become well fed and gain 44 Healing Power for 15 min."
+    },
+    "food_smoked_desert_dumpling": {
+      "item_id": 20452,
+      "spell_id": 1248401,
+      "use": "Restores 2065 health over 30 sec.  Must remain seated while eating. If you spend at least 10 sec eating, you will become well fed and gain 20 Strength for 15 min."
+    },
+    "food_smoked_sagefish": {
+      "item_id": 21072,
+      "spell_id": 1249504,
+      "use": "Restores 234 health over 21 sec.  Must remain seated while eating. If you spend at least 10 sec eating, you will become well fed and gain 4 Spell Damage for 15 min."
+    },
+    "frenzy_potion": {
+      "item_id": 250940,
+      "spell_id": 1251936,
+      "use": "Increases Attack Power by 28 for 30 sec."
+    },
+    "gift_of_arthas": {
+      "item_id": 9088,
+      "spell_id": 11371,
+      "use": "Increases resistance to shadow by 10.  If an enemy strikes the imbiber, the attacker has a 30% chance of being inflicted with disease that increases their damage taken by 8 for 3 min.  Lasts for 30 min."
+    },
+    "gizzard_gum": {
+      "item_id": 8424,
+      "spell_id": 10693,
+      "use": "Increases Spirit by 25 when consumed. Effect lasts for 60 minutes."
+    },
+    "great_rage_potion": {
+      "item_id": 5633,
+      "spell_id": 6613,
+      "use": "Increases Rage by 30 to 60."
+    },
+    "greater_arcane_elixir": {
+      "item_id": 13454,
+      "spell_id": 17539,
+      "use": "Increases spell damage by up to 35 for 60 min."
+    },
+    "greater_arcane_protection_potion": {
+      "item_id": 13461,
+      "spell_id": 17549,
+      "use": "Absorbs 1950 to 3250 arcane damage.  Lasts 2 min."
+    },
+    "greater_clerics_elixir": {
+      "item_id": 250333,
+      "spell_id": 1250926,
+      "use": "Drink to increase healing done by spells and effects by up to 40. Lasts 30 min."
+    },
+    "greater_fire_protection_potion": {
+      "item_id": 13457,
+      "spell_id": 17543,
+      "use": "Absorbs 1950 to 3250 fire damage.  Lasts 2 min."
+    },
+    "greater_frost_protection_potion": {
+      "item_id": 13456,
+      "spell_id": 17544,
+      "use": "Absorbs 1950 to 3250 frost damage.  Lasts 2 min."
+    },
+    "greater_holy_protection_potion": {
+      "item_id": 13460,
+      "spell_id": 17545,
+      "use": "Absorbs 1950 to 3250 holy damage.  Lasts 2 min."
+    },
+    "greater_mageblood_elixir": {
+      "item_id": 250341,
+      "spell_id": 1250948,
+      "use": "Drink to regenerate 20 mana every 5 sec. Lasts for 30 min."
+    },
+    "greater_mana_potion": {
+      "item_id": 6149,
+      "spell_id": 11903,
+      "use": "Restores 700 to 900 mana."
+    },
+    "greater_nature_protection_potion": {
+      "item_id": 13458,
+      "spell_id": 17546,
+      "use": "Absorbs 1950 to 3250 nature damage.  Lasts 2 min."
+    },
+    "greater_shadow_protection_potion": {
+      "item_id": 13459,
+      "spell_id": 17548,
+      "use": "Absorbs 1950 to 3250 shadow damage.  Lasts 2 min."
+    },
+    "greater_stoneshield_potion": {
+      "item_id": 13455,
+      "spell_id": 17540,
+      "use": "Increases armor by 2000 for 2 min."
+    },
+    "ground_scorpok_assay": {
+      "item_id": 8412,
+      "spell_id": 10669,
+      "use": "Increases Agility by 25 when consumed. Effect lasts for 60 minutes."
+    },
+    "healing_potion": {
+      "item_id": 929,
+      "spell_id": 441,
+      "use": "Restores 280 to 360 health."
+    },
+    "juju_might": {
+      "item_id": 12460,
+      "spell_id": 16329,
+      "use": "Increases attack power by 40 for 10 min."
+    },
+    "juju_power": {
+      "item_id": 12451,
+      "spell_id": 16323,
+      "use": "Increases the target's Strength by 30 for 30 min."
+    },
+    "lesser_stoneshield_potion": {
+      "item_id": 4623,
+      "spell_id": 4941,
+      "use": "Increases armor by 1000 for 90 sec."
+    },
+    "lung_juice_cocktail": {
+      "item_id": 8411,
+      "spell_id": 10668,
+      "use": "Increases Stamina by 25 when consumed. Effect lasts for 60 minutes."
+    },
+    "magic_resistance_potion": {
+      "item_id": 9036,
+      "spell_id": 11364,
+      "use": "Increases your resistance to all schools of magic by 50 for 3 min."
+    },
+    "main_hand_imbue:blessed_wizard_oil": {
+      "item_id": 23123,
+      "spell_id": 28898,
+      "use": "While applied to target weapon it increases spell damage against undead by up to 60. Lasts for 1 hour."
+    },
+    "main_hand_imbue:brilliant_mana_oil": {
+      "item_id": 20748,
+      "spell_id": 25123,
+      "use": "While applied to target weapon it restores 15 mana to the caster every 5 seconds and increases the effect of healing spells by up to 30. Lasts for 30 minutes."
+    },
+    "main_hand_imbue:brilliant_wizard_oil": {
+      "item_id": 20749,
+      "spell_id": 25122,
+      "use": "While applied to target weapon it increases spell damage and healing by up to 36 and increases Spell Critical chance by 1%. Lasts for 30 minutes."
+    },
+    "main_hand_imbue:consecrated_sharpening_stone": {
+      "item_id": 23122,
+      "spell_id": 28891,
+      "use": "While applied to target weapon it increases attack power against undead by 100. Lasts for 1 hour."
+    },
+    "main_hand_imbue:deadly_poison": {
+      "item_id": 2892,
+      "spell_id": 2823,
+      "use": "Coats a weapon with poison that lasts for 30 minutes.\r\nEach strike has a 30% chance of poisoning the enemy for 24 Nature damage over 12 sec.  Stacks up to 5 times on a single target.  90 charges."
+    },
+    "main_hand_imbue:dense_sharpening_stone": {
+      "item_id": 12404,
+      "spell_id": 16138,
+      "use": "Increase sharp weapon damage by 8 for 30 minutes."
+    },
+    "main_hand_imbue:dense_weightstone": {
+      "item_id": 12643,
+      "spell_id": 16622,
+      "use": "Increase the damage of a blunt weapon by 8 for 30 minutes."
+    },
+    "main_hand_imbue:frost_oil": {
+      "item_id": 3829,
+      "spell_id": 3595,
+      "use": "When applied to a melee weapon it gives a 10% chance of casting Frostbolt at the opponent when it hits.  Lasts 30 minutes."
+    },
+    "main_hand_imbue:instant_poison": {
+      "item_id": 6947,
+      "spell_id": 8679,
+      "use": "Coats a weapon with poison that lasts for 30 minutes.\r\nEach strike has a 20% chance of poisoning the enemy which instantly inflicts 13 to 17 Nature damage.  60 charges."
+    },
+    "main_hand_imbue:lesser_mana_oil": {
+      "item_id": 20747,
+      "spell_id": 25120,
+      "use": "While applied to target weapon it restores 10 mana to the caster every 5 seconds and increases healing by up to 20. Lasts for 30 minutes."
+    },
+    "main_hand_imbue:minor_mana_oil": {
+      "item_id": 20745,
+      "spell_id": 25118,
+      "use": "While applied to target weapon it restores 5 mana to the caster every 5 seconds and increases healing done by up to 10. Lasts for 30 minutes."
+    },
+    "main_hand_imbue:minor_wizard_oil": {
+      "item_id": 20744,
+      "spell_id": 25117,
+      "use": "While applied to target weapon it increases spell damage and healing by up to 8. Lasts for 30 minutes."
+    },
+    "main_hand_imbue:shadow_oil": {
+      "item_id": 3824,
+      "spell_id": 3594,
+      "use": "When applied to a melee weapon it gives a 15% chance of casting Shadowbolt III at the opponent when it hits.  Lasts 30 minutes."
+    },
+    "main_hand_imbue:solid_sharpening_stone": {
+      "item_id": 7964,
+      "spell_id": 9900,
+      "use": "Increase sharp weapon damage by 6 for 30 minutes."
+    },
+    "main_hand_imbue:solid_weightstone": {
+      "item_id": 7965,
+      "spell_id": 9903,
+      "use": "Increase the damage of a blunt weapon by 6 for 30 minutes."
+    },
+    "main_hand_imbue:wizard_oil": {
+      "item_id": 20750,
+      "spell_id": 25121,
+      "use": "While applied to target weapon it increases spell damage and healing by up to 24. Lasts for 30 minutes."
+    },
+    "main_hand_imbue:wound_poison": {
+      "item_id": 10918,
+      "spell_id": 13219,
+      "use": "Coats a weapon with poison that lasts for 30 minutes.\r\nEach strike has a 30% chance of poisoning the enemy, reducing all healing effects used on them by 67 for 15 sec.  Stacks up to 5 times on a single target.  90 charges."
+    },
+    "main_hand_stone:blessed_wizard_oil": {
+      "item_id": 23123,
+      "spell_id": 28898,
+      "use": "While applied to target weapon it increases spell damage against undead by up to 60. Lasts for 1 hour."
+    },
+    "main_hand_stone:brilliant_mana_oil": {
+      "item_id": 20748,
+      "spell_id": 25123,
+      "use": "While applied to target weapon it restores 15 mana to the caster every 5 seconds and increases the effect of healing spells by up to 30. Lasts for 30 minutes."
+    },
+    "main_hand_stone:brilliant_wizard_oil": {
+      "item_id": 20749,
+      "spell_id": 25122,
+      "use": "While applied to target weapon it increases spell damage and healing by up to 36 and increases Spell Critical chance by 1%. Lasts for 30 minutes."
+    },
+    "main_hand_stone:consecrated_sharpening_stone": {
+      "item_id": 23122,
+      "spell_id": 28891,
+      "use": "While applied to target weapon it increases attack power against undead by 100. Lasts for 1 hour."
+    },
+    "main_hand_stone:deadly_poison": {
+      "item_id": 2892,
+      "spell_id": 2823,
+      "use": "Coats a weapon with poison that lasts for 30 minutes.\r\nEach strike has a 30% chance of poisoning the enemy for 24 Nature damage over 12 sec.  Stacks up to 5 times on a single target.  90 charges."
+    },
+    "main_hand_stone:dense_sharpening_stone": {
+      "item_id": 12404,
+      "spell_id": 16138,
+      "use": "Increase sharp weapon damage by 8 for 30 minutes."
+    },
+    "main_hand_stone:dense_weightstone": {
+      "item_id": 12643,
+      "spell_id": 16622,
+      "use": "Increase the damage of a blunt weapon by 8 for 30 minutes."
+    },
+    "main_hand_stone:frost_oil": {
+      "item_id": 3829,
+      "spell_id": 3595,
+      "use": "When applied to a melee weapon it gives a 10% chance of casting Frostbolt at the opponent when it hits.  Lasts 30 minutes."
+    },
+    "main_hand_stone:instant_poison": {
+      "item_id": 6947,
+      "spell_id": 8679,
+      "use": "Coats a weapon with poison that lasts for 30 minutes.\r\nEach strike has a 20% chance of poisoning the enemy which instantly inflicts 13 to 17 Nature damage.  60 charges."
+    },
+    "main_hand_stone:lesser_mana_oil": {
+      "item_id": 20747,
+      "spell_id": 25120,
+      "use": "While applied to target weapon it restores 10 mana to the caster every 5 seconds and increases healing by up to 20. Lasts for 30 minutes."
+    },
+    "main_hand_stone:minor_mana_oil": {
+      "item_id": 20745,
+      "spell_id": 25118,
+      "use": "While applied to target weapon it restores 5 mana to the caster every 5 seconds and increases healing done by up to 10. Lasts for 30 minutes."
+    },
+    "main_hand_stone:minor_wizard_oil": {
+      "item_id": 20744,
+      "spell_id": 25117,
+      "use": "While applied to target weapon it increases spell damage and healing by up to 8. Lasts for 30 minutes."
+    },
+    "main_hand_stone:shadow_oil": {
+      "item_id": 3824,
+      "spell_id": 3594,
+      "use": "When applied to a melee weapon it gives a 15% chance of casting Shadowbolt III at the opponent when it hits.  Lasts 30 minutes."
+    },
+    "main_hand_stone:solid_sharpening_stone": {
+      "item_id": 7964,
+      "spell_id": 9900,
+      "use": "Increase sharp weapon damage by 6 for 30 minutes."
+    },
+    "main_hand_stone:solid_weightstone": {
+      "item_id": 7965,
+      "spell_id": 9903,
+      "use": "Increase the damage of a blunt weapon by 6 for 30 minutes."
+    },
+    "main_hand_stone:wizard_oil": {
+      "item_id": 20750,
+      "spell_id": 25121,
+      "use": "While applied to target weapon it increases spell damage and healing by up to 24. Lasts for 30 minutes."
+    },
+    "main_hand_stone:wound_poison": {
+      "item_id": 10918,
+      "spell_id": 13219,
+      "use": "Coats a weapon with poison that lasts for 30 minutes.\r\nEach strike has a 30% chance of poisoning the enemy, reducing all healing effects used on them by 67 for 15 sec.  Stacks up to 5 times on a single target.  90 charges."
+    },
+    "major_frenzy_potion": {
+      "item_id": 250943,
+      "spell_id": 1251940,
+      "use": "Increases Attack Power by 80 for 30 sec."
+    },
+    "major_mana_potion": {
+      "item_id": 13444,
+      "spell_id": 17531,
+      "use": "Restores 1350 to 2250 mana."
+    },
+    "major_menders_potion": {
+      "item_id": 250949,
+      "spell_id": 1251948,
+      "use": "Increases Spell Healing by 88 for 30 sec."
+    },
+    "major_spellblasting_potion": {
+      "item_id": 250937,
+      "spell_id": 1251932,
+      "use": "Increases Spell Damage by 47 for 30 sec."
+    },
+    "mana_potion": {
+      "item_id": 3827,
+      "spell_id": 2023,
+      "use": "Restores 455 to 585 mana."
+    },
+    "menders_potion": {
+      "item_id": 250946,
+      "spell_id": 1251945,
+      "use": "Increases Spell Healing by 31 for 30 sec."
+    },
+    "mighty_rage_potion": {
+      "item_id": 13442,
+      "spell_id": 17528,
+      "use": "Increases Rage by 45 to 75 and increases Strength by 60 for 20 sec."
+    },
+    "off_hand_imbue:blessed_wizard_oil": {
+      "item_id": 23123,
+      "spell_id": 28898,
+      "use": "While applied to target weapon it increases spell damage against undead by up to 60. Lasts for 1 hour."
+    },
+    "off_hand_imbue:brilliant_mana_oil": {
+      "item_id": 20748,
+      "spell_id": 25123,
+      "use": "While applied to target weapon it restores 15 mana to the caster every 5 seconds and increases the effect of healing spells by up to 30. Lasts for 30 minutes."
+    },
+    "off_hand_imbue:brilliant_wizard_oil": {
+      "item_id": 20749,
+      "spell_id": 25122,
+      "use": "While applied to target weapon it increases spell damage and healing by up to 36 and increases Spell Critical chance by 1%. Lasts for 30 minutes."
+    },
+    "off_hand_imbue:consecrated_sharpening_stone": {
+      "item_id": 23122,
+      "spell_id": 28891,
+      "use": "While applied to target weapon it increases attack power against undead by 100. Lasts for 1 hour."
+    },
+    "off_hand_imbue:deadly_poison": {
+      "item_id": 2892,
+      "spell_id": 2823,
+      "use": "Coats a weapon with poison that lasts for 30 minutes.\r\nEach strike has a 30% chance of poisoning the enemy for 24 Nature damage over 12 sec.  Stacks up to 5 times on a single target.  90 charges."
+    },
+    "off_hand_imbue:dense_sharpening_stone": {
+      "item_id": 12404,
+      "spell_id": 16138,
+      "use": "Increase sharp weapon damage by 8 for 30 minutes."
+    },
+    "off_hand_imbue:dense_weightstone": {
+      "item_id": 12643,
+      "spell_id": 16622,
+      "use": "Increase the damage of a blunt weapon by 8 for 30 minutes."
+    },
+    "off_hand_imbue:frost_oil": {
+      "item_id": 3829,
+      "spell_id": 3595,
+      "use": "When applied to a melee weapon it gives a 10% chance of casting Frostbolt at the opponent when it hits.  Lasts 30 minutes."
+    },
+    "off_hand_imbue:instant_poison": {
+      "item_id": 6947,
+      "spell_id": 8679,
+      "use": "Coats a weapon with poison that lasts for 30 minutes.\r\nEach strike has a 20% chance of poisoning the enemy which instantly inflicts 13 to 17 Nature damage.  60 charges."
+    },
+    "off_hand_imbue:lesser_mana_oil": {
+      "item_id": 20747,
+      "spell_id": 25120,
+      "use": "While applied to target weapon it restores 10 mana to the caster every 5 seconds and increases healing by up to 20. Lasts for 30 minutes."
+    },
+    "off_hand_imbue:minor_mana_oil": {
+      "item_id": 20745,
+      "spell_id": 25118,
+      "use": "While applied to target weapon it restores 5 mana to the caster every 5 seconds and increases healing done by up to 10. Lasts for 30 minutes."
+    },
+    "off_hand_imbue:minor_wizard_oil": {
+      "item_id": 20744,
+      "spell_id": 25117,
+      "use": "While applied to target weapon it increases spell damage and healing by up to 8. Lasts for 30 minutes."
+    },
+    "off_hand_imbue:shadow_oil": {
+      "item_id": 3824,
+      "spell_id": 3594,
+      "use": "When applied to a melee weapon it gives a 15% chance of casting Shadowbolt III at the opponent when it hits.  Lasts 30 minutes."
+    },
+    "off_hand_imbue:solid_sharpening_stone": {
+      "item_id": 7964,
+      "spell_id": 9900,
+      "use": "Increase sharp weapon damage by 6 for 30 minutes."
+    },
+    "off_hand_imbue:solid_weightstone": {
+      "item_id": 7965,
+      "spell_id": 9903,
+      "use": "Increase the damage of a blunt weapon by 6 for 30 minutes."
+    },
+    "off_hand_imbue:wizard_oil": {
+      "item_id": 20750,
+      "spell_id": 25121,
+      "use": "While applied to target weapon it increases spell damage and healing by up to 24. Lasts for 30 minutes."
+    },
+    "off_hand_imbue:wound_poison": {
+      "item_id": 10918,
+      "spell_id": 13219,
+      "use": "Coats a weapon with poison that lasts for 30 minutes.\r\nEach strike has a 30% chance of poisoning the enemy, reducing all healing effects used on them by 67 for 15 sec.  Stacks up to 5 times on a single target.  90 charges."
+    },
+    "off_hand_stone:blessed_wizard_oil": {
+      "item_id": 23123,
+      "spell_id": 28898,
+      "use": "While applied to target weapon it increases spell damage against undead by up to 60. Lasts for 1 hour."
+    },
+    "off_hand_stone:brilliant_mana_oil": {
+      "item_id": 20748,
+      "spell_id": 25123,
+      "use": "While applied to target weapon it restores 15 mana to the caster every 5 seconds and increases the effect of healing spells by up to 30. Lasts for 30 minutes."
+    },
+    "off_hand_stone:brilliant_wizard_oil": {
+      "item_id": 20749,
+      "spell_id": 25122,
+      "use": "While applied to target weapon it increases spell damage and healing by up to 36 and increases Spell Critical chance by 1%. Lasts for 30 minutes."
+    },
+    "off_hand_stone:consecrated_sharpening_stone": {
+      "item_id": 23122,
+      "spell_id": 28891,
+      "use": "While applied to target weapon it increases attack power against undead by 100. Lasts for 1 hour."
+    },
+    "off_hand_stone:deadly_poison": {
+      "item_id": 2892,
+      "spell_id": 2823,
+      "use": "Coats a weapon with poison that lasts for 30 minutes.\r\nEach strike has a 30% chance of poisoning the enemy for 24 Nature damage over 12 sec.  Stacks up to 5 times on a single target.  90 charges."
+    },
+    "off_hand_stone:dense_sharpening_stone": {
+      "item_id": 12404,
+      "spell_id": 16138,
+      "use": "Increase sharp weapon damage by 8 for 30 minutes."
+    },
+    "off_hand_stone:dense_weightstone": {
+      "item_id": 12643,
+      "spell_id": 16622,
+      "use": "Increase the damage of a blunt weapon by 8 for 30 minutes."
+    },
+    "off_hand_stone:frost_oil": {
+      "item_id": 3829,
+      "spell_id": 3595,
+      "use": "When applied to a melee weapon it gives a 10% chance of casting Frostbolt at the opponent when it hits.  Lasts 30 minutes."
+    },
+    "off_hand_stone:instant_poison": {
+      "item_id": 6947,
+      "spell_id": 8679,
+      "use": "Coats a weapon with poison that lasts for 30 minutes.\r\nEach strike has a 20% chance of poisoning the enemy which instantly inflicts 13 to 17 Nature damage.  60 charges."
+    },
+    "off_hand_stone:lesser_mana_oil": {
+      "item_id": 20747,
+      "spell_id": 25120,
+      "use": "While applied to target weapon it restores 10 mana to the caster every 5 seconds and increases healing by up to 20. Lasts for 30 minutes."
+    },
+    "off_hand_stone:minor_mana_oil": {
+      "item_id": 20745,
+      "spell_id": 25118,
+      "use": "While applied to target weapon it restores 5 mana to the caster every 5 seconds and increases healing done by up to 10. Lasts for 30 minutes."
+    },
+    "off_hand_stone:minor_wizard_oil": {
+      "item_id": 20744,
+      "spell_id": 25117,
+      "use": "While applied to target weapon it increases spell damage and healing by up to 8. Lasts for 30 minutes."
+    },
+    "off_hand_stone:shadow_oil": {
+      "item_id": 3824,
+      "spell_id": 3594,
+      "use": "When applied to a melee weapon it gives a 15% chance of casting Shadowbolt III at the opponent when it hits.  Lasts 30 minutes."
+    },
+    "off_hand_stone:solid_sharpening_stone": {
+      "item_id": 7964,
+      "spell_id": 9900,
+      "use": "Increase sharp weapon damage by 6 for 30 minutes."
+    },
+    "off_hand_stone:solid_weightstone": {
+      "item_id": 7965,
+      "spell_id": 9903,
+      "use": "Increase the damage of a blunt weapon by 6 for 30 minutes."
+    },
+    "off_hand_stone:wizard_oil": {
+      "item_id": 20750,
+      "spell_id": 25121,
+      "use": "While applied to target weapon it increases spell damage and healing by up to 24. Lasts for 30 minutes."
+    },
+    "off_hand_stone:wound_poison": {
+      "item_id": 10918,
+      "spell_id": 13219,
+      "use": "Coats a weapon with poison that lasts for 30 minutes.\r\nEach strike has a 30% chance of poisoning the enemy, reducing all healing effects used on them by 67 for 15 sec.  Stacks up to 5 times on a single target.  90 charges."
+    },
+    "r_o_i_d_s": {
+      "item_id": 8410,
+      "spell_id": 10667,
+      "use": "Increases Strength by 25 when consumed. Effect lasts for 60 minutes."
+    },
+    "rage_potion": {
+      "item_id": 5631,
+      "spell_id": 6612,
+      "use": "Increases Rage by 20 to 40."
+    },
+    "sapper_goblin_sapper": {
+      "item_id": 10646,
+      "spell_id": 13241,
+      "use": "Explodes when triggered dealing 450 to 750 Fire damage to all enemies nearby and 375 to 625 damage to you."
+    },
+    "scroll_of_agility": {
+      "item_id": 3012,
+      "spell_id": 8115,
+      "use": "Increases the target's Agility by 5 for 30 min."
+    },
+    "scroll_of_intellect": {
+      "item_id": 955,
+      "spell_id": 8096,
+      "use": "Increases the target's Intellect by 4 for 30 min."
+    },
+    "scroll_of_protection": {
+      "item_id": 3013,
+      "spell_id": 8091,
+      "use": "Increases the target's Armor by 60 for 30 min."
+    },
+    "scroll_of_spirit": {
+      "item_id": 1181,
+      "spell_id": 8112,
+      "use": "Increases the target's Spirit by 3 for 30 min."
+    },
+    "scroll_of_stamina": {
+      "item_id": 1180,
+      "spell_id": 8099,
+      "use": "Increases the target's Stamina by 4 for 30 min."
+    },
+    "scroll_of_strength": {
+      "item_id": 954,
+      "spell_id": 8118,
+      "use": "Increases the target's Strength by 5 for 30 min."
+    },
+    "sheen_of_zanza": {
+      "item_id": 20080,
+      "spell_id": 24417,
+      "use": "Increases the chance that the player will reflect hostile spells cast on them by 3% for 120 min. Will automatically reflect the first offensive spell cast against the user. Only one type of Zanza potion may be active at any given time."
+    },
+    "spellblasting_potion": {
+      "item_id": 250934,
+      "spell_id": 1251923,
+      "use": "Increases Spell Damage by 16 for 30 sec."
+    },
+    "spirit_of_zanza": {
+      "item_id": 20079,
+      "spell_id": 24382,
+      "use": "Increases the player's Spirit by 50 and Stamina by 50 for 120 min.  You can only have the effect of one Zanza potion at a time."
+    },
+    "swiftness_of_zanza": {
+      "item_id": 20081,
+      "spell_id": 24383,
+      "use": "Increases the player's run speed by 20% for 120 min.  You can only have the effect of one Zanza potion at a time."
+    },
+    "winterfall_firewater": {
+      "item_id": 12820,
+      "spell_id": 17038,
+      "use": "Increases your melee attack power by 35 and size for 20 min."
+    }
+  },
+  "hotfix_layer": {
+    "ItemEffect": "02b66eca6ae40a0ec67f972999456ce1d950e316c6f1f078b03f3d267d8ce420",
+    "ItemXItemEffect": "4a0604e047f72390991e3a7914fe3e309829fb8773c36f5e4aff5628b7913f88",
+    "ManifestInterfaceData": "71b82f75741b87ad38c82bb73cba99b3e3bdeb6c0c00e09dde1298dafce31441",
+    "SkillLine": "f3867d43ab42d1f5278e6e5028d0151bc06e4ef8e5cbd790a20df6ee57aa654d",
+    "SkillLineAbility": "6696abd03ef90ad250a12ac23778616c292c46f6a0082130fbe187c96ead0aa0",
+    "Spell": "d81a61397d9ecbc467a77767c4a3c231e9041ed08005c1716cdba6d3fe320ab5",
+    "SpellAuraOptions": "12b6f72942f6dadc164eb775feeee5cab9bd3156f9d1cb82e3c865e984c7a28a",
+    "SpellCastTimes": "f94e1e3a3495d11af875fd7b007124fdd660a19ba626bc1de00a609da81f25d8",
+    "SpellCooldowns": "3bf0324f17269592c1771ca2927ccc5bd414ee381d98e80e67156a4c54cb0613",
+    "SpellDuration": "4787f303fe8487cd67e5f9e8574fdc6fa2a03516dcfaabba23d9944f937223f5",
+    "SpellEffect": "f419db3f95ef93b2cf052d9c3996ec355df60846f1fa24c671822aacfa8f59a3",
+    "SpellMisc": "4500fb0dae7f8f14d1db826801ab7e1ea4af33c5dd0ba6505f4012030bcff376",
+    "SpellName": "bd8dc963dd691c69aff531464636e7b5a944efeedb773895e7b2c4a0fb7c38b4",
+    "SpellPower": "bf1b66970d98f2c722b3081544cce9ded0f9c8db29177c971e5d867f1949eee7",
+    "SpellRadius": "0012d7de3a0c45f2a290790c5a3aff332623c3b38ed71749a6157c300f13805b",
+    "SpellRange": "30734ead3acfb44c57737ed7c9f8ff2feafda2fbffa291711d4c4afef989b1b3",
+    "SpellTargetRestrictions": "2b55221651a54d44643c16d8634049b113e8065888081ed7817d43139b69c2f6",
+    "SpellDescriptionVariables": "20529a59a5c632572bca119b7a320f7e9200b2b6c4c70867e347f1c96cb73a0e",
+    "SpellXDescriptionVariables": "107b3d23691955ed29b9f7a51705423b88e91a6672d1579ca53b8db59c3ddef3",
+    "SpellLevels": "8bb6142b47be66c5110c7f64e53bbc27223a1d2bde739dafde1eec5c92a42649",
+    "SpellItemEnchantment": "fec148fe1f3a9c6a3086eb422cda725dfada11b91725f526ae3e3850ef65a5e0"
+  }
+}

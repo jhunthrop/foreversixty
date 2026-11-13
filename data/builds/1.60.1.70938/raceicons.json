@@ -1,0 +1,12 @@
+{
+  "dwarf": "achievement_character_dwarf_male",
+  "gnome": "achievement_character_gnome_male",
+  "high-order-skyborne": "achievement_character_bloodelf_male",
+  "human": "achievement_character_human_male",
+  "night-elf": "achievement_character_nightelf_male",
+  "orc": "achievement_character_orc_male",
+  "tauren": "achievement_character_tauren_male",
+  "troll": "achievement_character_troll_male",
+  "undead": "achievement_character_undead_male",
+  "windshaper-skyborne": "achievement_character_bloodelf_male"
+}
