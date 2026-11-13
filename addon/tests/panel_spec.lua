@@ -556,6 +556,7 @@ describe("Panel, the frame", function()
 		again.Change.scripts.OnMouseUp(again.Change)
 		local own = again.Change.foreverSixtyLabel
 		assert.are.same({ "CENTER", again.Change, "CENTER", 0, 0 }, own.points[#own.points])
+	end)
 
 	-- Owner, 2026-11-12: "the X on the window that pops up from the chip does not close it; you have to
 	-- click the chip again." The X hides the frame the chip's toggle reads, and the chip's next click
