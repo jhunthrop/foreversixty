@@ -188,12 +188,14 @@ def fetch_saved(
     cache_dir: Path | None = None,
     locales: frozenset[str] | None = ENUS_ONLY,
     keep: Callable[[list[PushEntry]], list[PushEntry]] | None = None,
+    terms: tuple[str, ...] | None = None,
 ) -> dict[str, list[PushEntry]]:
     """The build's push for `tables` in `locales`, crawled where it moved since the
     push saved at `store` (all of it when nothing is saved or `full`), and
     saved back. With `cache_dir`, a missing `store` starts from the copy kept
     there, and the saved file is copied back into it. `keep`, when given,
-    picks the entries of each table that are saved and returned."""
+    picks the entries of each table that are saved and returned, and `terms`,
+    when given, are the searches crawled in place of the tables' names."""
     _start_from_cache(store, _cached_copy(cache_dir, build, store.name), build)
     saved = read_store(store)
     if saved is not None and saved["build"] != build:
@@ -205,7 +207,7 @@ def fetch_saved(
     client = client or open_client()
     requests = _counting(client)
     try:
-        observed = crawl_terms(client, collector, known)
+        observed = crawl_terms(client, collector, known, terms)
     finally:
         if own:
             client.close()

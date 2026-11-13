@@ -14,13 +14,15 @@ spell side, but in every locale (`EVERY_LOCALE`), and saves it in
 `raw/wago-push/items.json` (committed with the build, crawled again only
 where wago's totals moved: `pipeline.hotfix_push_store`). `layer_item_push`
 puts it over the merged item table last, by `pipeline.hotfix_push.layer_rows`'
-rule: per record the newest entry with values wins, a removal drops the row,
-and a row read from another locale keeps the localised text underneath.
+rule: per record the newest entry with values wins, and a row read from
+another locale keeps the localised text underneath.
 
-The page's search is a substring match, so "Item" would also match every
-ItemSparse, ItemEffect and ItemSearchName entry (252,960 at 70938); ItemSparse
-alone is 80,039, so only ItemSparse is read here. The Item table's pushes
-still come from the CSV export.
+The page's search is a substring match on "<locale> <push> <record> <build>
+<table> <values>". Only the entries with values are crawled ("ItemSparse ["):
+31,113 of 70938's 80,039, at about 3 s a search. A removal or invalidation
+carries no values, so it is not seen here; the CSV export still carries those.
+"Item [" would match ItemSparse's entries too, so the Item table's pushes
+still come from the CSV export alone.
 """
 
 from __future__ import annotations
@@ -34,6 +36,10 @@ from pipeline.hotfix_push_store import cache_dir_from_env, fetch_saved, read_sto
 
 #: The item tables whose push is read from the hotfix page.
 ITEM_PUSH_TABLES: tuple[str, ...] = ("ItemSparse",)
+#: The searches crawled: a pushed record with values reads "<table> [<id>,...",
+#: so the bracket keeps the 49,000 value-less copies of 70938's push (enUS and
+#: others, 80,039 entries in all) out of the crawl.
+ITEM_SEARCH_TERMS: tuple[str, ...] = ("ItemSparse [",)
 #: Under raw/wago-push/: the saved item push, committed with the build.
 ITEM_STORE = "items.json"
 
@@ -73,6 +79,7 @@ def fetch_item_push(
         cache_dir=cache_dir_from_env(),
         locales=EVERY_LOCALE,
         keep=deciding_entries,
+        terms=ITEM_SEARCH_TERMS,
     )
     return {table: len(entries) for table, entries in pushed.items()}
 

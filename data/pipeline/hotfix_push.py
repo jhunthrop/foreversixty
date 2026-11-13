@@ -484,12 +484,16 @@ def open_client() -> httpx.Client:
 
 
 def crawl_terms(
-    client: httpx.Client, collector: PushCollector, known: NodeTotals | None = None
+    client: httpx.Client,
+    collector: PushCollector,
+    known: NodeTotals | None = None,
+    terms: tuple[str, ...] | None = None,
 ) -> dict[str, tuple[int, int]]:
-    """Every entry of every search term into `collector`, split until each read
-    fits a page (only where a total moved from `known`), and the split totals."""
+    """Every entry of every search term (`terms`, else the tables' own) into
+    `collector`, split until each read fits a page (only where a total moved
+    from `known`), and the split totals."""
     observed: dict[str, tuple[int, int]] = {}
-    for term in search_terms(collector.tables):
+    for term in terms or search_terms(collector.tables):
         found, totals = _enumerate(client, collector.number, term.lower(), known)
         collector.add(found)
         observed.update(totals)
