@@ -1,0 +1,25 @@
+# Retribution and Protection, every band, both factions
+paladin-retribution-raid60-alliance -spec paladin-retribution -preset raid -band 60 -faction alliance
+paladin-retribution-bare20-alliance -spec paladin-retribution -preset bare -band 20 -faction alliance
+paladin-retribution-bare30-alliance -spec paladin-retribution -preset bare -band 30 -faction alliance
+paladin-retribution-bare40-alliance -spec paladin-retribution -preset bare -band 40 -faction alliance
+paladin-retribution-bare50-alliance -spec paladin-retribution -preset bare -band 50 -faction alliance
+paladin-retribution-bare60-alliance -spec paladin-retribution -preset bare -band 60 -faction alliance
+paladin-retribution-raid60-horde -spec paladin-retribution -preset raid -band 60 -faction horde
+paladin-retribution-bare20-horde -spec paladin-retribution -preset bare -band 20 -faction horde
+paladin-retribution-bare30-horde -spec paladin-retribution -preset bare -band 30 -faction horde
+paladin-retribution-bare40-horde -spec paladin-retribution -preset bare -band 40 -faction horde
+paladin-retribution-bare50-horde -spec paladin-retribution -preset bare -band 50 -faction horde
+paladin-retribution-bare60-horde -spec paladin-retribution -preset bare -band 60 -faction horde
+paladin-protection-raid60-alliance -spec paladin-protection -preset raid -band 60 -faction alliance -tank
+paladin-protection-bare20-alliance -spec paladin-protection -preset bare -band 20 -faction alliance -tank
+paladin-protection-bare30-alliance -spec paladin-protection -preset bare -band 30 -faction alliance -tank
+paladin-protection-bare40-alliance -spec paladin-protection -preset bare -band 40 -faction alliance -tank
+paladin-protection-bare50-alliance -spec paladin-protection -preset bare -band 50 -faction alliance -tank
+paladin-protection-bare60-alliance -spec paladin-protection -preset bare -band 60 -faction alliance -tank
+paladin-protection-raid60-horde -spec paladin-protection -preset raid -band 60 -faction horde -tank
+paladin-protection-bare20-horde -spec paladin-protection -preset bare -band 20 -faction horde -tank
+paladin-protection-bare30-horde -spec paladin-protection -preset bare -band 30 -faction horde -tank
+paladin-protection-bare40-horde -spec paladin-protection -preset bare -band 40 -faction horde -tank
+paladin-protection-bare50-horde -spec paladin-protection -preset bare -band 50 -faction horde -tank
+paladin-protection-bare60-horde -spec paladin-protection -preset bare -band 60 -faction horde -tank
