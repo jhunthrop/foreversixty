@@ -114,9 +114,13 @@ function BuildsWindow.talentDiff(build, ranks, data)
 	return entries
 end
 
---- One talent's line against a plan (`wantFormat`: L.windowTalentPlan, or L.windowTalentBuild for a
---- pasted build): "Deflection 5/5 · Survival · plan 3"; with want 0, "Hawk Eye 3/3 · Marksmanship". Pure.
+--- One talent's line (`wantFormat`): against the followed build (L.windowTalentPlan), "Deflection 5/5 ·
+--- Survival · plan 3", with want 0 "Hawk Eye 3/3 · Marksmanship"; against a pasted build
+--- (L.windowTalentBuild), "Improved Wrath · you 0, build 5 · Balance", drops included. Pure.
 function BuildsWindow.talentLine(entry, wantFormat)
+	if wantFormat == L.windowTalentBuild then
+		return string.format(wantFormat, entry.name, entry.have, entry.want, entry.tree)
+	end
 	if entry.want == 0 then
 		return string.format(L.windowTalentHave, entry.name, entry.have, entry.maxRank, entry.tree)
 	end

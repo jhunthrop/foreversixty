@@ -272,7 +272,9 @@ describe("the talents against a plan (BuildsWindow.talentDiff)", function()
 		assert.are.equal("Improved Heroic Strike 3/3 \194\183 Arms \194\183 plan 2",
 			BuildsWindow.talentLine(diff[1], L.windowTalentPlan))
 		assert.are.equal("Deflection 2/5 \194\183 Arms", BuildsWindow.talentLine(diff[2], L.windowTalentPlan))
-		assert.are.equal("Cruelty 0/5 \194\183 Fury \194\183 build 1", BuildsWindow.talentLine(diff[3], L.windowTalentBuild))
+		local build = L.windowTalentBuild
+		assert.are.equal("Cruelty \194\183 you 0, build 1 \194\183 Fury", BuildsWindow.talentLine(diff[3], build))
+		assert.are.equal("Deflection \194\183 you 2, build 0 \194\183 Arms", BuildsWindow.talentLine(diff[2], build))
 		-- The off-plan list is the talents spent past the plan.
 		local over = BuildsWindow.offPlan(BUILD, ranks, DATA)
 		assert.are.same({ "Improved Heroic Strike", "Deflection" }, { over[1].name, over[2].name })

@@ -19,3 +19,34 @@ Round 1 fixes confirmed on the re-rendered boards:
 - Spec "Level 60 build" against a player's word "leveling build" is now consistent, but "Level 60 and raid build" on a one-row spec is clumsy next to the two-row specs. "Level 60 / Raid build" would read cleaner.
 - No respec cost line when Use this build replaces 15 points. A druid at 24 pays gold, and the red Replaces line should say so.
 - Gear rows in the paste preview have no icons or sources (already on the follow-up list; fine for now).
+
+---
+
+# Round 3
+
+**Verdict: SHIP WITH FIXES** (one small must-fix)
+
+Round 2 items confirmed:
+- Off plan lines read "Hawk Eye 3/3 · Marksmanship" and "Deflection 2/5 · Survival". Clean.
+- The header "Level 42 · 27 on plan · 5 off plan · 1 to spend" adds to 33. Clear.
+- The druid header "Level 24 · 15 on plan" is right for the data.
+
+New in this round: the preview's "Against your talents" list (Improved Wrath 0/5 · Balance · build 5, and so on, with "and 17 more").
+
+## Remaining must-fix
+
+1. The row format is ambiguous. "Improved Wrath 0/5 · Balance · build 5" shows the player's rank as a rank fraction (0/5) and the build's rank as a bare number ("build 5"). A player reads "0/5" as the talent's own cap. Write "Improved Wrath · Balance · you 0, build 5", or "Improved Wrath 0 to 5 · Balance". Use the same shape the Off plan lines use.
+
+## Should-fix, not blocking
+
+- The list shows only what the build adds. A Feral druid switching to Moonkin also loses Ferocity 5/5 and the rest, which is the respec the player pays for. Add a "You lose" line, or say "and 17 more" covers both.
+- Still no respec cost on the red Replaces line.
+- "and 17 more" cannot be expanded (already on the follow-up list).
+
+---
+
+# Round 4
+
+**Verdict: SHIP**
+
+The round 3 must-fix is done. "Improved Wrath · you 0, build 5 · Balance" reads unambiguously, and the tree-order list puts the drops (Ferocity, you 5, build 0) behind "and 17 more". The earlier should-fix notes (respec cost on the Replaces line, an expandable "and N more") are follow-ups, not blockers.

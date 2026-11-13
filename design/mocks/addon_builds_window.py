@@ -326,12 +326,7 @@ def preview_changes():
     entries = [k for k in keys if have[k] != want[k]]
     lines = []
     for k in entries[:6]:
-        cell = table[k]
-        if want[k] == 0:
-            lines.append(lua_format(L('windowTalentHave'), cell['name'], have[k], cell['max_rank'], trees[k[0] - 1]))
-        else:
-            lines.append(lua_format(L('windowTalentBuild'), cell['name'], have[k], cell['max_rank'], trees[k[0] - 1],
-                                    want[k]))
+        lines.append(lua_format(L('windowTalentBuild'), table[k]['name'], have[k], want[k], trees[k[0] - 1]))
     if len(entries) > 6:
         lines.append(lua_format(L('dialogInboxMore'), len(entries) - 6))
     return lines

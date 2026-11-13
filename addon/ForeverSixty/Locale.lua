@@ -942,12 +942,13 @@ L.windowToSpend = "%d to spend"
 -- Over the build list while points sit where the followed build has none: the heading in the warning
 -- colour, then a line a talent (PanelTab.offPlanTalents' own lines), at most OFF_PLAN_ROWS of them.
 L.windowOffPlan = "Off plan"
--- A talent against a plan, on the Off plan lines and the preview's changes: the name with the ranks you
--- have, the tree, and what the plan or the pasted build wants ("Deflection 5/5 \194\183 Survival \194\183 plan 3");
--- a talent the plan has none of drops the last part ("Hawk Eye 3/3 \194\183 Marksmanship").
+-- A talent against the followed build, on the Off plan lines: the name with the ranks you have, the tree,
+-- and what the plan wants ("Deflection 5/5 \194\183 Survival \194\183 plan 3"); a talent the plan has none of drops
+-- the last part ("Hawk Eye 3/3 \194\183 Marksmanship"). Against a pasted build, both ranks as numbers of the
+-- same kind (wow-player round 3): "Improved Wrath \194\183 you 0, build 5 \194\183 Balance".
 L.windowTalentHave = "%s %d/%d \194\183 %s"
 L.windowTalentPlan = "%s %d/%d \194\183 %s \194\183 plan %d"
-L.windowTalentBuild = "%s %d/%d \194\183 %s \194\183 build %d"
+L.windowTalentBuild = "%s \194\183 you %d, build %d \194\183 %s"
 -- The preview's changes against the character's talents, under its gear.
 L.windowChanges = "Against your talents"
 -- The header's figures, which add up to the points the level gives: on plan, off plan, to spend.
