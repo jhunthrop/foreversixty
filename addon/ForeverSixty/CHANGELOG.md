@@ -1,5 +1,9 @@
 # Forever Sixty
 
+## 2.0.45
+
+- Buttons that showed no label are fixed: Skip tour in the welcome tour and Change on the panel's Talents row. The addon's windows, borders and class crests now draw sharp instead of soft.
+
 ## 2.0.44
 
 - The green upgrade arrow now shows in Bagnon, AdiBags, ArkInventory and BetterBags bags too, at the top right of the item, the same arrow as on your character. /fs diag names your bag addon and says whether the arrow shows in it.
