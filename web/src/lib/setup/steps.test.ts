@@ -186,7 +186,10 @@ describe('setupSteps: signed in', () => {
   });
 
   it('web-setup-partial: characters in, the missing count under the signed-in line, step still done', () => {
-    const partial: Me = { ...me34, bnet_import: { state: 'partial', at: '2026-11-06T09:00:00Z', unresolved: 2 } };
+    const partial: Me = {
+      ...me34,
+      bnet_import: { state: 'partial', at: '2026-11-06T09:00:00Z', unresolved: 2 },
+    };
     const rows = steps({ me: partial });
     expect(rows[0]).toMatchObject({ mark: 'ok', action: null });
     expect(texts(rows[0])).toEqual([
@@ -195,7 +198,9 @@ describe('setupSteps: signed in', () => {
     ]);
     expect(rows[0].lines[1]).toMatchObject({ tone: 'warn' });
     const one: Me = { ...me34, bnet_import: { state: 'partial', at: '2026-11-06T09:00:00Z', unresolved: 1 } };
-    expect(texts(steps({ me: one })[0])[1]).toBe('One character is still missing. It comes in on a later visit.');
+    expect(texts(steps({ me: one })[0])[1]).toBe(
+      'One character is still missing. It comes in on a later visit.',
+    );
     const done: Me = { ...me34, bnet_import: { state: 'done', at: '2026-11-06T09:00:00Z' } };
     expect(texts(steps({ me: done })[0])).toHaveLength(1);
   });
@@ -212,10 +217,16 @@ describe('setupSteps: signed in', () => {
     ]);
     expect(rows[0].action).toMatchObject({ id: 'refresh', primary: true });
     // Every character skipped: the count, not the generic line.
-    const skipped: Me = { ...meNew, bnet_import: { state: 'failed', at: '2026-11-06T09:00:00Z', unresolved: 3 } };
+    const skipped: Me = {
+      ...meNew,
+      bnet_import: { state: 'failed', at: '2026-11-06T09:00:00Z', unresolved: 3 },
+    };
     expect(texts(steps({ me: skipped })[0])[1]).toBe(addonCopy.setupImportMissing(3));
     // A partial finished under two minutes ago still leads with the wait line.
-    const recent: Me = { ...meNew, bnet_import: { state: 'partial', at: '2026-11-06T09:59:00Z', unresolved: 1 } };
+    const recent: Me = {
+      ...meNew,
+      bnet_import: { state: 'partial', at: '2026-11-06T09:59:00Z', unresolved: 1 },
+    };
     expect(texts(steps({ me: recent })[0])[1]).toBe(addonCopy.setupImportWait);
   });
 
