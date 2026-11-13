@@ -1,10 +1,13 @@
 package main
 
 import (
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
 	"github.com/jhunthrop/foreversixty/sim/leveling"
+	"github.com/jhunthrop/foreversixty/sim/specs"
 )
 
 // trees is a small class: tier 0 holds a and b, tier 1 holds c (which
@@ -73,5 +76,31 @@ func sum(ranks map[int]int) int {
 func TestSiteStringIsOneDigitPerTalentInTreeOrder(t *testing.T) {
 	if got := siteString(trees(), map[int]int{1: 5, 3: 2, 4: 1}); got != "5021" {
 		t.Errorf("siteString = %q, want 5021", got)
+	}
+}
+
+// A raid band's slots carry the permanent enchant the ranker measured the
+// set wearing (enchant_id). heal-builds read the items alone, so every
+// healer build comparison ran without the healing enchants the published
+// set wears (the search tools' 2026-11-13 fix), so the request wears what
+// the band wears.
+func TestBuildRequestWearsTheBandsPublishedEnchants(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "bis.json")
+	body := `{"bands":[{"band":60,"preset":"raid","faction":"alliance","race":"human","slots":[
+	  {"slot":"main_hand","item_id":5,"enchant_id":8212},{"slot":"head","item_id":6},{"slot":"neck","item_id":0}]}]}`
+	if err := os.WriteFile(path, []byte(body), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	band, err := loadBand(path, "alliance")
+	if err != nil {
+		t.Fatal(err)
+	}
+	req := buildRequest(options{iterations: 1}, specs.ByKey["priest-holy"], band, "", nil, nil)
+	got := map[string]int{}
+	for _, g := range req.Character.Gear {
+		got[g.Slot] = g.Enchant
+	}
+	if got["main_hand"] != 8212 || got["head"] != 0 || len(got) != 2 {
+		t.Fatalf("gear enchants %v, want main_hand 8212 and a bare head", got)
 	}
 }
