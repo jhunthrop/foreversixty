@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # full.sh <jobs file> [iterations]: builds spec-breakdown once and prints each job's whole breakdown
+# (one sim at a time, nice 15, GOMAXPROCS=5). A job line is
 # <label> <spec-breakdown flags...>; # starts a comment; @R is this folder. Run from sim/ on the
 # box:
 #   tools/remote-test.sh --pin-engine [--engine-sha <sha>] --dir sim HEAD -- bash ../design/reviews/2026-11-13-sim-accuracy/paladins-70938/full.sh ../design/reviews/2026-11-13-sim-accuracy/paladins-70938/<jobs>.txt
