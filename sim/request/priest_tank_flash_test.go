@@ -14,7 +14,9 @@ import (
 // all fight, long after the bar had run dry, and spent mana a Greater Heal
 // would have made more of. The party's emergency Flash Heals were paced in
 // round 6; the tank's was not. Under 20% it still fires whatever the mana,
-// so the fast heal stays on the list at every level.
+// so the fast heal stays on the list at every level. The raid top-off line
+// (the tank under 90%, sim-accuracy 2026-11-13 healer-apl.md) waits on the
+// pace too, so each list has two tank Flash Heal lines, both paced.
 func TestPriestTankFlashHealWaitsOnTheManaPace(t *testing.T) {
 	const flashHeal, tank = 10917, 5
 	for _, spec := range []string{"priest-discipline", "priest-holy"} {
@@ -54,8 +56,8 @@ func TestPriestTankFlashHealWaitsOnTheManaPace(t *testing.T) {
 				t.Errorf("%s: the tank's Flash Heal does not wait on the mana pace: %s", spec, condition)
 			}
 		}
-		if lines != 1 {
-			t.Errorf("%s: %d tank Flash Heal lines, want 1", spec, lines)
+		if lines != 2 {
+			t.Errorf("%s: %d tank Flash Heal lines, want 2 (the emergency and the top-off)", spec, lines)
 		}
 	}
 }

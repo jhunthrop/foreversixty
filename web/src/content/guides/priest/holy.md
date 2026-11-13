@@ -64,13 +64,13 @@ Spirit of Redemption is the step to Prayer of Mending, and if you die it gives y
 
 **Before the pull.** Drop Lightwell where the melee and the tank can reach it and tell the raid it is there: it lasts 3 minutes or 5 clicks, and being hit cancels a click. Fear Ward the tank if the boss fears. Prayer of Mending and Renew go on the tank as he engages.
 
-**On the tank.** Renew stays at rank 7 or higher; go up to the top rank on a tank who is dropping through it. Leave Power Word: Shield on the tank to a Discipline priest: without the shield talents it costs more mana than it saves, and Weakened Soul locks it out for 15 seconds.
+**On the tank.** Renew goes on the tank once he takes a hit and again when it falls off, at rank 7 or higher; go up to the top rank on a tank who is dropping through it. Leave Power Word: Shield on the tank to a Discipline priest: without the shield talents it costs more mana than it saves, and Weakened Soul locks it out for 15 seconds.
 
 **Stepping down.** When the top Greater Heal would overheal or your mana runs short, step down to rank 1: a small heal wastes less on a small hole, so leave ranks 2 and 3 off your bars. Heal rank 4 is cheaper still, but it keeps only about half your bonus, so it is the last step down. With Divine Fury every one of them is a 2.5 second cast.
 
 **Low ranks.** In Forever a rank learned far below your level gets less of your healing bonus: at 60, Lesser Heal and the first ranks of Heal and Renew heal for little more than their base, and Renew rank 5 and 6 and Heal rank 4 keep only part of it. Downrank only within the ranks you learned from your forties on: Greater Heal rank 1 is the one to keep.
 
-**Flash Heal** at the top rank in a raid, a lower rank while leveling. Holy Binding heals you off every one of them. It heals the least for its mana of anything you cast. A tank about to die gets it whatever your bar says. For a tank who is only low, cast it while your mana keeps up with the fight, and once you are behind, start the Greater Heal early instead.
+**Flash Heal** at the top rank in a raid, a lower rank while leveling. Holy Binding heals you off every one of them. It heals the least for its mana of anything you cast. A tank about to die gets it whatever your bar says. For a tank who is only low, cast it while your mana keeps up with the fight, and once you are behind, start the Greater Heal early instead. While your mana is level with the fight or ahead of it, Flash Heal also tops people off between the big hits, the tank under 90% and anyone else under 85%: being your dearest heal, it only tops off while you are ahead.
 
 **Prayer of Healing** is not limited to your own party: target a member of whichever group took the hit.
 
@@ -80,7 +80,7 @@ Spirit of Redemption is the step to Prayer of Mending, and if you die it gives y
 
 **Assignments.** On a group, Prayer of Healing is your main spell and Prayer of Mending goes on whoever in that group gets hit. Stay out of the boss's cleave and the raid's AoE: Twilight Focus helps, it does not make you immune.
 
-**Mana.** Every heal you skip early is mana for the last minute. Major Mana Potion and Demonic Rune once you are down enough that neither wastes, Dark Sacrifice as an Undead, and a Gnome's Eureka! on a string of Prayers of Healing.
+**Mana.** Once you are behind the fight, every heal you skip is mana for the last minute. Major Mana Potion and Demonic Rune once you are down enough that neither wastes, Dark Sacrifice as an Undead, and a Gnome's Eureka! on a string of Prayers of Healing.
 
 ## Stat priority
 

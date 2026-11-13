@@ -254,7 +254,7 @@
                     },
                     "rhs": {
                       "const": {
-                        "val": "0.9"
+                        "val": "0.95"
                       }
                     }
                   }
@@ -801,7 +801,7 @@
                           },
                           "rhs": {
                             "const": {
-                              "val": "0.9"
+                              "val": "0.92"
                             }
                           }
                         }
@@ -819,7 +819,7 @@
                           },
                           "rhs": {
                             "const": {
-                              "val": "0.9"
+                              "val": "0.92"
                             }
                           }
                         }
@@ -837,7 +837,7 @@
                           },
                           "rhs": {
                             "const": {
-                              "val": "0.9"
+                              "val": "0.92"
                             }
                           }
                         }
@@ -855,7 +855,7 @@
                           },
                           "rhs": {
                             "const": {
-                              "val": "0.9"
+                              "val": "0.92"
                             }
                           }
                         }
@@ -873,7 +873,7 @@
                           },
                           "rhs": {
                             "const": {
-                              "val": "0.9"
+                              "val": "0.92"
                             }
                           }
                         }
@@ -906,7 +906,7 @@
             }
           }
         },
-        "notes": "Chain Heal on the tank as soon as anyone near it is under 90%, while your mana is ahead of the fight: it heals three targets, each jump half the last. Cast on someone in your own party it only jumps inside your party; cast on anyone else it can jump to any raid member near them. While leveling, cast rank 1 until 59, even after ranks 2 (46) and 3 (54) arrive: with Tidal Focus it costs 247 mana to about 300 for rank 2 and 385 for rank 3, so in healing gear it heals more before your mana runs out. At 60 without raid buffs, cast rank 2."
+        "notes": "Chain Heal on the tank as soon as anyone near it is under 92%, while your mana is ahead of the fight: it heals three targets, each jump half the last. Cast on someone in your own party it only jumps inside your party; cast on anyone else it can jump to any raid member near them. While leveling, cast rank 1 until 59, even after ranks 2 (46) and 3 (54) arrive: with Tidal Focus it costs 247 mana to about 300 for rank 2 and 385 for rank 3, so in healing gear it heals more before your mana runs out. At 60 without raid buffs, cast rank 2."
       },
       {
         "action": {
@@ -949,7 +949,7 @@
     "3": "when your Water totem is down",
     "4": "when the tank drops below 25%",
     "5": "right after Nature's Swiftness, on the tank below 25%",
-    "6": "when the tank is below 90% with no Riptide",
+    "6": "when the tank is below 95% with no Riptide",
     "7": "when the tank drops below 30%",
     "8": "on a party member below 25%, above 50% mana",
     "9": "on a party member below 25%, above 50% mana",
@@ -959,7 +959,7 @@
     "13": "on a party member below 50% with no Riptide, above 50% mana",
     "14": "on a party member below 50% with no Riptide, above 50% mana",
     "15": "on a party member below 50% with no Riptide, above 50% mana",
-    "16": "when anyone is below 90% while mana % is over boss health %",
+    "16": "when anyone is below 92% while mana % is over boss health %",
     "17": "when the tank drops below 60%"
   }
 }

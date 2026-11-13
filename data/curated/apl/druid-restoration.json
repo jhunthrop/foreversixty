@@ -652,7 +652,7 @@
         }
       },
       {
-        "notes": "On the tank whenever it is not ticking. Let it run out before you recast it: from 20, Bloom heals him when it does. At 18 and 19 rank 1 heals more for your mana than rank 2.",
+        "notes": "On the tank once he is below 90% and it is not ticking. Let it run out before you recast it: from 20, Bloom heals him when it does. At 18 and 19 rank 1 heals more for your mana than rank 2.",
         "action": {
           "castSpell": {
             "spellId": {
@@ -695,6 +695,24 @@
                       }
                     }
                   }
+                },
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentHealthPercent": {
+                        "sourceUnit": {
+                          "type": "Player",
+                          "index": 5
+                        }
+                      }
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.9"
+                      }
+                    }
+                  }
                 }
               ]
             }
@@ -702,7 +720,7 @@
         }
       },
       {
-        "notes": "On the tank whenever it is not ticking, at rank 10 in a raid. Let it run out before you recast it: from 20, Bloom heals him when it does. While leveling your mana runs out first, so a lower rank heals more for it: rank 1 at 10 (a Skyborne keeps rank 2) and from 13 to 22 (from 12 for an Alliance Skyborne), rank 2 from 23 to 39 (a night elf takes rank 3 for level 29 alone), rank 4 from 40 to 43, rank 5 from 44 to 48, rank 6 from 49 to 55, rank 9 from 56 to 58 and rank 8 at 59.",
+        "notes": "On the tank once he is below 97% and it is not ticking, at rank 10 in a raid. Let it run out before you recast it: from 20, Bloom heals him when it does. While leveling your mana runs out first, so a lower rank heals more for it: rank 1 at 10 (a Skyborne keeps rank 2) and from 13 to 22 (from 12 for an Alliance Skyborne), rank 2 from 23 to 39 (a night elf takes rank 3 for level 29 alone), rank 4 from 40 to 43, rank 5 from 44 to 48, rank 6 from 49 to 55, rank 9 from 56 to 58 and rank 8 at 59.",
         "action": {
           "castSpell": {
             "spellId": {
@@ -742,6 +760,24 @@
                     "rhs": {
                       "const": {
                         "val": "0.05"
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentHealthPercent": {
+                        "sourceUnit": {
+                          "type": "Player",
+                          "index": 5
+                        }
+                      }
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.97"
                       }
                     }
                   }
@@ -1081,6 +1117,382 @@
             }
           }
         }
+      },
+      {
+        "action": {
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentHealthPercent": {
+                        "sourceUnit": {
+                          "type": "Player",
+                          "index": 0
+                        }
+                      }
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.9"
+                      }
+                    }
+                  }
+                },
+                {
+                  "not": {
+                    "val": {
+                      "dotIsActive": {
+                        "spellId": {
+                          "spellId": 8910,
+                          "rank": 7
+                        },
+                        "targetUnit": {
+                          "type": "Player",
+                          "index": 0
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpGe",
+                    "lhs": {
+                      "currentManaPercent": {}
+                    },
+                    "rhs": {
+                      "math": {
+                        "op": "OpMul",
+                        "lhs": {
+                          "remainingTimePercent": {}
+                        },
+                        "rhs": {
+                          "const": {
+                            "val": "1.0"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 8910,
+              "rank": 7
+            },
+            "target": {
+              "type": "Player",
+              "index": 0
+            }
+          }
+        },
+        "notes": "Rejuvenation on anyone in your party below 90%, you included, while your mana % is over boss health %: in a raid the group's small hits add up, and a ticking Rejuvenation clears them before the next one lands. Rank 7 in a raid."
+      },
+      {
+        "action": {
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentHealthPercent": {
+                        "sourceUnit": {
+                          "type": "Player",
+                          "index": 1
+                        }
+                      }
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.9"
+                      }
+                    }
+                  }
+                },
+                {
+                  "not": {
+                    "val": {
+                      "dotIsActive": {
+                        "spellId": {
+                          "spellId": 8910,
+                          "rank": 7
+                        },
+                        "targetUnit": {
+                          "type": "Player",
+                          "index": 1
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpGe",
+                    "lhs": {
+                      "currentManaPercent": {}
+                    },
+                    "rhs": {
+                      "math": {
+                        "op": "OpMul",
+                        "lhs": {
+                          "remainingTimePercent": {}
+                        },
+                        "rhs": {
+                          "const": {
+                            "val": "1.0"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 8910,
+              "rank": 7
+            },
+            "target": {
+              "type": "Player",
+              "index": 1
+            }
+          }
+        }
+      },
+      {
+        "action": {
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentHealthPercent": {
+                        "sourceUnit": {
+                          "type": "Player",
+                          "index": 2
+                        }
+                      }
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.9"
+                      }
+                    }
+                  }
+                },
+                {
+                  "not": {
+                    "val": {
+                      "dotIsActive": {
+                        "spellId": {
+                          "spellId": 8910,
+                          "rank": 7
+                        },
+                        "targetUnit": {
+                          "type": "Player",
+                          "index": 2
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpGe",
+                    "lhs": {
+                      "currentManaPercent": {}
+                    },
+                    "rhs": {
+                      "math": {
+                        "op": "OpMul",
+                        "lhs": {
+                          "remainingTimePercent": {}
+                        },
+                        "rhs": {
+                          "const": {
+                            "val": "1.0"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 8910,
+              "rank": 7
+            },
+            "target": {
+              "type": "Player",
+              "index": 2
+            }
+          }
+        }
+      },
+      {
+        "action": {
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentHealthPercent": {
+                        "sourceUnit": {
+                          "type": "Player",
+                          "index": 3
+                        }
+                      }
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.9"
+                      }
+                    }
+                  }
+                },
+                {
+                  "not": {
+                    "val": {
+                      "dotIsActive": {
+                        "spellId": {
+                          "spellId": 8910,
+                          "rank": 7
+                        },
+                        "targetUnit": {
+                          "type": "Player",
+                          "index": 3
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpGe",
+                    "lhs": {
+                      "currentManaPercent": {}
+                    },
+                    "rhs": {
+                      "math": {
+                        "op": "OpMul",
+                        "lhs": {
+                          "remainingTimePercent": {}
+                        },
+                        "rhs": {
+                          "const": {
+                            "val": "1.0"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 8910,
+              "rank": 7
+            },
+            "target": {
+              "type": "Player",
+              "index": 3
+            }
+          }
+        }
+      },
+      {
+        "action": {
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "cmp": {
+                    "op": "OpLt",
+                    "lhs": {
+                      "currentHealthPercent": {
+                        "sourceUnit": {
+                          "type": "Player",
+                          "index": 4
+                        }
+                      }
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "0.9"
+                      }
+                    }
+                  }
+                },
+                {
+                  "not": {
+                    "val": {
+                      "dotIsActive": {
+                        "spellId": {
+                          "spellId": 8910,
+                          "rank": 7
+                        },
+                        "targetUnit": {
+                          "type": "Player",
+                          "index": 4
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpGe",
+                    "lhs": {
+                      "currentManaPercent": {}
+                    },
+                    "rhs": {
+                      "math": {
+                        "op": "OpMul",
+                        "lhs": {
+                          "remainingTimePercent": {}
+                        },
+                        "rhs": {
+                          "const": {
+                            "val": "1.0"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 8910,
+              "rank": 7
+            },
+            "target": {
+              "type": "Player",
+              "index": 4
+            }
+          }
+        }
       }
     ]
   },
@@ -1091,13 +1503,18 @@
     "4": "right after Nature's Swiftness",
     "5": "on the tank under 75% while mana % is over boss health %",
     "6": "when 2 party members are under 70%",
-    "7": "when Regrowth is not ticking on the tank",
-    "8": "when Rejuvenation is not ticking on the tank",
+    "7": "on the tank below 90% with no Regrowth",
+    "8": "on the tank below 97% with no Rejuvenation",
     "9": "on the tank under 55% while mana % is over boss health %",
     "10": "when you are under 70% and Rejuvenation is not on you",
     "11": "on a party member under 70% with no Rejuvenation",
     "12": "on a party member under 70% with no Rejuvenation",
     "13": "on a party member under 70% with no Rejuvenation",
-    "14": "on a party member under 70% with no Rejuvenation"
+    "14": "on a party member under 70% with no Rejuvenation",
+    "15": "on yourself under 90% with no Rejuvenation while mana holds",
+    "16": "on a party member under 90%, no Rejuvenation, mana holds",
+    "17": "on a party member under 90%, no Rejuvenation, mana holds",
+    "18": "on a party member under 90%, no Rejuvenation, mana holds",
+    "19": "on a party member under 90%, no Rejuvenation, mana holds"
   }
 }

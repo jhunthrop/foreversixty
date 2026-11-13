@@ -327,8 +327,11 @@ func TestHolyCastsPrayerOfMendingWheneverReady(t *testing.T) {
 	}
 }
 
-// The party's Rejuvenation is the druid's cheapest healing, so it does not
-// wait on the mana pace (round 13).
+// The party's Rejuvenation is the druid's cheapest healing, so the lines for a
+// party member under 70% do not wait on the mana pace (round 13). The raid
+// top-off lines under 90% (sim-accuracy 2026-11-13, healer-apl.md) do: on a
+// fight that runs the druid dry they stay quiet, on a raid kill they keep the
+// party's small hits healed.
 func TestRestorationDruidPartyRejuvenationIsNotPaced(t *testing.T) {
 	raw, err := os.ReadFile("../../data/curated/apl/druid-restoration.json")
 	if err != nil {
@@ -354,19 +357,31 @@ func TestRestorationDruidPartyRejuvenationIsNotPaced(t *testing.T) {
 	if err := json.Unmarshal(raw, &file); err != nil {
 		t.Fatal(err)
 	}
-	party := 0
+	unpaced, topOff := 0, 0
 	for _, line := range file.Rotation.PriorityList {
 		cast := line.Action.CastSpell
 		if cast == nil || cast.SpellID.SpellID != 8910 || cast.Target == nil || cast.Target.Index > 4 {
 			continue
 		}
-		party++
-		if strings.Contains(string(line.Action.Condition), "currentManaPercent") {
-			t.Errorf("the party Rejuvenation on player %d waits on the mana pace", cast.Target.Index)
+		condition := string(line.Action.Condition)
+		paced := strings.Contains(condition, "currentManaPercent")
+		switch {
+		case strings.Contains(condition, `"0.7"`):
+			unpaced++
+			if paced {
+				t.Errorf("the party Rejuvenation under 70%% on player %d waits on the mana pace", cast.Target.Index)
+			}
+		case strings.Contains(condition, `"0.9"`):
+			topOff++
+			if !paced {
+				t.Errorf("the party top-off Rejuvenation under 90%% on player %d does not wait on the mana pace", cast.Target.Index)
+			}
+		default:
+			t.Errorf("a party Rejuvenation line on player %d at neither 70%% nor 90%%: %s", cast.Target.Index, condition)
 		}
 	}
-	if party != 5 {
-		t.Errorf("%d party Rejuvenation rank 7 lines, want 5 (players 0 to 4)", party)
+	if unpaced != 5 || topOff != 5 {
+		t.Errorf("%d party Rejuvenation lines under 70%% and %d under 90%%, want 5 of each (players 0 to 4)", unpaced, topOff)
 	}
 }
 

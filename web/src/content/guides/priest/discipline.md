@@ -62,11 +62,11 @@ Deep Discipline for Penance and Divine Aegis, with Holy taken for faster, cheape
 
 **Before the pull.** Drop Lightwell and tell the raid it is up. Fear Ward the tank if the boss fears. Renew the tank just before he engages, so it is already ticking when the first hits land.
 
-**Fillers.** Greater Heal at the top rank on the tank, where the big hits land. Greater Heal rank 1 on everyone else. Renew stays on the tank at rank 7 or higher.
+**Fillers.** Greater Heal at the top rank on the tank, where the big hits land. Greater Heal rank 1 on everyone else who is really hurt; the small holes are Flash Heal. Renew goes on the tank once he takes a hit and again when it falls off, at rank 7 or higher.
 
 **Low ranks.** In Forever a rank learned far below your level gets less of your healing bonus: at 60, Lesser Heal and the first ranks of Heal and Renew heal for little more than their base, and Renew rank 5 and 6 and Heal rank 4 keep only part of it. Downrank only within the ranks you learned from your forties on, and keep Lesser Heal off your bars for good: when even Greater Heal rank 1 is more than you can afford, wait the few seconds for your regeneration.
 
-**Flash Heal** costs the most mana for what it heals, so it never becomes the filler. A tank about to die gets it whatever your bar says. For a tank who is only low, cast it while your mana keeps up with the fight; once you are behind, a Greater Heal started before the hit saves more of your bar.
+**Flash Heal** costs the most mana for what it heals. A tank about to die gets it whatever your bar says. For a tank who is only low, cast it while your mana keeps up with the fight; once you are behind, a Greater Heal started before the hit saves more of your bar. While your mana is level with the fight or ahead of it, it also tops off small holes: the tank under 90%, anyone else under 85%.
 
 **Prayer of Healing** heals the target's party, so target a member of the group that took the damage.
 

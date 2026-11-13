@@ -65,9 +65,9 @@ The build is 40 points of Restoration and 11 of Balance. It is built for a tank-
 
 ## Rotation and priority
 
-**Before the pull.** Rejuvenation on the tank a few seconds before he pulls. Keep Gift of the Wild up on the raid.
+**Before the pull.** Keep Gift of the Wild up on the raid.
 
-**The tank.** Regrowth and Rejuvenation stay up on the tank for the whole fight. A refresh on top of a running HoT throws away its Bloom heal.
+**The tank.** Rejuvenation goes on the tank once he takes a hit and Regrowth once he is under 90%. Recast each only after it has run out: a refresh on top of a running HoT throws away its Bloom heal.
 
 **Swiftmend.** Cast it whenever the tank is under about three quarters and your mana is keeping pace with the fight, not only in an emergency.
 
@@ -75,7 +75,7 @@ The build is 40 points of Restoration and 11 of Balance. It is built for a tank-
 
 **Nature's Swiftness** into Healing Touch is the save for a tank who is nearly dead. A save is no place to save mana, so the Healing Touch you cast with it is always the top rank.
 
-**The party.** Tranquility goes out when several of your party are hurt at once; with Improved Tranquility it is off cooldown often enough to plan around.
+**The party.** While your mana is level with the fight or ahead of it, Rejuvenation rank 7 goes on anyone in your party under 90%, you included. Tranquility goes out when several of your party are hurt at once; with Improved Tranquility it is off cooldown often enough to plan around.
 
 **Ranks.** In Forever a rank learned far below your level loses its share of your healing power: at 60, ranks 8, 9 and 10 keep all of it, rank 7 most of it, and rank 1 none, though it costs so little that its base heal is still cheap healing. In a raid, keep the top rank on the tank and put rank 7 on a hurt party member: most of the heal for far less mana. When there is no raid behind you and the fight will run you dry, as in a long five-man, rank 1 on the party is the most healing your mana buys.
 

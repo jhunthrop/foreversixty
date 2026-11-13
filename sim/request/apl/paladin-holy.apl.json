@@ -542,7 +542,7 @@
             },
             "rhs": {
               "const": {
-                "val": "0.9"
+                "val": "0.97"
               }
             }
           }
@@ -558,7 +558,7 @@
           }
         }
       },
-      "notes": "On the tank below 90%: your staple. From 25, Oath of Light adds the same flat amount to every rank close to your level that you cast on the tank. Rank 1 does the job to 42 (a Dwarf to 43), rank 2 from 43, rank 3 from 50 and rank 4 from 54; at 60 without raid buffs, rank 4 does the same job as rank 5 for less mana."
+      "notes": "On the tank as soon as one hit has landed on him: your staple, and in a raid the heal you cast most. From 25, Oath of Light adds the same flat amount to every rank close to your level that you cast on the tank. Rank 1 does the job to 42 (a Dwarf to 43), rank 2 from 43, rank 3 from 50 and rank 4 from 54; at 60 without raid buffs, rank 4 does the same job as rank 5 for less mana."
     },
     {
       "action": {
@@ -575,7 +575,7 @@
             },
             "rhs": {
               "const": {
-                "val": "0.8"
+                "val": "0.93"
               }
             }
           }
@@ -591,7 +591,7 @@
           }
         }
       },
-      "notes": "On everyone else below 80%, yourself included. Without the Oath bonus a small rank is the best balance of heal size and mana: rank 1 to 41 (a Human moves to rank 2 at 42, a Dwarf at 43, an Undead at 44), rank 2 to 49, rank 4 from 50, and rank 5 at 60 in a raid, where your buffs pay for the bigger heal."
+      "notes": "On everyone else once a hit or two has landed, yourself included. Without the Oath bonus a small rank is the best balance of heal size and mana: rank 1 to 41 (a Human moves to rank 2 at 42, a Dwarf at 43, an Undead at 44), rank 2 to 49, rank 4 from 50, and rank 5 at 60 in a raid, where your buffs pay for the bigger heal."
     },
     {
       "action": {
@@ -608,7 +608,7 @@
             },
             "rhs": {
               "const": {
-                "val": "0.8"
+                "val": "0.93"
               }
             }
           }
@@ -640,7 +640,7 @@
             },
             "rhs": {
               "const": {
-                "val": "0.8"
+                "val": "0.93"
               }
             }
           }
@@ -672,7 +672,7 @@
             },
             "rhs": {
               "const": {
-                "val": "0.8"
+                "val": "0.93"
               }
             }
           }
@@ -704,7 +704,7 @@
             },
             "rhs": {
               "const": {
-                "val": "0.8"
+                "val": "0.93"
               }
             }
           }

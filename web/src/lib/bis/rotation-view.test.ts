@@ -86,8 +86,19 @@ describe('rotationLinesFor', () => {
   });
 });
 
+// 70374's published Holy list predates the raid top-off (sim-accuracy 2026-11-13,
+// healer-apl.md): six Flash Heal steps at the end of the curated list, the tank under 90% and
+// the group under 85% while mana keeps pace. A frozen build's addon-data.json never gains them,
+// so the tests add the six lines the next publish carries, at the band's own Flash Heal rank.
+function withRaidTopOff(entry: RotationEntry | undefined): RotationEntry | undefined {
+  const flash = entry?.lines.find((line) => line.name === 'Flash Heal');
+  if (entry === undefined || flash === undefined) return entry;
+  const topOff = Array.from({ length: 6 }, () => ({ ...flash, condition: '' }));
+  return { ...entry, lines: [...entry.lines, ...topOff] };
+}
+
 describe('rotationLinesFor on the holy priest band 20 list', () => {
-  const entry = rotationEntryFor(loadRotations(BUILD, 'priest-holy') ?? [], bandTopLevel(20));
+  const entry = withRaidTopOff(rotationEntryFor(loadRotations(BUILD, 'priest-holy') ?? [], bandTopLevel(20)));
   const rows = () => rotationLinesFor(entry!, BUILD, 'priest', 'priest-holy', entry!.level);
   // Round 3 took Shadowfiend out of the curated list. The published addon-data.json
   // is nightly-owned and keeps the line until bis.yml regenerates it; a spell only one side
@@ -105,8 +116,9 @@ describe('rotationLinesFor on the holy priest band 20 list', () => {
       'Flash Heal',
       'Heal',
       'Heal',
+      'Flash Heal',
     ]);
-    expect(curatedRows().map((row) => row.steps)).toEqual([1, 1, 5, 5, 5]);
+    expect(curatedRows().map((row) => row.steps)).toEqual([1, 1, 5, 5, 5, 6]);
   });
 
   it('says every condition of the collapsed steps in words', () => {
@@ -136,7 +148,7 @@ describe('rotationLinesFor on the holy priest band 20 list', () => {
 });
 
 describe('rotationLinesFor when the published lines and the curated steps differ', () => {
-  const holy = rotationEntryFor(loadRotations(BUILD, 'priest-holy') ?? [], bandTopLevel(20));
+  const holy = withRaidTopOff(rotationEntryFor(loadRotations(BUILD, 'priest-holy') ?? [], bandTopLevel(20)));
   const heal = holy?.lines.find((line) => line.name === 'Heal');
   const words = (entry: RotationEntry) =>
     rotationLinesFor(entry, BUILD, 'priest', 'priest-holy', entry.level).find((row) => row.name === 'Heal')

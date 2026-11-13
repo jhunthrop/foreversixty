@@ -65,7 +65,7 @@ Ancestral Healing is three points for 25% more armor on your target for 15 secon
 
 **Before the pull.** Water Shield, then Healing Stream Totem with your party. Water Shield lasts 10 minutes but only holds three globes (four with Totem of Sustaining), and only one globe fires every few seconds; recast it when the globes are gone.
 
-**Tank first.** Riptide heals over its 15 seconds with nothing up front, so it never answers a big hit on its own; it is there to set up the Chain Heal, whose two jumps go to the most injured people near the tank, each for half the heal before. Keep Nature's Swiftness for the tank under 25%, and never spend it on a low rank.
+**Tank first.** Riptide heals over its 15 seconds with nothing up front, so it never answers a big hit on its own; keep it rolling on the tank to set up the Chain Heal, whose two jumps go to the most injured people near the tank, each for half the heal before. Chain Heal the tank as soon as anyone near him is down a hit, not when they are low. Keep Nature's Swiftness for the tank under 25%, and never spend it on a low rank.
 
 **Low ranks.** A rank keeps your whole healing bonus until you are 17 levels past the level you learned it, then loses a twentieth of it every level after, so at 60 a rank learned at 23 or earlier gets none of your gear. The ranks that keep all of it at 60 are Healing Wave 8 to 10, Lesser Healing Wave 4 to 6 and Chain Heal 2 and 3. Healing Wave 7 and Chain Heal 1, both learned at 40, keep most of it, Lesser Healing Wave 3 about two thirds and Healing Wave 6 under half.
 
