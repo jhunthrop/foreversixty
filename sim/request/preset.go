@@ -77,11 +77,15 @@ type presetConsumes struct {
 }
 
 type presetDef struct {
-	Label    string         `json:"label"`
-	Notes    string         `json:"notes"`
-	Buffs    []presetEntry  `json:"buffs"`
-	Debuffs  []presetEntry  `json:"debuffs"`
-	Consumes presetConsumes `json:"consumes"`
+	Label   string        `json:"label"`
+	Notes   string        `json:"notes"`
+	Buffs   []presetEntry `json:"buffs"`
+	Debuffs []presetEntry `json:"debuffs"`
+	// DebuffsByRole are the debuffs only a spec of that role (specs.Spec
+	// Role) carries on top of Debuffs: the tanks' Thunder Clap, a slow that
+	// matters only to whoever the boss swings at.
+	DebuffsByRole map[string][]presetEntry `json:"debuffs_by_role"`
+	Consumes      presetConsumes           `json:"consumes"`
 }
 
 // Presets is the curated file's presets, by name.
@@ -127,6 +131,11 @@ func (d presetDef) validate() error {
 	}
 	if err := validateBuffList(d.Debuffs, owners, true); err != nil {
 		return err
+	}
+	for _, debuffs := range d.DebuffsByRole {
+		if err := validateBuffList(debuffs, owners, true); err != nil {
+			return err
+		}
 	}
 	for _, group := range d.Consumes.Groups {
 		if err := validateConsumeList(append(slices.Clone(group.IDs), group.DualWieldIDs...)); err != nil {
@@ -205,7 +214,8 @@ func consumeSlot(id string) (string, error) {
 }
 
 // Resolve returns the preset as spec carries it: the shared buffs and
-// debuffs, and the consumables of the spec's group, class and school.
+// debuffs, its role's debuffs, and the consumables of the spec's group,
+// class and school.
 func (p Presets) Resolve(name string, spec specs.Spec) (ResolvedPreset, error) {
 	def, ok := p[name]
 	if !ok {
@@ -230,7 +240,7 @@ func (p Presets) Resolve(name string, spec specs.Spec) (ResolvedPreset, error) {
 	resolved := ResolvedPreset{
 		Label:    def.Label,
 		Buffs:    publicEntries(def.Buffs),
-		Debuffs:  publicEntries(def.Debuffs),
+		Debuffs:  publicEntries(append(slices.Clone(def.Debuffs), def.DebuffsByRole[spec.Role]...)),
 		Consumes: publicEntries(entries),
 		Notes:    def.Notes,
 		slots:    make(map[string]string, len(entries)),
