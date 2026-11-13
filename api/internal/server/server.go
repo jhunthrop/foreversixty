@@ -18,6 +18,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/coach"
 	"github.com/jhunthrop/foreversixty/api/internal/creators"
 	"github.com/jhunthrop/foreversixty/api/internal/discordbot"
+	"github.com/jhunthrop/foreversixty/api/internal/engagement"
 	"github.com/jhunthrop/foreversixty/api/internal/events"
 	"github.com/jhunthrop/foreversixty/api/internal/golinks"
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
@@ -108,6 +109,8 @@ type Deps struct {
 	// RealmAnswers serves the unknown-realm question's answer (POST /v1/me/realm-answers); nil
 	// (the Battle.net character import off) leaves it unmounted.
 	RealmAnswers *bnetimport.Service
+	// Engagement serves the owner's daily and weekly actives and retention (/admin/activity).
+	Engagement *engagement.Service
 
 	TrustedProxyHops int
 }
@@ -217,6 +220,9 @@ func NewRouter(d Deps) http.Handler {
 	}
 	if d.RealmAnswers != nil {
 		bnetimport.MountRealmAnswers(mux, d.RealmAnswers)
+	}
+	if d.Engagement != nil {
+		engagement.Mount(mux, d.Engagement)
 	}
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such route", nil)

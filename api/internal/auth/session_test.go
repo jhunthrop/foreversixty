@@ -356,3 +356,57 @@ func TestSignedInRequestsReportTheVisitButCompanionsDoNot(t *testing.T) {
 		t.Fatalf("visits = %v, want the session's account once", visits.ids)
 	}
 }
+
+// recordingActivity remembers every actor the authenticator reported as active.
+type recordingActivity struct{ actors []Actor }
+
+func (v *recordingActivity) Active(a Actor) { v.actors = append(v.actors, a) }
+
+func TestEveryAuthenticatedRequestReportsItsActorToActivity(t *testing.T) {
+	store := testStore(t)
+	ctx := context.Background()
+	u, err := store.UpsertEmailUser(ctx, "active@example.com")
+	if err != nil {
+		t.Fatal(err)
+	}
+	sess, err := store.CreateSession(ctx, u.ID, "email", SessionTTL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	companion, companionHash := NewDeviceToken()
+	if _, err := store.CreateDevice(ctx, u.ID, "Raid PC", "windows/amd64", companionHash); err != nil {
+		t.Fatal(err)
+	}
+	app, appHash := NewDeviceToken()
+	if _, err := store.CreateAppDevice(ctx, u.ID, "iPhone", "ios", appHash); err != nil {
+		t.Fatal(err)
+	}
+	activity := &recordingActivity{}
+	a := &Authenticator{Store: store, Activity: activity}
+	h := a.Middleware(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { w.WriteHeader(http.StatusOK) }))
+
+	h.ServeHTTP(httptest.NewRecorder(), httptest.NewRequest(http.MethodGet, "/v1/me", nil))
+	for _, token := range []string{companion, app} {
+		r := httptest.NewRequest(http.MethodGet, "/v1/me", nil)
+		r.Header.Set("Authorization", "Bearer "+token)
+		h.ServeHTTP(httptest.NewRecorder(), r)
+	}
+	signed := httptest.NewRequest(http.MethodGet, "/v1/me", nil)
+	signed.AddCookie(&http.Cookie{Name: SessionCookie, Value: sess.ID})
+	h.ServeHTTP(httptest.NewRecorder(), signed)
+	refused := newCSRFRequest(sess.ID, "tok", true, "wrong")
+	h.ServeHTTP(httptest.NewRecorder(), refused)
+
+	got := activity.actors
+	if len(got) != 3 {
+		t.Fatalf("activity heard %d actors, want companion, app and session: %+v", len(got), got)
+	}
+	if got[0].DeviceKind != DeviceKindCompanion || !got[1].IsApp() || got[2].Method != "session" {
+		t.Fatalf("activity heard %+v", got)
+	}
+	for _, actor := range got {
+		if actor.UserID != u.ID {
+			t.Fatalf("activity heard user %d, want %d", actor.UserID, u.ID)
+		}
+	}
+}

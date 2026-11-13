@@ -22,3 +22,10 @@ func AddVisitHook(current, hook VisitHook) VisitHook {
 		return VisitHooks{current, hook}
 	}
 }
+
+// ActivityHook hears every authenticated request's actor: a browser session, a companion or an
+// app (engagement.Recorder satisfies it, to keep the daily active record). It must return at
+// once, as VisitHook says.
+type ActivityHook interface {
+	Active(a Actor)
+}

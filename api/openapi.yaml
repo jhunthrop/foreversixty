@@ -1587,6 +1587,48 @@ components:
           maxLength: 254
           description: One plain address; stored trimmed and lowercased.
         platform: { type: string, enum: [ios, android] }
+    EngagementReport:
+      type: object
+      description: The owner's activity figures, internal accounts excluded.
+      required: [today, live_since, internal_accounts, days, weeks, cohorts]
+      properties:
+        today: { type: string, format: date }
+        live_since: { type: [string, "null"], format: date, description: The first live-recorded UTC day; null before any }
+        internal_accounts: { type: integer }
+        days: { type: array, items: { $ref: '#/components/schemas/EngagementPeriod' } }
+        weeks: { type: array, items: { $ref: '#/components/schemas/EngagementPeriod' } }
+        cohorts: { type: array, items: { $ref: '#/components/schemas/EngagementCohort' } }
+    EngagementPeriod:
+      type: object
+      description: >-
+        One UTC day or one Monday-to-Sunday week. new signed up in the period, returning is
+        active minus new; site, addon and app count accounts per surface (an account can be on
+        several).
+      required: [start, active, new, returning, site, addon, app, partial]
+      properties:
+        start: { type: string, format: date }
+        active: { type: integer }
+        new: { type: integer }
+        returning: { type: integer }
+        site: { type: integer }
+        addon: { type: integer }
+        app: { type: integer }
+        partial: { type: boolean }
+    EngagementCohort:
+      type: object
+      description: The accounts that signed up in one week; weeks[k] is how many were active in week N+k+1.
+      required: [week, joined, weeks]
+      properties:
+        week: { type: string, format: date }
+        joined: { type: integer }
+        weeks:
+          type: array
+          items:
+            type: object
+            required: [active, partial]
+            properties:
+              active: { type: integer }
+              partial: { type: boolean }
     AppTester:
       type: object
       description: One phone-app beta signup, as the owner's list shows it.
@@ -11048,6 +11090,32 @@ paths:
                         required: [testers]
                         properties:
                           testers: { type: array, items: { $ref: '#/components/schemas/AppTester' } }
+        '401':
+          description: Not signed in
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '403':
+          description: Signed in, not the admin
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+
+  /v1/admin/engagement:
+    get:
+      summary: Daily and weekly active accounts and retention by signup week (the owner's /admin/activity page)
+      operationId: getEngagement
+      description: >-
+        Admin browser session only. private, no-store. Read from user_active_days, which the auth
+        middleware writes once per account, UTC day and surface. The owner's account and every
+        account holding a granted Premium are left out of every figure (internal_accounts counts
+        them). Days and weeks are newest first; cohorts oldest first. A period or cohort week that
+        begins before live_since holds only what the backfill reconstructed and is partial.
+      responses:
+        '200':
+          description: The figures
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - { type: object, properties: { data: { $ref: '#/components/schemas/EngagementReport' } } }
         '401':
           description: Not signed in
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }

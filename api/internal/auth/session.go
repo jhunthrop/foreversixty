@@ -76,6 +76,15 @@ type Authenticator struct {
 	Log    *slog.Logger
 	// Visits hears every signed-in browser or app request's account; nil hears none.
 	Visits VisitHook
+	// Activity hears every authenticated request's actor, the companion's included; nil hears none.
+	Activity ActivityHook
+}
+
+// active tells Activity about an authenticated request's actor.
+func (a *Authenticator) active(actor Actor) {
+	if a.Activity != nil {
+		a.Activity.Active(actor)
+	}
 }
 
 // visited tells Visits about a signed-in request's account.
@@ -106,8 +115,9 @@ func (a *Authenticator) Middleware(next http.Handler) http.Handler {
 					if d.Kind == DeviceKindApp {
 						a.visited(u)
 					}
-					next.ServeHTTP(w, r.WithContext(WithActor(r.Context(),
-						Actor{UserID: u.ID, Role: u.Role, Method: "device", DeviceID: d.ID, DeviceKind: d.Kind})))
+					actor := Actor{UserID: u.ID, Role: u.Role, Method: "device", DeviceID: d.ID, DeviceKind: d.Kind}
+					a.active(actor)
+					next.ServeHTTP(w, r.WithContext(WithActor(r.Context(), actor)))
 					return
 				}
 				err = uerr
@@ -169,8 +179,9 @@ func (a *Authenticator) Middleware(next http.Handler) http.Handler {
 			return
 		}
 		a.visited(u)
-		next.ServeHTTP(w, r.WithContext(WithActor(r.Context(),
-			Actor{UserID: u.ID, Role: u.Role, Method: "session"})))
+		actor := Actor{UserID: u.ID, Role: u.Role, Method: "session"}
+		a.active(actor)
+		next.ServeHTTP(w, r.WithContext(WithActor(r.Context(), actor)))
 	})
 }
 

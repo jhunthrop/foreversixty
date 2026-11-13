@@ -27,6 +27,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/config"
 	"github.com/jhunthrop/foreversixty/api/internal/dataaddon"
 	"github.com/jhunthrop/foreversixty/api/internal/db"
+	"github.com/jhunthrop/foreversixty/api/internal/engagement"
 	"github.com/jhunthrop/foreversixty/api/internal/golinks"
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/jobs"
@@ -645,6 +646,10 @@ func serve(log *slog.Logger) error {
 		log.Warn("auth", "state", "battle.net is not configured", "effect", "email sign-in only")
 	}
 
+	// The daily active record: every authenticated request's account, day and surface.
+	engagementStore := &engagement.Store{Pool: pool}
+	authenticator.Activity = &engagement.Recorder{Store: engagementStore, Log: log}
+
 	reportStore := &reports.Store{Pool: pool}
 	rankStore := &rankings.Store{Pool: pool, Specs: inferrer(treeData), APIBaseURL: cfg.APIBaseURL, Trees: treeData}
 	ratingStore := &rating.Store{Pool: pool, Log: log}
@@ -673,6 +678,7 @@ func serve(log *slog.Logger) error {
 		AppTesters: &apptesters.Service{
 			Testers: &apptesters.Store{Pool: pool}, Log: log, TrustedProxyHops: cfg.TrustedProxyHops,
 		},
+		Engagement:       &engagement.Service{Reports: engagementStore, Log: log},
 		TrustedProxyHops: cfg.TrustedProxyHops,
 	}
 
