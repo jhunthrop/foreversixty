@@ -3,9 +3,9 @@ name: data
 on:
   push:
     branches: [main, 'land/**']
-    paths: ['data/**', 'sim/specs/**', 'sim/enginever/version.go', 'sim/request/IDS.md', 'web/src/lib/sim/specs.ts', 'web/src/data/phases.json', 'addon/**', '.github/workflows/data.yml']
+    paths: ['data/**', 'sim/specs/**', 'sim/enginever/version.go', 'sim/request/IDS.md', 'web/src/lib/sim/specs.ts', 'web/src/data/phases.json', 'addon/**', 'web/src/content/guides/**', 'sim/cmd/addon-builds/**', 'sim/leveling/**', '.github/workflows/data.yml']
   pull_request:
-    paths: ['data/**', 'sim/specs/**', 'sim/enginever/version.go', 'sim/request/IDS.md', 'web/src/lib/sim/specs.ts', 'web/src/data/phases.json', 'addon/**', '.github/workflows/data.yml']
+    paths: ['data/**', 'sim/specs/**', 'sim/enginever/version.go', 'sim/request/IDS.md', 'web/src/lib/sim/specs.ts', 'web/src/data/phases.json', 'addon/**', 'web/src/content/guides/**', 'sim/cmd/addon-builds/**', 'sim/leveling/**', '.github/workflows/data.yml']
   workflow_dispatch:
     inputs:
       product: { description: 'wago.tools product key', required: true, default: 'wow_classic_era' }
@@ -24,6 +24,9 @@ on:
       build: { type: string, required: false, default: '' }
       allow_shrink: { type: boolean, required: false, default: false }
 permissions: { contents: read }
+env:
+  # The fast addon-data contract tests, run in every mode (the `test` job's note).
+  ADDON_DATA_TESTS: tests/test_addondata.py tests/test_addonbis.py tests/test_addonrotation.py tests/test_audit_addon.py
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -39,6 +42,15 @@ jobs:
       - name: byte-compile the pipeline (launch mode)
         if: vars.LAUNCH_MODE == 'true'
         run: uv run python -m compileall -q pipeline tests
+      # The addon-data contract tests run in every mode, LAUNCH_MODE included: they take
+      # about 30 s and are what stops the addon leaving the site (the builds against the
+      # guides, the rotation rows against the published talent orders, the Data.lua load and
+      # its Lua 5.1 heap budget). Lua 5.1 is the client's own and the budget test reads only
+      # it; 5.4 is the `lua` the load gates call.
+      - name: Install Lua for the Data.lua gates
+        run: sudo apt-get update && sudo apt-get install -y lua5.1 lua5.4
+      - name: the addon-data contract tests (every mode)
+        run: uv run pytest -q --no-cov ${{ env.ADDON_DATA_TESTS }}
       # loot-contract-drift, 2026-09-30: the full suite, right after lint and
       # before the slower --check/build-dependent steps below, so a contract
       # test that drifts from the pipeline's shape (or vice versa) fails fast
@@ -50,7 +62,7 @@ jobs:
       # classicdb.py, test_simdb_build.py and test_simdb_fork_parity.py all
       # `pytest.skip` cleanly when it is unset rather than failing.
       - if: vars.LAUNCH_MODE != 'true'
-        run: uv run pytest -q --no-cov
+        run: uv run pytest -q --no-cov $(printf -- '--ignore=%s ' ${{ env.ADDON_DATA_TESTS }})
       # sim/specs/specs.go and web/src/lib/sim/specs.ts are generated from
       # curated/specs.json and committed. `specs` is not a per-build emitter,
       # so the fetch job never runs it; this is the gate that catches an edit
@@ -88,20 +100,20 @@ jobs:
         run: uv run python -m pipeline addon-data --build "${{ steps.active.outputs.build }}" --check
       - if: vars.LAUNCH_MODE != 'true'
         run: uv run python -m pipeline coach-rules --build "${{ steps.active.outputs.build }}" --check
-      # test_addondata.py gates the generated Data.lua on a real `load()`, so the
-      # suite needs an interpreter; ubuntu-latest ships none and the test skips
-      # itself without one. A plain apt install rather than a third-party action:
-      # one binary is not worth a new supply-chain dependency.
-      - name: Install Lua for the Data.lua load gate
-        if: vars.LAUNCH_MODE != 'true'
-        run: sudo apt-get update && sudo apt-get install -y lua5.4
+      # The coverage run is the whole suite (the addon-data tests count toward it); Lua
+      # is already installed above for them.
       - if: vars.LAUNCH_MODE != 'true'
         run: uv run pytest
   addon-data:
-    # The push-time owner of addon-data.json and Data.lua (see the `test` job's
-    # note): regenerate them from what main now holds and commit them when they
-    # moved. A push made with the workflow's own token starts no new run, so
-    # the bot's commit never loops back here.
+    # The push-time owner of addon-builds.json, addon-data.json and Data.lua (see the
+    # `test` job's note): regenerate them from what main now holds and commit them when
+    # they moved. A push made with the workflow's own token starts no new run, so the
+    # bot's commit never loops back here.
+    # addon-builds.json (the addon's level 60 and raid build per spec, with each one's
+    # why) is sim/cmd/addon-builds' render of the guides' `build:`, `raidBuild:` and why
+    # lines, so a guide-only push (the paths filter above) re-renders it first and the
+    # addon never drifts from a guide. The generator fails on a guide build not stamped
+    # with the active build, which fails this job loudly rather than shipping stale builds.
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: test
     runs-on: ubuntu-latest
@@ -113,6 +125,19 @@ jobs:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v3
       - run: uv sync
+      # The sim module resolves the engine fork through its go.mod replace, which CI pins
+      # (sim.yml's way; addon-builds itself imports no engine package). The pinned module
+      # files are kept aside and the tree put back, so the commit and rebase below only
+      # ever see the generated files.
+      - uses: actions/setup-go@v5
+        with: { go-version-file: sim/go.mod, cache-dependency-path: sim/go.sum }
+      - uses: ./.github/actions/pin-engine
+      - name: keep the pinned module files aside
+        working-directory: .
+        run: |
+          mkdir -p "$RUNNER_TEMP/pinned"
+          cp sim/go.mod sim/go.sum "$RUNNER_TEMP/pinned/"
+          git checkout -- sim/go.mod sim/go.sum go.work.sum
       - name: the active build
         id: active
         run: |
@@ -122,27 +147,35 @@ jobs:
       - name: regenerate and commit the addon data when it moved
         env: { BUILD: '${{ steps.active.outputs.build }}' }
         run: |
-          if uv run python -m pipeline addon-data --build "$BUILD" --check; then
-            echo "addon data is in step with its inputs"; exit 0
-          fi
-          uv run python -m pipeline addon-data --build "$BUILD"
+          generated=("builds/$BUILD/addon-builds.json" "builds/$BUILD/addon-data.json" ../addon/ForeverSixty/Data.lua)
+          # addon-builds from the guides on the pinned module, then addon-data from it.
+          regenerate() {
+            cp "$RUNNER_TEMP/pinned/go.mod" "$RUNNER_TEMP/pinned/go.sum" ../sim/
+            (cd .. && go run ./sim/cmd/addon-builds -repo-root .)
+            git -C .. checkout -- sim/go.mod sim/go.sum go.work.sum
+            uv run python -m pipeline addon-data --build "$BUILD"
+          }
+          # Commits the generated files; false when none of them moved.
+          commit_generated() {
+            git add "${generated[@]}"
+            git diff --cached --quiet && return 1
+            git commit -q -m "chore(addon): addon data for $BUILD after ${GITHUB_SHA::9}"
+          }
           git config user.name "forever-data-bot"
           git config user.email "bot@foreversixty.gg"
-          git add "builds/$BUILD/addon-data.json" ../addon/ForeverSixty/Data.lua
-          git commit -q -m "chore(addon): addon data for $BUILD after ${GITHUB_SHA::9}"
+          regenerate
+          commit_generated || { echo "addon data is in step with its inputs"; exit 0; }
           # main moves under a push (bis.yml's own retry loop has the history):
-          # rebase the one commit and retry. On a conflict in the two generated
-          # files, regenerate them on top of the newer main instead of picking a side.
+          # rebase the one commit and retry. On a conflict in the generated files,
+          # regenerate them on top of the newer main instead of picking a side.
           for attempt in 1 2 3 4 5; do
             if git pull --rebase --quiet origin main; then
               git push --quiet && exit 0
             else
               git rebase --abort || true
               git reset -q --hard origin/main
-              uv run python -m pipeline addon-data --build "$BUILD" --check && exit 0
-              uv run python -m pipeline addon-data --build "$BUILD"
-              git add "builds/$BUILD/addon-data.json" ../addon/ForeverSixty/Data.lua
-              git commit -q -m "chore(addon): addon data for $BUILD after ${GITHUB_SHA::9}"
+              regenerate
+              commit_generated || exit 0
             fi
             echo "push attempt $attempt failed; retrying"
             sleep 20
