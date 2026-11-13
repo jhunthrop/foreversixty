@@ -1,8 +1,8 @@
 -- addon/tests/panel_spec.lua
 -- The addon panel (design/specs/2026-11-08-addon-ux.md section 4): the pure model's regions in
--- priority order (Tonight or Last raid, Upgrades, Talents or Pick your path, Rotation), the
--- Tonight answer through the companion outbox behind its feature check, the height budget's
--- shedding, and the frame drawn through the client mock without writing into a client frame.
+-- priority order (Upgrades, Talents or Pick your path, Rotation; tonight's raid lives on the hub's
+-- Guild tab, guild_hub_tab_spec), the height budget's shedding, and the frame drawn through the
+-- client mock without writing into a client frame.
 local helper = require("spec_helper")
 local mock = require("wow_mock")
 local L = require("Locale")
@@ -10,13 +10,8 @@ local L = require("Locale")
 local RaidAssign = require("RaidAssign")
 local START = RaidAssign.epochOf("2026-12-10T02:00:00Z")
 
-local function tonightInput(overrides)
-	local base = {
-		tonight = { raid_id = 42, raid = "Onyxia's Lair", start = START,
-			jobs = { { label = "Phase 2 ranged, west side", purpose = "Keeps the whelps off the healers.",
-				with = "Thornhide" } } },
-		clock = START - (3 * 3600 + 12 * 60), clockText = "8 pm", who = "Ashvale",
-	}
+local function baseInput(overrides)
+	local base = { clock = START - (3 * 3600 + 12 * 60), who = "Ashvale" }
 	for key, value in pairs(overrides or {}) do
 		base[key] = value
 	end
@@ -34,119 +29,6 @@ describe("Panel, the pure model", function()
 
 	after_each(function()
 		mock.uninstall()
-	end)
-
-	describe("Tonight", function()
-		it("shows from 18 hours before the start until six hours after, with the start and a countdown", function()
-			local region = Panel.tonight(tonightInput())
-			assert.are.equal("tonight", region.kind)
-			assert.are.equal("Onyxia's Lair", region.raid)
-			assert.are.equal(string.format(L.panelTonightNote, "8 pm", "in 3 h 12 min"), region.note)
-			assert.is_nil(Panel.tonight(tonightInput({ clock = START - Panel.TONIGHT_SECONDS - 1 })))
-			assert.is_nil(Panel.tonight(tonightInput({ clock = START + RaidAssign.SHOWN_FOR_SECONDS + 1 })))
-			assert.are.equal(L.panelTonightNow, Panel.countdown(START, START + 60))
-			assert.are.equal("in 25 min", Panel.countdown(START, START - 25 * 60))
-		end)
-
-		it("reads On the roster from the assignment alone while the contracts are missing, with no buttons", function()
-			local region = Panel.tonight(tonightInput())
-			assert.are.equal(L.panelOnRoster, region.answer)
-			assert.is_nil(region.buttons)
-			assert.is_nil(region.who)
-			assert.are.equal("Phase 2 ranged, west side", region.job)
-			assert.are.equal(string.format(L.panelWith, "Thornhide"), region.with)
-		end)
-
-		it("offers In, Late, Bench and Out to an unanswered raid only when the companion takes answers", function()
-			local signup = { raid_id = 42, answer = "none" }
-			local region = Panel.tonight(tonightInput({ signup = signup, accepts = true }))
-			assert.are.equal(L.panelAnswerNone, region.answer)
-			assert.are.equal("clientGold", region.answerColor)
-			assert.are.same({ "in", "late", "bench", "out" }, region.buttons)
-			assert.is_nil(region.selected)
-			assert.is_nil(Panel.tonight(tonightInput({ signup = signup, accepts = false })).buttons)
-		end)
-
-		it("names the answer the site holds and keeps the four buttons, the current one selected", function()
-			local cases = { ["in"] = { "In", "tooltipGreen" }, late = { L.panelAnswerLate, "clientGold" },
-				bench = { L.panelAnswerBench, "tooltipBody" }, out = { L.panelAnswerOut, "tooltipMuted" } }
-			for answer, expected in pairs(cases) do
-				local region = Panel.tonight(tonightInput({ signup = { raid_id = 42, answer = answer, role = "dps" },
-					accepts = true }))
-				assert.are.same(expected, { region.answer, region.answerColor }, answer)
-				assert.are.same(Panel.ANSWERS, region.buttons, answer)
-				assert.are.equal(answer, region.selected)
-			end
-			local closed = Panel.tonight(tonightInput({ signup = { raid_id = 42, answer = "in" }, accepts = false }))
-			assert.is_nil(closed.buttons)
-		end)
-
-		it("reads the role alone for the logged-in character, and as <name> only for another one", function()
-			local mine = Panel.tonight(tonightInput({ signup = { raid_id = 42, answer = "in", role = "dps" } }))
-			assert.are.equal("Damage", mine.who)
-			assert.are.equal("Damage", Panel.subLine("Ashvale", "Ashvale", "panelRoleDamage"))
-			assert.are.equal(string.format(L.panelAsRole, "Thornhide", L.panelRoleTank),
-				Panel.subLine("Ashvale", "Thornhide", "panelRoleTank"))
-			assert.are.equal("as Thornhide", Panel.subLine("Ashvale", "Thornhide", nil))
-			assert.is_nil(Panel.subLine("Ashvale", nil, nil))
-		end)
-
-		it("reads In, not sent yet until the inbox confirms an answer at or after the click", function()
-			local pending = { raid_id = 42, answer = "in", answered_at = START - 4 * 3600 }
-			local region = Panel.tonight(tonightInput({ signup = { raid_id = 42, answer = "none" }, accepts = true,
-				pending = pending }))
-			assert.are.equal("In, not sent yet", region.answer)
-			assert.are.equal("tooltipBody", region.answerColor)
-			assert.are.same(Panel.ANSWERS, region.buttons)
-			assert.are.equal("in", region.selected)
-			local changed = Panel.tonight(tonightInput({ accepts = true,
-				pending = { raid_id = 42, answer = "bench", answered_at = START - 3600 },
-				signup = { raid_id = 42, answer = "in", answered_at = "2026-12-09T22:00:00Z" } }))
-			assert.are.equal("Bench, not sent yet", changed.answer)
-			assert.are.equal("bench", changed.selected)
-			local confirmed = Panel.tonight(tonightInput({ accepts = true, pending = pending,
-				signup = { raid_id = 42, answer = "in", answered_at = "2026-12-09T22:00:00Z" } }))
-			assert.are.equal("In", confirmed.answer)
-			assert.are.equal("in", confirmed.selected)
-		end)
-
-		it("names one or two partners and none past that", function()
-			local three = tonightInput()
-			three.tonight.jobs[1].with = "A, B, C"
-			assert.is_nil(Panel.tonight(three).with)
-			local two = tonightInput()
-			two.tonight.jobs[1].with = "A, B"
-			assert.are.equal(string.format(L.panelWith, "A and B"), Panel.tonight(two).with)
-		end)
-
-		it("reads the companion's accepts list as the feature check", function()
-			assert.is_true(Panel.acceptsAnswers({ accepts = { "raid_answer" } }))
-			assert.is_false(Panel.acceptsAnswers({ accepts = {} }))
-			assert.is_false(Panel.acceptsAnswers({}))
-			assert.is_false(Panel.acceptsAnswers(nil))
-		end)
-	end)
-
-	describe("the raid answer in the outbox", function()
-		it("keeps the newest answer per raid and character and drops ones older than a week", function()
-			local Export = require("Export")
-			local now = START
-			local saved = { { character = "Bob-Ash", raid_id = 42, answer = "late", answered_at = now - 100 },
-				{ character = "Bob-Ash", raid_id = 7, answer = "in", answered_at = now - 8 * 86400 } }
-			local added = { { character = "Bob-Ash", raid_id = 42, answer = "in", answered_at = now - 10 } }
-			local list = Export.mergeRaidAnswers(saved, added, now)
-			assert.are.equal(1, #list)
-			assert.are.equal("in", list[1].answer)
-			assert.are.equal(7 * 86400, Export.RAID_ANSWER_KEEP_SECONDS)
-		end)
-
-		it("writes raid_answer into the outbox the contract shapes, and leaves it out with none", function()
-			local Export = require("Export")
-			local entry = { character = "Bob-Ash", raid_id = 42, answer = "in", answered_at = 5 }
-			local outbox = Export.outbox({ character = "Bob-Ash", code = "FS1:x", wallNow = 0, raidAnswers = { entry } })
-			assert.are.same({ entry }, outbox.raid_answer)
-			assert.is_nil(Export.outbox({ character = "Bob-Ash", code = "FS1:x", wallNow = 0, raidAnswers = {} }).raid_answer)
-		end)
 	end)
 
 	describe("Upgrades", function()
@@ -272,8 +154,8 @@ describe("Panel, the pure model", function()
 	end)
 
 	describe("the model and its height", function()
-		it("orders Tonight, Upgrades, Talents, Rotation and never passes the budget", function()
-			local input = tonightInput({ level = 24, targets = {},
+		it("orders Upgrades, Talents, Rotation and never passes the budget", function()
+			local input = baseInput({ level = 24, targets = {},
 				build = { classSlug = "warrior", order = { {}, {} } }, unspent = 0, pointName = "X",
 				progress = { matched = 1, total = 2, offPlan = 0, nextLevel = 25, point = {} },
 				rows = { { spellId = 1, name = "A", fullCondition = "A." } } })
@@ -282,7 +164,7 @@ describe("Panel, the pure model", function()
 			for index, region in ipairs(model.regions) do
 				kinds[index] = region.kind
 			end
-			assert.are.same({ "tonight", "upgrades", "talents", "rotation" }, kinds)
+			assert.are.same({ "upgrades", "talents", "rotation" }, kinds)
 			assert.is_true(model.height <= Panel.MAX_HEIGHT)
 		end)
 
@@ -315,8 +197,7 @@ describe("Panel, the frame", function()
 	end)
 
 	it("draws a full model on an addon frame, writing nothing into a client frame", function()
-		local model = Panel.model(tonightInput({ level = 24, classToken = "HUNTER", fact = "Level 24 Hunter",
-			signup = { raid_id = 42, answer = "none" }, accepts = true,
+		local model = Panel.model(baseInput({ level = 24, classToken = "HUNTER", fact = "Level 24 Hunter",
 			targets = { { itemId = 1, name = "Bow", hex = "0070dd", gain = 3.5, unit = "dps", slotWord = "Ranged",
 				source = "World drop" }, { itemId = 2, name = "Gloves", gain = 1.2, unit = "dps", bag = true, link = "x" } },
 			build = { classSlug = "hunter", order = { {}, {} } }, unspent = 1, pointName = "Lethal Attacks",
@@ -355,9 +236,9 @@ describe("Panel, the frame", function()
 		return table.concat(texts, "\n"), buttons
 	end
 
-	local function raidModel(signup, pending)
-		return Panel.model(tonightInput({ level = 60, classToken = "HUNTER", fact = "Level 60 Hunter",
-			faction = "horde", signup = signup, pending = pending, accepts = true, targets = { { itemId = 1,
+	local function fullModel()
+		return Panel.model(baseInput({ level = 60, classToken = "HUNTER", fact = "Level 60 Hunter",
+			faction = "horde", targets = { { itemId = 1,
 				name = "Bow", hex = "0070dd", gain = 6.4, unit = "dps", slotWord = "Ranged", source = "World drop" } },
 			sim = { age = "2 days ago" },
 			score = { score = 1840, tierColor = { r = 0.64, g = 0.21, b = 0.93 } } }))
@@ -379,7 +260,7 @@ describe("Panel, the frame", function()
 		end
 
 		it("hides the tooltip it owns on leaving", function()
-			Panel.draw(raidModel({ raid_id = 42, answer = "none", role = "dps" }))
+			Panel.draw(fullModel())
 			local over = upgradeHover()
 			assert.is_not_nil(over)
 			_G.GameTooltip.GetOwner = function() return over end
@@ -389,7 +270,7 @@ describe("Panel, the frame", function()
 		end)
 
 		it("leaves another frame's tooltip alone (the bag item the mouse went on to)", function()
-			Panel.draw(raidModel({ raid_id = 42, answer = "none", role = "dps" }))
+			Panel.draw(fullModel())
 			local over = upgradeHover()
 			local other = _G.CreateFrame("Button", nil, _G.UIParent)
 			_G.GameTooltip.GetOwner = function() return other end
@@ -400,7 +281,7 @@ describe("Panel, the frame", function()
 	end)
 
 	it("draws the title band: the medallion with its faction notch, the name and the meta, no score", function()
-		Panel.draw(raidModel({ raid_id = 42, answer = "none", role = "dps" }))
+		Panel.draw(fullModel())
 		local band = Panel.band
 		assert.are.equal("Ashvale", band.foreverSixtyTitle.text)
 		assert.are.equal("Level 60 Hunter", band.foreverSixtyMeta.text)
@@ -419,36 +300,6 @@ describe("Panel, the frame", function()
 		assert.are.equal("", band.foreverSixtyNumber.text)
 		assert.are.equal("", band.foreverSixtyUnit.text)
 		assert.is_false(medallion.foreverSixtyNotch.shown)
-	end)
-
-	it("keeps In, Late, Bench and Out after an answer, the current one teal", function()
-		Panel.draw(raidModel({ raid_id = 42, answer = "none", role = "dps" }))
-		local _, buttons = drawn(Panel.frame)
-		for _, label in ipairs({ "In", "Late", "Bench", "Out" }) do
-			assert.is_not_nil(buttons[label], label)
-			assert.is_false(buttons[label].foreverSixtySelected, label)
-		end
-		Panel.draw(raidModel({ raid_id = 42, answer = "none", role = "dps" },
-			{ raid_id = 42, answer = "late", answered_at = START - 3600 }))
-		local text, after = drawn(Panel.frame)
-		assert.is_truthy(text:find("Late, not sent yet", 1, true))
-		assert.is_true(after.Late.foreverSixtySelected)
-		assert.is_true(after.Late.foreverSixtyTeal[1].shown)
-		for _, label in ipairs({ "In", "Bench", "Out" }) do
-			assert.is_false(after[label].foreverSixtySelected, label)
-			assert.is_false(after[label].foreverSixtyTeal[1].shown, label)
-		end
-	end)
-
-	it("draws the role alone under the raid, Job: in front of the job, and none of the cut lines", function()
-		Panel.draw(raidModel({ raid_id = 42, answer = "in", role = "dps" }))
-		local text = drawn(Panel.frame)
-		assert.is_truthy(text:find("\nDamage\n", 1, true))
-		assert.is_truthy(text:find("Job: ", 1, true))
-		for _, cut in ipairs({ "as Ashvale", "Your job", "You're In", "Sends when", "your sim", "Your other slots",
-			"hover for the full rule", "you can change it later", "Forever Score", "Forever Sixty" }) do
-			assert.is_falsy(text:find(cut, 1, true), cut)
-		end
 	end)
 
 	it("draws Change and Talents side by side on the talent row, and no rank", function()
@@ -569,12 +420,5 @@ describe("Panel, the frame", function()
 		assert.is_nil(_G.ForeverSixtyDB.panel)
 		assert.are.equal("center", Panel.place("key"))
 		_G.ForeverSixtyDB = nil
-	end)
-
-	it("queues an answer only when the companion takes answers", function()
-		_G.ForeverSixtyInbox = nil
-		assert.is_false(Panel.answer(42, "in"))
-		assert.is_false(Panel.answer(42, "maybe"))
-		_G.ForeverSixtyInbox = nil
 	end)
 end)

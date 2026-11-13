@@ -340,30 +340,17 @@ Theme.SIZES = {
 	panelButtonHeight = 22,
 	--- The room a target row keeps at its right for the gain ("+12.3 DPS") beside the name.
 	panelGainWidth = 64,
-	--- The guild tab (spec section 4.7, L5.1): its flyout's width (its button is the panel
-	--- tab's), one roster row, the column header row and its sort arrow, the gap between two
-	--- columns, and the "Online only" row above the headers. The officer region's push
-	--- button is `guildPushWidth` wide; the push confirm frame `guildConfirmWidth`.
-	guildFlyoutWidth = 480,
+	--- The group panel's roster grid (L5.1, L5.2; the guild flyout it was shared with is gone): one
+	--- row, the column header row and its sort arrow, the gap between two columns, the room every
+	--- column header keeps after its label for the sort arrow, the gap from the client frame's side
+	--- tabs, and the scroll track's width.
 	guildRow = 16,
 	guildHeaderRow = 16,
 	guildSortArrow = 8,
 	guildColumnGap = 4,
-	guildToolbar = 20,
-	guildPushWidth = 200,
-	guildConfirmWidth = 300,
-	--- L5.1 fix round 1: the room every column header keeps after its label for the sort
-	--- arrow (items 3 and 5; a right-aligned column's cells end where its label does), the
-	--- gap the flyout keeps from the guild frame's side tabs (item 7), the guild list's scroll
-	--- thumb and track width (item 7), and the room the "Online only" switch takes at the left
-	--- of the count line.
 	guildSortReserve = 10,
 	guildSideClear = 4,
 	guildScrollbar = 8,
-	--- The guild tab's scroll thumb (L3.7 item 41): wider than its track, centred on it, so it
-	--- reads as something to grab; the track (and the columns' room) stay as they were.
-	guildScrollThumb = 10,
-	guildToggleRoom = 88,
 	--- The group panel (spec section 4.8, L5.2): its flyout's width (its button is the panel
 	--- tab's; its headers, columns and scroll track are the guild tab's), the most member rows
 	--- shown at once (each a cell line and the muted weakest-slot line under it), the ready

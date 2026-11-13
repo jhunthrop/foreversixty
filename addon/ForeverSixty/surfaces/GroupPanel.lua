@@ -51,6 +51,7 @@ local Progress = ns.Progress or require("Progress")
 local Sources = ns.Sources or require("Sources")
 local Score = ns.Score or require("Score")
 local Comms = ns.Comms or require("Comms")
+local RaidPrep = ns.RaidPrep or require("RaidPrep")
 local Talents = ns.Talents or require("Talents")
 local Inspect = ns.Inspect or require("Inspect")
 local Prefs = ns.Prefs or require("Prefs")
@@ -107,11 +108,7 @@ GroupPanel.COLUMNS = {
 --- its bosses' npc ids. The data carries the needs per npc id only (contract 1), so the
 --- instance-to-boss map is the addon's own.
 GroupPanel.INSTANCE_IDS = { [409] = "Molten Core", [249] = "Onyxia's Lair", [469] = "Blackwing Lair" }
-GroupPanel.BOSSES = {
-	["Molten Core"] = { 12118, 11982, 12259, 12057, 12056, 12264, 12098, 11988, 12018, 11502 },
-	["Onyxia's Lair"] = { 10184 },
-	["Blackwing Lair"] = { 12435, 13020, 12017, 11983, 14601, 11981, 14020, 11583 },
-}
+GroupPanel.BOSSES = RaidPrep.BOSSES
 --- Who can give or put up each need (the encounter's spell ids, contract 1), by class token:
 --- the coverage list names the members of these classes.
 GroupPanel.PROVIDERS = {

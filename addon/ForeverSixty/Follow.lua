@@ -611,7 +611,7 @@ function Follow.inbox(inbox, key)
 end
 
 --- Builds an officer pushed to this character (L3.7 item 44), newest first, at most
---- Follow.MAX_PUSHED, one per code: each { code, name, from }, in ForeverSixtyDB.pushed[key].
+--- Follow.MAX_PUSHED, one per code: each { code, name, from, at (epoch seconds) }, in ForeverSixtyDB.pushed[key].
 --- Nothing is followed from here; the build dialog lists them as builds to choose from.
 Follow.MAX_PUSHED = 5
 
@@ -641,7 +641,7 @@ function Follow.addPushed(code, name, from)
 			table.remove(list, index)
 		end
 	end
-	table.insert(list, 1, { code = code, name = name, from = from })
+	table.insert(list, 1, { code = code, name = name, from = from, at = type(time) == "function" and time() or nil })
 	while #list > Follow.MAX_PUSHED do
 		table.remove(list)
 	end

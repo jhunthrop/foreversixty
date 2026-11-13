@@ -762,7 +762,6 @@ function Options.register()
 	-- The guild tab (L5.1): its button once the guild frame loads, its flyout on the first
 	-- click; it listens for the guild's snapshot! answers. Nothing on the guild frame is hooked.
 	GuildTab.data = Options.data
-	GuildTab.register()
 	-- A build an officer pushes (L3.7 item 44): queued for the build dialog, never applied.
 	Comms.on("push", function(named, sender)
 		Options.onPush(named, sender)

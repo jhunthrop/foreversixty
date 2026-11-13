@@ -122,6 +122,22 @@ local function loadAddon(state)
 	return modules
 end
 
+--- Tonight's raid an hour out, not signed up, the companion taking answers, and a guild to be in.
+local function guildRaidDay(state)
+	state.guild = { name = "Thornwake Company", rankName = "Raider", rankIndex = 3 }
+	_G.IsInGuild = function()
+		return true
+	end
+	_G.ForeverSixtyInbox = { accepts = { "raid_answer" }, messages = { { type = "raid_signup", raid_id = 42,
+		raid = "Onyxia's Lair", title = "Onyxia", starts_at = os.date("!%Y-%m-%dT%H:%M:%SZ", os.time() + 3600),
+		answer = "none" }, { type = "raid_assignment", raid_id = 42, raid = "Onyxia's Lair", title = "Onyxia",
+		starts_at = os.date("!%Y-%m-%dT%H:%M:%SZ", os.time() + 3600), label = "Phase 2 ranged, west side",
+		purpose = "Fire on the whelps.", with = "Mirelle" } } }
+	helper.load("GuildRaid")
+	helper.load("GuildHubTab")
+	return require("Hub")
+end
+
 describe("every visible button draws its label", function()
 	local state, modules
 
@@ -199,6 +215,17 @@ describe("every visible button draws its label", function()
 		assert.are.same({}, blankLabels(state))
 		_G.ForeverSixtyInbox = nil
 		require("Follow").build = nil
+	end)
+
+	it("labels every answer on the Forever Sixty window's Guild tab, drawn twice", function()
+		local Hub = guildRaidDay(state)
+		assert.are.equal("guild", Hub.open("guild"))
+		mock.renderFrame(state)
+		assert.are.same({}, blankLabels(state), "raid day")
+		require("GuildHubTab").draw()
+		mock.renderFrame(state)
+		assert.are.same({}, blankLabels(state), "drawn again")
+		_G.ForeverSixtyInbox = nil
 	end)
 
 	it("labels the panel's Change and every other button, drawn twice", function()

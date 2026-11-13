@@ -514,12 +514,6 @@ local L = {
 	-- file at the same time for Wave B, and an appended block is the
 	-- smallest surface for the controller to merge.
 	tooltipCapped = "%s capped: more is wasted",
-	guildClaimUnclaimed = "Unclaimed on the site",
-	guildClaimPending = "Claim pending",
-	guildClaimClaimed = "Claimed",
-	guildClaimContested = "Claim contested",
-	guildPendingApprovals = "%d pending approval(s)",
-	guildYourRank = "Your rank: %s",
 	-- Wave-1 scope item 5, wired into OverviewView: the companion inbox's
 	-- own "upgrade" message. Extended with the DPS unit and the sim's own
 	-- date (the whole inbox's `generated_at` stamp -- the message itself
@@ -1153,100 +1147,22 @@ L.diagChatBadgesFailed = "The chat badges failed once and turned themselves off:
 L.dialogLinkLead = "%s's page on " .. L.siteName .. ". Press Ctrl+C, then paste it in your browser."
 L.dialogLinkCopied = "You copied %s's page. Paste it in your browser."
 
--- The guild tab (spec section 4.7, L5.1): the "Forever Sixty" button under the client's guild
--- frame and its flyout: the roster, and for an officer the site's queue and the push.
+-- The guild frame's door into the Forever Sixty window (hub spec 4.5): the "Forever Sixty" button on the
+-- client's guild frame opens the window on Guild (Officer for an officer).
 L.guildTabLabel = L.addonName
-L.guildTabHeader = L.addonName .. " · Guild"
 -- The button's hover, muted under "Forever Sixty" in gold (as the panel tab's).
 L.guildTabHint = {
-	"Your guild's Forever Scores, gear and live builds.",
+	"Tonight's raid, your sign-up and job, and your guild's standings.",
 }
-L.guildTabOnlineOnly = "Online only"
--- The window's title: the guild's name first.
-L.guildTabTitle = "%s \194\183 " .. L.addonName
--- Right of the switch, muted, in two parts (62 characters at most): "14 online of 773" (Online
--- only on) or "773 members · 14 online" (off), or once scrolled past the top the rows in view
--- "4–23 of 97"; then "1 running Forever Sixty" (online guildmates whose addon answered, and the
--- player), or "sharing off" while "Share my build with my guild" is off. No date: the roster is
--- live. Its hover says what running means.
-L.guildTabMembers = "%d members"
-L.guildTabOnline = "%d online"
-L.guildTabCountsJoin = " · "
-L.guildTabCountsHint = "Guildmates who run Forever Sixty share their spec and gear gap in the rows below."
--- Under the header, once, while the record is readable and no row shown has a score.
-L.guildTabNobodyLogs = "Nobody here has logs on the site yet. Scores appear after a member's logs are uploaded."
--- A row's hover: why its cells are dashes, and what the gap is measured against.
-L.guildTabUnderFloor = "Under level %d: not scored yet."
-L.guildTabNotRunning = "Not running Forever Sixty."
-L.guildTabGapOwn = "Gap to your planned gear: %s"
-L.guildTabGapTheirs = "Gap to their planned gear: %s"
--- Under the count line, muted, while the ratings cannot be read or are old (fix round 1,
--- item 1): the Settings foot's state for them, said once for the whole list ("Player
--- ratings: too old. Get the new Forever Sixty Data at foreversixty.gg.").
-L.guildTabRatings = "Player ratings: %s"
--- The column headers; a click sorts by one, a second click turns it round.
-L.guildTabColumns = {
-	name = "Name", level = "Level", spec = "Spec", gear = "Gear", score = "Score", attendance = "Attendance",
-	gap = "Gap",
-}
--- Cells: attendance as a percent, and a live gear gap in its sender's unit (DPS where the data has a
--- DPS per point for their spec, else score points). A value nobody has is a muted dash.
-L.guildTabPercent = "%d%%"
-L.guildTabGapDps = "%d DPS"
-L.guildTabGapHps = "%d HPS"
-L.guildTabGapPts = "%d pts"
--- A record cell for a member the readable record has nothing for (L3.7 item 40), dim.
-L.guildTabDash = "\226\128\148"
--- The player's own gap under 10 DPS shows one decimal (the wire stays an integer): "3.5 DPS".
-L.guildTabGapDpsDecimal = "%.1f DPS"
-L.guildTabGapHpsDecimal = "%.1f HPS"
 -- A gap whose biggest gain is a weapon priced from the data alone (the client's stats not here yet)
--- is a lower bound: "≥ 4 DPS" (the guild tab's Gap cell and the group panel's row).
+-- is a lower bound: "≥ 4 DPS" (the group panel's row).
 L.gapAtLeast = "\226\137\165 %s"
--- The Gear and Gap headers' hover (fix round 1, item 3), a line each: the first as text, the
--- rest muted (fix round 2: Gap says what it measures and what 0 means).
-L.guildTabHeaderHints = {
-	gear = { "Gear score from the nightly record, in points" },
-	score = { "Forever Score from the nightly record, in points" },
-	gap = { "Gap to their planned gear, reported live by the member's addon.",
-		"Biggest slot behind the plan, in DPS or points; 0 means on plan.",
-		"A leading \226\137\165 means at least: a weapon's stats are still on their way." },
-}
--- A row's hover: the member's build as their addon announced it, and offline.
-L.guildTabBuild = "Build: %s"
--- A live row's hover line when its gear gap could not be scored (fix round 2): no "gear gap 0".
-L.guildTabLiveNoGap = "Level %d %s (live)"
-L.guildTabOffline = "Offline"
--- In place of the rows: no roster yet, or nobody online with the switch on.
-L.guildTabNoRoster = "No guild roster yet. It arrives from the server in a moment."
-L.guildTabNobodyOnline = "Nobody online. Turn off Online only to see everyone."
--- A character with no guild: the flyout's one line when it is opened anyway (the button is hidden).
-L.guildTabNoGuild = "Not in a guild."
--- The officer region (an officer or the guild master): the inbox guild message's queue.
-L.guildTabOfficer = "Officer"
-L.guildTabApprovals = "%d approvals waiting on the site"
-L.guildTabApproval = "1 approval waiting on the site"
-L.guildTabNoApprovals = "No approvals waiting"
--- "Guild on the site: Claimed" (the claim state in the Guild page's own words).
-L.guildTabClaim = "Guild on the site: %s"
-L.guildTabPush = "Push the raid build to guild"
-L.guildTabPushNoBuild = "Load a build with /fs to push it."
--- The addon's own confirm frame, naming the build.
-L.guildTabPushConfirm = "Push %s to the guild? Guildmates with Forever Sixty get it as a build they "
-	.. "can choose to use. Nothing changes for them until they do."
-L.guildTabPushYes = "Push"
-L.guildTabCancel = "Cancel"
--- After the push, muted: "Pushed BM raid to guild at 21:04"; a refusal in the warning colour.
-L.guildTabPushed = "Pushed %s to guild at %s"
-L.guildTabPushFailed = "Not pushed: %s"
--- Why a push could not even be offered for sending (L5.1 review item 4).
-L.guildTabPushNoCode = "this build could not be made into a code to send."
--- /fs diag: "Guild tab: closed, 12 rows (2 live), officer no" (L5.1 ruling 6).
-L.diagGuildTab = "Guild tab: %s, %d rows (%d live), officer %s"
+-- /fs diag: "Guild button: yes, officer no" (the button made; the hub's officer gate).
+L.diagGuildTab = "Guild button: %s, officer %s"
 L.diagGuildTabYes = "yes"
 L.diagGuildTabNo = "no"
-L.diagGuildTabNoGuild = "Guild tab: not in a guild"
-L.diagGuildTabFailed = "The guild tab failed and is off until /reload: %s"
+L.diagGuildTabNoGuild = "Guild button: not in a guild"
+L.diagGuildTabFailed = "The guild button failed and is off until /reload: %s"
 
 -- The group panel (spec section 4.8, L5.2): the "Forever Sixty" button under the client's raid
 -- frame and its flyout: one row per member, and after a ready check who lacks what and who
@@ -1630,34 +1546,8 @@ L.diagPanelState = "Panel: %s"
 L.chipHintOpen = "Click: open Forever Sixty"
 -- The title band's meta line: "Level 24 Hunter".
 L.panelFact = "Level %d %s"
-L.panelTonight = "Tonight"
--- The heading note: the start on the client's clock, then how long until it.
-L.panelTonightNote = "%s · %s"
-L.panelInHours = "in %d h %d min"
-L.panelInMinutes = "in %d min"
-L.panelTonightNow = "now"
--- The raid row's sub line names the character only when the answer is for another one.
-L.panelAs = "as %s"
-L.panelAsRole = "as %s, %s"
-L.panelRoleTank = "Tank"
-L.panelRoleHealer = "Healer"
-L.panelRoleDamage = "Damage"
-L.panelAnswerIn = "In"
-L.panelAnswerLate = "Late"
-L.panelAnswerBench = "Bench"
-L.panelAnswerOut = "Out"
-L.panelAnswerNone = "Not answered"
--- Without the raid_signup contract an assignment is the only sign of the raid (sent to In, Late or Bench).
-L.panelOnRoster = "On the roster"
-L.panelButtonIn = "In"
-L.panelButtonLate = "Late"
-L.panelButtonBench = "Bench"
-L.panelButtonOut = "Out"
--- An answer queued in the companion outbox the site has not confirmed yet.
-L.panelAnswerPending = "%s, not sent yet"
+-- The tour's picture of the job line (Onboarding).
 L.panelJob = "Job: %s"
-L.panelWith = "with %s"
-L.panelWithJoin = " and "
 L.panelUpgrades = "Upgrades"
 L.panelInBags = "In your bags"
 L.panelEquip = "Equip"
@@ -1797,6 +1687,74 @@ L.meSynced = "Companion synced %s"
 L.meNoCompanion = "No companion"
 L.meNoPackFoot = "No ratings pack"
 L.mePackOld = "Ratings %d days old"
+
+-- The hub's Guild tab (design/specs/2026-11-13-addon-hub.md 4.5 and 11): tonight's raid, your sign-up
+-- and job, your prep, the guild's sign-ups, the next raids, the guild's standings, the build the
+-- officers sent. The sign-up words are the web's (web/src/lib/guild/raid-copy.ts).
+L.guildTonight = "Tonight"
+L.guildNextRaid = "Next raid"
+L.guildWhen = "%s, %s local"
+L.guildInHours = "in %d h %d min"
+L.guildInMinutes = "in %d min"
+L.guildNow = "now"
+L.guildYourSignup = "Your sign-up:"
+L.guildAnswers = { ["in"] = "In", late = "Late", bench = "Bench", out = "Out" }
+L.guildNotSigned = "Not signed up"
+L.guildOnRoster = "On the roster"
+L.guildRoles = { tank = "Tank", healer = "Healer", dps = "DPS" }
+L.guildAs = "as %s"
+L.guildSent = "sent %s"
+L.guildNotSent = "not sent yet"
+L.guildSendsLater = "Sends when the companion runs"
+L.guildSignUpOnSite = "Sign up on the site"
+L.guildChangeOnSite = "Change it on the site"
+L.guildYourJob = "Your job:"
+L.guildWith = "With %s."
+L.guildNoRaid = "No raid from the site yet."
+L.guildNoRaids = "No raids from %s on the site yet."
+L.guildPrep = "Your prep"
+L.guildFor = "for %s"
+L.guildPrepDoor = "Attunement"
+L.guildInBags = "in your bags"
+L.guildWorn = "worn"
+L.guildNotInBags = "not in your bags"
+L.guildResist = { fire = "Fire resistance", nature = "Nature resistance", frost = "Frost resistance",
+	shadow = "Shadow resistance", arcane = "Arcane resistance" }
+L.guildMissing = "Missing"
+L.guildNeeds = { flask = "Flask or elixir", food = "Buff food",
+	fire_protection = "Greater Fire Protection Potion", frost_protection = "Greater Frost Protection Potion",
+	nature_protection = "Greater Nature Protection Potion", shadow_protection = "Greater Shadow Protection Potion",
+	arcane_protection = "Greater Arcane Protection Potion" }
+L.guildPackedLabel = "Consumables"
+L.guildPacked = "Nothing missing"
+L.guildCarried = "In your bags"
+L.guildCarriedKinds = { flask = "Flask", elixir = "Elixir", food = "Food", fire_protection = "Fire potion",
+	frost_protection = "Frost potion", nature_protection = "Nature potion", shadow_protection = "Shadow potion",
+	arcane_protection = "Arcane potion" }
+L.guildCarriedCount = "%s %d"
+L.guildSignups = "Sign-ups"
+L.guildComing = "%d of %d coming"
+L.guildComingAll = "%d coming"
+L.guildCount = "%d %s"
+L.guildCountNone = "%d not signed up"
+L.guildRoleGroups = { tank = "Tanks", healer = "Healers", melee = "Melee", ranged = "Ranged" }
+L.guildRoleWanted = "%s %d of %d"
+L.guildRoleComing = "%s %d"
+L.guildNext = "Next raids"
+L.guildYouAre = "you are %s of %d raiders"
+L.guildYouAreAtCap = "you are %s of %d at level 60"
+L.guildStanding = "%s of all guilds"
+L.guildNights = "%d raid nights in 90 days"
+L.guildRatingsOld = "Ratings %d days old"
+L.guildColumns = { rank = "#", name = "Raider", score = "Score", attendance = "Att." }
+L.guildPercent = "%d%%"
+L.guildOfficersSent = "Officers sent"
+L.guildFrom = "from %s"
+L.guildFromOn = "from %s, %s"
+L.guildYouFollow = "you follow it"
+L.guildFollow = "Follow"
+L.guildSignUp = "Sign up"
+L.guildChipLine = "%s %s · %s"
 
 ns.L = L
 return L

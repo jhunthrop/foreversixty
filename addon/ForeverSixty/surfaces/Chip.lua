@@ -1170,8 +1170,12 @@ function Chip.handlerFor(chosen)
 	elseif action == "path" then
 		return Chip.togglePath
 	elseif action == "raidjobs" then
+		-- The jobs live on the hub's Guild tab now (spec 2026-11-13-addon-hub 4.5).
 		return function()
-			Theme.say(RaidAssign.command(ForeverSixtyInbox, Export.characterKey(), RaidAssign.now()))
+			local Hub = ns.Hub or package.loaded.Hub
+			if Hub ~= nil then
+				Hub.open("guild")
+			end
 		end
 	end
 	return nil

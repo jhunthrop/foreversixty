@@ -2,8 +2,9 @@
 -- Your job in the next raid (guild raid assignments, web layout spec 2026-11-05 §7.2). The raid
 -- leader picks the names on the site; the inbox carries one `raid_assignment` message per slot
 -- the logged-in character holds in its next raid (docs/contracts/addon-v2.md contract 3; the
--- companion carries the flat message through as is). This module prints those jobs on /fs job
--- and once when the player zones into that raid. It never picks anything and sends nothing.
+-- companion carries the flat message through as is). The hub's Guild tab shows them (RaidAssign.jobs);
+-- this module prints them once when the player zones into that raid, the one moment a window cannot
+-- be opened. It never picks anything and sends nothing.
 local _, ns = ...
 ns = type(ns) == "table" and ns or {}
 local Codec = ns.Codec or require("Codec")
@@ -28,7 +29,6 @@ RaidAssign.COPY = {
 	headerBoss = "Your jobs for %s, %s:",
 	line = "%s: %s",
 	lineWith = "%s with %s: %s",
-	none = "No raid jobs for you yet. Your raid leader sets them on the site.",
 }
 
 --- Seconds since the epoch for "YYYY-MM-DDTHH:MM:SSZ" (UTC), or nil for anything else. Pure:
@@ -80,8 +80,8 @@ function RaidAssign.jobs(inbox, key, now)
 	return jobs
 end
 
---- The character's next raid for the chip's raid-day line and the panel's Tonight region
---- (design/specs/2026-11-08-addon-ux.md 3.2 and 4.3): { raid_id, raid, title, start } from its
+--- The character's next raid for the chip's raid-day line and the Guild tab
+--- (design/specs/2026-11-08-addon-ux.md 3.2; 2026-11-13-addon-hub 4.5): { raid_id, raid, title, start } from its
 --- soonest assignment still on (RaidAssign.jobs), or nil with none. Until the inbox carries
 --- `raid_signup`, an assignment is the only sign of a raid (it is sent only to In, Late or Bench).
 function RaidAssign.tonight(inbox, key, now)
@@ -94,12 +94,12 @@ function RaidAssign.tonight(inbox, key, now)
 		start = RaidAssign.epochOf(first.starts_at), jobs = jobs }
 end
 
---- One line per job, under a header naming the raid: "Main tank with Thornhide: Picks her up...".
-
+--- One line per job, under a header naming the raid: "Main tank with Thornhide: Picks her up...";
+--- none without a job.
 function RaidAssign.lines(jobs)
 	local first = jobs[1]
 	if first == nil then
-		return { RaidAssign.COPY.none }
+		return {}
 	end
 	local title = tostring(first.title or first.raid or "")
 	local boss = first.encounter
@@ -119,11 +119,6 @@ function RaidAssign.lines(jobs)
 		end
 	end
 	return lines
-end
-
---- /fs job: the lines for the logged-in character.
-function RaidAssign.command(inbox, key, now)
-	return RaidAssign.lines(RaidAssign.jobs(inbox, key, now))
 end
 
 --- A name with case, spaces and punctuation dropped, so the client's instance name and the

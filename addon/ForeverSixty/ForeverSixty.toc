@@ -60,6 +60,8 @@ surfaces\Panel.lua
 surfaces\TourExample.lua
 surfaces\Onboarding.lua
 surfaces\GuildTab.lua
+GuildRaid.lua
+surfaces\GuildHubTab.lua
 surfaces\GroupPanel.lua
 RecorderBuffer.lua
 Recorder.lua

@@ -8,20 +8,16 @@
 -- (Widgets.titleBand): the class medallion with its faction notch, the name in bone, "Level 24
 -- Hunter" muted under it (the score, the last raid and the sim live on the window's Me tab). Then, in
 -- priority order, each region only when it has something to say:
---   1. Tonight (a raid within 18 hours or running);
---   2. Upgrades (at most three, the item tooltip's own Next lines);
---   3. Talents (the next point), or Pick your path under 10 with no build;
---   4. Rotation at <level> (collapsed at 60).
+--   1. Upgrades (at most three, the item tooltip's own Next lines);
+--   2. Talents (the next point), or Pick your path under 10 with no build;
+--   3. Rotation at <level> (collapsed at 60).
+-- Tonight's raid lives on the window's Guild tab.
 --
--- Pure model, thin frame: Panel.tonight, upgrades, talents, path, rotation, model and
+-- Pure model, thin frame: Panel.upgrades, talents, path, rotation, model and
 -- fit are plain tables in, plain tables out; Panel.inputs reads the client; Panel.draw lays the
 -- frame out. The frame is built on first open, never at load; it never opens in combat and
 -- closes when combat starts. Nothing is written into a client frame: docked to the character
 -- pane it is anchored to it, never parented.
---
--- The addon never touches the network: a Tonight answer is queued in the companion outbox
--- (contract 4 `raid_answer`) and offered only when the companion says it uploads one (contract 3
--- `accepts`); without that the region says "On the roster" from the raid assignment alone.
 local _, ns = ...
 ns = type(ns) == "table" and ns or {}
 local L = ns.L or require("Locale")
@@ -33,9 +29,7 @@ local Export = ns.Export or require("Export")
 local Follow = ns.Follow or require("Follow")
 local Progress = ns.Progress or require("Progress")
 local Gear = ns.Gear or require("Gear")
-local Codec = ns.Codec or require("Codec")
 local Score = ns.Score or require("Score")
-local RaidAssign = ns.RaidAssign or require("RaidAssign")
 local ItemTooltip = ns.ItemTooltip or require("ItemTooltip")
 local Chip = ns.Chip or require("Chip")
 local BuildDialog = ns.BuildDialog or require("BuildDialog")
@@ -56,13 +50,6 @@ Panel.MAX_ROTATION = 6
 --- upgrades to this many, then the next-ability row goes.
 Panel.SHED_ROTATION = 4
 Panel.SHED_UPGRADES = 2
---- Tonight shows from this long before a raid's start (and while it runs, RaidAssign.SHOWN_FOR_SECONDS).
-Panel.TONIGHT_SECONDS = 18 * 60 * 60
---- The four answers, in the apps' and Discord's order.
-Panel.ANSWERS = { "in", "late", "bench", "out" }
---- The inbox message the answers read.
-Panel.SIGNUP_KIND = "raid_signup"
-Codec.MESSAGE_TYPES[Panel.SIGNUP_KIND] = true
 
 --- Nominal heights the budget is counted in (the frame measures its own lines when it draws):
 --- `head` is the title band and the body's top padding, `foot` the body's bottom padding.
@@ -86,133 +73,6 @@ Panel.TALENTS_COVER_NAME = "ForeverSixtyPanelTalents"
 Panel.TALENTS_COVER_RAISE = 5
 
 -- The pure model --------------------------------------------------------------------------------
-
---- The newest `raid_signup` for `raidId` in the inbox for this character, or nil.
-function Panel.signupFor(inbox, key, raidId)
-	for _, message in ipairs(Codec.inboxMessages(inbox, key, Panel.SIGNUP_KIND)) do
-		if message.raid_id == raidId then
-			return message
-		end
-	end
-	return nil
-end
-
---- The soonest raid the inbox's `raid_signup` messages name within the Tonight window, as
---- RaidAssign.tonight's shape, or nil. Pure.
-function Panel.signupTonight(inbox, key, now)
-	local soonest
-	for _, message in ipairs(Codec.inboxMessages(inbox, key, Panel.SIGNUP_KIND)) do
-		local start = RaidAssign.epochOf(message.starts_at)
-		if start ~= nil and (now == nil or now <= start + RaidAssign.SHOWN_FOR_SECONDS)
-			and (soonest == nil or start < soonest.start) then
-			soonest = { raid_id = message.raid_id, raid = message.raid, title = message.title, start = start, jobs = {} }
-		end
-	end
-	return soonest
-end
-
---- Whether the companion uploads `raid_answer` entries (the inbox's `accepts`, contract 3): the
---- feature check for the answer buttons. Pure.
-function Panel.acceptsAnswers(inbox)
-	if type(inbox) ~= "table" or type(inbox.accepts) ~= "table" then
-		return false
-	end
-	for _, name in ipairs(inbox.accepts) do
-		if name == "raid_answer" then
-			return true
-		end
-	end
-	return false
-end
-
---- "in 3 h 12 min", "in 25 min", or "now" once the raid has started. Pure.
-function Panel.countdown(start, now)
-	local left = math.floor((start - now) / 60)
-	if left <= 0 then
-		return L.panelTonightNow
-	end
-	if left < 60 then
-		return string.format(L.panelInMinutes, left)
-	end
-	return string.format(L.panelInHours, math.floor(left / 60), left % 60)
-end
-
---- The role word: "Tank", "Healer", "Damage".
-local ROLE_KEYS = { tank = "panelRoleTank", healer = "panelRoleHealer", dps = "panelRoleDamage" }
-local ANSWER_KEYS = { ["in"] = "panelAnswerIn", late = "panelAnswerLate", bench = "panelAnswerBench",
-	out = "panelAnswerOut" }
-local ANSWER_COLORS = { ["in"] = "tooltipGreen", late = "clientGold", bench = "tooltipBody", out = "tooltipMuted" }
-local BUTTON_KEYS = { ["in"] = "panelButtonIn", late = "panelButtonLate", bench = "panelButtonBench",
-	out = "panelButtonOut" }
-
---- The raid row's sub line: the role alone ("Damage") for the logged-in character, nil with no
---- role; "as <name>, <role>" (or "as <name>") only when the answer is for another character
---- (`answeredAs`, a name other than `who`). Pure.
-function Panel.subLine(who, answeredAs, roleKey)
-	local role = roleKey ~= nil and L[roleKey] or nil
-	if answeredAs == nil or answeredAs == who then
-		return role
-	end
-	return role ~= nil and string.format(L.panelAsRole, answeredAs, role) or string.format(L.panelAs, answeredAs)
-end
-
---- The Tonight region (spec 4.3 item 1), or nil. `input`: { tonight (RaidAssign.tonight's), signup
---- (the raid's raid_signup, or nil), accepts (Panel.acceptsAnswers), pending (the queued outbox
---- entry for this raid, or nil), clock (epoch now), who (the character's name), answeredAs (the
---- character the answer is for, nil for the logged-in one), clockText (the start on the client's
---- clock) }.
----
---- The answer reads, in order: a queued answer the inbox has not confirmed ("In, not sent yet",
---- white); the signup's answer ("In" green, "Late" gold, "Bench" white, "Out" grey); "Not
---- answered" (gold); with no signup at all, "On the roster" from the assignment alone. With a
---- signup and a companion that takes answers, the four buttons stay whatever the answer, so it can
---- be changed; `selected` names the current answer's (queued or confirmed), drawn teal.
-function Panel.tonight(input)
-	local tonight = input.tonight
-	if type(tonight) ~= "table" or type(tonight.start) ~= "number" or type(input.clock) ~= "number" then
-		return nil
-	end
-	if input.clock < tonight.start - Panel.TONIGHT_SECONDS
-		or input.clock > tonight.start + RaidAssign.SHOWN_FOR_SECONDS then
-		return nil
-	end
-	local region = {
-		kind = "tonight", raidId = tonight.raid_id, raid = tonight.raid or "",
-		note = string.format(L.panelTonightNote, input.clockText or "", Panel.countdown(tonight.start, input.clock)),
-	}
-	local signup, pending = input.signup, input.pending
-	region.who = Panel.subLine(input.who, input.answeredAs, signup ~= nil and ROLE_KEYS[signup.role] or nil)
-	local confirmedAt = signup ~= nil and RaidAssign.epochOf(signup.answered_at) or nil
-	if pending ~= nil and ANSWER_KEYS[pending.answer] ~= nil
-		and (confirmedAt == nil or confirmedAt < (pending.answered_at or 0)) then
-		region.answer = string.format(L.panelAnswerPending, L[BUTTON_KEYS[pending.answer]])
-		region.answerColor = "tooltipBody"
-		region.selected = pending.answer
-	elseif signup ~= nil and ANSWER_KEYS[signup.answer] ~= nil then
-		region.answer, region.answerColor = L[ANSWER_KEYS[signup.answer]], ANSWER_COLORS[signup.answer]
-		region.selected = signup.answer
-	elseif signup ~= nil then
-		region.answer, region.answerColor = L.panelAnswerNone, "clientGold"
-	else
-		region.answer, region.answerColor = L.panelOnRoster, "tooltipBody"
-	end
-	if signup ~= nil and input.accepts then
-		region.buttons = Panel.ANSWERS
-	end
-	local job = (tonight.jobs or {})[1]
-	if type(job) == "table" and type(job.label) == "string" then
-		region.job = job.label
-		region.purpose = job.purpose
-		local names = {}
-		for name in tostring(job.with or ""):gmatch("[^,]+") do
-			names[#names + 1] = (name:gsub("^%s+", ""):gsub("%s+$", ""))
-		end
-		if #names >= 1 and #names <= 2 then
-			region.with = string.format(L.panelWith, table.concat(names, L.panelWithJoin))
-		end
-	end
-	return region
-end
 
 --- The Upgrades region (spec 4.3 item 2): at most MAX_UPGRADES rows from PanelTab.targets (the
 --- tooltip's own Next lines, or the bag item a slot's hover leads with), each { itemId, name, hex,
@@ -362,9 +222,7 @@ end
 function Panel.regionHeight(region)
 	local H = Panel.H
 	local height = H.heading + H.rule
-	if region.kind == "tonight" then
-		height = height + H.row + H.line * (region.with and 2 or 1) + (region.buttons and H.button + H.gap or 0)
-	elseif region.kind == "upgrades" then
+	if region.kind == "upgrades" then
 		height = height + H.row * #region.rows + (region.rest and H.line or 0) + (region.sources and H.sources or 0)
 	elseif region.kind == "talents" then
 		height = height + (region.finished and 0 or H.talentRow)
@@ -403,8 +261,8 @@ local function regionOf(model, kind)
 end
 
 --- The model within `limit` (spec 4.4): past it the rotation drops to SHED_ROTATION rows, then the
---- upgrades to SHED_UPGRADES, then the next-ability row goes. Tonight and the next talent never
---- drop. Returns the model (shed in place on a copy of the lists).
+--- upgrades to SHED_UPGRADES, then the next-ability row goes. The next talent never
+--- drops. Returns the model (shed in place on a copy of the lists).
 function Panel.fit(model, limit)
 	limit = limit or Panel.MAX_HEIGHT
 	local rotation, upgrades = regionOf(model, "rotation"), regionOf(model, "upgrades")
@@ -446,10 +304,6 @@ end
 --- The panel's model from its inputs: the head and the regions in order, fitted. Pure.
 function Panel.model(input)
 	local regions = {}
-	local tonight = Panel.tonight(input)
-	if tonight ~= nil then
-		regions[#regions + 1] = tonight
-	end
 	regions[#regions + 1] = Panel.upgrades(input)
 	local path = Panel.path(input)
 	if path ~= nil then
@@ -471,37 +325,6 @@ end
 --- and class only, `input.fact`), the class and faction for the medallion. Pure.
 function Panel.head(input)
 	return { title = input.who or "", meta = input.fact or "", classToken = input.classToken, faction = input.faction }
-end
-
--- The raid answer, through the companion outbox ----------------------------------------------
-
---- This character's queued answer for `raidId`, or nil.
-function Panel.pendingAnswer(raidId)
-	local character = Export.outboxCharacter()
-	local outbox = type(ForeverSixtyDB) == "table" and ForeverSixtyDB.outbox or nil
-	local list = Export.mergeRaidAnswers(type(outbox) == "table" and outbox.raid_answer or nil, Export.raidAnswers)
-	for _, entry in ipairs(list) do
-		if entry.raid_id == raidId and entry.character == character then
-			return entry
-		end
-	end
-	return nil
-end
-
---- A Tonight button: the answer queued for the companion at once (Export.saveOutbox writes the
---- outbox; the file is written at the next reload or logout), only when the companion takes
---- answers. False when it did not queue.
-function Panel.answer(raidId, answer)
-	if raidId == nil or ANSWER_KEYS[answer] == nil or not Panel.acceptsAnswers(ForeverSixtyInbox) then
-		return false
-	end
-	Export.raidAnswers = Export.mergeRaidAnswers(Export.raidAnswers, { {
-		character = Export.outboxCharacter(), raid_id = raidId, answer = answer,
-		answered_at = type(time) == "function" and time() or 0,
-	} })
-	Export.saveOutbox(Panel.data or ns.Data)
-	Panel.refresh()
-	return true
 end
 
 -- Reading the client ----------------------------------------------------------------------------
@@ -545,18 +368,12 @@ function Panel.inputs(data)
 		stagedRanks = ranks
 	end
 	local build = Follow.build
-	local key = Export.characterKey()
 	local clock = Score.clock()
 	local name = Compat.playerName()
-	local tonight = RaidAssign.tonight(ForeverSixtyInbox, key, clock)
-	local accepts = Panel.acceptsAnswers(ForeverSixtyInbox)
-	if tonight == nil and accepts then
-		tonight = Panel.signupTonight(ForeverSixtyInbox, key, clock)
-	end
 	local input = {
 		level = level, classToken = classToken, who = name, fact = factLine(level, classToken),
 		faction = base.faction,
-		clock = clock, tonight = tonight, accepts = accepts,
+		clock = clock,
 		targets = upgradeTargets(base),
 		build = build, buildName = build ~= nil and Follow.panelBuildName(data, build, level) or nil,
 		progress = Progress.build(build, stagedRanks, level),
@@ -568,12 +385,6 @@ function Panel.inputs(data)
 		question = Follow.specQuestion(data, Talents.playerClassSlug(), ranks),
 		split = Follow.specSplit(data, Talents.playerClassSlug(), ranks),
 	}
-	if tonight ~= nil then
-		input.signup = Panel.signupFor(ForeverSixtyInbox, key, tonight.raid_id)
-		input.pending = Panel.pendingAnswer(tonight.raid_id)
-		local stamp = Compat.localTime(tonight.start)
-		input.clockText = stamp ~= nil and Compat.clockText(stamp.hour, stamp.min) or ""
-	end
 	local specBis = base.spec ~= nil and type(data.bis) == "table" and data.bis[base.spec] or nil
 	input.picksStart = base.faction and Gear.firstBand(specBis, level) or nil
 	input.sources = Panel.sourceLine(data, base.spec, base.faction and Gear.bandFor(specBis, level) or nil, base.faction)
@@ -808,15 +619,6 @@ local function spellIcon(spellId)
 	return Compat.spellTexture(spellId) or Theme.UNKNOWN_ICON
 end
 
---- A raid's icon by its zone name (the client's own icons), a skull for one this table lacks.
-Panel.RAID_ICONS = {
-	["Onyxia's Lair"] = "Interface\\Icons\\INV_Misc_Head_Dragon_Black",
-	["Molten Core"] = "Interface\\Icons\\Spell_Fire_Incinerate",
-	["Blackwing Lair"] = "Interface\\Icons\\INV_Misc_Head_Dragon_01",
-	["Zul'Gurub"] = "Interface\\Icons\\INV_Misc_Idol_03",
-}
-Panel.RAID_ICON_DEFAULT = "Interface\\Icons\\INV_Misc_Bone_HumanSkull_01"
-
 --- The frame: the umber ground, the title band (the medallion, the name, the meta;
 --- the band is the drag handle), the client's red close X top right. Built on first open;
 --- Escape closes it (UISpecialFrames).
@@ -949,49 +751,6 @@ end
 
 --- The row's text column: the icon's width and the gap after it.
 local ROW_TEXT = 36
-
-local function drawTonight(content, region, y, width)
-	y = heading(content, y, L.panelTonight, region.note, width)
-	local mark = icon(content, Panel.RAID_ICONS[region.raid] or Panel.RAID_ICON_DEFAULT, 28)
-	mark:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y)
-	local name = text(content, region.raid, "ink", "normal")
-	name:SetPoint("TOPLEFT", content, "TOPLEFT", ROW_TEXT, -y)
-	local answer = text(content, region.answer, region.answerColor)
-	answer:SetJustifyH("RIGHT")
-	answer:SetPoint("TOPRIGHT", content, "TOPRIGHT", 0, -y)
-	if region.who ~= nil then
-		local who = text(content, region.who, "umberMuted")
-		who:SetPoint("TOPLEFT", content, "TOPLEFT", ROW_TEXT, -y - Panel.H.line - 2)
-	end
-	y = y + Panel.H.row
-	if region.buttons ~= nil then
-		local x = ROW_TEXT
-		for _, answerKey in ipairs(region.buttons) do
-			local made = button(content, L[BUTTON_KEYS[answerKey]], function()
-				Panel.answer(region.raidId, answerKey)
-			end, answerKey == region.selected)
-			made:SetPoint("TOPLEFT", content, "TOPLEFT", x, -y)
-			x = x + made:GetWidth() + Panel.BUTTON_GAP
-		end
-		y = y + Panel.H.button + Panel.H.gap
-	end
-	if region.job ~= nil then
-		local job = text(content, string.format(L.panelJob, Theme.inlineColor("clientGold", region.job)), "ink")
-		job:SetPoint("TOPLEFT", content, "TOPLEFT", ROW_TEXT, -y)
-		local over = hover(content, function()
-			return region.purpose ~= nil and { region.purpose } or nil
-		end)
-		over:SetPoint("TOPLEFT", job, "TOPLEFT")
-		over:SetPoint("BOTTOMRIGHT", job, "BOTTOMRIGHT")
-		y = y + Panel.H.line
-		if region.with ~= nil then
-			local with = text(content, region.with, "umberMuted")
-			with:SetPoint("TOPLEFT", content, "TOPLEFT", ROW_TEXT, -y)
-			y = y + Panel.H.line
-		end
-	end
-	return y + Panel.H.gap
-end
 
 local function drawUpgradeRow(content, row, y, width)
 	local mark = icon(content, Compat.itemIcon(row.itemId), 28)
@@ -1200,7 +959,7 @@ local function drawRotation(content, region, y, width)
 end
 
 local DRAW = {
-	tonight = drawTonight, upgrades = drawUpgrades, talents = drawTalents,
+	upgrades = drawUpgrades, talents = drawTalents,
 	path = drawPath, rotation = drawRotation,
 }
 
@@ -1276,11 +1035,6 @@ function Panel.open(from)
 	Panel.place(from)
 	Panel.refresh()
 	frame:Show()
-	-- The raid has been seen today: the chip drops it to normal priority until an hour before.
-	if Panel.current ~= nil and Panel.current.regions[1] ~= nil and Panel.current.regions[1].kind == "tonight" then
-		Chip.raidSeenAt = Score.clock()
-		Chip.refresh()
-	end
 	return true
 end
 

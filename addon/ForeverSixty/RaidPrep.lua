@@ -3,6 +3,7 @@
 -- decision D14): resistance totals, the consumables in the bags, the keyring and the
 -- attunement quests and items. Codec.encodeFS1 writes them as the school=, supplies=,
 -- locks=, quests= and owned= sections; the site names the consumables and judges the readiness.
+-- RaidPrep.summary reads the same for the hub's Guild tab: what tonight's raid asks of the player.
 --
 -- Each reader answers nil when this client has no API for it, and Export then writes no
 -- section: an absent section reads "not tracked" on the site, never "missing". A reader the
@@ -186,30 +187,44 @@ function RaidPrep.quests()
 	return out
 end
 
---- Each of `ids` and whether it is worn or in `bags`: { { itemId, held } } in `ids`' order, nil
---- without a container API (an empty read would prove nothing).
-function RaidPrep.held(ids, bags, container)
+--- Where each of `ids` is: "worn", "bags" (the carried bags) or nil (not held), by id; nil without a
+--- container API (an empty read would prove nothing). Worn wins over the bags.
+function RaidPrep.locations(ids, bags, container)
 	if not RaidPrep.hasContainers() then
 		return nil
 	end
-	local held = {}
-	for slot = 1, RaidPrep.EQUIPPED_SLOTS do
-		local id = itemOf(GetInventoryItemLink("player", slot))
-		if id ~= nil then
-			held[id] = true
-		end
+	local wanted = {}
+	for _, id in ipairs(ids) do
+		wanted[id] = true
 	end
+	local where = {}
 	for _, bag in ipairs(bags) do
 		for slot = 1, container.size(bag) do
 			local id = itemOf(container.link(bag, slot))
-			if id ~= nil then
-				held[id] = true
+			if id ~= nil and wanted[id] then
+				where[id] = "bags"
 			end
 		end
 	end
+	for slot = 1, RaidPrep.EQUIPPED_SLOTS do
+		local id = itemOf(GetInventoryItemLink("player", slot))
+		if id ~= nil and wanted[id] then
+			where[id] = "worn"
+		end
+	end
+	return where
+end
+
+--- Each of `ids` and whether it is worn or in `bags`: { { itemId, held } } in `ids`' order, nil
+--- without a container API (an empty read would prove nothing).
+function RaidPrep.held(ids, bags, container)
+	local where = RaidPrep.locations(ids, bags, container)
+	if where == nil then
+		return nil
+	end
 	local out = {}
 	for index, id in ipairs(ids) do
-		out[index] = { itemId = id, held = held[id] == true }
+		out[index] = { itemId = id, held = where[id] ~= nil }
 	end
 	return out
 end
@@ -231,6 +246,170 @@ function RaidPrep.read(bags, container)
 		keyring = RaidPrep.keyring(bags, container),
 		quests = RaidPrep.quests(),
 	}
+end
+
+-- What tonight's raid asks of the player (the hub's Guild tab, Your prep; spec 2026-11-13-addon-hub 4.5)
+
+--- The raids whose bosses Data.encounterNeeds lists, by zone name (the site's `raid` and the client's
+--- instance name), each with its bosses' npc ids. The data carries the needs per npc id only
+--- (contract 1), so the zone-to-boss map is the addon's own; the Officer tab's readiness reads it too.
+RaidPrep.BOSSES = {
+	["Molten Core"] = { 12118, 11982, 12259, 12057, 12056, 12264, 12098, 11988, 12018, 11502 },
+	["Onyxia's Lair"] = { 10184 },
+	["Blackwing Lair"] = { 12435, 13020, 12017, 11983, 14601, 11981, 14020, 11583 },
+}
+
+--- The boss a carried item is for, by npc id: only the bosses whose need names an item (Nefarian's
+--- Shadow Flame asks for the Onyxia Scale Cloak).
+RaidPrep.BOSS_NAMES = { [11583] = "Nefarian" }
+
+--- The item a raid's door asks the player to carry, by zone: the Drakefire Amulet for Onyxia's Lair.
+RaidPrep.ZONE_ITEMS = { ["Onyxia's Lair"] = RaidPrep.ATTUNEMENT_ITEMS[1] }
+
+--- The supplies every raid asks for (the site's raid-prep check): a flask or a raid elixir, and
+--- buff food; each need is met by any one of its kinds (Data.consumables' kinds).
+RaidPrep.RAID_SUPPLIES = { { "flask", "elixir" }, { "food" } }
+
+--- The potion that answers a protection kind an encounter names: the greater potion of its school.
+RaidPrep.PROTECTION_ITEMS = { fire_protection = 13457, frost_protection = 13456, nature_protection = 13458,
+	shadow_protection = 13459, arcane_protection = 13461 }
+
+--- RaidPrep.resistances' order, by school name (encounterNeeds' `resist`).
+RaidPrep.SCHOOLS = { "fire", "nature", "frost", "shadow", "arcane" }
+
+local function schoolIndex(school)
+	for index, name in ipairs(RaidPrep.SCHOOLS) do
+		if name == school then
+			return index
+		end
+	end
+	return nil
+end
+
+--- The zone's needs from the data: { items = { { itemId, npc } }, resists = { school }, kinds = { kind } },
+--- each once, in the bosses' order. Pure.
+function RaidPrep.needsOf(data, zone)
+	local all = type(data) == "table" and type(data.encounterNeeds) == "table" and data.encounterNeeds or {}
+	local needs, seen = { items = {}, resists = {}, kinds = {} }, {}
+	local function once(list, key, value)
+		if not seen[key] then
+			seen[key] = true
+			list[#list + 1] = value
+		end
+	end
+	for _, npc in ipairs(RaidPrep.BOSSES[zone] or {}) do
+		local entry = type(all[npc]) == "table" and all[npc] or {}
+		if type(entry.item) == "number" then
+			once(needs.items, "item:" .. entry.item, { itemId = entry.item, npc = npc })
+		end
+		if type(entry.resist) == "string" and schoolIndex(entry.resist) ~= nil then
+			once(needs.resists, "resist:" .. entry.resist, entry.resist)
+		end
+		for _, kind in ipairs(type(entry.consumables) == "table" and entry.consumables or {}) do
+			once(needs.kinds, "kind:" .. kind, kind)
+		end
+	end
+	return needs
+end
+
+--- Your prep for a raid in `zone`, from what the client read. `input`: { data, zone, where (item id ->
+--- "worn" or "bags", RaidPrep.locations; nil unread), resistances (RaidPrep.resistances'), counts (kind ->
+--- count of Data.consumables' kinds in the bags; nil unread) }. Rows in order, each
+--- { kind = "door" | "item" | "resist" | "carried" | "missing" | "packed", ... }: the door's item and
+--- where it is (`state` "worn", "bags" or "missing"), each encounter item the same with the boss's
+--- `npc`, each resistance with its `value`, the supplies carried (`counts`: { { kind, count } }), then
+--- the missing supplies (`needs`: { { kinds } or { itemId } }) or, with every need met, "packed".
+--- Rows the client could not read are left out. Pure.
+function RaidPrep.prep(input)
+	local zone, rows = input.zone, {}
+	local where = input.where
+	local doorItem = RaidPrep.ZONE_ITEMS[zone]
+	if doorItem ~= nil and where ~= nil then
+		rows[#rows + 1] = { kind = "door", itemId = doorItem, state = where[doorItem] or "missing" }
+	end
+	local needs = RaidPrep.needsOf(input.data, zone)
+	if where ~= nil then
+		for _, item in ipairs(needs.items) do
+			rows[#rows + 1] = { kind = "item", itemId = item.itemId, npc = item.npc, state = where[item.itemId] or "missing" }
+		end
+	end
+	if type(input.resistances) == "table" then
+		for _, school in ipairs(needs.resists) do
+			rows[#rows + 1] = { kind = "resist", school = school, value = input.resistances[schoolIndex(school)] or 0 }
+		end
+	end
+	local counts = input.counts
+	if type(counts) == "table" and RaidPrep.BOSSES[zone] ~= nil then
+		local missing = {}
+		for _, kinds in ipairs(RaidPrep.RAID_SUPPLIES) do
+			local have = 0
+			for _, kind in ipairs(kinds) do
+				have = have + (counts[kind] or 0)
+			end
+			if have == 0 then
+				missing[#missing + 1] = { kinds = kinds }
+			end
+		end
+		for _, kind in ipairs(needs.kinds) do
+			if (counts[kind] or 0) == 0 then
+				missing[#missing + 1] = { kinds = { kind }, itemId = RaidPrep.PROTECTION_ITEMS[kind] }
+			end
+		end
+		local carried = {}
+		for _, kinds in ipairs(RaidPrep.RAID_SUPPLIES) do
+			for _, kind in ipairs(kinds) do
+				if (counts[kind] or 0) > 0 then
+					carried[#carried + 1] = { kind = kind, count = counts[kind] }
+				end
+			end
+		end
+		for _, kind in ipairs(needs.kinds) do
+			if (counts[kind] or 0) > 0 then
+				carried[#carried + 1] = { kind = kind, count = counts[kind] }
+			end
+		end
+		if #carried > 0 then
+			rows[#rows + 1] = { kind = "carried", counts = carried }
+		end
+		rows[#rows + 1] = #missing > 0 and { kind = "missing", needs = missing } or { kind = "packed" }
+	end
+	return rows
+end
+
+--- Counts by kind of `stacks` (RaidPrep.supplies') that `catalogue` (Data.consumables, item id -> kind)
+--- names; nil for nil stacks. Pure.
+function RaidPrep.kindCounts(stacks, catalogue)
+	if stacks == nil then
+		return nil
+	end
+	local counts = {}
+	for _, stack in ipairs(stacks) do
+		local kind = type(catalogue) == "table" and catalogue[stack.itemId] or nil
+		if kind ~= nil then
+			counts[kind] = (counts[kind] or 0) + (tonumber(stack.count) or 0)
+		end
+	end
+	return counts
+end
+
+--- Your prep for a raid in `zone`, read now (RaidPrep.prep's rows): the door's and the encounters'
+--- items worn or in `bags`, the resistance totals, the supplies counted by kind. `container` is
+--- Export's { size, link }.
+function RaidPrep.summary(zone, data, bags, container)
+	local needs = RaidPrep.needsOf(data, zone)
+	local ids = {}
+	if RaidPrep.ZONE_ITEMS[zone] ~= nil then
+		ids[#ids + 1] = RaidPrep.ZONE_ITEMS[zone]
+	end
+	for _, item in ipairs(needs.items) do
+		ids[#ids + 1] = item.itemId
+	end
+	local catalogue = type(data) == "table" and data.consumables or nil
+	return RaidPrep.prep({
+		data = data, zone = zone, where = RaidPrep.locations(ids, bags, container),
+		resistances = RaidPrep.resistances(),
+		counts = RaidPrep.kindCounts(RaidPrep.supplies(bags, container), catalogue),
+	})
 end
 
 ns.RaidPrep = RaidPrep

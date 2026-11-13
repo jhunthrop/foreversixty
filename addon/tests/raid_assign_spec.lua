@@ -98,7 +98,7 @@ describe("RaidAssign", function()
 		assert.are.equal(Theme.inlineColor("gold", "Soulstones and rebirths") .. ": Soulstone a healer before the pull.",
 			lines[3])
 		assert.are.equal("Your jobs for Onyxia:", RaidAssign.lines({ job({ title = "Onyxia" }) })[1])
-		assert.are.same({ RaidAssign.COPY.none }, RaidAssign.lines({}))
+		assert.are.same({}, RaidAssign.lines({}))
 	end)
 
 	it("prints the jobs once on entering that raid, never elsewhere", function()
@@ -134,37 +134,13 @@ describe("RaidAssign", function()
 	end)
 end)
 
--- /fs job is gone (spec 2026-11-13-addon-hub 10); its printing stays until the Guild tab replaces it.
-describe("RaidAssign.command", function()
-	local RaidAssign
-
-	before_each(function()
-		mock.install({
-			class = { name = "Paladin", token = "PALADIN" },
-			race = { name = "Human", token = "Human" },
-			realm = "Ashbringer",
-			region = 1,
-			playerName = "Bob",
-			talents = { { name = "Holy", talents = {} }, { name = "Protection", talents = {} },
-				{ name = "Retribution", talents = {} } },
-		})
-		require("Theme").reset()
-		helper.load("Export")
-		RaidAssign = helper.load("RaidAssign")
-	end)
-
-	after_each(function()
-		_G.ForeverSixtyInbox = nil
+-- /fs job and its printing are gone (spec 2026-11-13-addon-hub 10): the Guild tab shows the jobs.
+describe("RaidAssign without /fs job", function()
+	it("has no command printer left", function()
+		mock.install({ class = { name = "Paladin", token = "PALADIN" }, playerName = "Bob" })
+		local RaidAssign = helper.load("RaidAssign")
+		assert.is_nil(RaidAssign.command)
+		assert.is_nil(RaidAssign.COPY.none)
 		mock.uninstall()
-	end)
-
-	it("prints this character's jobs, and says so when there are none", function()
-		local key = require("Export").characterKey()
-		_G.ForeverSixtyInbox = { messages = { job({ character = key }) } }
-		local lines = RaidAssign.command(_G.ForeverSixtyInbox, key, RaidAssign.now())
-		assert.are.equal("Your jobs for Ony farm, Onyxia:", lines[1])
-		assert.are.equal(2, #lines)
-		_G.ForeverSixtyInbox = { messages = {} }
-		assert.are.same({ RaidAssign.COPY.none }, RaidAssign.command(_G.ForeverSixtyInbox, key, RaidAssign.now()))
 	end)
 end)

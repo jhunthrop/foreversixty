@@ -26,6 +26,22 @@ local function unsnapped(state)
 	return faults
 end
 
+--- Tonight's raid an hour out, not signed up, the companion taking answers, and a guild to be in.
+local function guildRaidDay(state)
+	state.guild = { name = "Thornwake Company", rankName = "Raider", rankIndex = 3 }
+	_G.IsInGuild = function()
+		return true
+	end
+	_G.ForeverSixtyInbox = { accepts = { "raid_answer" }, messages = { { type = "raid_signup", raid_id = 42,
+		raid = "Onyxia's Lair", title = "Onyxia", starts_at = os.date("!%Y-%m-%dT%H:%M:%SZ", os.time() + 3600),
+		answer = "none" }, { type = "raid_assignment", raid_id = 42, raid = "Onyxia's Lair", title = "Onyxia",
+		starts_at = os.date("!%Y-%m-%dT%H:%M:%SZ", os.time() + 3600), label = "Phase 2 ranged, west side",
+		purpose = "Fire on the whelps.", with = "Mirelle" } } }
+	helper.load("GuildRaid")
+	helper.load("GuildHubTab")
+	return require("Hub")
+end
+
 describe("the addon's windows on the pixel grid", function()
 	local state, Theme
 
@@ -89,6 +105,14 @@ describe("the addon's windows on the pixel grid", function()
 		assert.are.equal("me", require("Hub").open("me"))
 		assert.are.same({}, unsnapped(state))
 		_G.ForeverSixtyInbox = nil
+	end)
+
+	it("snaps every texture on the Forever Sixty window's Guild tab", function()
+		start(1440, 1)
+		local Hub = guildRaidDay(state)
+		assert.are.equal("guild", Hub.open("guild"))
+		assert.are.same({}, unsnapped(state))
+		_G.ForeverSixtyInbox, _G.IsInGuild = nil, nil
 	end)
 
 	it("draws an outline a whole number of pixels thick, never under one", function()

@@ -206,6 +206,75 @@ describe("RaidPrep", function()
 			assert.is_truthy(code:find("|supplies=|locks=|owned=16309:0|", 1, true), code)
 		end)
 	end)
+
+	-- The hub's Guild tab, Your prep (spec 2026-11-13-addon-hub 4.5): what tonight's raid asks of you.
+	describe("prep for a raid", function()
+		local NEEDS = {
+			encounterNeeds = {
+				[10184] = { resist = "fire", consumables = { "fire_protection" } },
+				[11583] = { item = 15138 },
+				[12118] = { resist = "fire", consumables = { "fire_protection" } },
+			},
+			consumables = { [13510] = "flask", [20452] = "food", [13457] = "fire_protection", [9187] = "elixir" },
+		}
+
+		it("asks Onyxia's Lair for the amulet, fire resistance and a fire potion, by the zone's bosses", function()
+			install()
+			local needs = RaidPrep.needsOf(NEEDS, "Onyxia's Lair")
+			assert.are.same({}, needs.items)
+			assert.are.same({ "fire" }, needs.resists)
+			assert.are.same({ "fire_protection" }, needs.kinds)
+			local rows = RaidPrep.prep({ data = NEEDS, zone = "Onyxia's Lair", where = { [16309] = "bags" },
+				resistances = { 42, 10, 0, 15, 0 }, counts = { flask = 1, food = 20 } })
+			assert.are.same({ kind = "door", itemId = 16309, state = "bags" }, rows[1])
+			assert.are.same({ kind = "resist", school = "fire", value = 42 }, rows[2])
+			assert.are.same({ kind = "carried", counts = { { kind = "flask", count = 1 }, { kind = "food", count = 20 } } },
+				rows[3])
+			assert.are.same({ kind = "missing", needs = { { kinds = { "fire_protection" }, itemId = 13457 } } }, rows[4])
+		end)
+
+		it("asks Blackwing Lair for the Onyxia Scale Cloak for Nefarian, worn or not", function()
+			install()
+			local rows = RaidPrep.prep({ data = NEEDS, zone = "Blackwing Lair", where = {}, counts = { elixir = 2, food = 5 } })
+			assert.are.same({ kind = "item", itemId = 15138, npc = 11583, state = "missing" }, rows[1])
+			assert.are.same({ kind = "packed" }, rows[3])
+			assert.are.equal("Nefarian", RaidPrep.BOSS_NAMES[11583])
+			rows = RaidPrep.prep({ data = NEEDS, zone = "Blackwing Lair", where = { [15138] = "worn" } })
+			assert.are.same({ { kind = "item", itemId = 15138, npc = 11583, state = "worn" } }, rows)
+		end)
+
+		it("counts a flask or an elixir as one need and buff food as the other", function()
+			install()
+			local rows = RaidPrep.prep({ data = NEEDS, zone = "Molten Core", counts = {} })
+			assert.are.same({ kind = "missing", needs = { { kinds = { "flask", "elixir" } }, { kinds = { "food" } },
+				{ kinds = { "fire_protection" }, itemId = 13457 } } }, rows[1])
+		end)
+
+		it("leaves out what the client could not read, and says nothing for a raid it has no needs for", function()
+			install()
+			assert.are.same({}, RaidPrep.prep({ data = NEEDS, zone = "Onyxia's Lair" }))
+			assert.are.same({}, RaidPrep.prep({ data = NEEDS, zone = "Zul'Gurub", where = {}, counts = {} }))
+		end)
+
+		it("reads the bags, the gear and the resistances for the summary, worn before the bags", function()
+			local AMULET, POTION = "|Hitem:16309|h", "|Hitem:13457|h"
+			install({ bags = { [0] = { AMULET, POTION, FLASK } }, itemStats = {
+				[AMULET] = { __itemId = 16309, __class = 4, __slot = "INVTYPE_NECK" },
+				[POTION] = { __itemId = 13457, __class = 0, __slot = "" },
+				[FLASK] = { __itemId = 13510, __class = 0, __slot = "" },
+			}, globals = { UnitResistance = function(_, school)
+				return 0, school == 2 and 55 or 0
+			end } })
+			local rows = RaidPrep.summary("Onyxia's Lair", NEEDS, Export.CARRIED_BAGS, container(Export))
+			assert.are.same({ kind = "door", itemId = 16309, state = "bags" }, rows[1])
+			assert.are.same({ kind = "resist", school = "fire", value = 55 }, rows[2])
+			assert.are.same({ kind = "carried", counts = { { kind = "flask", count = 1 }, { kind = "fire_protection",
+				count = 1 } } }, rows[3])
+			assert.are.same({ kind = "missing", needs = { { kinds = { "food" } } } }, rows[4])
+			assert.are.same({ fire_protection = 1, flask = 1 }, RaidPrep.kindCounts({ { itemId = 13457, count = 1 },
+				{ itemId = 13510, count = 1 }, { itemId = 1, count = 9 } }, NEEDS.consumables))
+		end)
+	end)
 end)
 
 describe("Codec FS1 raid-prep sections", function()

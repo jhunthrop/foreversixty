@@ -48,7 +48,7 @@ end
 -- this work under require as well as under the game's TOC loading.
 --- Modules that are tabs of the Forever Sixty window (surfaces/Hub.lua): reloading one reloads the hub
 --- with it, so the tab registers with a fresh window rather than one built on an earlier mock.
-helper.HUB_TABS = { BuildDialog = true, MeFrame = true }
+helper.HUB_TABS = { BuildDialog = true, MeFrame = true, GuildHubTab = true }
 
 function helper.load(name)
 	package.loaded[name] = nil

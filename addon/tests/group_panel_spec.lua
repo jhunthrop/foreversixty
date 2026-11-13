@@ -1657,15 +1657,13 @@ describe("GroupPanel", function()
 			assert.are.equal(said, Chip.raidCheck.text)
 		end)
 
-		-- L3.7 item 46: the columns lead as the guild tab's do (Name, Level, Spec).
-		it("orders its first columns as the guild tab does: Name, Level, Spec", function()
+		-- L3.7 item 46: the columns lead Name, Level, Spec.
+		it("orders its first columns Name, Level, Spec", function()
 			local keys = {}
 			for index, column in ipairs(GroupPanel.COLUMNS) do
 				keys[index] = column.key
 			end
 			assert.are.same({ "name", "level", "spec" }, { keys[1], keys[2], keys[3] })
-			assert.are.same({ "name", "level", "spec" }, { require("GuildTab").COLUMNS[1].key,
-				require("GuildTab").COLUMNS[2].key, require("GuildTab").COLUMNS[3].key })
 		end)
 
 		-- L3.7 item 47: enchants are checked from level 40; below it the cell is blank, the hover says why.

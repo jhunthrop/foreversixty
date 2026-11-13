@@ -349,21 +349,9 @@ function Comms.readiness(named)
 	}
 end
 
---- Counts by kind of the consumable stacks (RaidPrep.supplies' { { itemId, count } }) that
---- the catalogue (Data.consumables, item id -> kind) names; nil for nil stacks. Pure.
-function Comms.supplyCounts(stacks, catalogue)
-	if stacks == nil then
-		return nil
-	end
-	local counts = {}
-	for _, stack in ipairs(stacks) do
-		local kind = type(catalogue) == "table" and catalogue[stack.itemId] or nil
-		if kind ~= nil then
-			counts[kind] = (counts[kind] or 0) + (tonumber(stack.count) or 0)
-		end
-	end
-	return counts
-end
+--- Counts by kind of the consumable stacks that the catalogue (Data.consumables) names: the one
+--- counter the Guild tab's prep reads too (RaidPrep.kindCounts). Pure.
+Comms.supplyCounts = RaidPrep.kindCounts
 
 --- The zone keys of Comms.ATTUNEMENTS the player has: any quest done (RaidPrep.quests'
 --- { { questId, done } }) or any item held (RaidPrep.held's { { itemId, held } }). nil when
