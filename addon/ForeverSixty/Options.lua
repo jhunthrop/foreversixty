@@ -37,7 +37,11 @@ local Hub = ns.Hub or require("Hub")
 local SettingsPage = ns.SettingsPage or require("Settings")
 local PanelTab = ns.PanelTab or require("PanelTab")
 local GuildTab = ns.GuildTab or require("GuildTab")
-local GroupPanel = ns.GroupPanel or require("GroupPanel")
+local GroupMembers = ns.GroupMembers or require("GroupMembers")
+local ReadyCheck = ns.ReadyCheck or require("ReadyCheck")
+local OfficerLoot = ns.OfficerLoot or require("OfficerLoot")
+local Officer = ns.Officer or require("Officer")
+require("OfficerTab")
 local LootCouncil = ns.LootCouncil or require("LootCouncil")
 local RaidDrops = ns.RaidDrops or require("RaidDrops")
 local SiteStatus = ns.SiteStatus or require("SiteStatus")
@@ -249,14 +253,10 @@ function Options.handle(input)
 		return Options.inspectLines()
 	elseif command == "link" then
 		return Options.link(rest)
-	elseif command == "group" then
-		-- The group panel (L5.2 ruling 1): toggled from anywhere; alone, a line says where it is.
-		GroupPanel.data = Options.data
-		return GroupPanel.command()
 	elseif command == "ready" then
-		-- A dry run of the ready check (L5.2 ruling 3), in chat and on the chip.
-		GroupPanel.data = Options.data
-		return GroupPanel.handleReady()
+		-- A dry run of the ready check, in chat and on the chip; the Officer tab's readiness shows it too.
+		ReadyCheck.data = Options.data
+		return ReadyCheck.handleReady()
 	elseif command == "loot" then
 		-- What an item is worth to the player; the master looter's group is asked too (L5.3).
 		LootCouncil.data = Options.data
@@ -264,9 +264,6 @@ function Options.handle(input)
 	elseif command == "drops" then
 		-- What the loot window recorded in this character's raids (guild slice 7, spike rows 103 to 105).
 		return RaidDrops.lines()
-	elseif command == "floor" then
-		-- The group panel's score floor (L5.2 ruling 4): it tags, it never declines.
-		return GroupPanel.handleFloor(rest)
 	elseif command == "diag" then
 		-- Ask the data addon now, so a fresh session reports a missing or old
 		-- one without a tooltip having read it first (Score notes it once).
@@ -289,8 +286,8 @@ function Options.handle(input)
 		surfaces[#surfaces + 1] = PanelTab.diagLine()
 		-- The guild tab (L5.1 ruling 6): open or closed, its rows and live rows, officer or not.
 		surfaces[#surfaces + 1] = GuildTab.diagLine()
-		-- The group panel (L5.2 ruling 5): open or closed, its members, inspected and live, the check.
-		surfaces[#surfaces + 1] = GroupPanel.diagLine()
+		-- The last ready check: when it ran and how many were missing something.
+		surfaces[#surfaces + 1] = ReadyCheck.diagLine()
 		-- The loot council helper (L5.3 ruling 7): the last drop asked about and how many answered.
 		surfaces[#surfaces + 1] = LootCouncil.diagLine()
 		-- What the site will get (X.2 ruling 4): when the export was built, its slots and talents.
@@ -439,9 +436,6 @@ function Options.refreshSurfaces(data, event)
 	PanelTab.refresh(data, event)
 	-- The guild tab (L5.1): its button made once the guild frame exists, an open flyout redrawn.
 	GuildTab.refresh(data)
-	-- The group panel (L5.2): its button made on the Social window, the Raid tab read, an open
-	-- flyout redrawn (fix round 1: also on PLAYER_ENTERING_WORLD, which comes through here).
-	GroupPanel.refresh(data)
 	-- The chat badges' switch, read once here rather than on every chat line (L4.4).
 	ChatBadges.refresh()
 end
@@ -463,11 +457,10 @@ Options.EVENTS = {
 	"QUEST_COMPLETE", "QUEST_FINISHED", "START_LOOT_ROLL",
 	-- The guild tab (L5.1): the roster the flyout asked for has arrived.
 	"GUILD_ROSTER_UPDATE", "PLAYER_GUILD_UPDATE",
-	-- The group panel (L5.2): a member's auras changed while a ready check stands (it also reads
-	-- GROUP_ROSTER_UPDATE, INSPECT_READY, READY_CHECK and the combat events above).
+	-- The ready check: a member's auras changed while a check stands.
 	"UNIT_AURA",
-	-- The loot council helper (L5.3): the master looter asks when a loot window opens; the region
-	-- lingers 60 s after it closes.
+	-- The loot council helper (L5.3): the master looter asks when a loot window opens; the Officer
+	-- tab's session lingers 60 s after it closes.
 	"LOOT_OPENED", "LOOT_CLOSED",
 }
 
@@ -535,8 +528,6 @@ function Options.onEvent(_, event, ...)
 			Options.inspecting[record.key] = nil
 			Theme.say(Inspect.line(record))
 		end
-		-- The group panel's row for the member fills in (L5.2).
-		GroupPanel.onInspectReady(record)
 		return
 	end
 	if event == "LOOT_OPENED" then
@@ -551,15 +542,14 @@ function Options.onEvent(_, event, ...)
 	end
 	if event == "UNIT_AURA" then
 		-- Only a standing ready check reads auras (L5.2), throttled there; nothing else redraws.
-		GroupPanel.onAura((...))
+		ReadyCheck.onAura((...))
 		return
 	end
 	if event == "READY_CHECK" then
-		-- The group panel reads every unit's auras and gives the chip its line (Chip.setRaidCheck
-		-- redraws it); should the panel have turned itself off, the chip redraws all the same.
-		if GroupPanel.onReadyCheck() == nil then
-			Chip.refresh(Options.data)
-		end
+		-- Every unit's auras read against the raid's needs; the chip gets its line (Chip.setRaidCheck
+		-- redraws it).
+		ReadyCheck.data = Options.data
+		ReadyCheck.onReadyCheck()
 		return
 	end
 	if event == "GUILD_ROSTER_UPDATE" then
@@ -574,8 +564,8 @@ function Options.onEvent(_, event, ...)
 	end
 	if event == "GROUP_ROSTER_UPDATE" then
 		Inspect.onEvent(event, ...)
-		-- A member who joined is inspected on arrival; an open group panel redraws (L5.2).
-		GroupPanel.onRosterUpdate()
+		-- A member who joined is inspected on arrival, so the master loot session can score them.
+		GroupMembers.inspectAll()
 		return
 	end
 	if event == "PLAYER_REGEN_DISABLED" or event == "PLAYER_REGEN_ENABLED" then
@@ -594,9 +584,6 @@ function Options.onEvent(_, event, ...)
 			-- The guild tab's button, held back in combat, is made now.
 			GuildTab.onCombatEnd()
 		end
-		-- The group panel's inspects pause in combat and its rows say so (L5.2); its button, held
-		-- back in combat, is made after.
-		GroupPanel.onCombat(event == "PLAYER_REGEN_DISABLED")
 		Chip.refresh(Options.data)
 		return
 	end
@@ -605,14 +592,13 @@ function Options.onEvent(_, event, ...)
 		TalentGlow.watch(Options.data)
 		-- So does the guild frame (Blizzard_Communities): the guild tab's button is made on it.
 		GuildTab.refresh(Options.data)
-		GroupPanel.refresh(Options.data)
 		-- Baganator draws its own bags: the bag arrow goes in as its corner widget.
 		SlotMarks.onAddonLoaded((...))
 		return
 	end
 	if event == "READY_CHECK_FINISHED" then
 		-- The ready check's line stays 30 s more, then goes (L5.2 ruling 3; Chip.finishRaidCheck).
-		GroupPanel.onReadyCheckFinished()
+		ReadyCheck.onReadyCheckFinished()
 		return
 	end
 	if event == "GET_ITEM_INFO_RECEIVED" then
@@ -765,10 +751,11 @@ function Options.register()
 	Comms.on("push", function(named, sender)
 		Options.onPush(named, sender)
 	end)
-	-- The group panel (L5.2): its button on the Social window, its flyout on the first open; it
-	-- listens for the members' hellos and snapshot! answers. No client frame is hooked.
-	GroupPanel.data = Options.data
-	GroupPanel.register()
+	-- The Officer tab's models and the ready check read the shipped data; the master loot session
+	-- follows LootCouncil and gives the chip its loot lines.
+	ReadyCheck.data, GroupMembers.data, Officer.data, OfficerLoot.data = Options.data, Options.data, Options.data,
+		Options.data
+	OfficerLoot.register()
 	-- The loot council helper (L5.3): it answers the master looter's loot? and lists the loot! answers.
 	LootCouncil.data = Options.data
 	LootCouncil.register()

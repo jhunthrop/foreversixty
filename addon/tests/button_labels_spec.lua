@@ -137,6 +137,46 @@ local function guildRaidDay(state)
 	return require("Hub")
 end
 
+--- An officer's raid day: the guild roster, the raid's sign-ups by name, the site's approvals.
+local function officerRaidDay(state)
+	state.guild = { name = "Thornwake Company", rankName = "Officer", rankIndex = 1 }
+	local roster = { { "Brannoc-Realm", 1, "WARRIOR" }, { "Kethra-Realm", 3, "ROGUE" }, { "Pell-Realm", 3, "WARLOCK" } }
+	_G.IsInGuild = function()
+		return true
+	end
+	_G.CanEditOfficerNote = function()
+		return true
+	end
+	_G.GetNumGuildMembers = function()
+		return #roster
+	end
+	_G.GetGuildRosterInfo = function(index)
+		local entry = roster[index]
+		return entry[1], "Raider", entry[2], 60, "", "", "", "", true, 0, entry[3]
+	end
+	local starts = os.date("!%Y-%m-%dT%H:%M:%SZ", os.time() + 3600)
+	_G.ForeverSixtyInbox = { messages = { { type = "raid_signup", raid_id = 42, raid = "Onyxia's Lair", title = "Onyxia",
+		starts_at = starts, answer = "in" }, { type = "raid_roster", raid_id = 42, raid = "Onyxia's Lair",
+		title = "Onyxia", starts_at = starts, size = 40, signups = { ["in"] = 2, late = 0, bench = 0, out = 0, none = 1 },
+		roles = {}, jobs = { held = 0, total = 1 }, members = { { name = "Brannoc", answer = "in" },
+			{ name = "Kethra", answer = "in" }, { name = "Pell", answer = "none" } },
+		assignments = { { label = "Off tank", count = 1, holders = {} } } },
+		{ type = "guild", pending_approvals = 2 } } }
+	helper.load("GuildRaid")
+	helper.load("LootCouncil")
+	helper.load("GroupMembers")
+	helper.load("ReadyCheck")
+	helper.load("Officer")
+	helper.load("OfficerLoot")
+	helper.load("OfficerTab")
+	return require("Hub")
+end
+
+local function officerDone()
+	_G.ForeverSixtyInbox, _G.IsInGuild, _G.CanEditOfficerNote = nil, nil, nil
+	_G.GetNumGuildMembers, _G.GetGuildRosterInfo = nil, nil
+end
+
 describe("every visible button draws its label", function()
 	local state, modules
 
@@ -225,6 +265,17 @@ describe("every visible button draws its label", function()
 		mock.renderFrame(state)
 		assert.are.same({}, blankLabels(state), "drawn again")
 		_G.ForeverSixtyInbox = nil
+	end)
+
+	it("labels Remind, Send to guild and every link on the window's Officer tab, drawn twice", function()
+		local Hub = officerRaidDay(state)
+		assert.are.equal("officer", Hub.open("officer"))
+		mock.renderFrame(state)
+		assert.are.same({}, blankLabels(state), "raid day")
+		require("OfficerTab").draw()
+		mock.renderFrame(state)
+		assert.are.same({}, blankLabels(state), "drawn again")
+		officerDone()
 	end)
 
 	it("labels the panel's Change and every other button, drawn twice", function()

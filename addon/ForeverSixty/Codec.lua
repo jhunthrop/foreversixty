@@ -297,6 +297,17 @@ function Codec.encodeFS1(build)
 	encodeDrops(build, sections)
 	if build.guild and build.guild.name then
 		sections[#sections + 1] = "guild=" .. urlEncode(build.guild.name) .. ":" .. tostring(build.guild.rankIndex)
+		-- The guild's rank names, rank 0 first, each url-encoded and comma joined: their own section, so a
+		-- reader that does not know it forgives it (a third field in guild= would make today's readers
+		-- refuse the code or drop the guild).
+		local ranks = build.guild.rankNames
+		if type(ranks) == "table" and #ranks > 0 then
+			local encoded = {}
+			for index, rank in ipairs(ranks) do
+				encoded[index] = urlEncode(rank)
+			end
+			sections[#sections + 1] = "guildranks=" .. table.concat(encoded, ",")
+		end
 	end
 	-- "who", not "name": the client's font strings treat `|n` as a line break (as `|c`,
 	-- `|r`, `|H`, `|T`, `|A` and `|K` open other escapes), so a section starting with any of
@@ -626,6 +637,13 @@ function Codec.decodeFS1(code)
 				return nil, refuse(L.codecGuildRank, rankText)
 			end
 			build.guild = { name = urlDecode(namePart), rankIndex = tonumber(rankText) }
+		elseif name == "guildranks" and build.guild ~= nil then
+			-- Written right after guild=, so it names the ranks of the guild just read.
+			local ranks = {}
+			for index, rank in ipairs(split(field, ",")) do
+				ranks[index] = urlDecode(rank)
+			end
+			build.guild.rankNames = ranks
 		elseif name == "who" or name == "name" then
 			-- `<name>:<realm>`, both url-encoded, split on the first colon. "name" is the
 			-- spelling one addon build wrote before `|n` turned out to be a line break.

@@ -1,8 +1,10 @@
 -- addon/ForeverSixty/LootCouncil.lua
 -- The loot council helper (spec section 4.9, task L5.3). The master looter's addon asks the group
 -- what a drop is worth to each member (`loot?`), every member's addon answers from its own
--- scoring (`loot!`), and the group panel's Loot region ranks the answers. Nothing here acts on
--- anyone's behalf: it asks, it answers a question that was asked, and it shows.
+-- scoring (`loot!`), and the Officer tab's master loot session ranks the answers (surfaces/OfficerTab.lua,
+-- OfficerLoot.lua). Nothing here acts on anyone's behalf but the master looter's own Give: it asks, it
+-- answers a question that was asked, it shows, and it hands an item out through master loot when the
+-- master looter clicks Give twice.
 --
 -- Contract 2: `loot?` carries an item id and a loot id (`<itemId>-<floor(GetTime())>`) on RAID or
 -- PARTY; `loot!` carries the loot id, the value, its unit ("dps" or "score"), the worn item's id (0
@@ -68,7 +70,7 @@ LootCouncil.lastDrop = nil
 LootCouncil.waiting = {}
 --- Loot requests from the master looter this client has still to answer: lootId -> { itemId, channel, at }.
 LootCouncil.pending = {}
---- Injection point: called after anything the region shows changed (GroupPanel sets it).
+--- Injection point: called after anything the session shows changed (OfficerLoot sets it).
 LootCouncil.onChange = nil
 
 -- Small reads ------------------------------------------------------------------------------
@@ -195,7 +197,7 @@ end
 --- fits. An item the client has not loaded, a non-equipment item and a group the client cannot name
 --- are never skipped.
 function LootCouncil.unwearable(itemId)
-	local _, _, _, equipLoc, _, itemClass, itemSubClass = Compat.itemInfoInstant(itemId)
+	local _, _, _, equipLoc = Compat.itemInfoInstant(itemId)
 	if equipLoc == nil then
 		return false
 	end
@@ -208,13 +210,28 @@ function LootCouncil.unwearable(itemId)
 		return false
 	end
 	for token in pairs(classes) do
-		for _, slot in ipairs(slots) do
-			if Rules.canEquip(token, Progress.MAX_LEVEL, itemClass, itemSubClass, equipLoc, slot) ~= "never" then
-				return false
-			end
+		if LootCouncil.canWear(itemId, token) then
+			return false
 		end
 	end
 	return true
+end
+
+--- Whether a class (`classToken`) could wear `itemId` now or at a later level: Rules.canEquip is not
+--- "never" in some slot the item fits. True for an item the client has not loaded, a non-equipment item
+--- or no class (nothing is ruled out on what cannot be read).
+function LootCouncil.canWear(itemId, classToken)
+	local _, _, _, equipLoc, _, itemClass, itemSubClass = Compat.itemInfoInstant(itemId)
+	local slots = equipLoc ~= nil and Gear.slotsFor(equipLoc) or {}
+	if #slots == 0 or type(classToken) ~= "string" then
+		return true
+	end
+	for _, slot in ipairs(slots) do
+		if Rules.canEquip(classToken, Progress.MAX_LEVEL, itemClass, itemSubClass, equipLoc, slot) ~= "never" then
+			return true
+		end
+	end
+	return false
 end
 
 -- The one scoring path -----------------------------------------------------------------------------
@@ -574,12 +591,15 @@ function LootCouncil.clear()
 end
 
 --- A drop added to the list (and a redraw at WAIT seconds, when the silent ones are scored from
---- an inspect or called "no data"). The oldest goes past MAX_DROPS.
-local function addDrop(itemId, link, lootId, asked)
+--- an inspect or called "no data"). `slot` is its loot window slot (nil for one asked from /fs loot):
+--- Give hands it out from there. The oldest goes past MAX_DROPS.
+local function addDrop(itemId, link, lootId, asked, slot)
 	local name, hex = LootCouncil.display(itemId, link)
+	local kill = LootCouncil.encounter ~= nil and LootCouncil.encounter() or nil
 	local drop = {
 		itemId = itemId, lootId = lootId, link = link, name = name, hex = hex, at = Theme.now(),
-		clock = type(date) == "function" and date("%H:%M") or "", asked = asked, answers = {},
+		clock = type(date) == "function" and date("%H:%M") or "", asked = asked, answers = {}, slot = slot,
+		boss = kill,
 	}
 	LootCouncil.drops[#LootCouncil.drops + 1] = drop
 	while #LootCouncil.drops > LootCouncil.MAX_DROPS do
@@ -598,8 +618,8 @@ end
 
 --- Asks the group about one item: a `loot?` on RAID (else PARTY) with `<itemId>-<floor(GetTime())>`
 --- as its loot id, and a drop on the list. Answers the drop, or nil and why (not in a group, the
---- message refused).
-function LootCouncil.ask(itemId, link)
+--- message refused). `slot`: the drop's loot window slot, for Give.
+function LootCouncil.ask(itemId, link, slot)
 	local channel = LootCouncil.channel()
 	if channel == nil then
 		return nil, L.lootNotInGroup
@@ -610,7 +630,7 @@ function LootCouncil.ask(itemId, link)
 		return nil, why
 	end
 	local count = try(client("GetNumGroupMembers"))
-	return addDrop(itemId, link, lootId, type(count) == "number" and math.max(0, count - 1) or 0)
+	return addDrop(itemId, link, lootId, type(count) == "number" and math.max(0, count - 1) or 0, slot)
 end
 
 --- LOOT_OPENED: the master looter asks about each epic (or threshold) item, once per item per window.
@@ -640,7 +660,7 @@ function LootCouncil.onLootOpened()
 			if type(quality) == "number" and quality >= least then
 				LootCouncil.window[itemId] = true
 				-- Nothing in the group could wear it (L3.7 item 49): not worth asking.
-				if not LootCouncil.unwearable(itemId) and LootCouncil.ask(itemId, link) ~= nil then
+				if not LootCouncil.unwearable(itemId) and LootCouncil.ask(itemId, link, slot) ~= nil then
 					asked = true
 				end
 			end
@@ -722,7 +742,7 @@ function LootCouncil.answerFor(drop, member)
 	return nil
 end
 
---- One drop's rows for `members` (GroupPanel.members' shape) at `now`: each member's answer; the
+--- One drop's rows for `members` (GroupMembers.members' shape) at `now`: each member's answer; the
 --- player's own value (`resolvers.own(drop)`: result or nil), computed locally; a member who has
 --- not answered, after WAIT seconds, scored from their inspect (`resolvers.inspect(member, drop)`)
 --- and tagged, else "no addon" (`resolvers.seen(member)`, default LootCouncil.seen, finds no hello or
@@ -789,6 +809,48 @@ function LootCouncil.rows(drop, members, now, resolvers)
 		return left.short:lower() < right.short:lower()
 	end)
 	return rows
+end
+
+-- Give (the master looter's own hand-out) ------------------------------------------------------------
+
+--- The most master loot candidates a slot can have (a 40-player raid).
+LootCouncil.MAX_CANDIDATES = 40
+--- The encounter a drop fell to, by name (RaidDrops' last kill); RaidDrops sets it at load.
+LootCouncil.encounter = nil
+
+--- The master loot candidate index of `short` (a bare name) for loot `slot`, or nil when the client
+--- does not offer them the item (out of range, not eligible) or the loot window is closed.
+function LootCouncil.candidateIndex(slot, short)
+	if type(slot) ~= "number" or not LootCouncil.open then
+		return nil
+	end
+	local candidate = client("GetMasterLootCandidate")
+	for index = 1, LootCouncil.MAX_CANDIDATES do
+		local name = try(candidate, slot, index)
+		if type(name) == "string" and (name == short or name:match("^([^%-]+)") == short) then
+			return index
+		end
+	end
+	return nil
+end
+
+--- Hands `drop` to `short` through master loot (GiveMasterLoot), the second click of Give. True, or
+--- false and the client's reason as the line says it.
+function LootCouncil.give(drop, short)
+	if type(drop) ~= "table" or drop.slot == nil or not LootCouncil.open then
+		return false, L.offGiveClosed
+	end
+	local index = LootCouncil.candidateIndex(drop.slot, short)
+	if index == nil then
+		return false, L.offGiveNotEligible
+	end
+	local giveLoot = client("GiveMasterLoot")
+	if giveLoot == nil or not pcall(giveLoot, drop.slot, index) then
+		return false, L.offGiveNotEligible
+	end
+	drop.givenTo = short
+	changed()
+	return true
 end
 
 -- /fs loot -----------------------------------------------------------------------------------------

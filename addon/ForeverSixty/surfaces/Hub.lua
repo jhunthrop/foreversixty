@@ -98,7 +98,10 @@ end
 --- cannot say.
 function Hub.officer()
 	local info = _G.C_GuildInfo
-	local answer = type(info) == "table" and ask(info.CanEditOfficerNote)
+	local answer
+	if type(info) == "table" then
+		answer = ask(info.CanEditOfficerNote)
+	end
 	if answer == nil then
 		answer = ask(_G.CanEditOfficerNote)
 	end

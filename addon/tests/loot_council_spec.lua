@@ -40,7 +40,7 @@ local function link(id, name, hex)
 end
 
 describe("LootCouncil", function()
-	local LootCouncil, GroupPanel, Comms, Chip, Theme, Inspect
+	local LootCouncil, OfficerLoot, Comms, Chip, Theme, Inspect
 	local state, clock, sent, slots, units
 
 	--- The client with a hunter in a party of three. `opts`: { solo, raid, method (the loot method
@@ -198,14 +198,15 @@ describe("LootCouncil", function()
 		Inspect = helper.load("Inspect")
 		Chip = helper.load("Chip")
 		LootCouncil = helper.load("LootCouncil")
-		GroupPanel = helper.load("GroupPanel")
+		helper.load("GroupMembers")
+		OfficerLoot = helper.load("OfficerLoot")
 		LootCouncil.data = opts.data or lootData()
 		if opts.noWeights then
 			LootCouncil.data.weights = {}
 		end
-		GroupPanel.data = LootCouncil.data
+		OfficerLoot.data = LootCouncil.data
 		Comms.data = LootCouncil.data
-		GroupPanel.register()
+		OfficerLoot.register()
 		LootCouncil.register()
 	end
 
@@ -516,15 +517,15 @@ describe("LootCouncil", function()
 				enchants = { chest = false } }
 		end
 
-		--- The drawn Loot region as { title or { name, value, worn, planned } } lines.
+		--- The session's entries as { title or { name, value, worn, planned tag } } lines (the chat lines'
+		--- source, OfficerLoot.lootNow).
 		local function drawn()
 			local lines = {}
-			for index, pooled in ipairs(GroupPanel.lootPool) do
-				if pooled.title:IsShown() then
-					lines[index] = pooled.title:GetText()
-				elseif pooled.name:IsShown() then
-					lines[index] = { pooled.name:GetText(), pooled.value:GetText(), pooled.worn:IsShown() and pooled.worn:GetText()
-						or "", pooled.planned:IsShown() and pooled.planned:GetText() or "" }
+			for index, entry in ipairs(OfficerLoot.lootNow()) do
+				if entry.kind == "title" then
+					lines[index] = entry.text
+				else
+					lines[index] = { entry.name, entry.value, entry.worn, entry.planned and L.lootOnTheirList or "" }
 				end
 			end
 			return lines
@@ -544,31 +545,25 @@ describe("LootCouncil", function()
 		it("ranks the members by value, the class-coloured name, the value, the worn item and a planned tag", function()
 			askAboutChest()
 			fromMember("1|loot!|100-1000|8.5|dps|60|0")
-			GroupPanel.command()
 			local lines = drawn()
 			-- L3.7 item 50: the title counts the answer window down from 10 s.
 			assert.are.equal(string.format(L.lootCountdown, string.format(L.lootDrop, "|cffa335eeRobes of Might|r"), 10),
 				lines[1])
 			clock = 1003
-			GroupPanel.redraw()
 			assert.are.equal("Drop: |cffa335eeRobes of Might|r · 7 s", drawn()[1])
 			clock = 1010
-			GroupPanel.redraw()
 			assert.are.equal("Drop: |cffa335eeRobes of Might|r", drawn()[1])
 			clock = 1000
-			GroupPanel.redraw()
 			-- The player's own value is computed here; Thorgrim's is his answer; Elwen has not answered.
 			assert.are.same({ "Tester", "+12.0 DPS", "Worn Robe", "on their list" }, lines[2])
 			assert.are.same({ "Thorgrim", "+8.5 DPS", "Old Cloak", "" }, lines[3])
 			assert.are.same({ "Elwen", L.lootWaiting, "", "" }, lines[4])
-			local cell = mock.lastCall(GroupPanel.lootPool[2].name, "SetTextColor")
-			assert.are.equal(Theme.panelClassHex("HUNTER"), Theme.hexOf(cell[1], cell[2], cell[3]))
+			assert.are.equal(Theme.panelClassHex("HUNTER"), OfficerLoot.lootNow()[2].nameHex)
 		end)
 
 		it("scores a silent member from their inspect after 10 s, tagged (inspect), else says no data, last", function()
 			askAboutChest()
 			inspectThorgrim()
-			GroupPanel.command()
 			-- Within the 10 s nobody is scored for.
 			assert.are.same({ "Elwen", L.lootWaiting, "", "" }, drawn()[3])
 			assert.are.same({ "Thorgrim", L.lootWaiting, "", "" }, drawn()[4])
@@ -582,27 +577,23 @@ describe("LootCouncil", function()
 			-- Older inspects read in minutes and hours (the cell, pure).
 			local row = { short = "Thorgrim", kind = "inspect", value = 12, unit = "dps", inspectAt = 1000 }
 			local function aged(seconds)
-				return GroupPanel.lootCell(row, function() end, 1000 + seconds).value
+				return OfficerLoot.lootCell(row, function() end, 1000 + seconds).value
 			end
 			assert.are.equal("+12.0 DPS (inspect, 12 min ago)", aged(12 * 60 + 5))
 			assert.are.equal("+12.0 DPS (inspect, 3 h ago)", aged(3 * 3600 + 5))
 			assert.are.equal("+12.0 DPS (inspect, just now)", aged(59))
-			assert.are.equal("+12.0 DPS " .. L.lootInspect, GroupPanel.lootCell(row, function() end).value)
+			assert.are.equal("+12.0 DPS " .. L.lootInspect, OfficerLoot.lootCell(row, function() end).value)
 			assert.are.same({ "Elwen", "no addon", "", "" }, lines[4])
-			local cell = mock.lastCall(GroupPanel.lootPool[4].value, "SetTextColor")
-			assert.are.equal(Theme.HEX.muted, Theme.hexOf(cell[1], cell[2], cell[3]))
+			assert.are.equal(Theme.HEX.muted, OfficerLoot.lootNow()[4].valueHex)
 		end)
 
-		-- Fix round 2 (5): the master looter's rows say "on their list" in gold, and nothing when not.
-		it("tags a row 'on their list' in gold, and leaves a row that is not on theirs bare", function()
+		-- Fix round 2 (5): the master looter's rows say "on their list", and nothing when not.
+		it("tags a row 'on their list', and leaves a row that is not on theirs bare", function()
 			askAboutChest()
 			fromMember("1|loot!|100-1000|8.5|dps|60|0")
-			GroupPanel.command()
-			local tag = GroupPanel.lootPool[2].planned
-			assert.are.equal(L.lootOnTheirList, tag:GetText())
-			local color = mock.lastCall(tag, "SetTextColor")
-			assert.are.equal(Theme.HEX.gold, Theme.hexOf(color[1], color[2], color[3]))
-			assert.is_false(GroupPanel.lootPool[3].planned:IsShown())
+			local entries = OfficerLoot.lootNow()
+			assert.is_true(entries[2].planned)
+			assert.is_false(entries[3].planned)
 		end)
 
 		-- Fix round 2 (7): "no addon" (nothing seen from the member this session) against "can't score".
@@ -610,14 +601,14 @@ describe("LootCouncil", function()
 			askAboutChest()
 			clock = 1010
 			mock.runTimers(state)
-			local entries = GroupPanel.lootNow()
+			local entries = OfficerLoot.lootNow()
 			assert.are.equal(L.lootNoAddon, entries[3].value)
 			assert.are.equal("no addon", entries[3].value)
 			assert.are.same({ L.lootNoAddonHint }, entries[3].hint)
 			assert.are.equal("No Forever Sixty addon seen on this member.", L.lootNoAddonHint)
 			-- A hello from Elwen: the addon is there and answered nothing.
 			fromMember("1|hello|60|mage-arcane|14|Arcane leveling|2026-11-04", "Elwen")
-			entries = GroupPanel.lootNow()
+			entries = OfficerLoot.lootNow()
 			assert.are.equal("can't score", entries[3].value)
 			assert.are.same({ L.lootCantScoreHint }, entries[3].hint)
 			assert.are.equal("Their addon could not score this item (no weights, an unloaded item, or gear they cannot wear).",
@@ -625,17 +616,11 @@ describe("LootCouncil", function()
 			-- Both sort last, "can't score" above "no addon" (Thorgrim, unseen, comes after Elwen).
 			assert.are.same({ "Tester", "Elwen", "Thorgrim" }, { entries[2].name, entries[3].name, entries[4].name })
 			assert.are.equal("no addon", entries[4].value)
-			-- The hover is on the drawn row: a frame over it shows the lines.
-			GroupPanel.command()
-			local lines = drawn()
-			assert.are.same({ "Elwen", "can't score", "", "" }, lines[3])
-			assert.are.same({ L.lootCantScoreHint }, GroupPanel.lootPool[3].hint)
-			assert.is_function(GroupPanel.lootPool[3].hit:GetScript("OnEnter"))
+			assert.are.same({ "Elwen", "can't score", "", "" }, drawn()[3])
 		end)
 
 		it("redraws on each loot! and sorts a later answer above a lower one", function()
 			askAboutChest()
-			GroupPanel.command()
 			fromMember("1|loot!|100-1000|2.0|dps|60|0")
 			fromMember("1|loot!|100-1000|40.0|dps|0|1", "Elwen")
 			local lines = drawn()
@@ -677,7 +662,6 @@ describe("LootCouncil", function()
 			assert.are.equal(3, #LootCouncil.drops)
 			assert.are.equal(101, LootCouncil.drops[1].itemId)
 			assert.are.equal(106, LootCouncil.drops[3].itemId)
-			GroupPanel.command()
 			local titles = 0
 			for _, line in ipairs(drawn()) do
 				if type(line) == "string" then
@@ -697,7 +681,7 @@ describe("LootCouncil", function()
 			start({ raid = true, members = members, slots = window({ 100, "Robes of Might" }) })
 			units.player = members[1]
 			LootCouncil.onLootOpened()
-			local entries = GroupPanel.lootNow()
+			local entries = OfficerLoot.lootNow()
 			-- The title, eight rows and the "and 4 more" line.
 			assert.are.equal(1 + Theme.SIZES.lootMaxRows + 1, #entries)
 			assert.are.equal(string.format(L.lootMore, 12 - Theme.SIZES.lootMaxRows), entries[#entries].text)
@@ -712,7 +696,7 @@ describe("LootCouncil", function()
 			assert.is_not_nil(Chip.loot)
 			clock = 1061
 			assert.is_false(LootCouncil.active())
-			assert.are.same({}, GroupPanel.lootNow())
+			assert.are.same({}, OfficerLoot.lootNow())
 			mock.runTimers(state)
 			assert.are.same({}, LootCouncil.drops)
 			assert.is_nil(Chip.loot)
@@ -728,21 +712,21 @@ describe("LootCouncil", function()
 			assert.is_true(LootCouncil.open)
 		end)
 
-		it("never opens the flyout itself, though the chip and the button's hint name the drop", function()
-			askAboutChest()
+		it("opens the session once per new drop for the master looter, and the chip names the drop", function()
+			start({ slots = window({ 100, "Robes of Might" }) })
+			local opened = 0
+			OfficerLoot.openSession = function()
+				opened = opened + 1
+			end
+			LootCouncil.onLootOpened()
 			fromMember("1|loot!|100-1000|8.5|dps|60|0")
-			assert.is_nil(GroupPanel.flyout)
+			assert.are.equal(1, opened)
 			assert.are.equal("Loot: Robes of Might · 1 of 2 answered", Chip.loot)
-			local hint = GroupPanel.buttonHint()
-			assert.are.equal(string.format(L.lootButtonHint, "|cffa335eeRobes of Might|r"), hint[#hint])
-			assert.is_false(GroupPanel.flyout ~= nil and GroupPanel.flyout:IsShown())
 		end)
 
-		it("draws no Loot region before a drop and none out of a group", function()
+		it("lists no drop before one is asked about and none out of a group", function()
 			start()
-			GroupPanel.command()
-			assert.is_false(GroupPanel.lootFrame:IsShown())
-			assert.are.same({}, GroupPanel.lootNow())
+			assert.are.same({}, OfficerLoot.lootNow())
 		end)
 
 		it("has the chip say 'Loot: <item> · N answers' as its state, and print the list on a click", function()
@@ -1025,8 +1009,7 @@ describe("LootCouncil", function()
 		it("gives the master looter's own row a (site) tag, and sends no loot! from a site value", function()
 			start({ noWeights = true, inbox = inbox(), slots = window({ 100, "Robes of Might" }) })
 			LootCouncil.onLootOpened()
-			GroupPanel.command()
-			local rows = GroupPanel.lootNow()
+			local rows = OfficerLoot.lootNow()
 			assert.are.same({ "Tester", "+6.3 DPS " .. L.lootSite, "Worn Robe", true }, { rows[2].name, rows[2].value,
 				rows[2].worn, rows[2].planned })
 			fromMember("1|loot?|100|100-1000")
@@ -1052,8 +1035,7 @@ describe("LootCouncil", function()
 			withSite.messages[1].items[103] = { value = 4.2, unit = "dps", planned = true }
 			start({ inbox = withSite, slots = window({ 103, "Late Robe" }) })
 			LootCouncil.onLootOpened()
-			GroupPanel.command()
-			local rows = GroupPanel.lootNow()
+			local rows = OfficerLoot.lootNow()
 			assert.are.equal("+4.2 DPS " .. L.lootSite, rows[2].value)
 		end)
 
@@ -1067,8 +1049,7 @@ describe("LootCouncil", function()
 		it("reads 'already worn' in the Loot region in place of a value", function()
 			start({ slots = window({ 50, "Worn Robe" }) })
 			LootCouncil.onLootOpened()
-			GroupPanel.command()
-			local rows = GroupPanel.lootNow()
+			local rows = OfficerLoot.lootNow()
 			assert.are.equal("already worn (Chest)", rows[2].value)
 			assert.are.equal("", rows[2].worn)
 			assert.is_false(rows[2].planned)

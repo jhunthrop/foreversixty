@@ -34,6 +34,16 @@ const TREES = 3;
  */
 export const MAX_CODE_LENGTH = 16_384;
 
+/**
+ * The character's guild (`guild=<name>:<rank-index>`), with its rank names by rank index when the
+ * addon sent them (`guildranks=`, added 2026-11-13 for the raider ranks control).
+ */
+export interface FS1Guild {
+  name: string;
+  rankIndex: number;
+  rankNames?: string[];
+}
+
 /** One bag or bank item: `item_id[:enchant[:suffix]]`, with no slot in the string. */
 export interface FS1Item {
   itemId: number;
@@ -108,7 +118,7 @@ export interface FS1Build extends FS1Prep {
    * way `bags`/`bank`/`sets`/`loadouts`/`professions` default to `[]`, because "no
    * guild" and "an empty guild" are not the same fact.
    */
-  guild?: { name: string; rankIndex: number };
+  guild?: FS1Guild;
   /**
    * Who the export is: the client's own name and realm, so the site can show "Bow" on the
    * character it loads from the string instead of the class alone. Absent from a code an
@@ -340,7 +350,7 @@ export function decodeFS1(code: string): FS1Result {
     sets: [] as FS1Set[],
     loadouts: [] as FS1Loadout[],
     professions: [] as string[],
-    guild: undefined as { name: string; rankIndex: number } | undefined,
+    guild: undefined as FS1Guild | undefined,
     ignored: [] as string[],
     character: undefined as { name: string; realm: string } | undefined,
     level: undefined as number | undefined,
@@ -389,6 +399,10 @@ export function decodeFS1(code: string): FS1Result {
       const guild = parseGuild(field);
       if (!guild.ok) return guild;
       build.guild = guild.value;
+    } else if (name === 'guildranks' && build.guild !== undefined) {
+      // Written right after guild=: the guild's rank names, rank 0 (the guild master) first, each
+      // URL-encoded and comma joined. Display text only; nothing trusts a rank by its name.
+      build.guild = { ...build.guild, rankNames: field === '' ? [] : field.split(',').map(decodeName) };
     } else if (name === 'who' || name === 'name') {
       // `<name>:<realm>`, both URL-encoded, split on the first colon; neither side can fail.
       // `who` rather than `name`: the game client's font strings read `|n` as a line break,
@@ -608,7 +622,13 @@ export function encodeFS1V2(build: FS1Build): string {
     );
   }
   if (professions.length > 0) sections.push(`professions=${professions.join(',')}`);
-  if (build.guild) sections.push(`guild=${encodeURIComponent(build.guild.name)}:${build.guild.rankIndex}`);
+  if (build.guild) {
+    sections.push(`guild=${encodeURIComponent(build.guild.name)}:${build.guild.rankIndex}`);
+    const ranks = build.guild.rankNames ?? [];
+    if (ranks.length > 0) {
+      sections.push(`guildranks=${ranks.map((rank) => encodeURIComponent(rank)).join(',')}`);
+    }
+  }
   if (build.character) {
     sections.push(
       `who=${encodeURIComponent(build.character.name)}:${encodeURIComponent(build.character.realm)}`,

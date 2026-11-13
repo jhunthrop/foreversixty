@@ -18,14 +18,14 @@ describe("/fs diag on a fresh session", function()
 		require("Theme").reset()
 		helper.load("Score")
 		helper.load("Follow")
-		-- A group panel left over from another spec file holds its own frames: loaded fresh.
-		helper.load("GroupPanel")
+		-- A ready check left over from another spec file holds its own result: loaded fresh.
+		helper.load("ReadyCheck")
 		Options = helper.load("Options")
 		NO_BUILD = string.format(L.diagBuildNone, L.diagBuildNotYet)
 		PANEL = string.format(L.diagPanelState, L.diagPanelClosed)
 		GUILD = string.format(L.diagGuildTab, L.diagGuildTabNo, L.diagGuildTabNo)
-		-- L5.2 fix round 2: out of a group the count is the player alone.
-		GROUP = string.format(L.diagGroupPanelYou, L.diagPanelClosed, L.diagGroupNone)
+		-- No ready check has run.
+		GROUP = L.diagReadyNone
 		LOOT = string.format(L.diagLoot, L.diagLootNone)
 		EXPORT = L.diagExportNone
 		SITE, INBOX = L.diagSiteNever, L.diagInboxEmptyNoLogin

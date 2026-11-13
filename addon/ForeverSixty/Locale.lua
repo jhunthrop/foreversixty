@@ -16,8 +16,8 @@ local L = {
 	-- adds the testers' two lines after it, muted (fix round 1, item 16; fix round 3, item 5:
 	-- one line read as options of /fs diag; /fs record's arguments are in its own usage,
 	-- recorderHelp). The hub (design/specs/2026-11-13-addon-hub.md 10): /fs opens the window, a tab's
-	-- name opens that tab; /fs build and /fs inspect move to the testers' lines; /fs chip, /fs group and
-	-- /fs floor stay until the chip and Officer lanes replace them.
+	-- name opens that tab; /fs build and /fs inspect move to the testers' lines; /fs chip stays until
+	-- the chip lane replaces it; /fs group and /fs floor went with the Officer lane.
 	settingsCommands = {
 		"/fs: open the Forever Sixty window",
 		"/fs copy: copy my character for the site",
@@ -25,10 +25,8 @@ local L = {
 		"/fs link: copy a player's site page",
 		"/fs tour: see the tour again",
 		"/fs chip: show or hide the Forever Sixty line",
-		"/fs group: your group's specs, gear and buffs",
 		"/fs ready: check flasks, food and buffs now",
 		"/fs loot: what an item is worth to you",
-		"/fs floor N: tag members scored under N",
 		"/fs options: open the settings page",
 		"/fs diag: check what is wrong",
 		"/fs help: every command",
@@ -1155,88 +1153,18 @@ L.diagGuildTabNo = "no"
 L.diagGuildTabNoGuild = "Guild button: not in a guild"
 L.diagGuildTabFailed = "The guild button failed and is off until /reload: %s"
 
--- The group panel (spec section 4.8, L5.2): the "Forever Sixty" button under the client's raid
--- frame and its flyout: one row per member, and after a ready check who lacks what and who
--- covers each of the encounter's needs.
-L.groupPanelLabel = L.addonName
-L.groupPanelHeader = L.addonName .. " · Group"
--- The button's hover, muted under "Forever Sixty" in gold (as the guild tab's).
-L.groupPanelHint = {
-	"Your group's specs, gear, scores and buffs.",
-}
--- Out of a group, the flyout's one line and nothing else (ruling 1). Fix round 4 (E): a second
--- muted line under it says what a group shows and that /fs ready tries the check alone: one line
--- where it fits the flyout, else a sentence a line (GroupPanel.soloHint).
--- design/specs/2026-11-08-addon-ux.md 1.9: one sentence.
-L.groupNotInGroup = "Join a group to see its specs, gear and buffs."
-L.groupSoloHint = {}
-
--- The Raid tab's button while the player is alone: it opens the panel with the player's own row.
-L.groupPanelSoloLabel = L.addonName .. " \194\183 solo"
--- /fs group and /fs panel while alone: where the panel is and when it fills.
-L.groupSoloCommand = "The group panel is on the Raid tab of the Social window (O). It fills when you join a group."
--- Under the header, muted: "5 members · 3 inspected · 2 live".
-L.groupCounts = "%d members · %d inspected · %d live"
--- /fs group with the Raid tab not open (the Social window closed, or another tab): the panel
--- lives on that tab.
-L.groupOpensOnRaidTab = "The group panel shows on the Raid tab of the Social window (O)."
--- The column headers; a click sorts by one, a second click turns it round.
-L.groupColumns = {
-	name = "Name", spec = "Spec", level = "Level", ilvl = "iLvl", gap = "Gap", score = "Score",
-	enchants = "Enchants", addon = "Addon",
-}
--- The headers' hover, a line each: the first as text, the rest muted.
-L.groupHeaderHints = {
-	ilvl = { "Average item level of what they wear, from an inspect." },
-	gap = { "Gear gap: the biggest slot behind their spec's best in slot.",
-		"From their own addon when they run Forever Sixty, else from an inspect; 0 means on plan." },
-	enchants = { "Enchantable slots worn without an enchant, from an inspect." },
-	addon = { "Live: they run Forever Sixty and shared their build." },
-}
--- Cells: a gap in its unit, a member a readable record has no logs for, enchants missing or a
--- tick (the client's ready-check art), the addon present.
-L.groupGapDps = "%d DPS"
-L.groupGapHps = "%d HPS"
-L.groupGapPts = "%d pts"
-L.groupGapDpsDecimal = "%.1f DPS"
-L.groupGapHpsDecimal = "%.1f HPS"
-L.groupNoLogs = "no logs"
-L.groupEnchantsMissing = "%d missing"
--- L3.7 item 47: below this level the Enchants cell is blank and its hover says why.
-L.groupEnchantsFrom = "Enchants are checked from level 40."
-L.groupAddonLive = "live"
--- The muted line under a row: "below 1200" under the floor, then the weakest slot ("Chest:
--- Worn Robe · next Robes of Arcana +12.0 DPS", the gain as the item tooltip's Next line prints
--- it; fix round 1: the addon's " · " separator, not an arrow glyph the client font may lack),
--- "(inspect)" after it where the member's addon reports another gap, or "inspect paused" while
--- combat holds the inspect queue.
-L.groupBelow = "below %d"
+-- The ready check (ReadyCheck.lua; the group panel's until lane L7): who lacks a flask, food, a weapon
+-- buff or a class buff, and each need of the bosses as class presence. The Officer tab's roster hover
+-- and the master loot rows share the row words below.
 L.groupSubJoin = " · "
-L.groupWeakest = "%s: %s · next %s %s"
-L.groupWeakestEmpty = "%s: empty · next %s %s"
-L.groupWeakestInspect = "(inspect)"
-L.groupInspectPaused = "inspect paused"
 -- A row's hover: the best parse ("71st percentile on Lucifron"), the build, the bare slots, offline.
 L.groupBestParse = "Best parse: %s percentile on %s"
 L.groupBuild = "Build: %s"
 L.groupBareSlots = "No enchant: %s"
 L.groupOffline = "Offline"
--- The ready check (ruling 3): its title with the list it read and the time it ran (fix round 4,
--- B: "Ready check · Molten Core · 21:04" inside a raid the data knows, "Ready check · standard
--- buffs · 21:04" elsewhere), "Thorgrim: missing flask, imbue" per member lacking anything (fix
--- round 4, E), and each need of the bosses as class presence (fix round 4, C).
-L.groupCheckTitle = "Ready check · %s · %s"
 L.groupCheckStandard = "standard buffs"
 L.groupMissing = "%s: missing %s"
 L.groupMissingJoin = ", "
-L.groupMissingMore = "and %d more"
-L.groupAllSet = "Nobody is missing anything."
--- Fix round 4 (A): only the player's own weapon imbue can be read; said once, muted, under the
--- missing lines when another member of the group fights with a weapon imbue.
-L.groupImbueSelfOnly = "Weapon buffs can only be read on yourself."
--- Coverage is class presence (fix round 4, C): "Faerie Fire: no druid", "Fire resistance: no
--- paladin or shaman", and "Sunder Armor: warrior Thorgrim" for each member of the class.
-L.groupCoverageTitle = "Coverage"
 L.groupCoverageNo = "%s: no %s"
 L.groupCoverageOr = " or "
 L.groupCoverageBy = "%s: %s"
@@ -1278,8 +1206,6 @@ L.groupChipMore = "+%d"
 -- Fix round 3 (C3): the chip's short form, "Ready check: missing flask, food, imbue" (the diag
 -- keeps "you are missing").
 L.groupChipSummaryYou = "Ready check: missing %s"
--- Fix round 4 (E): a clean dry run alone says so on the chip for its 60 s.
-L.groupChipSummaryYouNone = "Ready check: nothing missing"
 -- L3.7 item 46: a dry run (/fs ready) is a test; the chip says so. Item 48: "at your level" when
 -- every need was gated by it.
 -- A.2: no "(test)" in a shipped build: the dry run's toast and its chat line read the same words, and the
@@ -1298,27 +1224,9 @@ L.groupReadyYou = "Ready check (only you see this): you are missing %s."
 L.groupReadyYouNone = "Ready check (only you see this): nothing missing."
 L.groupReadyYouNoneLevel = "Ready check (only you see this): nothing missing at your level "
 	.. "\194\183 no flask, food or buff is expected below %d"
--- /fs ready when the panel has turned itself off: no check ran, so none is claimed clean.
-L.groupPanelOff = "Group panel is off."
--- /fs floor (ruling 4): the panel flags, it never declines or whispers.
-L.groupFloorSet = "Score floor %d: members scored under it are tagged. Nobody is declined or whispered."
-L.groupFloorCleared = "Score floor cleared."
-L.groupFloorLeader = "Only the group's leader sets a score floor."
-L.groupFloorUsage = "Type /fs floor 1200 to tag members scored under 1200, or /fs floor to clear it."
--- /fs diag: "Group panel: closed, 5 members (3 inspected, 2 live), ready check 21:04: 2 missing".
-L.diagGroupPanel = "Group panel: %s, %d members (%d inspected, %d live), ready check %s"
-L.diagGroupNone = "none"
-L.diagGroupCheck = "%s: %d missing"
--- Fix round 2: out of a group the line speaks of the player alone; fix round 4 (E): "Group panel:
--- open, not in a group, ready check 19:43: you are missing flask, food".
-L.diagGroupPanelYou = "Group panel: %s, not in a group, ready check %s"
-L.diagGroupCheckYou = "%s: you are missing %s"
--- Fix round 3 (C3): the solo clean line.
-L.diagGroupCheckYouNone = "%s: nothing missing"
-L.diagGroupPanelFailed = "The group panel failed and is off until /reload: %s"
 
--- The loot council helper (spec section 4.9, L5.3): the master looter's list in the group panel's
--- Loot region, the chip's line, /fs loot and /fs diag. A silent member reads "no addon" (nothing seen from
+-- The loot council helper (spec section 4.9, L5.3): the master looter's list in the Officer tab's
+-- session, the chip's line, /fs loot and /fs diag. A silent member reads "no addon" (nothing seen from
 -- them this session) or "can't score" (their addon answered nothing: no weights or spec, an item the client
 -- has not loaded, an item they cannot wear).
 L.lootDrop = "Drop: %s"
@@ -1354,8 +1262,6 @@ L.lootCantScoreHint = "Their addon could not score this item (no weights, an unl
 L.lootChip = "Loot: %s · %s"
 L.lootAnswered = "%d of %d answered"
 L.chipHintLoot = "Click: Show the list"
--- The group button's hover names the drop.
-L.lootButtonHint = "Drop: %s"
 -- /fs loot <item link>.
 L.lootUsage = "Type /fs loot, then shift-click an item, to see what it is worth to you."
 L.lootNotInGroup = "You are not in a group."
@@ -1853,6 +1759,124 @@ L.rotStatNames = {
 	dodge = "Dodge", parry = "Parry", block = "Block", block_value = "Block value", armor = "Armor",
 	feral_attack_power = "Feral attack power",
 }
+
+-- The Officer tab (design/specs/2026-11-13-addon-hub.md 4.6, lane L7): the roster, Tonight's readiness,
+-- Sign-ups, Push a build and the master loot session.
+L.offRoster = "Roster"
+L.offShown = "%d of %d shown"
+L.offShownRange = "%d to %d of %d shown"
+L.offShowAll = "Show all"
+L.offRaiders = "Raiders only"
+L.offUnsigned = "Not signed up (%d)"
+L.offOnline = "Raiders online (%d)"
+L.offBySignup = "by sign-up, then Score"
+L.offBy = "by %s"
+L.offColumns = { name = "Raider", score = "Score", attendance = "Att.", signup = "Sign-up", gap = "Gap",
+	enchants = "Ench.", ilvl = "iLvl" }
+L.offDash = "-"
+L.offNotSigned = "Not signed"
+L.offBest = "Best"
+L.offGapPts = "%d pts"
+L.offLegendLive = "addon live"
+L.offLegendHeard = "heard earlier"
+L.offLegendGap = "Gap in DPS"
+L.offNoRoster = "No guild roster yet."
+L.offNobodyShown = "Nobody here. Show all lists every member."
+-- A roster row's hover.
+L.offLevel = "Level %d %s"
+L.offNoAddonHeard = "No Forever Sixty addon heard from them."
+L.offHeardAgo = "Last heard from their addon %s ago."
+L.offMinutes = "%d min"
+L.offHours = "%d h"
+L.offDays = "%d days"
+-- Tonight's readiness: label, count, names.
+L.offReadiness = "Tonight's readiness"
+L.offReadyNote = "%s · %s"
+L.offReadyOnline = "raiders online"
+L.offOf = "%d of %d"
+L.offReadyAddon = "Addon live"
+L.offReadyWithout = "without"
+L.offReadyVersion = "Old addon"
+L.offReadyBuild = "Raid build"
+L.offReadyOff = "off"
+L.offReadyEnchants = "Enchants"
+L.offReadyAttuned = "Not attuned"
+L.offReadyNo = "No %s"
+L.offSupplies = { flask = "flask", food = "food", fire_protection = "fire prot.", frost_protection = "frost prot.",
+	nature_protection = "nature prot.", shadow_protection = "shadow prot.", arcane_protection = "arcane prot." }
+L.offReadyJobs = "Jobs"
+L.offReadyCover = "Not covered"
+L.offReadyCovered = "every buff and debuff"
+L.offReadyOpen = "%s open"
+L.offReadyCheck = "Ready check %s"
+L.offReadyCheckRow = "Ready check"
+L.offNobodyAddon = "Nobody coming runs the addon."
+L.offImbueSelf = "Weapon buffs are read on yourself only."
+-- Sign-ups: the site's queue and the guild chat reminder.
+L.offApprovals = "%d approvals on the site"
+L.offApproval = "1 approval on the site"
+L.offNoApprovals = "No approvals on the site"
+L.offClaims = { unclaimed = "Unclaimed on the site", pending = "Claim pending on the site",
+	contested = "Claim contested on the site" }
+L.offRemind = "Remind %d in chat"
+L.offRemindLine = "%s, %s %s: %d raiders have not signed up yet."
+L.offSentToGuild = "Sent to guild"
+L.offReminded = "Reminder sent to guild chat"
+-- Push a build.
+L.offPush = "Push a build"
+L.offSend = "Send to guild"
+L.offPushSent = "sent %s · %d follow it"
+L.offPushNotSent = "not sent yet"
+L.offPushConfirm = "Send %s to the guild? It reaches them as a build to choose, never applied."
+L.offPushYes = "Send"
+L.offCancel = "Cancel"
+L.offPushFailed = "Not sent: %s"
+L.offPushNoBuild = "Load a build on the Builds tab to send it."
+L.offPushNoCode = "this build could not be made into a code to send."
+-- Master loot.
+L.offLoot = "Master loot"
+L.offLootIdle = "Opens here when you loot as master looter."
+L.offLootNight = "%s: %d items in %s"
+L.offLootNightBest = "%s: %d items, %d to the biggest gain"
+L.offLootItemOf = "item %d of %d"
+L.offUnitDps = "DPS"
+L.offUnitHps = "HPS"
+L.offUnitScore = "Score"
+L.offLootColumns = { raider = "Raider", wears = "Wears", won = "Won", att = "Att." }
+L.offWon = "Won"
+L.offGive = "Give"
+L.offGiveArmed = "Give to %s?"
+L.offGiveArmedShort = "Give?"
+L.offGiveAgain = "Click Give again: %s gets %s"
+L.offOnList = "on list"
+L.offAnswered = "%d of %d answered"
+L.offNoGain = "%s no gain"
+L.offCantScore = "%s can't score"
+L.offNoAddon = "%s no addon"
+L.offNoAnswers = "No answers. Give still works."
+L.offWaitingAnswers = "Waiting for answers."
+L.offNoAnswersYet = "no answers yet"
+L.offMoreNames = "+%d"
+L.offWonHint = "Items they won this week in your raids, from your own loot record."
+L.offNoSignups = "sign-ups come with the companion"
+L.offMore = "Next %d"
+L.offFirst = "Back to the top"
+L.offItemOpen = "open"
+L.offItemTo = "to %s %s"
+L.offItems = "%d items"
+L.offOneItem = "1 item"
+L.offEscRoster = "Esc for the roster"
+L.offGiveHint = "Click Give twice: master loot hands it out"
+L.offWhisperHint = "Click a name to whisper · Shift-click to invite"
+L.offGiveClosed = "Open the loot window to give it."
+L.offGiveNotEligible = "Master loot cannot give it to them (out of range or not eligible)."
+L.offMasterLooter = "Master looter"
+L.offLootChip = "%s · %s"
+-- /fs diag: "Ready check 21:04: 2 missing".
+L.diagReadyNone = "Ready check: none"
+L.diagReadyGroup = "Ready check %s: %d missing"
+L.diagReadyYou = "Ready check %s: you are missing %s"
+L.diagReadyYouNone = "Ready check %s: nothing missing"
 
 ns.L = L
 return L

@@ -39,6 +39,7 @@ describe("the TOC", function()
 		"surfaces/RewardMarks.lua",
 		-- The build dialog (L3.4): built on its first open; Options opens it.
 		"surfaces/BuildsPane.lua", "surfaces/BuildsWindow.lua", "surfaces/HubFrame.lua", "surfaces/Hub.lua",
+		"surfaces/HubDraw.lua",
 		"surfaces/BuildDialog.lua",
 		-- The window's Me tab (hub spec 4.1): the model, then its frame, which registers the tab.
 		"surfaces/MeTab.lua", "surfaces/MeFrame.lua",
@@ -63,9 +64,8 @@ describe("the TOC", function()
 		"surfaces/TourExample.lua", "surfaces/Onboarding.lua",
 		-- The guild frame's door (Options refreshes it), then the hub's Guild tab and its model.
 		"surfaces/GuildTab.lua", "GuildRaid.lua", "surfaces/GuildHubTab.lua",
-		-- The group panel (L5.2): reads Inspect, Score, Comms.seen and the chip's ready-check
-		-- hook; Options refreshes it.
-		"surfaces/GroupPanel.lua",
+		-- The Officer tab (L7): the group read, the ready check, the roster and loot models, then the tab.
+		"GroupMembers.lua", "ReadyCheck.lua", "Officer.lua", "OfficerLoot.lua", "surfaces/OfficerTab.lua",
 		-- The measurement recorder: Options routes /fs record to it.
 		"RecorderBuffer.lua", "Recorder.lua", "Options.lua",
 	}

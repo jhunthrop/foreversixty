@@ -50,6 +50,7 @@ surfaces\BuildsPane.lua
 surfaces\BuildsWindow.lua
 surfaces\HubFrame.lua
 surfaces\Hub.lua
+surfaces\HubDraw.lua
 surfaces\BuildDialog.lua
 surfaces\MeTab.lua
 surfaces\MeFrame.lua
@@ -65,7 +66,11 @@ surfaces\Onboarding.lua
 surfaces\GuildTab.lua
 GuildRaid.lua
 surfaces\GuildHubTab.lua
-surfaces\GroupPanel.lua
+GroupMembers.lua
+ReadyCheck.lua
+Officer.lua
+OfficerLoot.lua
+surfaces\OfficerTab.lua
 RecorderBuffer.lua
 Recorder.lua
 Options.lua

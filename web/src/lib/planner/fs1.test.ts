@@ -312,6 +312,39 @@ describe('version 2 sections', () => {
     expect(decoded.build.guild).toEqual({ name: 'Iron Vanguard', rankIndex: 2 });
   });
 
+  it('reads the guild rank names that follow the guild section, URL-decoded, rank 0 first', () => {
+    const decoded = decodeFS1(
+      `${V1}|guild=Iron%20Vanguard:2|guildranks=Guild%20Master,Officer,Raider%2C%20core`,
+    );
+    expect(decoded.ok).toBe(true);
+    if (!decoded.ok) return;
+    expect(decoded.build.guild).toEqual({
+      name: 'Iron Vanguard',
+      rankIndex: 2,
+      rankNames: ['Guild Master', 'Officer', 'Raider, core'],
+    });
+  });
+
+  it('forgives rank names with no guild section before them', () => {
+    const decoded = decodeFS1(`${V1}|guildranks=Officer`);
+    expect(decoded.ok).toBe(true);
+    if (!decoded.ok) return;
+    expect(decoded.build.guild).toBeUndefined();
+  });
+
+  it('writes the rank names after the guild section and reads them back', () => {
+    const decoded = decodeFS1(`${V1}|guild=Iron%20Vanguard:2`);
+    expect(decoded.ok).toBe(true);
+    if (!decoded.ok) return;
+    const code = encodeFS1V2({
+      ...decoded.build,
+      guild: { name: 'Iron Vanguard', rankIndex: 2, rankNames: ['GM', 'Raider'] },
+    });
+    expect(code).toContain('|guild=Iron%20Vanguard:2|guildranks=GM,Raider');
+    const again = decodeFS1(code);
+    expect(again.ok && again.build.guild?.rankNames).toEqual(['GM', 'Raider']);
+  });
+
   it('leaves guild undefined, never an empty object, when the code carries no guild section', () => {
     const decoded = decodeFS1(V1);
     expect(decoded.ok).toBe(true);

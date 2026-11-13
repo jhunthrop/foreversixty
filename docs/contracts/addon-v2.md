@@ -461,6 +461,14 @@ Notes for the reader:
   it (first and last name on a client with last names, "Obnoxious Yell"), then the realm name
   with its spaces and hyphens removed ("ClassicBetaPvP"): "Obnoxious Yell-ClassicBetaPvP". The
   example above is a character with no last name on a realm called Yell.
+- `export.code`'s guild part (added 2026-11-13, addon hub lane L7): after `guild=<name>:<rank index>`
+  the code carries `guildranks=<rank 0>,<rank 1>,...`, the guild's rank names as the client names them
+  (`GuildControlGetRankName`, the guild master first), each URL-encoded, so the site's raider ranks
+  control can show `Raider` rather than `Rank 3`. Its own section rather than a third `guild=` field:
+  every reader forgives a section it does not know, while a third field would make today's readers
+  refuse the code or drop the guild. Display text only; nothing trusts a rank by its name (the rank
+  index stays the fact). Absent where the client cannot read the names. The site's FS1 reader
+  (`web/src/lib/planner/fs1.ts`) reads it into `guild.rankNames`.
 - `export.score_visible` (added 2026-11-08) is `false` when the player turned off "Show my Forever
   Score to others" in Settings, absent (visible) otherwise. The site keeps the choice per character
   and leaves a hidden character out of the nightly Data addon (contract 5), so no other player's

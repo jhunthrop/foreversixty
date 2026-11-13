@@ -46,11 +46,10 @@ function GuildTab.guildless()
 	return Theme.inGuild() == false
 end
 
---- The tab the door opens: Officer for a player past the officer gate while that tab is in this
---- version, else Guild.
+--- The tab the door opens: Officer for a player past the officer gate, else Guild.
 function GuildTab.target()
 	local officer = Hub.tab("officer")
-	if officer ~= nil and Hub.isAvailable(officer) then
+	if Hub.officer() and officer ~= nil and Hub.isAvailable(officer) then
 		return "officer"
 	end
 	return "guild"

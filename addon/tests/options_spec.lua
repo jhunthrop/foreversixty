@@ -52,7 +52,8 @@ describe("Options", function()
 		helper.load("PanelTab")
 		helper.load("GuildTab")
 		helper.load("Inspect")
-		helper.load("GroupPanel")
+		helper.load("GroupMembers")
+		helper.load("ReadyCheck")
 		Options = helper.load("Options")
 		Options.data = DATA
 	end)
@@ -110,40 +111,6 @@ describe("Options", function()
 		assert.are.equal(1, closed)
 		Options.onEvent(nil, "PLAYER_REGEN_ENABLED")
 		assert.are.equal(1, closed)
-	end)
-
-	-- A.3 ruling 5: every command answers. Alone, /fs group says where the group panel is and when it
-	-- fills; in a group it toggles it.
-	describe("/fs group", function()
-		local SOLO = "The group panel is on the Raid tab of the Social window (O). It fills when you join a group."
-
-		it("prints where the panel is and when it fills while solo", function()
-			assert.are.equal(SOLO, require("Locale").groupSoloCommand)
-			assert.are.same({ SOLO }, Options.handle("group"))
-		end)
-
-		it("toggles the panel in a group", function()
-			_G.IsInGroup = function()
-				return true
-			end
-			_G.IsInRaid = function()
-				return false
-			end
-			_G.GetNumGroupMembers = function()
-				return 2
-			end
-			local GroupPanel = require("GroupPanel")
-			local toggled = 0
-			local real = GroupPanel.command
-			GroupPanel.command = function()
-				toggled = toggled + 1
-				return {}
-			end
-			assert.are.same({}, Options.handle("group"))
-			GroupPanel.command = real
-			_G.IsInGroup, _G.IsInRaid, _G.GetNumGroupMembers = nil, nil, nil
-			assert.are.equal(1, toggled)
-		end)
 	end)
 
 	-- L4.4 ruling 2: the player tooltip cannot be clicked, so /fs link copies the site page.
@@ -349,11 +316,11 @@ describe("Options", function()
 		assert.are.equal("/fs tour: see the tour again", require("Locale").settingsCommands[5])
 	end)
 
-	-- Spec 2026-11-13-addon-hub 10: /fs welcome, /fs panel, /fs job and /fs jobs are gone; like the old
-	-- window's tab subcommands they print the command list.
+	-- Spec 2026-11-13-addon-hub 10: /fs welcome, /fs panel, /fs job, /fs jobs, /fs group and /fs floor are
+	-- gone; like the old window's tab subcommands they print the command list.
 	it("has dropped the old routes and the window's tab subcommands", function()
 		for _, command in ipairs({ "export", "follow FSB1:1.60.1.69893:paladin:111:", "settings", "welcome", "panel",
-			"job", "jobs" }) do
+			"job", "jobs", "group", "floor 1200" }) do
 			assert.are.same(Options.helpLines(), Options.handle(command), command)
 		end
 		assert.is_nil(require("Follow").build)
@@ -1188,56 +1155,45 @@ describe("Options", function()
 		assert.are.equal(Options.data, GuildTab.data)
 	end)
 
-	-- L5.2: the group panel reads the roster, the inspects, the auras and the ready check; /fs
-	-- group, /fs ready and /fs floor reach it; /fs diag prints its line.
-	it("routes the group events and commands to the group panel", function()
-		local GroupPanel, Chip = require("GroupPanel"), require("Chip")
+	-- L7: the ready check reads the auras and the check's events; a member who joins is inspected; /fs ready
+	-- reaches it; /fs diag prints its line.
+	it("routes the ready check's events and /fs ready to the ready check", function()
+		local ReadyCheck, GroupMembers = require("ReadyCheck"), require("GroupMembers")
 		local calls = {}
 		local function count(name)
 			return function(...)
 				calls[name] = (calls[name] or 0) + 1
-				return name == "onReadyCheck" and {} or { name, ... }
+				return { name, ... }
 			end
 		end
-		for _, name in ipairs({ "onRosterUpdate", "onInspectReady", "onAura", "onReadyCheck", "onReadyCheckFinished",
-			"onCombat", "command", "handleReady", "handleFloor" }) do
-			GroupPanel[name] = count(name)
+		for _, name in ipairs({ "onAura", "onReadyCheck", "onReadyCheckFinished", "handleReady" }) do
+			ReadyCheck[name] = count(name)
 		end
-		local chip = 0
-		Chip.refresh = function()
-			chip = chip + 1
-		end
+		GroupMembers.inspectAll = count("inspectAll")
 		local listed = {}
 		for _, event in ipairs(Options.EVENTS) do
 			listed[event] = true
 		end
 		for _, event in ipairs({ "GROUP_ROSTER_UPDATE", "INSPECT_READY", "UNIT_AURA", "READY_CHECK",
-			"READY_CHECK_FINISHED", "PLAYER_REGEN_DISABLED" }) do
+			"READY_CHECK_FINISHED" }) do
 			assert.is_true(listed[event], event)
 		end
 		Options.onEvent(Options.frame, "GROUP_ROSTER_UPDATE")
-		Options.onEvent(Options.frame, "INSPECT_READY", "Player-1")
 		Options.onEvent(Options.frame, "UNIT_AURA", "party1")
 		Options.onEvent(Options.frame, "READY_CHECK", "Leader", 35)
 		Options.onEvent(Options.frame, "READY_CHECK_FINISHED")
-		Options.onEvent(Options.frame, "PLAYER_REGEN_DISABLED")
-		assert.are.same({ onRosterUpdate = 1, onInspectReady = 1, onAura = 1, onReadyCheck = 1,
-			onReadyCheckFinished = 1, onCombat = 1 }, calls)
-		-- UNIT_AURA redraws nothing else; the combat event still redraws the chip.
-		assert.are.equal(1, chip)
-		assert.are.same({ "command" }, Options.handle("group"))
+		assert.are.same({ inspectAll = 1, onAura = 1, onReadyCheck = 1, onReadyCheckFinished = 1 }, calls)
 		assert.are.same({ "handleReady" }, Options.handle("ready"))
-		assert.are.same({ "handleFloor", "1200" }, Options.handle("floor 1200"))
-		GroupPanel.diagLine = function()
-			return "the group line"
+		ReadyCheck.diagLine = function()
+			return "the ready line"
 		end
 		local found = false
 		for _, line in ipairs(Options.handle("diag")) do
-			found = found or line == "the group line"
+			found = found or line == "the ready line"
 		end
 		assert.is_true(found)
 		Options.register()
-		assert.are.equal(Options.data, GroupPanel.data)
+		assert.are.equal(Options.data, ReadyCheck.data)
 	end)
 
 	-- L5.3: the loot window's events reach the loot council helper; the item cache feeds a request
@@ -1281,7 +1237,7 @@ describe("Options", function()
 		assert.is_true(LootCouncil.registered)
 	end)
 
-	it("redraws the chip once on a ready check, through the group panel's hook", function()
+	it("redraws the chip once on a ready check, through the ready check's hook", function()
 		local Chip = require("Chip")
 		local calls = 0
 		Chip.refresh = function()
@@ -1289,10 +1245,6 @@ describe("Options", function()
 		end
 		Options.onEvent(Options.frame, "READY_CHECK", "Leader", 35)
 		assert.are.equal(1, calls)
-		-- A panel that turned itself off: the chip still redraws.
-		require("GroupPanel").disabled = true
-		Options.onEvent(Options.frame, "READY_CHECK", "Leader", 35)
-		assert.are.equal(2, calls)
 	end)
 
 	-- L4.2 ruling 4: the chip's here line follows the instance entered.

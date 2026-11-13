@@ -251,8 +251,8 @@ describe("SettingsPage, the command list", function()
 		SettingsPage = helper.load("Settings")
 	end)
 
-	it("is the thirteen player commands, /fs and /fs copy first, /fs options listed, /fs help last", function()
-		assert.are.equal(13, #L.settingsCommands)
+	it("is the eleven player commands, /fs and /fs copy first, /fs options listed, /fs help last", function()
+		assert.are.equal(11, #L.settingsCommands)
 		local options = 0
 		for _, line in ipairs(L.settingsCommands) do
 			assert.is_truthy(line:find("^/fs[%a, ]*: "), line)
@@ -264,13 +264,13 @@ describe("SettingsPage, the command list", function()
 		assert.is_truthy(L.settingsCommands[1]:find("^/fs: "))
 		assert.is_truthy(L.settingsCommands[2]:find("^/fs copy: "))
 		assert.is_truthy(L.settingsCommands[5]:find("^/fs tour: "))
-		assert.is_truthy(L.settingsCommands[13]:find("^/fs help: "))
+		assert.is_truthy(L.settingsCommands[11]:find("^/fs help: "))
 	end)
 
 	-- Fix round 2, item 10: the list word for word. The hub (spec 2026-11-13-addon-hub 10): /fs opens the
 	-- window and a tab's name opens that tab; /fs job is gone; /fs build and /fs inspect are the testers';
-	-- /fs chip, /fs group and /fs floor stay until the chip and Officer lanes replace them.
-	it("words the thirteen player commands as ruled", function()
+	-- /fs chip stays until the chip lane replaces it; /fs group and /fs floor went with the Officer lane.
+	it("words the eleven player commands as ruled", function()
 		assert.are.same({
 			"/fs: open the Forever Sixty window",
 			"/fs copy: copy my character for the site",
@@ -278,11 +278,9 @@ describe("SettingsPage, the command list", function()
 			"/fs link: copy a player's site page",
 			"/fs tour: see the tour again",
 			"/fs chip: show or hide the Forever Sixty line",
-			"/fs group: your group's specs, gear and buffs",
-			"/fs ready: check flasks, food and buffs now",
+				"/fs ready: check flasks, food and buffs now",
 			"/fs loot: what an item is worth to you",
-			"/fs floor N: tag members scored under N",
-			"/fs options: open the settings page",
+				"/fs options: open the settings page",
 			"/fs diag: check what is wrong",
 			"/fs help: every command",
 		}, L.settingsCommands)
@@ -620,7 +618,7 @@ describe("SettingsPage, the layout", function()
 		assert.are.equal(5, SettingsPage.COMMANDS_SHOWN)
 		assert.are.equal("/fs help: all the commands", L.settingsCommandsMore)
 		-- /fs help still lists every one of them.
-		assert.are.equal(13, #L.settingsCommands)
+		assert.are.equal(11, #L.settingsCommands)
 	end)
 
 	it("sits the page on an opaque backdrop 8 px inside the canvas, hints in the body token", function()

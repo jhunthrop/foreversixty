@@ -175,9 +175,30 @@ function Export.guildInfo()
 		return nil
 	end
 	-- The last guild read in the world (X.2): the 1.60 client answers nothing at logout.
-	Export.lastGuild = { name = name, rankIndex = rankIndex }
+	local guild = { name = name, rankIndex = rankIndex, rankNames = Export.rankNames() }
+	Export.lastGuild = guild
 	Export.guildGone = false
-	return { name = name, rankIndex = rankIndex }
+	return guild
+end
+
+--- The guild's rank names by rank index (0, the guild master, first), as the client names them
+--- (GuildControlGetNumRanks, GuildControlGetRankName, which counts ranks from 1), for the site's raider
+--- ranks control; nil where the client cannot say. Display text only: nothing trusts a rank by its name.
+function Export.rankNames()
+	local count, rankName = _G.GuildControlGetNumRanks, _G.GuildControlGetRankName
+	if type(count) ~= "function" or type(rankName) ~= "function" then
+		return nil
+	end
+	local ok, ranks = pcall(count)
+	if not ok or type(ranks) ~= "number" or ranks < 1 then
+		return nil
+	end
+	local names = {}
+	for index = 1, ranks do
+		local read, text = pcall(rankName, index)
+		names[index] = read and type(text) == "string" and text or ""
+	end
+	return names
 end
 
 --- The guild read in the world, kept for the logout.

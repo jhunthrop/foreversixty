@@ -71,9 +71,6 @@ Prefs.DEFAULTS = {
 	-- turning it on or off is consistent everywhere in the same frame. No
 	-- Settings switch until a v2 surface reads it (L3.5 ruling 1).
 	advancedDetail = false,
-	-- The group panel's score floor (L5.2 ruling 4, /fs floor N): members scored under it are
-	-- tagged "below N"; 0 is none (a saved nil would be dropped).
-	groupFloor = 0,
 	-- The loot council helper (L3.7 item 49): off, the master looter asks about epics only; on, about
 	-- rares as well, whatever the group's loot threshold.
 	lootRares = false,

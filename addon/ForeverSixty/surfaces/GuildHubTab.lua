@@ -24,7 +24,7 @@ local Follow = ns.Follow or require("Follow")
 local GuildRaid = ns.GuildRaid or require("GuildRaid")
 local RaidPrep = ns.RaidPrep or require("RaidPrep")
 local BuildsPane = ns.BuildsPane or require("BuildsPane")
-local HubFrame = ns.HubFrame or require("HubFrame")
+local HubDraw = ns.HubDraw or require("HubDraw")
 local Hub = ns.Hub or require("Hub")
 
 local GuildHubTab = {}
@@ -145,143 +145,15 @@ end
 
 -- The frame ------------------------------------------------------------------------------------------
 
-local function textHeight(region)
-	local height = type(region.GetStringHeight) == "function" and region:GetStringHeight() or nil
-	return (type(height) == "number" and height > 0) and math.ceil(height) or GuildHubTab.LAYOUT.line
-end
-
-local function place(region, parent, x, y)
-	region:ClearAllPoints()
-	region:SetPoint("TOPLEFT", parent, "TOPLEFT", x, -y)
-	region:Show()
-end
-
---- A line from the tab's pool by `key` on column `parent`, made the first time, `width` wide.
-local function pooled(view, parent, key, width, wrap)
-	local region = view.texts[key]
-	if region == nil then
-		region = HubFrame.line(parent, "body", width)
-		if wrap and type(region.SetWordWrap) == "function" then
-			region:SetWordWrap(true)
-		end
-		view.texts[key] = region
-	end
-	view.used[key] = true
-	return region
-end
-
---- An invisible hit frame by `key` over a region: an item's tooltip and shift-click link, or a name's
---- whisper and invite, or a row's click.
-local function hit(view, parent, key)
-	local frame = view.hits[key]
-	if frame == nil then
-		frame = Theme.createFrame("Button", nil, parent)
-		frame:EnableMouse(true)
-		if type(frame.RegisterForClicks) == "function" then
-			frame:RegisterForClicks("LeftButtonUp")
-		end
-		frame:SetScript("OnLeave", function()
-			Theme.hideTooltip()
-		end)
-		view.hits[key] = frame
-	end
-	view.usedHits[key] = true
-	frame:Show()
-	return frame
-end
-
-local function cover(frame, region, width)
-	frame:ClearAllPoints()
-	frame:SetPoint("TOPLEFT", region, "TOPLEFT", 0, 0)
-	frame:SetSize(width or (type(region.GetStringWidth) == "function" and region:GetStringWidth() or 0) or 0,
-		textHeight(region))
-end
-
---- A class-coloured name; nil text for an empty name.
-local function nameText(name, classToken)
-	return "|cff" .. Theme.panelClassHex(classToken) .. name .. "|r"
-end
-
---- The roster's class tokens by bare name, for coloured names (a job's partner, an officer).
-local function classesByName()
-	local classes = {}
-	for _, entry in ipairs(Theme.guildRoster()) do
-		classes[entry.name:match("^([^%-]+)") or entry.name] = entry.classToken
-	end
-	return classes
-end
-
---- A name's clicks: whisper on a click, invite on a shift-click (the client's own).
-local function nameClicks(frame, name)
-	frame:SetScript("OnEnter", nil)
-	frame:SetScript("OnClick", function()
-		if type(IsShiftKeyDown) == "function" and IsShiftKeyDown() then
-			local party = _G.C_PartyInfo
-			local invite = type(party) == "table" and party.InviteUnit or _G.InviteUnit
-			if type(invite) == "function" then
-				pcall(invite, name)
-			end
-		elseif type(_G.ChatFrame_SendTell) == "function" then
-			pcall(_G.ChatFrame_SendTell, name)
-		end
-	end)
-end
-
---- An item's hover and shift-click: the client's own item tooltip; a shift-click links it in chat.
-local function itemClicks(frame, itemId)
-	frame:SetScript("OnEnter", function(self)
-		Theme.showItemTooltip(self, itemId)
-	end)
-	frame:SetScript("OnClick", function()
-		if type(IsShiftKeyDown) == "function" and IsShiftKeyDown() and type(_G.ChatEdit_InsertLink) == "function" then
-			pcall(_G.ChatEdit_InsertLink, Compat.displayLink(itemId))
-		end
-	end)
-end
+local textHeight, place, pooled, hit, cover = HubDraw.textHeight, HubDraw.place, HubDraw.pooled, HubDraw.hit,
+	HubDraw.cover
+local nameText, classesByName, nameClicks, itemClicks = HubDraw.nameText, HubDraw.classesByName, HubDraw.nameClicks,
+	HubDraw.itemClicks
+local heading, textLine = HubDraw.heading, HubDraw.textLine
 
 --- An item's name in its quality colour, or nil until the client has it (it redraws the tab then).
 local function itemText(itemId)
-	local name = Compat.itemName(itemId)
-	if name == nil then
-		Compat.whenItemLoaded(itemId, GuildHubTab.redraw)
-		return nil
-	end
-	local hex = Theme.QUALITY_HEX[Compat.itemQuality(itemId)] or Theme.HEX.body
-	return "|cff" .. hex .. name .. "|r"
-end
-
---- A section's heading at `y` in the title face, its muted note right-aligned; the y under it.
-local function heading(view, parent, key, width, y, text, note)
-	local G = GuildHubTab.LAYOUT
-	local head = view.texts[key .. ".h"]
-	if head == nil then
-		head = Theme.titleFont(pooled(view, parent, key .. ".h"), Theme.SIZES.windowSection)
-		head:SetTextColor(Theme.rgb(Theme.HEX.bone))
-	end
-	view.used[key .. ".h"] = true
-	head:SetText(text)
-	place(head, parent, 0, y + (G.head - textHeight(head)) / 2)
-	if note ~= nil and note ~= "" then
-		local right = pooled(view, parent, key .. ".n")
-		right:SetTextColor(Theme.rgb(Theme.HEX.muted))
-		right:SetJustifyH("RIGHT")
-		right:SetWidth(math.max(0, width - (head:GetStringWidth() or 0) - Theme.SIZES.gap * 2))
-		right:SetText(note)
-		right:ClearAllPoints()
-		right:SetPoint("TOPRIGHT", parent, "TOPRIGHT", 0, -(y + (G.head - textHeight(right)) / 2))
-		right:Show()
-	end
-	return y + G.head + Theme.SIZES.gap
-end
-
---- One line of text at `y` (`hexKey` its colour), wrapped to `width` when `wrap`; the y under it.
-local function textLine(view, parent, key, x, y, width, text, hexKey, wrap)
-	local region = pooled(view, parent, key, width, wrap)
-	region:SetWidth(width)
-	region:SetTextColor(Theme.rgb(Theme.HEX[hexKey or "body"]))
-	region:SetText(text)
-	place(region, parent, x, y)
-	return y + math.max(GuildHubTab.LAYOUT.line, textHeight(region)), region
+	return HubDraw.itemText(itemId, GuildHubTab.redraw)
 end
 
 local function drawAnswerButtons(view, parent, section, y)
@@ -406,12 +278,7 @@ local function drawPrep(view, parent, width, rows, prepFor, y)
 		textLine(view, parent, key .. ".l", 0, y, G.prepLabel, label or "", "muted")
 		local x = G.prepLabel
 		if row.itemId ~= nil then
-			local icon = view.icons[key]
-			if icon == nil then
-				icon = Theme.icon(parent, "ARTWORK", nil, G.specIcon)
-				view.icons[key] = icon
-			end
-			view.usedIcons[key] = true
+			local icon = HubDraw.icon(view, parent, key, G.specIcon)
 			icon:SetTexture(Compat.itemIcon(row.itemId) or Theme.UNKNOWN_ICON)
 			place(icon, parent, x, y + (G.line - G.specIcon) / 2)
 			x = x + G.specIcon + G.specGap
@@ -479,16 +346,7 @@ local function drawStanding(view, parent, width, row, key, y)
 	local right = width - G.attendanceWidth - G.scoreWidth
 	textLine(view, parent, key .. ".n", 0, y, G.rankWidth, tostring(row.place), "muted")
 	-- The ringed class crest, every character's one image (as the site's rows).
-	local crest = view.crests[key]
-	if crest == nil then
-		local face, ring = Theme.buildCrest(parent, G.specIcon)
-		crest = { face = face, ring = ring }
-		view.crests[key] = crest
-	end
-	view.usedCrests[key] = true
-	Theme.paintCrest(crest.face, crest.ring, row.classToken)
-	place(crest.face, parent, G.rankWidth, y + (G.line - G.specIcon) / 2)
-	crest.ring:Show()
+	HubDraw.crest(view, parent, key, G.specIcon, row.classToken, G.rankWidth, y + (G.line - G.specIcon) / 2)
 	local x = G.rankWidth + G.specIcon + G.specGap
 	local _, name = textLine(view, parent, key .. ".m", x, y, right - x, nameText(row.short, row.classToken), "body")
 	nameClicks(hit(view, parent, key), row.name)
@@ -587,31 +445,6 @@ local function drawSent(view, parent, width, sent, y)
 	return math.max(y, top + Theme.SIZES.clientButtonHeight)
 end
 
---- Hide every pooled region and hit frame the last draw did not use.
-local function sweep(view)
-	for key, region in pairs(view.texts) do
-		if not view.used[key] then
-			region:Hide()
-		end
-	end
-	for key, frame in pairs(view.hits) do
-		if not view.usedHits[key] then
-			frame:Hide()
-		end
-	end
-	for key, icon in pairs(view.icons) do
-		if not view.usedIcons[key] then
-			icon:Hide()
-		end
-	end
-	for key, crest in pairs(view.crests) do
-		if not view.usedCrests[key] then
-			crest.face:Hide()
-			crest.ring:Hide()
-		end
-	end
-end
-
 --- The left column: Tonight (or the empty line), Your prep, Sign-ups. Its height.
 local function drawLeft(view, model)
 	local parent, width = view.left, Theme.SIZES.windowLeft
@@ -673,11 +506,11 @@ function GuildHubTab.draw()
 	end
 	local model = GuildHubTab.model(GuildHubTab.selected)
 	GuildHubTab.current = model
-	view.used, view.usedHits, view.usedIcons, view.usedCrests = {}, {}, {}, {}
+	HubDraw.begin(view)
 	view.classes = classesByName()
 	local left = drawLeft(view, model)
 	local right = drawRight(view, model)
-	sweep(view)
+	HubDraw.sweep(view)
 	view.rule:SetHeight(math.max(left, right, 1))
 	local pending = model.tonight ~= nil and model.tonight.pending
 	Hub.setHints(nil, pending and L.guildSendsLater or nil)
@@ -695,19 +528,8 @@ end
 
 --- The tab's body, once, into the hub's content frame: the two columns and the rule between them.
 function GuildHubTab.build(content)
-	local S, G = Theme.SIZES, Hub.LAYOUT
-	local view = { texts = {}, hits = {}, icons = {}, crests = {}, buttons = {}, used = {}, usedHits = {}, usedIcons = {} }
-	view.left = Theme.createFrame("Frame", nil, content)
-	view.left:SetPoint("TOPLEFT", content, "TOPLEFT", S.padding, -G.bodyPad)
-	view.left:SetSize(S.windowLeft, 1)
-	view.right = Theme.createFrame("Frame", nil, content)
-	view.right:SetPoint("TOPLEFT", content, "TOPLEFT", S.padding + S.windowLeft + S.windowGutter, -G.bodyPad)
-	view.right:SetSize(S.windowRight, 1)
-	view.rule = Theme.texture(content, "ARTWORK", "border")
-	view.rule:SetWidth(Theme.wholePixels(view.rule, S.border))
-	view.rule:SetPoint("TOP", content, "TOPLEFT", S.padding + S.windowLeft + S.windowGutter / 2, 0)
-	GuildHubTab.view = view
-	return view
+	GuildHubTab.view = HubDraw.view(content)
+	return GuildHubTab.view
 end
 
 function GuildHubTab.show()

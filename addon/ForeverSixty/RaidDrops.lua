@@ -322,6 +322,44 @@ function RaidDrops.onLootChat(message)
 	return nil
 end
 
+--- Master loot handed `itemId` out through the Officer tab's Give: the newest corpse of tonight holding a
+--- copy counts it, with whether it went to the biggest gain (`best`), for the night's line ("7 items, 6
+--- to the biggest gain"). The winner's name still comes from the loot chat. Returns the item, or nil.
+function RaidDrops.markGiven(itemId, best)
+	local nights = RaidDrops.nights()
+	local night = nights[#nights]
+	for index = #(night ~= nil and night.corpses or {}), 1, -1 do
+		for _, item in ipairs(night.corpses[index].items) do
+			if item.itemId == itemId then
+				item.given = (item.given or 0) + 1
+				item.toBest = (item.toBest or 0) + (best and 1 or 0)
+				return item
+			end
+		end
+	end
+	return nil
+end
+
+--- How many items `name` (a bare name) received in this character's raid nights since `since` (epoch
+--- seconds), from the loot chat's winners. Pure over the nights.
+function RaidDrops.wonSince(nights, name, since)
+	local count = 0
+	for _, night in ipairs(nights or {}) do
+		if (night.lastAt or 0) >= since then
+			for _, corpse in ipairs(night.corpses or {}) do
+				for _, item in ipairs(corpse.items or {}) do
+					for _, winner in ipairs(item.winners or {}) do
+						if (winner:match("^([^%-]+)") or winner) == name then
+							count = count + 1
+						end
+					end
+				end
+			end
+		end
+	end
+	return count
+end
+
 -- Events ------------------------------------------------------------------------------------------
 
 function RaidDrops.onEvent(_, event, ...)
