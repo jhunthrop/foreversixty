@@ -61,14 +61,16 @@ While it is `true`:
     (`src/content/guides/_prose.test.ts`) and the fixture build. deploy runs on main as before.
   - api `check`: the engine-free `go vet` and `go build ./...` with `GOWORK=off`, and the
     workspace `go vet`. `image` and `deploy` run on main only.
-  - sim `test`: gofmt, `go vet`, `go build ./...`. `rotations`: apl-check and styles-check.
+  - sim `test`: gofmt, `go vet`, `go build ./...` and `go test` on every package but
+    `cmd/spec-breakdown` (since 2026-11-13, issue #27). `rotations`: apl-check and styles-check.
   - data: ruff and a byte-compile. tools: shellcheck and actionlint. addon: luacheck and the
     Lua 5.1 and Data.lua parse checks. logs: gofmt, vet, build. companion: gofmt, vet and the
     headless build (its release on main is unchanged).
 - What is skipped (jobs show as skipped, which `tools/land.sh` counts as green):
   - the full vitest beyond the prose test;
   - the e2e shards, real-engine, lhci and lhci-alert;
-  - every Go test run and `-race`: the api's four test shards, the sim suite and its
+  - every Go test run and `-race` but the sim unit tests: the api's four test shards, the sim
+    suite's `-race` run with spec-breakdown and coverage, and its
     artifacts job (the wasm smoke), logs' tests, fuzz and bench, the image tests;
   - the iOS and Android suites and mobile-codegen's drift checks;
   - the companion tests and the window build;

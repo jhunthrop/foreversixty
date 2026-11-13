@@ -65,10 +65,16 @@ jobs:
             echo "these files are not gofmt'd:"; echo "$unformatted"; exit 1
           fi
       - run: go vet ./...
-      # LAUNCH MODE (docs/runbooks/landing.md, "Launch mode"): build and vet, no test run.
+      # LAUNCH MODE (docs/runbooks/landing.md, "Launch mode") skips the slow suites below, never
+      # the unit tests: every package but cmd/spec-breakdown (about 5 minutes alone) runs in
+      # every mode, so a data regression such as Fiery War Axe at 2.9 s (issue #27,
+      # TestWeaponsSwingAtTheirForeverSpeed) fails here. The same rule as data.yml's
+      # addon-data contract tests (2f6ea4f32).
       - name: go build (launch mode)
         if: vars.LAUNCH_MODE == 'true'
         run: go build ./...
+      - name: the unit tests (every mode)
+        run: go test $(go list ./... | grep -v '/cmd/spec-breakdown$') -timeout 20m
       # ci-minutes lane, 2026-10-15: the race detector multiplies this suite's
       # run time several times over. It runs on every push to main and on a
       # dispatch, where a data race must not land; a pull request's check runs
