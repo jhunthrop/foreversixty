@@ -189,17 +189,21 @@ func TestTankMarkdownDividesTotalsByIterationsAndSkipsIdleRows(t *testing.T) {
 			{Id: spellID(2565, 0), UptimeSecondsAvg: 5, ProcsAvg: 1.5},
 			{Id: spellID(98, 0)}, // never up: skipped
 		},
+		Resources: []*proto.ResourceMetrics{
+			{Id: spellID(2687, 0), Type: proto.ResourceType_ResourceTypeRage, Gain: 40, ActualGain: 30},
+		},
 	}
 	out := tankMarkdown(req, float64(req.Encounter.DurationSec), finalStatsResult(map[stats.Stat]float64{stats.Health: 3000, stats.Dodge: 5.5}), res, player,
-		map[int32]string{23922: "Shield Slam", 2565: "Shield Block"})
+		map[int32]string{23922: "Shield Slam", 2565: "Shield Block", 2687: "Bloodrage"})
 	for _, want := range []string{
 		"warrior-protection tank fight, 2 iterations",
 		"| health | 3000.00 |",
 		"| dodge % | 5.50 |",
 		"| damage taken /s | 321.5 |",
 		"| chance of death | 25.0% |",
-		"| Shield Slam (23922) | 4.00 | 20.0 | 30.0 |", // 8 casts / 2 iterations; 400 / 2 / 10 s; 600 / 2 / 10 s
-		"| Shield Block (2565) | 50.0 | 1.50 |",        // 5 s of 10 s
+		"| Shield Slam (23922) | 4.00 | 20.0 | 30.0 |",          // 8 casts / 2 iterations; 400 / 2 / 10 s; 600 / 2 / 10 s
+		"| Shield Block (2565) | 50.0 | 1.50 |",                 // 5 s of 10 s
+		"| Bloodrage (2687) | ResourceTypeRage | 20.0 | 15.0 |", // where the threat's rage comes from, per iteration
 	} {
 		if !strings.Contains(out, want) {
 			t.Errorf("missing %q in:\n%s", want, out)

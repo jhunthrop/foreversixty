@@ -190,5 +190,7 @@ func tankMarkdown(req api.SimRequest, secs float64, computed *proto.ComputeStats
 		}
 		fmt.Fprintf(&b, "| %s | %.1f | %.2f |\n", actionName(a.GetId(), names), 100*a.GetUptimeSecondsAvg()/secs, a.GetProcsAvg())
 	}
+	// Threat follows rage: where the tank's rage (or mana) comes from.
+	writeResourceTable(&b, resourceRows(p, iters, names))
 	return b.String()
 }

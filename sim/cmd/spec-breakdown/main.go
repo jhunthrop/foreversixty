@@ -570,13 +570,28 @@ func newReport(req api.SimRequest, secs float64, est api.Estimate, p *proto.Unit
 		})
 	}
 	sort.Slice(r.Auras, func(i, j int) bool { return r.Auras[i].UptimePct > r.Auras[j].UptimePct })
+	r.Resources = resourceRows(p, iters, names)
+	return r
+}
+
+// resourceRows is every resource gain of the unit, per iteration.
+func resourceRows(p *proto.UnitMetrics, iters float64, names map[int32]string) []resourceRow {
+	rows := make([]resourceRow, 0, len(p.GetResources()))
 	for _, rs := range p.GetResources() {
-		r.Resources = append(r.Resources, resourceRow{
+		rows = append(rows, resourceRow{
 			Name: actionName(rs.GetId(), names), Type: rs.GetType().String(),
 			GainPerIter: rs.GetGain() / iters, ActualPerIter: rs.GetActualGain() / iters,
 		})
 	}
-	return r
+	return rows
+}
+
+// writeResourceTable prints the resource gains as the report's markdown table.
+func writeResourceTable(b *strings.Builder, rows []resourceRow) {
+	b.WriteString("\n| Resource | Type | Gain/iter | Actual/iter |\n|---|---|---|---|\n")
+	for _, a := range rows {
+		fmt.Fprintf(b, "| %s | %s | %.1f | %.1f |\n", a.Name, a.Type, a.GainPerIter, a.ActualPerIter)
+	}
 }
 
 func foldAction(a *proto.ActionMetrics, iters, secs, totalDPS float64, names map[int32]string) actionRow {
@@ -659,10 +674,7 @@ func (r report) markdown() string {
 		}
 		fmt.Fprintf(&b, "| %s | %.1f | %.2f |\n", a.Name, a.UptimePct, a.ProcsPerIter)
 	}
-	b.WriteString("\n| Resource | Type | Gain/iter | Actual/iter |\n|---|---|---|---|\n")
-	for _, a := range r.Resources {
-		fmt.Fprintf(&b, "| %s | %s | %.1f | %.1f |\n", a.Name, a.Type, a.GainPerIter, a.ActualPerIter)
-	}
+	writeResourceTable(&b, r.Resources)
 	return b.String()
 }
 
