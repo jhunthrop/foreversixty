@@ -383,12 +383,15 @@ def test_default_builds_lua_is_triples_per_point():
         spec_icons={"warrior-arms": "ability_warrior_savageblow"},
     )
     lua = render_lua(data)
+    # A triple names no class, so every build points into one pool of the distinct ones.
+    assert "local talentPoints = {\n\t{1,1,2},\n\t{1,2,3},\n\t{1,1,3},\n}" in lua
     start = lua.index("defaultBuilds = {")
     assert (
         '\t\t["warrior-arms"] = {\n'
         '\t\t\tleveling = { name = "Arms leveling", why = "Iron Will.", '
-        "order = { {1,1,2}, {1,2,3} } },\n"
-        '\t\t\traid = { name = "Arms raid", why = "No \\"Will\\".", order = { {1,1,3} } },\n'
+        "order = { talentPoints[1], talentPoints[2] } },\n"
+        '\t\t\traid = { name = "Arms raid", why = "No \\"Will\\".", '
+        "order = { talentPoints[3] } },\n"
         "\t\t},"
     ) in lua[start:]
     assert '\tspecIcons = {\n\t\t["warrior-arms"] = "ability_warrior_savageblow",\n\t},' in lua
@@ -566,6 +569,9 @@ def test_every_real_pick_and_alternative_is_named():
 #: their variants) to 1.6 MB of the 3.2 MB heap measured on 2026-11-12, the BiS section
 #: holding another 0.5 MB packed. Raised 2026-11-12 to a ceiling that still catches a
 #: runaway render; the addon's idle memory is for the owner to re-measure in the client.
+#: The source filter (2026-11-13) took it to 3.7 MB; pooling the rotation lines every band
+#: repeats and the talent triples every default build repeats (pipeline/addonlua.py's
+#: rotationLines and talentPoints) brought it back to 2.3 MB the same day.
 DATA_LUA_IDLE_BUDGET_KB = 4096
 
 

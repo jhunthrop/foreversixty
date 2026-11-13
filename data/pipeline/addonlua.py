@@ -69,22 +69,62 @@ def _race_ids_lua(ids: dict[str, int]) -> str:
     return f", raceSpellId = {{ {pairs} }}"
 
 
-def _rotations_lua(rotations: dict) -> list[str]:
+def _rotation_line_lua(line) -> str:
+    races = _race_ids_lua(line.race_spell_ids)
+    return (
+        f"{{ spellId = {line.spell_id}, name = {_quote(line.name)}, "
+        f"condition = {_quote(line.condition)}{races} }}"
+    )
+
+
+def _pool(literals: list[str]) -> dict[str, int]:
+    """Each distinct Lua table literal -> its 1-based slot in a shared pool, in
+    first-use order, so the render is stable."""
+    index: dict[str, int] = {}
+    for literal in literals:
+        index.setdefault(literal, len(index) + 1)
+    return index
+
+
+def _pool_lua(name: str, index: dict[str, int]) -> list[str]:
+    """`local <name> = { <literal>, ... }`, declared above `ns.Data`. A local
+    goes out of scope when the chunk returns, so only the tables the data
+    still points at stay on the heap."""
+    return [f"local {name} = {{"] + [f"\t{literal}," for literal in index] + ["}"]
+
+
+#: The shared pool of rotation lines (_rotations_lua).
+ROTATION_POOL = "rotationLines"
+
+
+def _rotations_lua(rotations: dict) -> tuple[list[str], list[str]]:
+    """The rotation pool, then `rotations[spec] = { { level, lines = { line, ... } }, ... }`.
+
+    A band repeats every line the band before it kept, so each distinct line
+    is ONE table in a pool that every band of every spec points at: 5,786
+    lines were 1,086 distinct on 1.60.1.70790, and the copies were 1.2 MB of
+    the Lua 5.1 heap (DATA_LUA_IDLE_BUDGET_KB's note in tests/test_addondata.py).
+    The addon only reads a line (Rotation.lua copies one before changing its
+    rank), so a shared table is safe. Returns (pool lines, data lines)."""
+    index = _pool(
+        [
+            _rotation_line_lua(line)
+            for spec in sorted(rotations)
+            for band in rotations[spec]
+            for line in band.lines
+        ]
+    )
     lines = ["\trotations = {"]
     for spec in sorted(rotations):
         lines.append(f"\t\t[{_quote(spec)}] = {{")
         for band in rotations[spec]:
-            lines.append(f"\t\t\t{{ level = {band.level}, lines = {{")
-            for line in band.lines:
-                races = _race_ids_lua(line.race_spell_ids)
-                lines.append(
-                    f"\t\t\t\t{{ spellId = {line.spell_id}, name = {_quote(line.name)}, "
-                    f"condition = {_quote(line.condition)}{races} }},"
-                )
-            lines.append("\t\t\t} },")
+            refs = ", ".join(
+                f"{ROTATION_POOL}[{index[_rotation_line_lua(line)]}]" for line in band.lines
+            )
+            lines.append(f"\t\t\t{{ level = {band.level}, lines = {{ {refs} }} }},")
         lines.append("\t\t},")
     lines.append("\t},")
-    return lines
+    return _pool_lua(ROTATION_POOL, index), lines
 
 
 def _source_kind_code(source_kind: str) -> str:
@@ -332,27 +372,43 @@ def _bis_items_lua(bis_names: dict, bis_dps: dict) -> list[str]:
     return lines
 
 
-def _default_builds_lua(default_builds: dict) -> list[str]:
-    """`defaultBuilds[spec].leveling|raid = { name, why, order = { {tab,tier,column}, ... } }`
-    (docs/contracts/addon-v2.md, contract 1): the guide's why for the build,
-    then one 1-based triple per point in learning order, the codec's own
-    triple, written without spaces inside a triple to keep 28 specs x 2
-    builds x 51 points small."""
-    lines = ["	defaultBuilds = {"]
+#: The shared pool of talent points (_default_builds_lua).
+POINT_POOL = "talentPoints"
+
+
+def _point_lua(point) -> str:
+    return "{" + ",".join(str(n) for n in point) + "}"
+
+
+def _default_builds_lua(default_builds: dict) -> tuple[list[str], list[str]]:
+    """The point pool, then `defaultBuilds[spec].leveling|raid = { name, why, order = {
+    {tab,tier,column}, ... } }` (docs/contracts/addon-v2.md, contract 1): the guide's why
+    for the build, then one 1-based triple per point in learning order, the codec's own
+    triple. A triple names no class, so 28 specs x 2 builds x 51 points share the few
+    dozen distinct triples from one pool (the addon only reads them), not a table per
+    point. Returns (pool lines, data lines)."""
+    builds = [
+        default_builds[spec][kind]
+        for spec in sorted(default_builds)
+        for kind in ("leveling", "raid")
+        if kind in default_builds[spec]
+    ]
+    index = _pool([_point_lua(point) for build in builds for point in build.order])
+    lines = ["\tdefaultBuilds = {"]
     for spec in sorted(default_builds):
-        lines.append(f"		[{_quote(spec)}] = {{")
+        lines.append(f"\t\t[{_quote(spec)}] = {{")
         for kind in ("leveling", "raid"):
             build = default_builds[spec].get(kind)
             if build is None:
                 continue
-            order = ", ".join("{" + ",".join(str(n) for n in point) + "}" for point in build.order)
+            order = ", ".join(f"{POINT_POOL}[{index[_point_lua(point)]}]" for point in build.order)
             lines.append(
-                f"			{kind} = {{ name = {_quote(build.name)}, why = {_quote(build.why)},"
+                f"\t\t\t{kind} = {{ name = {_quote(build.name)}, why = {_quote(build.why)},"
                 f" order = {{ {order} }} }},"
             )
-        lines.append("		},")
-    lines.append("	},")
-    return lines
+        lines.append("\t\t},")
+    lines.append("\t},")
+    return _pool_lua(POINT_POOL, index), lines
 
 
 def _spec_icons_lua(spec_icons: dict[str, str]) -> list[str]:
@@ -422,11 +478,17 @@ def _ability_levels_lua(ability_levels: dict) -> list[str]:
 
 
 def render_lua(data: AddonData) -> str:
+    rotation_pool, rotations = _rotations_lua(data.rotations)
+    point_pool, default_builds = _default_builds_lua(data.default_builds)
     lines = [
         GENERATED,
         "-- Source: data/builds/<build>/addon-data.json",
         "local _, ns = ...",
         'ns = type(ns) == "table" and ns or {}',
+        "",
+        "-- Tables many entries below share; the addon only reads them.",
+        *rotation_pool,
+        *point_pool,
         "",
         "ns.Data = {",
         f"\tbuild = {_quote(data.build)},",
@@ -443,13 +505,13 @@ def render_lua(data: AddonData) -> str:
         )
         lines.append(f"\t\t[{_quote(spec)}] = {{ {pairs} }},")
     lines.append("\t},")
-    lines.extend(_rotations_lua(data.rotations))
+    lines.extend(rotations)
     lines.extend(_bis_lua(data.bis, data.bis_sources))
     lines.extend(_bis_new_lua(data.bis))
     lines.extend(_bis_weights_lua(data.bis))
     lines.extend(_bis_items_lua(data.bis_names, data.bis_dps))
     lines.extend(_bis_sources_lua(data.bis_sources))
-    lines.extend(_default_builds_lua(data.default_builds))
+    lines.extend(default_builds)
     lines.extend(_spec_icons_lua(data.spec_icons))
     lines.extend(_dps_per_point_lua(data.dps_per_point))
     lines.extend(_encounter_needs_lua(data.encounter_needs))

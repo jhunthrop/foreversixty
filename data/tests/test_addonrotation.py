@@ -1001,22 +1001,47 @@ def test_the_lua_names_each_races_id_only_where_they_differ():
         icon="x",
         race_spell_ids={"undead": 8103, "night-elf": 8102},
     )
-    lua = "\n".join(
-        _rotations_lua(
-            {
-                "priest-shadow": [
-                    AddonRotationBand(level=40, lines=[every]),
-                    AddonRotationBand(level=50, lines=[split]),
-                ]
-            }
-        )
+    pool, data = _rotations_lua(
+        {
+            "priest-shadow": [
+                AddonRotationBand(level=40, lines=[every]),
+                AddonRotationBand(level=50, lines=[split]),
+            ]
+        }
     )
+    lua = "\n".join(pool + data)
     assert '{ spellId = 8092, name = "Mind Blast", condition = "" },' in lua
     assert (
         '{ spellId = 10945, name = "Mind Blast", condition = "", '
         'raceSpellId = { ["night-elf"] = 8102, ["undead"] = 8103 } },' in lua
     )
     assert "faction" not in lua
+
+
+def test_a_line_two_bands_share_is_one_pooled_table():
+    """A band repeats the lines the band before it kept: Data.lua writes each distinct line
+    once, in the rotationLines pool, and every band points at it (the Lua 5.1 heap)."""
+    from pipeline.addonlua import _rotations_lua
+    from pipeline.models import AddonRotationBand, AddonRotationLine
+
+    filler = AddonRotationLine(spell_id=585, name="Smite", condition="as your filler", icon="x")
+    opener = AddonRotationLine(spell_id=589, name="Shadow Word: Pain", condition="", icon="x")
+    pool, data = _rotations_lua(
+        {
+            "priest-shadow": [
+                AddonRotationBand(level=10, lines=[filler]),
+                AddonRotationBand(level=12, lines=[opener, filler]),
+            ]
+        }
+    )
+    assert pool == [
+        "local rotationLines = {",
+        '\t{ spellId = 585, name = "Smite", condition = "as your filler" },',
+        '\t{ spellId = 589, name = "Shadow Word: Pain", condition = "" },',
+        "}",
+    ]
+    assert "\t\t\t{ level = 10, lines = { rotationLines[1] } }," in data
+    assert "\t\t\t{ level = 12, lines = { rotationLines[2], rotationLines[1] } }," in data
 
 
 def test_the_holy_paladin_band_40_flash_of_light_pair_exports_the_ranks_it_casts():
