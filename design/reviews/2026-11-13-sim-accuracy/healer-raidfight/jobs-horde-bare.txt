@@ -1,0 +1,10 @@
+druid-restoration-raidfight-horde -spec druid-restoration -preset raid -band 60 -faction horde -seed 1 -iterations 2000 -raid-fight
+paladin-holy-raidfight-horde -spec paladin-holy -preset raid -band 60 -faction horde -seed 1 -iterations 2000 -raid-fight
+priest-discipline-raidfight-horde -spec priest-discipline -preset raid -band 60 -faction horde -seed 1 -iterations 2000 -raid-fight
+priest-holy-raidfight-horde -spec priest-holy -preset raid -band 60 -faction horde -seed 1 -iterations 2000 -raid-fight
+shaman-restoration-raidfight-horde -spec shaman-restoration -preset raid -band 60 -faction horde -seed 1 -iterations 2000 -raid-fight
+druid-restoration-raidfight-bare -spec druid-restoration -preset bare -band 60 -faction alliance -seed 1 -iterations 2000 -raid-fight
+paladin-holy-raidfight-bare -spec paladin-holy -preset bare -band 60 -faction alliance -seed 1 -iterations 2000 -raid-fight
+priest-discipline-raidfight-bare -spec priest-discipline -preset bare -band 60 -faction alliance -seed 1 -iterations 2000 -raid-fight
+priest-holy-raidfight-bare -spec priest-holy -preset bare -band 60 -faction alliance -seed 1 -iterations 2000 -raid-fight
+shaman-restoration-raidfight-bare -spec shaman-restoration -preset bare -band 60 -faction alliance -seed 1 -iterations 2000 -raid-fight

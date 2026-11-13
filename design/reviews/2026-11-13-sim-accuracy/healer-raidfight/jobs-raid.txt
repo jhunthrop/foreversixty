@@ -1,0 +1,10 @@
+druid-restoration-raidfight -spec druid-restoration -preset raid -band 60 -faction alliance -seed 1 -iterations 2000 -raid-fight
+paladin-holy-raidfight -spec paladin-holy -preset raid -band 60 -faction alliance -seed 1 -iterations 2000 -raid-fight
+priest-discipline-raidfight -spec priest-discipline -preset raid -band 60 -faction alliance -seed 1 -iterations 2000 -raid-fight
+priest-holy-raidfight -spec priest-holy -preset raid -band 60 -faction alliance -seed 1 -iterations 2000 -raid-fight
+shaman-restoration-raidfight -spec shaman-restoration -preset raid -band 60 -faction alliance -seed 1 -iterations 2000 -raid-fight
+druid-restoration-bisfight -spec druid-restoration -preset raid -band 60 -faction alliance -seed 1 -iterations 2000
+paladin-holy-bisfight -spec paladin-holy -preset raid -band 60 -faction alliance -seed 1 -iterations 2000
+priest-discipline-bisfight -spec priest-discipline -preset raid -band 60 -faction alliance -seed 1 -iterations 2000
+priest-holy-bisfight -spec priest-holy -preset raid -band 60 -faction alliance -seed 1 -iterations 2000
+shaman-restoration-bisfight -spec shaman-restoration -preset raid -band 60 -faction alliance -seed 1 -iterations 2000
