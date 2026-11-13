@@ -1,0 +1,657 @@
+remote-test: e3d9a572a783f01fc88e98e6f33dca2dba9bde6e -> forever-ci on 192.168.1.182 (run 20261113230000-e3d9a572a-32048, in sim): bash ../design/reviews/2026-11-13-sim-accuracy/arcane-shadow-70938/baseline.sh
+remote-test: engine pinned to 5603877e4
+active build: {  "build": "1.60.1.70938"}; engine 5603877e4; replace github.com/wowsims/classic => github.com/jhunthrop/wowsims-forever v1.0.15-0.20261113154445-5603877e4342; simdb sha ea39a6a17bfa
+=== -spec mage-arcane -preset raid -band 60 -faction alliance
+2026/11/13 23:01:05 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 23:01:05 All 16 sims finished successfully.
+mage-arcane  DPS 795.20 +/- 0.46
+out of mana: 1.2 s of 180 s
+consumes: [flask_of_supreme_power greater_arcane_elixir cerebral_cortex_compound food_baked_salmon main_hand_imbue:brilliant_wizard_oil major_mana_potion conjured_demonic_rune]
+buffs: [arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Arcane Missiles (10212)#1 | 210.2 | 26.4 | 0.00 | 66.52 | 569 | 28.1 | 4.6 | 0.0 | 0.0 | 0.0 |
+| Pyroblast (18809) | 146.2 | 18.4 | 11.52 | 48.33 | 545 | 23.3 | 1.0 | 0.0 | 0.0 | 0.0 |
+| Fire Blast (10199) | 128.5 | 16.2 | 23.94 | 22.85 | 1012 | 32.0 | 4.5 | 0.0 | 0.0 | 0.0 |
+| Arcane Blast (1239700) | 128.4 | 16.1 | 28.33 | 27.05 | 855 | 37.7 | 4.5 | 0.0 | 0.0 | 0.0 |
+| Arcane Wrath (1326082) | 106.0 | 13.3 | 8.56 | 8.17 | 2337 | 28.3 | 4.6 | 0.0 | 0.0 | 0.0 |
+| spell (12654) | 36.4 | 4.6 | 0.00 | 20.52 | 320 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Fireball (10151) | 35.5 | 4.5 | 4.54 | 19.30 | 331 | 23.0 | 1.2 | 0.0 | 0.0 | 0.0 |
+| Frostbolt (10181) | 3.5 | 0.4 | 0.52 | 0.50 | 1264 | 22.1 | 4.7 | 0.0 | 0.0 | 0.0 |
+| Shoot (5019) | 0.6 | 0.1 | 1.38 | 1.31 | 85 | 22.9 | 5.1 | 0.0 | 0.0 | 0.0 |
+| item 5513 | 0.0 | 0.0 | 0.05 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Eureka! (1259817) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Arcane Power (12042) | 0.0 | 0.0 | 1.45 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Arcane Missiles (10212) | 0.0 | 0.0 | 14.06 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 5514 | 0.0 | 0.0 | 0.95 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 8008 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 75.24 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 11832 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Presence of Mind (12043) | 0.0 | 0.0 | 1.45 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 13444 | 0.0 | 0.0 | 1.78 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Evocation (12051) | 0.0 | 0.0 | 0.57 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 13968 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 8007 | 0.0 | 0.0 | 0.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 14152 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Heart of the Lion (409583) | 100.1 | 1.00 |
+| Thrash (21919) | 100.1 | 1.00 |
+| Mage Armor (22783) | 100.1 | 1.00 |
+| Strength of Earth Totem (10442) | 100.1 | 1.00 |
+| Blessing of Might (19838) | 100.1 | 2.00 |
+| Battle Shout (11551) | 100.1 | 1.00 |
+| Missile Barrage (400588)#2 | 100.1 | 1.00 |
+| Trueshot Aura (20906) | 100.1 | 1.00 |
+| Arcane Blast (400573) | 81.4 | 8.55 |
+| Heating Up (400625) | 77.1 | 23.85 |
+| Arcane Power (12042) | 11.2 | 1.45 |
+| item 13968 | 11.1 | 1.00 |
+| spell (12577) | 11.1 | 8.45 |
+| Eureka! (1259817) | 8.9 | 2.00 |
+| item 11832 | 5.6 | 1.00 |
+| Evocation (12051) | 2.6 | 0.57 |
+| Evocation (12051) | 2.6 | 0.57 |
+| Missile Barrage (400589) | 0.9 | 14.06 |
+| Presence of Mind (12043) | 0.0 | 1.45 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 10497.0 | 10172.7 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 1474.2 | 1459.8 |
+| item 14152 | ResourceTypeMana | 500.5 | 500.5 |
+| Arcane Blast (1239700) | ResourceTypeMana | -9958.6 | -9958.6 |
+| Arcane Wrath (1326082) | ResourceTypeMana | -3059.9 | -3059.9 |
+| item 13444 | ResourceTypeMana | 3205.9 | 3205.9 |
+| Arcane Missiles (10212) | ResourceTypeMana | -239.2 | -239.2 |
+| Fireball (10151) | ResourceTypeMana | -1569.6 | -1569.6 |
+| Fire Blast (10199) | ResourceTypeMana | -7481.8 | -7481.8 |
+| Frostbolt (10181) | ResourceTypeMana | -140.0 | -140.0 |
+| Pyroblast (18809) | ResourceTypeMana | -4425.2 | -4425.2 |
+| item 5514 | ResourceTypeMana | 380.1 | 380.1 |
+| item 5513 | ResourceTypeMana | 27.6 | 27.6 |
+| item 8007 | ResourceTypeMana | 2.9 | 2.9 |
+| item 8008 | ResourceTypeMana | 1099.9 | 1099.9 |
+| Judgement of Wisdom (20355) | ResourceTypeMana | 4157.3 | 4140.3 |
+=== -spec mage-arcane -preset bare -band 60 -faction alliance
+2026/11/13 23:01:05 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 23:01:06 All 16 sims finished successfully.
+mage-arcane  DPS 411.48 +/- 0.32
+out of mana: 12.1 s of 180 s
+consumes: []
+buffs: [arcane_brilliance]
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Arcane Missiles (10212)#1 | 158.5 | 38.5 | 0.00 | 76.36 | 374 | 17.8 | 8.0 | 0.0 | 0.0 | 0.0 |
+| Arcane Wrath (1326082) | 89.7 | 21.8 | 11.34 | 10.42 | 1550 | 17.9 | 8.1 | 0.0 | 0.0 | 0.0 |
+| Frostbolt (10181) | 80.4 | 19.5 | 16.75 | 15.40 | 939 | 12.4 | 8.0 | 0.0 | 0.0 | 0.0 |
+| Arcane Blast (1239700) | 77.3 | 18.8 | 27.96 | 25.72 | 541 | 23.2 | 8.0 | 0.0 | 0.0 | 0.0 |
+| Shoot (5019) | 4.3 | 1.0 | 11.04 | 10.16 | 76 | 12.4 | 8.0 | 0.0 | 0.0 | 0.0 |
+| item 14152 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Evocation (12051) | 0.0 | 0.0 | 0.98 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 8008 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 3.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 5513 | 0.0 | 0.0 | 0.19 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Arcane Missiles (10212) | 0.0 | 0.0 | 16.68 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Arcane Power (12042) | 0.0 | 0.0 | 1.44 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 8007 | 0.0 | 0.0 | 0.06 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Eureka! (1259817) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 11832 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Presence of Mind (12043) | 0.0 | 0.0 | 1.44 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 5514 | 0.0 | 0.0 | 0.75 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Mage Armor (22783) | 100.1 | 1.00 |
+| Missile Barrage (400588)#2 | 100.1 | 1.00 |
+| Arcane Blast (400573) | 83.9 | 8.80 |
+| Arcane Power (12042) | 11.1 | 1.44 |
+| Eureka! (1259817) | 8.9 | 2.00 |
+| spell (12577) | 8.8 | 6.57 |
+| item 11832 | 5.6 | 1.00 |
+| Evocation (12051) | 4.4 | 0.98 |
+| Evocation (12051) | 4.4 | 0.98 |
+| Missile Barrage (400589) | 1.8 | 16.76 |
+| Presence of Mind (12043) | 0.2 | 1.44 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 6715.5 | 6641.4 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 1872.1 | 1869.7 |
+| item 14152 | ResourceTypeMana | 500.0 | 500.0 |
+| Arcane Blast (1239700) | ResourceTypeMana | -9303.4 | -9303.4 |
+| Arcane Wrath (1326082) | ResourceTypeMana | -3975.2 | -3975.2 |
+| Arcane Missiles (10212) | ResourceTypeMana | -254.8 | -254.8 |
+| Frostbolt (10181) | ResourceTypeMana | -3416.8 | -3416.8 |
+| item 5514 | ResourceTypeMana | 298.5 | 298.5 |
+| item 5513 | ResourceTypeMana | 116.8 | 116.8 |
+| item 8007 | ResourceTypeMana | 50.0 | 50.0 |
+| item 8008 | ResourceTypeMana | 1099.1 | 1099.1 |
+=== -spec mage-arcane -preset bare -band 50 -faction alliance
+2026/11/13 23:01:06 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 23:01:06 All 16 sims finished successfully.
+mage-arcane  DPS 279.95 +/- 0.22
+out of mana: 10.5 s of 180 s
+consumes: []
+buffs: [arcane_brilliance]
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Arcane Missiles (10211)#1 | 108.2 | 38.6 | 0.00 | 76.13 | 256 | 13.7 | 8.1 | 0.0 | 0.0 | 0.0 |
+| Arcane Wrath (1326081) | 58.8 | 21.0 | 11.27 | 10.36 | 1022 | 13.6 | 8.1 | 0.0 | 0.0 | 0.0 |
+| Arcane Blast (1239699) | 51.1 | 18.2 | 28.17 | 25.90 | 355 | 19.3 | 8.1 | 0.0 | 0.0 | 0.0 |
+| Frostbolt (10180) | 49.4 | 17.6 | 16.11 | 14.80 | 600 | 8.0 | 8.1 | 0.0 | 0.0 | 0.0 |
+| Engulfing Shadows (27860) | 6.6 | 2.4 | 12.72 | 12.72 | 94 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Shoot (5019) | 3.3 | 1.2 | 6.83 | 6.27 | 96 | 8.2 | 8.2 | 0.0 | 0.0 | 0.0 |
+| Breath of Fire (12278) | 1.9 | 0.7 | 0.00 | 4.61 | 74 | 8.1 | 7.8 | 0.0 | 0.0 | 0.0 |
+| item 8007 | 0.0 | 0.0 | 0.99 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Chthonic Power (1249110) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Presence of Mind (12043) | 0.0 | 0.0 | 1.44 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Arcane Power (12042) | 0.0 | 0.0 | 1.44 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Breath of Fire (12257) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 5514 | 0.0 | 0.0 | 0.87 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 14.72 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Eureka! (1259817) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Arcane Missiles (10211) | 0.0 | 0.0 | 16.66 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Evocation (12051) | 0.0 | 0.0 | 0.96 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 5513 | 0.0 | 0.0 | 0.15 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Missile Barrage (400588)#2 | 100.1 | 1.00 |
+| Mage Armor (22782) | 100.1 | 1.00 |
+| Arcane Blast (400573) | 83.7 | 8.78 |
+| Arcane Power (12042) | 11.1 | 1.44 |
+| spell (12577) | 9.0 | 6.51 |
+| Eureka! (1259817) | 8.9 | 2.00 |
+| Chthonic Power (1249110) | 8.3 | 1.00 |
+| Evocation (12051) | 4.3 | 0.96 |
+| Evocation (12051) | 4.3 | 0.96 |
+| Missile Barrage (400589) | 1.7 | 16.74 |
+| Presence of Mind (12043) | 0.2 | 1.44 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 6746.9 | 6672.5 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 1887.9 | 1880.6 |
+| Engulfing Shadows (27860) | ResourceTypeMana | 1272.3 | 1268.0 |
+| Arcane Blast (1239699) | ResourceTypeMana | -8866.7 | -8866.7 |
+| Arcane Wrath (1326081) | ResourceTypeMana | -3195.9 | -3195.9 |
+| Arcane Missiles (10211) | ResourceTypeMana | -209.9 | -209.9 |
+| Frostbolt (10180) | ResourceTypeMana | -3391.5 | -3391.5 |
+| item 5514 | ResourceTypeMana | 346.0 | 346.0 |
+| item 5513 | ResourceTypeMana | 87.4 | 87.4 |
+| item 8007 | ResourceTypeMana | 840.6 | 840.6 |
+=== -spec mage-arcane -preset raid -band 60 -faction horde
+2026/11/13 23:01:06 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 23:01:06 All 16 sims finished successfully.
+mage-arcane  DPS 785.03 +/- 0.45
+out of mana: 1.3 s of 180 s
+consumes: [flask_of_supreme_power greater_arcane_elixir cerebral_cortex_compound food_baked_salmon main_hand_imbue:brilliant_wizard_oil major_mana_potion conjured_demonic_rune]
+buffs: [arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Arcane Missiles (10212)#1 | 203.3 | 25.9 | 0.00 | 65.18 | 561 | 26.4 | 4.6 | 0.0 | 0.0 | 0.0 |
+| Pyroblast (18809) | 143.2 | 18.2 | 11.34 | 47.69 | 540 | 21.4 | 1.0 | 0.0 | 0.0 | 0.0 |
+| Fire Blast (10199) | 126.1 | 16.1 | 23.79 | 22.73 | 999 | 30.0 | 4.5 | 0.0 | 0.0 | 0.0 |
+| Arcane Blast (1239700) | 123.0 | 15.7 | 27.49 | 26.25 | 843 | 35.9 | 4.5 | 0.0 | 0.0 | 0.0 |
+| Arcane Wrath (1326082) | 102.9 | 13.1 | 8.44 | 8.05 | 2300 | 26.4 | 4.6 | 0.0 | 0.0 | 0.0 |
+| Fireball (10151) | 39.4 | 5.0 | 5.03 | 21.36 | 332 | 21.5 | 1.1 | 0.0 | 0.0 | 0.0 |
+| spell (12654) | 34.1 | 4.3 | 0.00 | 19.33 | 317 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Touch of the Grave (1260198) | 9.3 | 1.2 | 0.00 | 9.15 | 183 | 0.0 | 4.4 | 0.0 | 0.0 | 0.0 |
+| Frostbolt (10181) | 3.7 | 0.5 | 0.54 | 0.51 | 1292 | 20.5 | 4.9 | 0.0 | 0.0 | 0.0 |
+| Shoot (5019) | 0.7 | 0.1 | 1.52 | 1.44 | 83 | 20.4 | 5.3 | 0.0 | 0.0 | 0.0 |
+| Presence of Mind (12043) | 0.0 | 0.0 | 1.45 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 8007 | 0.0 | 0.0 | 0.15 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 13968 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 14152 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 5514 | 0.0 | 0.0 | 0.93 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 8008 | 0.0 | 0.0 | 0.83 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 5513 | 0.0 | 0.0 | 0.08 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Arcane Missiles (10212) | 0.0 | 0.0 | 13.77 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Evocation (12051) | 0.0 | 0.0 | 0.71 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 74.38 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Arcane Power (12042) | 0.0 | 0.0 | 1.45 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 13444 | 0.0 | 0.0 | 1.93 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Thrash (21919) | 100.1 | 1.00 |
+| Trueshot Aura (20906) | 100.1 | 1.00 |
+| Missile Barrage (400588)#2 | 100.1 | 1.00 |
+| Strength of Earth Totem (10442) | 100.1 | 1.00 |
+| Touch of the Grave (1260201) | 100.1 | 1.00 |
+| Blessing of Might (19838) | 100.1 | 2.00 |
+| Battle Shout (11551) | 100.1 | 1.00 |
+| Mage Armor (22783) | 100.1 | 1.00 |
+| Heart of the Lion (409583) | 100.1 | 1.00 |
+| Arcane Blast (400573) | 80.8 | 8.49 |
+| Heating Up (400625) | 77.4 | 23.76 |
+| Arcane Power (12042) | 11.2 | 1.45 |
+| spell (12577) | 11.1 | 8.37 |
+| item 13968 | 11.1 | 1.00 |
+| Evocation (12051) | 3.2 | 0.71 |
+| Evocation (12051) | 3.2 | 0.71 |
+| Missile Barrage (400589) | 1.0 | 13.78 |
+| Presence of Mind (12043) | 0.0 | 1.45 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 10995.2 | 10683.1 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 1831.9 | 1825.6 |
+| item 14152 | ResourceTypeMana | 499.2 | 499.2 |
+| Arcane Blast (1239700) | ResourceTypeMana | -9847.8 | -9847.8 |
+| Arcane Wrath (1326082) | ResourceTypeMana | -3019.0 | -3019.0 |
+| item 13444 | ResourceTypeMana | 3471.2 | 3471.2 |
+| Arcane Missiles (10212) | ResourceTypeMana | -287.3 | -287.3 |
+| Fireball (10151) | ResourceTypeMana | -1741.6 | -1741.6 |
+| Fire Blast (10199) | ResourceTypeMana | -7820.4 | -7820.4 |
+| Frostbolt (10181) | ResourceTypeMana | -148.5 | -148.5 |
+| Pyroblast (18809) | ResourceTypeMana | -4620.8 | -4620.8 |
+| item 5514 | ResourceTypeMana | 373.4 | 373.4 |
+| item 5513 | ResourceTypeMana | 49.2 | 49.2 |
+| item 8007 | ResourceTypeMana | 128.7 | 128.7 |
+| item 8008 | ResourceTypeMana | 916.4 | 916.4 |
+| Judgement of Wisdom (20355) | ResourceTypeMana | 4097.5 | 4091.3 |
+=== -spec mage-arcane -preset bare -band 60 -faction horde
+2026/11/13 23:01:07 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 23:01:07 All 16 sims finished successfully.
+mage-arcane  DPS 407.29 +/- 0.29
+out of mana: 12.0 s of 180 s
+consumes: []
+buffs: [arcane_brilliance]
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Arcane Missiles (10212)#1 | 155.2 | 38.1 | 0.00 | 78.53 | 356 | 16.1 | 6.2 | 0.0 | 0.0 | 0.0 |
+| Arcane Wrath (1326082) | 86.8 | 21.3 | 11.26 | 10.60 | 1474 | 16.2 | 5.9 | 0.0 | 0.0 | 0.0 |
+| Frostbolt (10181) | 76.8 | 18.9 | 16.51 | 15.40 | 898 | 10.6 | 6.8 | 0.0 | 0.0 | 0.0 |
+| Arcane Blast (1239700) | 76.0 | 18.7 | 28.28 | 26.57 | 515 | 21.9 | 6.1 | 0.0 | 0.0 | 0.0 |
+| Touch of the Grave (1260198) | 6.0 | 1.5 | 0.00 | 8.98 | 121 | 0.0 | 6.1 | 0.0 | 0.0 | 0.0 |
+| Shoot (5019) | 5.2 | 1.3 | 8.04 | 7.48 | 126 | 10.6 | 7.0 | 0.0 | 0.0 | 0.0 |
+| item 8007 | 0.0 | 0.0 | 0.14 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 8008 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 13968 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Evocation (12051) | 0.0 | 0.0 | 0.98 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 14152 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 3.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Arcane Missiles (10212) | 0.0 | 0.0 | 16.83 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 5514 | 0.0 | 0.0 | 0.75 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 5513 | 0.0 | 0.0 | 0.11 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 11832 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Presence of Mind (12043) | 0.0 | 0.0 | 1.44 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Arcane Power (12042) | 0.0 | 0.0 | 1.44 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Mage Armor (22783) | 100.1 | 1.00 |
+| Touch of the Grave (1260201) | 100.1 | 1.00 |
+| Missile Barrage (400588)#2 | 100.1 | 1.00 |
+| Arcane Blast (400573) | 84.0 | 8.81 |
+| Arcane Power (12042) | 11.1 | 1.44 |
+| item 13968 | 11.1 | 1.00 |
+| spell (12577) | 9.1 | 6.72 |
+| item 11832 | 5.6 | 1.00 |
+| Evocation (12051) | 4.4 | 0.98 |
+| Evocation (12051) | 4.4 | 0.98 |
+| Missile Barrage (400589) | 1.9 | 16.91 |
+| Presence of Mind (12043) | 0.3 | 1.44 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 7194.1 | 7114.3 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 2005.1 | 2002.1 |
+| item 14152 | ResourceTypeMana | 500.0 | 500.0 |
+| Arcane Blast (1239700) | ResourceTypeMana | -9570.2 | -9570.2 |
+| Arcane Wrath (1326082) | ResourceTypeMana | -3925.6 | -3925.6 |
+| Arcane Missiles (10212) | ResourceTypeMana | -285.1 | -285.1 |
+| Frostbolt (10181) | ResourceTypeMana | -3380.8 | -3380.8 |
+| item 5514 | ResourceTypeMana | 300.4 | 300.4 |
+| item 5513 | ResourceTypeMana | 67.8 | 67.8 |
+| item 8007 | ResourceTypeMana | 115.5 | 115.5 |
+| item 8008 | ResourceTypeMana | 1100.0 | 1100.0 |
+=== -spec mage-arcane -preset bare -band 50 -faction horde
+2026/11/13 23:01:07 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 23:01:07 All 16 sims finished successfully.
+mage-arcane  DPS 276.54 +/- 0.22
+out of mana: 13.1 s of 180 s
+consumes: []
+buffs: [arcane_brilliance]
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Arcane Missiles (10211)#1 | 105.4 | 38.1 | 0.00 | 75.30 | 252 | 13.7 | 7.4 | 0.0 | 0.0 | 0.0 |
+| Arcane Wrath (1326081) | 56.1 | 20.3 | 10.87 | 10.06 | 1004 | 13.7 | 7.5 | 0.0 | 0.0 | 0.0 |
+| Frostbolt (10180) | 49.7 | 18.0 | 16.20 | 15.01 | 595 | 7.9 | 7.3 | 0.0 | 0.0 | 0.0 |
+| Arcane Blast (1239699) | 49.5 | 17.9 | 27.63 | 25.58 | 348 | 19.0 | 7.4 | 0.0 | 0.0 | 0.0 |
+| Engulfing Shadows (27860) | 6.5 | 2.4 | 12.53 | 12.53 | 94 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Touch of the Grave (1260198) | 4.4 | 1.6 | 0.00 | 8.74 | 90 | 0.0 | 7.3 | 0.0 | 0.0 | 0.0 |
+| Shoot (5019) | 4.2 | 1.5 | 8.56 | 7.93 | 96 | 8.2 | 7.3 | 0.0 | 0.0 | 0.0 |
+| item 5514 | 0.0 | 0.0 | 0.86 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 8007 | 0.0 | 0.0 | 0.96 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Evocation (12051) | 0.0 | 0.0 | 0.98 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Arcane Missiles (10211) | 0.0 | 0.0 | 16.35 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Presence of Mind (12043) | 0.0 | 0.0 | 1.44 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Arcane Power (12042) | 0.0 | 0.0 | 1.44 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 5513 | 0.0 | 0.0 | 0.18 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 14.53 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Chthonic Power (1249110) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Touch of the Grave (1260201) | 100.1 | 1.00 |
+| Missile Barrage (400588)#2 | 100.1 | 1.00 |
+| Mage Armor (22782) | 100.1 | 1.00 |
+| Arcane Blast (400573) | 83.7 | 8.78 |
+| Arcane Power (12042) | 11.1 | 1.44 |
+| spell (12577) | 8.9 | 6.46 |
+| Chthonic Power (1249110) | 8.3 | 1.00 |
+| Evocation (12051) | 4.4 | 0.98 |
+| Evocation (12051) | 4.4 | 0.98 |
+| Missile Barrage (400589) | 1.7 | 16.42 |
+| Presence of Mind (12043) | 0.3 | 1.44 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 6691.6 | 6618.6 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 1913.6 | 1906.3 |
+| Engulfing Shadows (27860) | ResourceTypeMana | 1252.5 | 1248.6 |
+| Arcane Blast (1239699) | ResourceTypeMana | -8635.1 | -8635.1 |
+| Arcane Wrath (1326081) | ResourceTypeMana | -3092.1 | -3092.1 |
+| Arcane Missiles (10211) | ResourceTypeMana | -236.4 | -236.4 |
+| Frostbolt (10180) | ResourceTypeMana | -3419.7 | -3419.7 |
+| item 5514 | ResourceTypeMana | 342.6 | 342.6 |
+| item 5513 | ResourceTypeMana | 108.2 | 108.2 |
+| item 8007 | ResourceTypeMana | 819.1 | 819.1 |
+=== -spec priest-shadow -preset raid -band 60 -faction alliance
+2026/11/13 23:01:07 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 23:01:07 All 16 sims finished successfully.
+priest-shadow  DPS 797.03 +/- 0.28
+out of mana: 0.0 s of 180 s
+consumes: [major_spellblasting_potion elixir_of_shadow_power flask_of_supreme_power greater_arcane_elixir cerebral_cortex_compound food_baked_salmon main_hand_imbue:brilliant_wizard_oil conjured_demonic_rune]
+buffs: [arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Mind Flay (18807) | 318.6 | 40.0 | 35.66 | 130.97 | 438 | 17.0 | 1.9 | 0.0 | 0.0 | 0.0 |
+| Shadow Word: Pain (10894) | 157.2 | 19.7 | 7.98 | 57.59 | 491 | 23.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Mind Blast (10947) | 155.7 | 19.5 | 21.81 | 20.24 | 1385 | 22.8 | 7.2 | 0.0 | 0.0 | 0.0 |
+| Devouring Plague (19280) | 94.4 | 11.8 | 7.65 | 52.80 | 322 | 23.2 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Shadow Word: Death (1309636) | 71.7 | 9.0 | 9.51 | 8.83 | 1462 | 28.1 | 7.2 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 39.74 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 13968 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Shadowform (15473) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 250937 | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 12662 | 0.0 | 0.0 | 1.40 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Inner Focus (14751) | 0.0 | 0.0 | 1.36 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Vampiric Embrace (15286) | 0.0 | 0.0 | 6.03 | 6.03 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Strength of Earth Totem (10442) | 100.1 | 1.00 |
+| Heart of the Lion (409583) | 100.1 | 1.00 |
+| Shadowform (15473) | 100.1 | 1.00 |
+| Thrash (21919) | 100.1 | 1.00 |
+| Blessing of Might (19838) | 100.1 | 2.00 |
+| Trueshot Aura (20906) | 100.1 | 1.00 |
+| Battle Shout (11551) | 100.1 | 1.00 |
+| spell (15332) | 100.1 | 76.63 |
+| Dark Inspiration (1326159) | 99.7 | 52.66 |
+| item 250937 | 33.2 | 2.00 |
+| item 13968 | 11.1 | 1.00 |
+| Inner Focus (14751) | 1.1 | 1.36 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 6022.0 | 6021.8 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 760.9 | 390.2 |
+| OtherActionDamageTaken | ResourceTypeHealth | -11538.3 | -11538.3 |
+| Vampiric Embrace (15286) | ResourceTypeHealth | 26920.0 | 11049.2 |
+| Vampiric Embrace (15286) | ResourceTypeMana | -108.6 | -108.6 |
+| Shadowform (15473) | ResourceTypeMana | -550.4 | -550.4 |
+| item 12662 | ResourceTypeMana | 1687.6 | 1687.6 |
+| Mind Blast (10947) | ResourceTypeMana | -3584.9 | -3584.9 |
+| Mind Flay (18807) | ResourceTypeMana | -3655.2 | -3655.2 |
+| Shadow Word: Death (1309636) | ResourceTypeMana | -1617.4 | -1617.4 |
+| Shadow Word: Pain (10894) | ResourceTypeMana | -1687.2 | -1687.2 |
+| Devouring Plague (19280) | ResourceTypeMana | -1506.7 | -1506.7 |
+| Judgement of Wisdom (20355) | ResourceTypeMana | 2261.9 | 2261.9 |
+=== -spec priest-shadow -preset bare -band 60 -faction alliance
+2026/11/13 23:01:08 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 23:01:08 All 16 sims finished successfully.
+priest-shadow  DPS 420.70 +/- 0.26
+out of mana: 22.1 s of 180 s
+consumes: []
+buffs: []
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Mind Flay (18807) | 174.3 | 41.4 | 33.10 | 119.59 | 262 | 9.2 | 2.4 | 0.0 | 0.0 | 0.0 |
+| Mind Blast (10947) | 76.6 | 18.2 | 16.93 | 15.41 | 895 | 13.3 | 9.0 | 0.0 | 0.0 | 0.0 |
+| Shadow Word: Pain (10894) | 74.8 | 17.8 | 6.55 | 47.64 | 283 | 12.6 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Devouring Plague (19280) | 43.0 | 10.2 | 5.20 | 37.85 | 204 | 12.6 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Shadow Word: Death (1309633) | 34.2 | 8.1 | 9.26 | 8.42 | 732 | 11.5 | 9.0 | 0.0 | 0.0 | 0.0 |
+| Shoot (5019) | 15.9 | 3.8 | 18.32 | 15.75 | 181 | 10.9 | 14.0 | 0.0 | 0.0 | 0.0 |
+| Vampiric Embrace (15286) | 0.0 | 0.0 | 6.00 | 6.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 10.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Inner Focus (14751) | 0.0 | 0.0 | 1.38 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Shadowform (15473) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Second Wind (15604) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 11832 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Shadowform (15473) | 100.1 | 1.00 |
+| spell (15332) | 100.0 | 64.64 |
+| item 11832 | 5.6 | 1.00 |
+| Inner Focus (14751) | 1.1 | 1.38 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 3730.2 | 3703.9 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 783.6 | 634.2 |
+| OtherActionDamageTaken | ResourceTypeHealth | -8938.2 | -8938.2 |
+| Second Wind (15604) | ResourceTypeMana | 630.0 | 563.1 |
+| Vampiric Embrace (15286) | ResourceTypeHealth | 14119.8 | 8194.6 |
+| Vampiric Embrace (15286) | ResourceTypeMana | -90.0 | -90.0 |
+| Shadowform (15473) | ResourceTypeMana | -550.4 | -550.4 |
+| Mind Blast (10947) | ResourceTypeMana | -2725.2 | -2725.2 |
+| Mind Flay (18807) | ResourceTypeMana | -3311.7 | -3311.7 |
+| Shadow Word: Death (1309633) | ResourceTypeMana | -874.3 | -874.3 |
+| Shadow Word: Pain (10894) | ResourceTypeMana | -1312.1 | -1312.1 |
+| Devouring Plague (19280) | ResourceTypeMana | -2236.6 | -2236.6 |
+=== -spec priest-shadow -preset bare -band 50 -faction alliance
+2026/11/13 23:01:08 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 23:01:08 All 16 sims finished successfully.
+priest-shadow  DPS 228.19 +/- 0.15
+out of mana: 50.7 s of 180 s
+consumes: []
+buffs: []
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Mind Flay (17313) | 84.9 | 37.2 | 27.23 | 99.53 | 153 | 5.8 | 2.2 | 0.0 | 0.0 | 0.0 |
+| Shadow Word: Pain (10893) | 42.8 | 18.7 | 5.21 | 38.37 | 201 | 8.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Mind Blast (10945) | 36.8 | 16.1 | 12.57 | 11.55 | 573 | 7.2 | 8.1 | 0.0 | 0.0 | 0.0 |
+| Shoot (5019) | 26.1 | 11.4 | 35.05 | 30.41 | 154 | 6.9 | 13.2 | 0.0 | 0.0 | 0.0 |
+| Shadow Word: Death (1309633) | 25.5 | 11.2 | 7.47 | 6.86 | 669 | 7.2 | 8.1 | 0.0 | 0.0 | 0.0 |
+| Devouring Plague (19276) | 11.0 | 4.8 | 4.17 | 30.63 | 65 | 7.9 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Chthonic Power (1249110) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Shadowform (15473) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Vampiric Embrace (15286) | 0.0 | 0.0 | 5.94 | 5.94 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Shadowform (15473) | 100.1 | 1.00 |
+| spell (15332) | 99.3 | 52.08 |
+| Chthonic Power (1249110) | 8.3 | 1.00 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 162.5 | 162.5 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 1143.5 | 1131.8 |
+| OtherActionDamageTaken | ResourceTypeHealth | -4658.5 | -4658.5 |
+| Vampiric Embrace (15286) | ResourceTypeHealth | 7598.5 | 4316.5 |
+| Vampiric Embrace (15286) | ResourceTypeMana | -118.8 | -118.8 |
+| Shadowform (15473) | ResourceTypeMana | -466.4 | -466.4 |
+| Mind Blast (10945) | ResourceTypeMana | -1665.8 | -1665.8 |
+| Mind Flay (17313) | ResourceTypeMana | -1838.3 | -1838.3 |
+| Shadow Word: Death (1309633) | ResourceTypeMana | -765.4 | -765.4 |
+| Shadow Word: Pain (10893) | ResourceTypeMana | -1003.5 | -1003.5 |
+| Devouring Plague (19276) | ResourceTypeMana | -729.1 | -729.1 |
+=== -spec priest-shadow -preset raid -band 60 -faction horde
+2026/11/13 23:01:08 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 23:01:08 All 16 sims finished successfully.
+priest-shadow  DPS 784.92 +/- 0.27
+out of mana: 0.0 s of 180 s
+consumes: [major_spellblasting_potion elixir_of_shadow_power flask_of_supreme_power greater_arcane_elixir cerebral_cortex_compound food_baked_salmon main_hand_imbue:brilliant_wizard_oil conjured_demonic_rune]
+buffs: [arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Mind Flay (18807) | 310.4 | 39.5 | 35.64 | 131.06 | 426 | 14.8 | 1.9 | 0.0 | 0.0 | 0.0 |
+| Shadow Word: Pain (10894) | 153.2 | 19.5 | 7.97 | 57.58 | 479 | 20.1 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Mind Blast (10947) | 151.7 | 19.3 | 21.82 | 20.22 | 1351 | 20.1 | 7.3 | 0.0 | 0.0 | 0.0 |
+| Devouring Plague (19280) | 92.1 | 11.7 | 7.64 | 52.86 | 314 | 20.1 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Shadow Word: Death (1309636) | 70.1 | 8.9 | 9.52 | 8.82 | 1431 | 25.5 | 7.3 | 0.0 | 0.0 | 0.0 |
+| Touch of the Grave (1260198) | 7.9 | 1.0 | 0.00 | 7.79 | 182 | 0.0 | 12.2 | 0.0 | 0.0 | 0.0 |
+| Inner Focus (14751) | 0.0 | 0.0 | 1.35 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 12662 | 0.0 | 0.0 | 1.45 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 39.71 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 13968 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Vampiric Embrace (15286) | 0.0 | 0.0 | 6.04 | 6.04 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Shadowform (15473) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 250937 | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Battle Shout (11551) | 100.1 | 1.00 |
+| Thrash (21919) | 100.1 | 1.00 |
+| Strength of Earth Totem (10442) | 100.1 | 1.00 |
+| Shadowform (15473) | 100.1 | 1.00 |
+| Blessing of Might (19838) | 100.1 | 2.00 |
+| Touch of the Grave (1260201) | 100.1 | 1.00 |
+| Trueshot Aura (20906) | 100.1 | 1.00 |
+| Heart of the Lion (409583) | 100.1 | 1.00 |
+| spell (15332) | 100.1 | 76.65 |
+| Dark Inspiration (1326159) | 99.7 | 52.67 |
+| item 250937 | 33.2 | 2.00 |
+| item 13968 | 11.1 | 1.00 |
+| Inner Focus (14751) | 1.1 | 1.35 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 5818.9 | 5818.8 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 728.9 | 395.5 |
+| OtherActionDamageTaken | ResourceTypeHealth | -10781.1 | -10781.1 |
+| Vampiric Embrace (15286) | ResourceTypeHealth | 26251.8 | 10322.3 |
+| Vampiric Embrace (15286) | ResourceTypeMana | -108.7 | -108.7 |
+| Shadowform (15473) | ResourceTypeMana | -550.4 | -550.4 |
+| item 12662 | ResourceTypeMana | 1738.5 | 1738.5 |
+| Mind Blast (10947) | ResourceTypeMana | -3586.0 | -3586.0 |
+| Mind Flay (18807) | ResourceTypeMana | -3653.5 | -3653.5 |
+| Shadow Word: Death (1309636) | ResourceTypeMana | -1618.1 | -1618.1 |
+| Shadow Word: Pain (10894) | ResourceTypeMana | -1686.2 | -1686.2 |
+| Devouring Plague (19280) | ResourceTypeMana | -1505.8 | -1505.8 |
+| Judgement of Wisdom (20355) | ResourceTypeMana | 2257.4 | 2257.4 |
+=== -spec priest-shadow -preset bare -band 60 -faction horde
+2026/11/13 23:01:08 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 23:01:09 All 16 sims finished successfully.
+priest-shadow  DPS 446.56 +/- 0.26
+out of mana: 12.2 s of 180 s
+consumes: []
+buffs: []
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Mind Flay (18807) | 180.0 | 40.3 | 34.29 | 122.38 | 265 | 6.6 | 2.7 | 0.0 | 0.0 | 0.0 |
+| Mind Blast (10947) | 84.8 | 19.0 | 19.02 | 17.10 | 893 | 9.7 | 10.1 | 0.0 | 0.0 | 0.0 |
+| Shadow Word: Pain (10894) | 84.6 | 18.9 | 7.43 | 53.02 | 287 | 9.1 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Devouring Plague (19280) | 49.3 | 11.1 | 6.08 | 43.41 | 205 | 9.2 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Shadow Word: Death (1309633) | 33.7 | 7.6 | 9.20 | 8.28 | 733 | 8.2 | 10.0 | 0.0 | 0.0 | 0.0 |
+| Touch of the Grave (1260198) | 6.9 | 1.6 | 0.00 | 7.54 | 165 | 0.0 | 15.0 | 0.0 | 0.0 | 0.0 |
+| Shoot (5019) | 5.2 | 1.2 | 13.18 | 11.20 | 84 | 7.8 | 15.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 15.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Vampiric Embrace (15286) | 0.0 | 0.0 | 6.01 | 6.01 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Shadowform (15473) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 11832 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Inner Focus (14751) | 0.0 | 0.0 | 1.38 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Dark Sacrifice (1277328) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Second Wind (15604) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Touch of the Grave (1260201) | 100.1 | 1.00 |
+| Shadowform (15473) | 100.1 | 1.00 |
+| spell (15332) | 100.1 | 68.37 |
+| Dark Sacrifice (1277328) | 8.3 | 1.00 |
+| item 11832 | 5.6 | 1.00 |
+| Inner Focus (14751) | 1.1 | 1.38 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 3489.6 | 3472.5 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 662.1 | 565.7 |
+| OtherActionDamageTaken | ResourceTypeHealth | -9813.3 | -9813.3 |
+| Second Wind (15604) | ResourceTypeMana | 630.0 | 571.4 |
+| Vampiric Embrace (15286) | ResourceTypeHealth | 14573.9 | 9102.6 |
+| Vampiric Embrace (15286) | ResourceTypeMana | -90.1 | -90.1 |
+| Shadowform (15473) | ResourceTypeMana | -550.4 | -550.4 |
+| Mind Blast (10947) | ResourceTypeMana | -3090.6 | -3090.6 |
+| Mind Flay (18807) | ResourceTypeMana | -3432.9 | -3432.9 |
+| Shadow Word: Death (1309633) | ResourceTypeMana | -868.0 | -868.0 |
+| Shadow Word: Pain (10894) | ResourceTypeMana | -1496.6 | -1496.6 |
+| Devouring Plague (19280) | ResourceTypeMana | -2627.2 | -2627.2 |
+| Dark Sacrifice (1277328) | ResourceTypeMana | 1831.0 | 1831.0 |
+=== -spec priest-shadow -preset bare -band 50 -faction horde
+2026/11/13 23:01:09 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 23:01:09 All 16 sims finished successfully.
+priest-shadow  DPS 256.91 +/- 0.19
+out of mana: 35.4 s of 180 s
+consumes: []
+buffs: []
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Mind Flay (17313) | 92.9 | 36.2 | 29.49 | 105.38 | 159 | 4.6 | 2.8 | 0.0 | 0.0 | 0.0 |
+| Shadow Word: Pain (10893) | 52.4 | 20.4 | 6.34 | 45.59 | 207 | 6.4 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Mind Blast (10945) | 44.9 | 17.5 | 15.35 | 13.81 | 585 | 5.9 | 10.0 | 0.0 | 0.0 | 0.0 |
+| Shadow Word: Death (1309633) | 27.1 | 10.6 | 7.98 | 7.17 | 681 | 5.8 | 10.2 | 0.0 | 0.0 | 0.0 |
+| Shoot (5019) | 17.3 | 6.7 | 24.17 | 20.54 | 151 | 5.4 | 15.0 | 0.0 | 0.0 | 0.0 |
+| Devouring Plague (19276) | 14.1 | 5.5 | 5.25 | 37.81 | 67 | 6.4 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Touch of the Grave (1260198) | 5.2 | 2.0 | 0.00 | 7.46 | 126 | 0.0 | 15.1 | 0.0 | 0.0 | 0.0 |
+| Engulfing Shadows (27860) | 1.5 | 0.6 | 2.10 | 2.10 | 125 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 7.10 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Shadowform (15473) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Vampiric Embrace (15286) | 0.0 | 0.0 | 5.92 | 5.92 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Chthonic Power (1249110) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Dark Sacrifice (1277327) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Touch of the Grave (1260201) | 100.1 | 1.00 |
+| Shadowform (15473) | 100.1 | 1.00 |
+| spell (15332) | 99.3 | 57.91 |
+| Chthonic Power (1249110) | 8.3 | 1.00 |
+| Dark Sacrifice (1277327) | 8.3 | 1.00 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 168.7 | 168.7 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 865.5 | 865.5 |
+| OtherActionDamageTaken | ResourceTypeHealth | -6694.0 | -6694.0 |
+| Engulfing Shadows (27860) | ResourceTypeMana | 210.0 | 210.0 |
+| Vampiric Embrace (15286) | ResourceTypeHealth | 8398.2 | 6237.4 |
+| Vampiric Embrace (15286) | ResourceTypeMana | -118.4 | -118.4 |
+| Shadowform (15473) | ResourceTypeMana | -466.4 | -466.4 |
+| Mind Blast (10945) | ResourceTypeMana | -2034.5 | -2034.5 |
+| Mind Flay (17313) | ResourceTypeMana | -1990.5 | -1990.5 |
+| Shadow Word: Death (1309633) | ResourceTypeMana | -818.4 | -818.4 |
+| Shadow Word: Pain (10893) | ResourceTypeMana | -1221.0 | -1221.0 |
+| Devouring Plague (19276) | ResourceTypeMana | -918.9 | -918.9 |
+| Dark Sacrifice (1277327) | ResourceTypeMana | 1452.0 | 1452.0 |
+remote-test: exit 0 in 6s (e3d9a572a783f01fc88e98e6f33dca2dba9bde6e)

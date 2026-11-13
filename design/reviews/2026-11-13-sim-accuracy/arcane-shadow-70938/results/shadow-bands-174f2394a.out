@@ -1,0 +1,17 @@
+remote-test: 54001e05298dc3cf2719b39ddf209e7cfd9133d6 -> forever-ci on 192.168.1.182 (run 20261113231659-54001e052-35198, in sim): env SPECS=priest-shadow bash ../design/reviews/2026-11-13-sim-accuracy/arcane-shadow-70938/bands.sh
+remote-test: engine pinned to 174f2394a
+go: downloading github.com/jhunthrop/wowsims-forever v1.0.15-0.20261113231506-174f2394aa10
+engine replace github.com/wowsims/classic => github.com/jhunthrop/wowsims-forever v1.0.15-0.20261113231506-174f2394aa10
+priest-shadow raid 60 alliance dps 797.61 0.39 oom 0.0 item12662=1.4 item12662=1689.2 
+priest-shadow bare 60 alliance dps 420.96 0.36 oom 22.0 
+priest-shadow bare 50 alliance dps 228.30 0.21 oom 50.5 
+priest-shadow bare 40 alliance dps 95.62 0.08 oom 88.5 
+priest-shadow bare 30 alliance dps 66.10 0.04 oom 96.7 
+priest-shadow bare 20 alliance dps 41.27 0.03 oom 91.2 
+priest-shadow raid 60 horde dps 784.87 0.38 oom 0.0 item12662=1.44 item12662=1736.6 
+priest-shadow bare 60 horde dps 446.40 0.37 oom 12.1 
+priest-shadow bare 50 horde dps 257.22 0.27 oom 35.2 
+priest-shadow bare 40 horde dps 107.08 0.09 oom 79.3 
+priest-shadow bare 30 horde dps 71.82 0.04 oom 83.5 
+priest-shadow bare 20 horde dps 44.06 0.03 oom 65.3 
+remote-test: exit 0 in 8s (54001e05298dc3cf2719b39ddf209e7cfd9133d6)

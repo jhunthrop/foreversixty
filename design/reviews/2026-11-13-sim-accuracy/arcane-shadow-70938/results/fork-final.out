@@ -1,0 +1,48 @@
+### red at f17711960 (test files from 037798db1: sim/mage/mana_gem_order_test.go
+sim/priest/shadow/mental_agility_shadowform_test.go)
+--- FAIL: TestManaGemsGoLargestFirst (0.00s)
+    mana_gem_order_test.go:56: gem rank 1 wants to pop while the Mana Ruby is unused
+    mana_gem_order_test.go:56: gem rank 2 wants to pop while the Mana Ruby is unused
+    mana_gem_order_test.go:56: gem rank 3 wants to pop while the Mana Ruby is unused
+    mana_gem_order_test.go:68: gem rank 1 wants to pop while the Mana Citrine is unused
+    mana_gem_order_test.go:68: gem rank 2 wants to pop while the Mana Citrine is unused
+--- FAIL: TestManaGemsBelowTheBiggestHoldForADemonicRune (0.00s)
+    mana_gem_order_test.go:84: gem rank 1 wants to pop with a Demonic Rune in the conjured slot
+    mana_gem_order_test.go:84: gem rank 2 wants to pop with a Demonic Rune in the conjured slot
+    mana_gem_order_test.go:84: gem rank 3 wants to pop with a Demonic Rune in the conjured slot
+FAIL
+FAIL	github.com/wowsims/classic/sim/mage	0.040s
+ok  	github.com/wowsims/classic/sim/priest	0.031s [no tests to run]
+ok  	github.com/wowsims/classic/sim/priest/healing	0.029s [no tests to run]
+--- FAIL: TestMentalAgilityCutsShadowformsCost (0.00s)
+    mental_agility_shadowform_test.go:20: Shadowform costs 550.4 with Mental Agility 3/3, want 495.36 (90% of 550.4)
+FAIL
+FAIL	github.com/wowsims/classic/sim/priest/shadow	0.028s
+ok  	github.com/wowsims/classic/sim/core	0.028s [no tests to run]
+FAIL
+### green at 037798db1
+--- PASS: TestManaGemAndDemonicRuneShareTheTwoMinuteCategory (0.00s)
+--- PASS: TestManaGemsRegisterAtTheirConjureLevels (0.00s)
+--- PASS: TestManaGemsGoLargestFirst (0.00s)
+--- PASS: TestManaGemsBelowTheBiggestHoldForADemonicRune (0.00s)
+ok  	github.com/wowsims/classic/sim/mage	0.035s
+ok  	github.com/wowsims/classic/sim/priest	0.028s [no tests to run]
+ok  	github.com/wowsims/classic/sim/priest/healing	0.029s [no tests to run]
+--- PASS: TestMentalAgilityCutsShadowformsCost (0.00s)
+ok  	github.com/wowsims/classic/sim/priest/shadow	0.037s
+ok  	github.com/wowsims/classic/sim/core	0.029s [no tests to run]
+### suites
+ok  	github.com/wowsims/classic/sim/mage	1.140s
+ok  	github.com/wowsims/classic/sim/priest	0.189s
+ok  	github.com/wowsims/classic/sim/priest/healing	0.592s
+ok  	github.com/wowsims/classic/sim/priest/shadow	0.068s
+ok  	github.com/wowsims/classic/sim/core	1.502s
+### goldens
+updated sim/mage/TestP1Mage.results
+ok  	github.com/wowsims/classic/sim/mage	1.167s
+ok  	github.com/wowsims/classic/sim/priest	0.196s
+ok  	github.com/wowsims/classic/sim/priest/healing	0.619s
+ok  	github.com/wowsims/classic/sim/priest/shadow	0.063s
+ok  	github.com/wowsims/classic/sim/core	1.480s
+=====PATCH=====
+=====END=====

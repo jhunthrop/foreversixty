@@ -1,0 +1,353 @@
+remote-test: 3a813a6a728518940913bdbb610d398cb9dd3ab4 -> forever-ci on 192.168.1.182 (run 20261113230641-3a813a6a7-76143, in sim): env SPECS=mage-arcane bash ../design/reviews/2026-11-13-sim-accuracy/arcane-shadow-70938/baseline.sh
+remote-test: engine pinned to 9f34117f9
+go: downloading github.com/jhunthrop/wowsims-forever v1.0.15-0.20261113230524-9f34117f9f2e
+active build: {  "build": "1.60.1.70938"}; engine 5603877e4; replace github.com/wowsims/classic => github.com/jhunthrop/wowsims-forever v1.0.15-0.20261113230524-9f34117f9f2e; simdb sha ea39a6a17bfa
+=== -spec mage-arcane -preset raid -band 60 -faction alliance
+2026/11/13 23:09:01 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 23:09:02 All 16 sims finished successfully.
+mage-arcane  DPS 799.07 +/- 0.45
+out of mana: 1.0 s of 180 s
+consumes: [flask_of_supreme_power greater_arcane_elixir cerebral_cortex_compound food_baked_salmon main_hand_imbue:brilliant_wizard_oil major_mana_potion conjured_demonic_rune]
+buffs: [arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Arcane Missiles (10212)#1 | 213.5 | 26.7 | 0.00 | 67.57 | 569 | 28.1 | 4.6 | 0.0 | 0.0 | 0.0 |
+| Pyroblast (18809) | 146.8 | 18.4 | 11.57 | 48.44 | 545 | 23.3 | 1.0 | 0.0 | 0.0 | 0.0 |
+| Arcane Blast (1239700) | 132.5 | 16.6 | 29.20 | 27.87 | 856 | 37.6 | 4.6 | 0.0 | 0.0 | 0.0 |
+| Fire Blast (10199) | 129.2 | 16.2 | 24.02 | 22.95 | 1013 | 32.0 | 4.5 | 0.0 | 0.0 | 0.0 |
+| Arcane Wrath (1326082) | 106.8 | 13.4 | 8.66 | 8.25 | 2329 | 28.2 | 4.7 | 0.0 | 0.0 | 0.0 |
+| spell (12654) | 36.2 | 4.5 | 0.00 | 20.47 | 318 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Fireball (10151) | 31.0 | 3.9 | 3.94 | 16.90 | 330 | 23.2 | 1.2 | 0.0 | 0.0 | 0.0 |
+| Frostbolt (10181) | 3.0 | 0.4 | 0.45 | 0.42 | 1259 | 22.1 | 5.1 | 0.0 | 0.0 | 0.0 |
+| Shoot (5019) | 0.5 | 0.1 | 1.16 | 1.11 | 85 | 22.0 | 4.7 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 75.75 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 13444 | 0.0 | 0.0 | 1.69 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 11832 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 13968 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Presence of Mind (12043) | 0.0 | 0.0 | 1.45 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Arcane Missiles (10212) | 0.0 | 0.0 | 14.28 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 14152 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Arcane Power (12042) | 0.0 | 0.0 | 1.45 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 8008 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Evocation (12051) | 0.0 | 0.0 | 0.58 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 12662 | 0.0 | 0.0 | 0.98 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Eureka! (1259817) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Trueshot Aura (20906) | 100.1 | 1.00 |
+| Thrash (21919) | 100.1 | 1.00 |
+| Mage Armor (22783) | 100.1 | 1.00 |
+| Strength of Earth Totem (10442) | 100.1 | 1.00 |
+| Blessing of Might (19838) | 100.1 | 2.00 |
+| Battle Shout (11551) | 100.1 | 1.00 |
+| Heart of the Lion (409583) | 100.1 | 1.00 |
+| Missile Barrage (400588)#2 | 100.1 | 1.00 |
+| Arcane Blast (400573) | 81.5 | 8.56 |
+| Heating Up (400625) | 77.0 | 23.84 |
+| Arcane Power (12042) | 11.2 | 1.45 |
+| spell (12577) | 11.2 | 8.51 |
+| item 13968 | 11.1 | 1.00 |
+| Eureka! (1259817) | 8.9 | 2.00 |
+| item 11832 | 5.6 | 1.00 |
+| Evocation (12051) | 2.6 | 0.58 |
+| Evocation (12051) | 2.6 | 0.58 |
+| Missile Barrage (400589) | 0.9 | 14.28 |
+| Presence of Mind (12043) | 0.0 | 1.45 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 10526.0 | 10210.0 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 1464.6 | 1457.7 |
+| OtherActionDamageTaken | ResourceTypeHealth | -785.6 | -785.6 |
+| item 14152 | ResourceTypeMana | 499.3 | 499.3 |
+| Arcane Blast (1239700) | ResourceTypeMana | -10539.5 | -10539.5 |
+| Arcane Wrath (1326082) | ResourceTypeMana | -3095.8 | -3095.8 |
+| item 13444 | ResourceTypeMana | 3037.7 | 3037.7 |
+| item 12662 | ResourceTypeMana | 1177.3 | 1177.3 |
+| Arcane Missiles (10212) | ResourceTypeMana | -242.9 | -242.9 |
+| Fireball (10151) | ResourceTypeMana | -1367.4 | -1367.4 |
+| Fire Blast (10199) | ResourceTypeMana | -7507.2 | -7507.2 |
+| Frostbolt (10181) | ResourceTypeMana | -118.3 | -118.3 |
+| Pyroblast (18809) | ResourceTypeMana | -4456.9 | -4456.9 |
+| item 8008 | ResourceTypeMana | 1100.1 | 1100.1 |
+| Judgement of Wisdom (20355) | ResourceTypeMana | 4193.8 | 4183.7 |
+=== -spec mage-arcane -preset bare -band 60 -faction alliance
+2026/11/13 23:09:02 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 23:09:02 All 16 sims finished successfully.
+mage-arcane  DPS 414.81 +/- 0.30
+out of mana: 10.0 s of 180 s
+consumes: []
+buffs: [arcane_brilliance]
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Arcane Missiles (10212)#1 | 160.8 | 38.8 | 0.00 | 77.68 | 373 | 17.8 | 8.0 | 0.0 | 0.0 | 0.0 |
+| Arcane Wrath (1326082) | 91.4 | 22.0 | 11.60 | 10.67 | 1541 | 17.6 | 7.9 | 0.0 | 0.0 | 0.0 |
+| Frostbolt (10181) | 80.2 | 19.3 | 16.59 | 15.26 | 945 | 12.1 | 8.0 | 0.0 | 0.0 | 0.0 |
+| Arcane Blast (1239700) | 77.9 | 18.8 | 28.45 | 26.18 | 536 | 23.2 | 8.0 | 0.0 | 0.0 | 0.0 |
+| Shoot (5019) | 3.5 | 0.9 | 9.15 | 8.41 | 76 | 12.4 | 8.1 | 0.0 | 0.0 | 0.0 |
+| Evocation (12051) | 0.0 | 0.0 | 0.98 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 8008 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 2.99 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 11832 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 8007 | 0.0 | 0.0 | 0.99 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Eureka! (1259817) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 14152 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Presence of Mind (12043) | 0.0 | 0.0 | 1.44 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Arcane Power (12042) | 0.0 | 0.0 | 1.44 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Arcane Missiles (10212) | 0.0 | 0.0 | 16.98 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Mage Armor (22783) | 100.1 | 1.00 |
+| Missile Barrage (400588)#2 | 100.1 | 1.00 |
+| Arcane Blast (400573) | 84.5 | 8.87 |
+| Arcane Power (12042) | 11.1 | 1.44 |
+| spell (12577) | 8.9 | 6.67 |
+| Eureka! (1259817) | 8.9 | 2.00 |
+| item 11832 | 5.6 | 1.00 |
+| Evocation (12051) | 4.3 | 0.98 |
+| Evocation (12051) | 4.3 | 0.98 |
+| Missile Barrage (400589) | 1.9 | 17.06 |
+| Presence of Mind (12043) | 0.2 | 1.44 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 6739.6 | 6666.2 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 1836.0 | 1834.4 |
+| item 14152 | ResourceTypeMana | 500.1 | 500.1 |
+| Arcane Blast (1239700) | ResourceTypeMana | -9564.0 | -9564.0 |
+| Arcane Wrath (1326082) | ResourceTypeMana | -4068.0 | -4068.0 |
+| Arcane Missiles (10212) | ResourceTypeMana | -230.9 | -230.9 |
+| Frostbolt (10181) | ResourceTypeMana | -3393.1 | -3393.1 |
+| item 8007 | ResourceTypeMana | 838.4 | 838.4 |
+| item 8008 | ResourceTypeMana | 1099.8 | 1099.8 |
+=== -spec mage-arcane -preset bare -band 50 -faction alliance
+2026/11/13 23:09:02 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 23:09:02 All 16 sims finished successfully.
+mage-arcane  DPS 280.92 +/- 0.22
+out of mana: 9.7 s of 180 s
+consumes: []
+buffs: [arcane_brilliance]
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Arcane Missiles (10211)#1 | 108.6 | 38.7 | 0.00 | 76.51 | 256 | 13.6 | 8.1 | 0.0 | 0.0 | 0.0 |
+| Arcane Wrath (1326081) | 59.4 | 21.1 | 11.39 | 10.47 | 1020 | 13.6 | 8.0 | 0.0 | 0.0 | 0.0 |
+| Arcane Blast (1239699) | 51.3 | 18.3 | 28.29 | 26.00 | 355 | 19.2 | 8.1 | 0.0 | 0.0 | 0.0 |
+| Frostbolt (10180) | 49.4 | 17.6 | 16.12 | 14.81 | 600 | 8.1 | 8.1 | 0.0 | 0.0 | 0.0 |
+| Engulfing Shadows (27860) | 6.7 | 2.4 | 12.77 | 12.77 | 94 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Shoot (5019) | 3.1 | 1.1 | 6.31 | 5.82 | 95 | 8.3 | 7.7 | 0.0 | 0.0 | 0.0 |
+| Breath of Fire (12278) | 1.9 | 0.7 | 0.00 | 4.61 | 74 | 8.0 | 7.8 | 0.0 | 0.0 | 0.0 |
+| Arcane Missiles (10211) | 0.0 | 0.0 | 16.76 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Presence of Mind (12043) | 0.0 | 0.0 | 1.44 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Eureka! (1259817) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Breath of Fire (12257) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Chthonic Power (1249110) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Arcane Power (12042) | 0.0 | 0.0 | 1.44 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 14.77 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Evocation (12051) | 0.0 | 0.0 | 0.95 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 5513 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 8007 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Missile Barrage (400588)#2 | 100.1 | 1.00 |
+| Mage Armor (22782) | 100.1 | 1.00 |
+| Arcane Blast (400573) | 83.5 | 8.76 |
+| Arcane Power (12042) | 11.1 | 1.44 |
+| spell (12577) | 8.9 | 6.51 |
+| Eureka! (1259817) | 8.9 | 2.00 |
+| Chthonic Power (1249110) | 8.3 | 1.00 |
+| Evocation (12051) | 4.2 | 0.95 |
+| Evocation (12051) | 4.2 | 0.95 |
+| Missile Barrage (400589) | 1.7 | 16.83 |
+| Presence of Mind (12043) | 0.2 | 1.44 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 6744.4 | 6670.6 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 1858.4 | 1851.7 |
+| Engulfing Shadows (27860) | ResourceTypeMana | 1276.7 | 1273.4 |
+| Arcane Blast (1239699) | ResourceTypeMana | -8944.8 | -8944.8 |
+| Arcane Wrath (1326081) | ResourceTypeMana | -3235.6 | -3235.6 |
+| Arcane Missiles (10211) | ResourceTypeMana | -220.1 | -220.1 |
+| Frostbolt (10180) | ResourceTypeMana | -3382.9 | -3382.9 |
+| item 5513 | ResourceTypeMana | 599.5 | 599.5 |
+| item 8007 | ResourceTypeMana | 850.4 | 850.4 |
+=== -spec mage-arcane -preset raid -band 60 -faction horde
+2026/11/13 23:09:03 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 23:09:03 All 16 sims finished successfully.
+mage-arcane  DPS 789.32 +/- 0.44
+out of mana: 1.1 s of 180 s
+consumes: [flask_of_supreme_power greater_arcane_elixir cerebral_cortex_compound food_baked_salmon main_hand_imbue:brilliant_wizard_oil major_mana_potion conjured_demonic_rune]
+buffs: [arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Arcane Missiles (10212)#1 | 206.4 | 26.1 | 0.00 | 66.19 | 561 | 26.3 | 4.7 | 0.0 | 0.0 | 0.0 |
+| Pyroblast (18809) | 143.9 | 18.2 | 11.41 | 47.86 | 541 | 21.3 | 1.0 | 0.0 | 0.0 | 0.0 |
+| Fire Blast (10199) | 126.8 | 16.1 | 23.89 | 22.81 | 1000 | 30.3 | 4.5 | 0.0 | 0.0 | 0.0 |
+| Arcane Blast (1239700) | 125.9 | 16.0 | 28.15 | 26.87 | 844 | 35.8 | 4.6 | 0.0 | 0.0 | 0.0 |
+| Arcane Wrath (1326082) | 103.9 | 13.2 | 8.53 | 8.12 | 2302 | 26.4 | 4.7 | 0.0 | 0.0 | 0.0 |
+| Fireball (10151) | 36.2 | 4.6 | 4.63 | 19.80 | 329 | 21.3 | 1.1 | 0.0 | 0.0 | 0.0 |
+| spell (12654) | 33.9 | 4.3 | 0.00 | 19.34 | 315 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Touch of the Grave (1260198) | 9.3 | 1.2 | 0.00 | 9.18 | 183 | 0.0 | 4.5 | 0.0 | 0.0 | 0.0 |
+| Frostbolt (10181) | 3.0 | 0.4 | 0.44 | 0.42 | 1281 | 19.9 | 5.4 | 0.0 | 0.0 | 0.0 |
+| Shoot (5019) | 0.5 | 0.1 | 1.19 | 1.13 | 83 | 20.4 | 4.8 | 0.0 | 0.0 | 0.0 |
+| item 13444 | 0.0 | 0.0 | 1.81 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Arcane Missiles (10212) | 0.0 | 0.0 | 13.99 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Evocation (12051) | 0.0 | 0.0 | 0.69 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 8008 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 12662 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 74.81 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Presence of Mind (12043) | 0.0 | 0.0 | 1.45 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 14152 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Arcane Power (12042) | 0.0 | 0.0 | 1.45 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 13968 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Thrash (21919) | 100.1 | 1.00 |
+| Trueshot Aura (20906) | 100.1 | 1.00 |
+| Missile Barrage (400588)#2 | 100.1 | 1.00 |
+| Strength of Earth Totem (10442) | 100.1 | 1.00 |
+| Touch of the Grave (1260201) | 100.1 | 1.00 |
+| Blessing of Might (19838) | 100.1 | 2.00 |
+| Battle Shout (11551) | 100.1 | 1.00 |
+| Mage Armor (22783) | 100.1 | 1.00 |
+| Heart of the Lion (409583) | 100.1 | 1.00 |
+| Arcane Blast (400573) | 81.1 | 8.53 |
+| Heating Up (400625) | 77.3 | 23.75 |
+| spell (12577) | 11.2 | 8.46 |
+| Arcane Power (12042) | 11.2 | 1.45 |
+| item 13968 | 11.1 | 1.00 |
+| Evocation (12051) | 3.1 | 0.69 |
+| Evocation (12051) | 3.1 | 0.69 |
+| Missile Barrage (400589) | 1.0 | 14.00 |
+| Presence of Mind (12043) | 0.0 | 1.45 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 10942.0 | 10629.1 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 1771.5 | 1767.5 |
+| OtherActionDamageTaken | ResourceTypeHealth | -798.7 | -798.7 |
+| item 14152 | ResourceTypeMana | 498.6 | 498.6 |
+| Arcane Blast (1239700) | ResourceTypeMana | -10221.9 | -10221.9 |
+| Arcane Wrath (1326082) | ResourceTypeMana | -3052.6 | -3052.6 |
+| item 13444 | ResourceTypeMana | 3263.2 | 3263.2 |
+| item 12662 | ResourceTypeMana | 1198.0 | 1198.0 |
+| Arcane Missiles (10212) | ResourceTypeMana | -289.4 | -289.4 |
+| Fireball (10151) | ResourceTypeMana | -1607.3 | -1607.3 |
+| Fire Blast (10199) | ResourceTypeMana | -7853.7 | -7853.7 |
+| Frostbolt (10181) | ResourceTypeMana | -120.5 | -120.5 |
+| Pyroblast (18809) | ResourceTypeMana | -4652.0 | -4652.0 |
+| item 8008 | ResourceTypeMana | 1099.3 | 1099.3 |
+| Judgement of Wisdom (20355) | ResourceTypeMana | 4129.9 | 4125.4 |
+=== -spec mage-arcane -preset bare -band 60 -faction horde
+2026/11/13 23:09:03 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 23:09:03 All 16 sims finished successfully.
+mage-arcane  DPS 409.52 +/- 0.28
+out of mana: 10.3 s of 180 s
+consumes: []
+buffs: [arcane_brilliance]
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Arcane Missiles (10212)#1 | 156.1 | 38.1 | 0.00 | 79.09 | 355 | 16.2 | 6.3 | 0.0 | 0.0 | 0.0 |
+| Arcane Wrath (1326082) | 88.2 | 21.5 | 11.50 | 10.80 | 1471 | 16.2 | 6.1 | 0.0 | 0.0 | 0.0 |
+| Frostbolt (10181) | 77.7 | 19.0 | 16.48 | 15.42 | 907 | 10.6 | 6.4 | 0.0 | 0.0 | 0.0 |
+| Arcane Blast (1239700) | 76.1 | 18.6 | 28.66 | 26.86 | 510 | 21.8 | 6.3 | 0.0 | 0.0 | 0.0 |
+| Touch of the Grave (1260198) | 6.0 | 1.5 | 0.00 | 8.96 | 121 | 0.0 | 6.3 | 0.0 | 0.0 | 0.0 |
+| Shoot (5019) | 4.5 | 1.1 | 6.91 | 6.42 | 125 | 10.5 | 7.0 | 0.0 | 0.0 | 0.0 |
+| Arcane Missiles (10212) | 0.0 | 0.0 | 16.96 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 8007 | 0.0 | 0.0 | 0.98 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 2.98 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Presence of Mind (12043) | 0.0 | 0.0 | 1.44 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Evocation (12051) | 0.0 | 0.0 | 0.98 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 8008 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 13968 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Arcane Power (12042) | 0.0 | 0.0 | 1.44 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 14152 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 11832 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Mage Armor (22783) | 100.1 | 1.00 |
+| Touch of the Grave (1260201) | 100.1 | 1.00 |
+| Missile Barrage (400588)#2 | 100.1 | 1.00 |
+| Arcane Blast (400573) | 84.6 | 8.87 |
+| Arcane Power (12042) | 11.1 | 1.44 |
+| item 13968 | 11.1 | 1.00 |
+| spell (12577) | 9.0 | 6.75 |
+| item 11832 | 5.6 | 1.00 |
+| Evocation (12051) | 4.4 | 0.98 |
+| Evocation (12051) | 4.4 | 0.98 |
+| Missile Barrage (400589) | 1.8 | 17.04 |
+| Presence of Mind (12043) | 0.2 | 1.44 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 7212.4 | 7133.9 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 1974.6 | 1972.8 |
+| item 14152 | ResourceTypeMana | 499.7 | 499.7 |
+| Arcane Blast (1239700) | ResourceTypeMana | -9776.5 | -9776.5 |
+| Arcane Wrath (1326082) | ResourceTypeMana | -4023.6 | -4023.6 |
+| Arcane Missiles (10212) | ResourceTypeMana | -254.5 | -254.5 |
+| Frostbolt (10181) | ResourceTypeMana | -3382.2 | -3382.2 |
+| item 8007 | ResourceTypeMana | 833.1 | 833.1 |
+| item 8008 | ResourceTypeMana | 1099.9 | 1099.9 |
+=== -spec mage-arcane -preset bare -band 50 -faction horde
+2026/11/13 23:09:03 Running 10000 iterations on 16 concurrent sims.
+2026/11/13 23:09:04 All 16 sims finished successfully.
+mage-arcane  DPS 278.02 +/- 0.23
+out of mana: 12.2 s of 180 s
+consumes: []
+buffs: [arcane_brilliance]
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Arcane Missiles (10211)#1 | 105.9 | 38.1 | 0.00 | 75.71 | 252 | 13.6 | 7.4 | 0.0 | 0.0 | 0.0 |
+| Arcane Wrath (1326081) | 56.9 | 20.5 | 11.00 | 10.19 | 1004 | 13.7 | 7.4 | 0.0 | 0.0 | 0.0 |
+| Arcane Blast (1239699) | 50.0 | 18.0 | 27.83 | 25.78 | 349 | 19.2 | 7.4 | 0.0 | 0.0 | 0.0 |
+| Frostbolt (10180) | 49.6 | 17.8 | 16.18 | 14.98 | 596 | 8.1 | 7.4 | 0.0 | 0.0 | 0.0 |
+| Engulfing Shadows (27860) | 6.6 | 2.4 | 12.59 | 12.59 | 94 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Touch of the Grave (1260198) | 4.4 | 1.6 | 0.00 | 8.74 | 90 | 0.0 | 7.3 | 0.0 | 0.0 | 0.0 |
+| Shoot (5019) | 3.9 | 1.4 | 7.98 | 7.39 | 96 | 8.1 | 7.4 | 0.0 | 0.0 | 0.0 |
+| Arcane Power (12042) | 0.0 | 0.0 | 1.44 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Arcane Missiles (10211) | 0.0 | 0.0 | 16.44 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Evocation (12051) | 0.0 | 0.0 | 0.98 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Chthonic Power (1249110) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 5513 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Presence of Mind (12043) | 0.0 | 0.0 | 1.44 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 8007 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 14.59 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Touch of the Grave (1260201) | 100.1 | 1.00 |
+| Missile Barrage (400588)#2 | 100.1 | 1.00 |
+| Mage Armor (22782) | 100.1 | 1.00 |
+| Arcane Blast (400573) | 83.5 | 8.76 |
+| Arcane Power (12042) | 11.1 | 1.44 |
+| spell (12577) | 8.9 | 6.51 |
+| Chthonic Power (1249110) | 8.3 | 1.00 |
+| Evocation (12051) | 4.3 | 0.98 |
+| Evocation (12051) | 4.3 | 0.98 |
+| Missile Barrage (400589) | 1.7 | 16.52 |
+| Presence of Mind (12043) | 0.3 | 1.44 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 6679.3 | 6606.4 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 1902.6 | 1895.8 |
+| Engulfing Shadows (27860) | ResourceTypeMana | 1259.3 | 1256.0 |
+| Arcane Blast (1239699) | ResourceTypeMana | -8751.1 | -8751.1 |
+| Arcane Wrath (1326081) | ResourceTypeMana | -3116.8 | -3116.8 |
+| Arcane Missiles (10211) | ResourceTypeMana | -241.5 | -241.5 |
+| Frostbolt (10180) | ResourceTypeMana | -3413.4 | -3413.4 |
+| item 5513 | ResourceTypeMana | 599.5 | 599.5 |
+| item 8007 | ResourceTypeMana | 850.0 | 850.0 |
+remote-test: exit 0 in 7s (3a813a6a728518940913bdbb610d398cb9dd3ab4)
