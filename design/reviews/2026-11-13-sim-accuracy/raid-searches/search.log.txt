@@ -1,0 +1,75 @@
+remote-test: 5a2e58f3d53476d703cc7f71d0fdf9b013f960ff -> forever-ci on 192.168.1.182 (run 20261113065640-5a2e58f3d-69342, in sim): bash ../design/reviews/2026-11-13-sim-accuracy/raid-searches/run.sh
+remote-test: engine pinned to 79358b3c2
+ok  	github.com/jhunthrop/foreversixty/sim/cmd/rotation-search	0.921s
+ok  	github.com/jhunthrop/foreversixty/sim/cmd/talent-search	0.230s
+ok  	github.com/jhunthrop/foreversixty/sim/cmd/heal-builds	0.091s
+2026/11/13 06:59:28 rotation-search: hunter-marksmanship: wrote /tmp/tmp.iYyCKf6tIr/alliance/rotation/hunter-marksmanship-raid.md in 41s
+2026/11/13 06:59:34 talent-search: hunter-marksmanship: wrote /tmp/tmp.iYyCKf6tIr/alliance/talents/hunter-marksmanship-raid.md in 6s
+2026/11/13 07:00:15 rotation-search: hunter-marksmanship: wrote /tmp/tmp.iYyCKf6tIr/horde/rotation/hunter-marksmanship-raid.md in 41s
+2026/11/13 07:00:21 talent-search: hunter-marksmanship: wrote /tmp/tmp.iYyCKf6tIr/horde/talents/hunter-marksmanship-raid.md in 6s
+2026/11/13 07:00:49 rotation-search: druid-feral: wrote /tmp/tmp.iYyCKf6tIr/alliance/rotation/druid-feral-raid.md in 28s
+2026/11/13 07:00:57 talent-search: druid-feral: wrote /tmp/tmp.iYyCKf6tIr/alliance/talents/druid-feral-raid.md in 8s
+2026/11/13 07:01:13 rotation-search: druid-feral: wrote /tmp/tmp.iYyCKf6tIr/horde/rotation/druid-feral-raid.md in 16s
+2026/11/13 07:01:21 talent-search: druid-feral: wrote /tmp/tmp.iYyCKf6tIr/horde/talents/druid-feral-raid.md in 8s
+2026/11/13 07:02:06 rotation-search: warrior-fury: wrote /tmp/tmp.iYyCKf6tIr/alliance/rotation/warrior-fury-raid.md in 45s
+2026/11/13 07:02:14 talent-search: warrior-fury: wrote /tmp/tmp.iYyCKf6tIr/alliance/talents/warrior-fury-raid.md in 8s
+2026/11/13 07:02:38 rotation-search: warrior-fury: wrote /tmp/tmp.iYyCKf6tIr/horde/rotation/warrior-fury-raid.md in 24s
+2026/11/13 07:02:45 talent-search: warrior-fury: wrote /tmp/tmp.iYyCKf6tIr/horde/talents/warrior-fury-raid.md in 7s
+2026/11/13 07:03:30 rotation-search: hunter-survival: wrote /tmp/tmp.iYyCKf6tIr/alliance/rotation/hunter-survival-raid.md in 45s
+2026/11/13 07:03:37 talent-search: hunter-survival: wrote /tmp/tmp.iYyCKf6tIr/alliance/talents/hunter-survival-raid.md in 7s
+2026/11/13 07:04:25 rotation-search: hunter-survival: wrote /tmp/tmp.iYyCKf6tIr/horde/rotation/hunter-survival-raid.md in 48s
+2026/11/13 07:04:31 talent-search: hunter-survival: wrote /tmp/tmp.iYyCKf6tIr/horde/talents/hunter-survival-raid.md in 7s
+2026/11/13 07:04:44 rotation-search: mage-frost: wrote /tmp/tmp.iYyCKf6tIr/alliance/rotation/mage-frost-raid.md in 12s
+2026/11/13 07:04:49 talent-search: mage-frost: wrote /tmp/tmp.iYyCKf6tIr/alliance/talents/mage-frost-raid.md in 5s
+2026/11/13 07:05:12 rotation-search: mage-frost: wrote /tmp/tmp.iYyCKf6tIr/horde/rotation/mage-frost-raid.md in 22s
+2026/11/13 07:05:17 talent-search: mage-frost: wrote /tmp/tmp.iYyCKf6tIr/horde/talents/mage-frost-raid.md in 6s
+2026/11/13 07:05:39 rotation-search: druid-balance: wrote /tmp/tmp.iYyCKf6tIr/alliance/rotation/druid-balance-raid.md in 22s
+2026/11/13 07:05:44 talent-search: druid-balance: wrote /tmp/tmp.iYyCKf6tIr/alliance/talents/druid-balance-raid.md in 5s
+2026/11/13 07:05:55 rotation-search: druid-balance: wrote /tmp/tmp.iYyCKf6tIr/horde/rotation/druid-balance-raid.md in 11s
+2026/11/13 07:06:00 talent-search: druid-balance: wrote /tmp/tmp.iYyCKf6tIr/horde/talents/druid-balance-raid.md in 5s
+2026/11/13 07:06:06 rotation-search: shaman-elemental: wrote /tmp/tmp.iYyCKf6tIr/alliance/rotation/shaman-elemental-raid.md in 5s
+2026/11/13 07:06:11 talent-search: shaman-elemental: wrote /tmp/tmp.iYyCKf6tIr/alliance/talents/shaman-elemental-raid.md in 6s
+2026/11/13 07:06:17 rotation-search: shaman-elemental: wrote /tmp/tmp.iYyCKf6tIr/horde/rotation/shaman-elemental-raid.md in 5s
+2026/11/13 07:06:22 talent-search: shaman-elemental: wrote /tmp/tmp.iYyCKf6tIr/horde/talents/shaman-elemental-raid.md in 5s
+2026/11/13 07:06:41 rotation-search: warlock-affliction: wrote /tmp/tmp.iYyCKf6tIr/alliance/rotation/warlock-affliction-raid.md in 19s
+2026/11/13 07:06:48 talent-search: warlock-affliction: wrote /tmp/tmp.iYyCKf6tIr/alliance/talents/warlock-affliction-raid.md in 6s
+2026/11/13 07:07:08 rotation-search: warlock-affliction: wrote /tmp/tmp.iYyCKf6tIr/horde/rotation/warlock-affliction-raid.md in 20s
+2026/11/13 07:07:15 talent-search: warlock-affliction: wrote /tmp/tmp.iYyCKf6tIr/horde/talents/warlock-affliction-raid.md in 6s
+2026/11/13 07:07:46 rotation-search: hunter-beast-mastery: wrote /tmp/tmp.iYyCKf6tIr/alliance/rotation/hunter-beast-mastery-raid.md in 31s
+2026/11/13 07:07:52 talent-search: hunter-beast-mastery: wrote /tmp/tmp.iYyCKf6tIr/alliance/talents/hunter-beast-mastery-raid.md in 6s
+2026/11/13 07:08:24 rotation-search: hunter-beast-mastery: wrote /tmp/tmp.iYyCKf6tIr/horde/rotation/hunter-beast-mastery-raid.md in 32s
+2026/11/13 07:08:29 talent-search: hunter-beast-mastery: wrote /tmp/tmp.iYyCKf6tIr/horde/talents/hunter-beast-mastery-raid.md in 6s
+2026/11/13 07:09:08 rotation-search: warrior-arms: wrote /tmp/tmp.iYyCKf6tIr/alliance/rotation/warrior-arms-raid.md in 39s
+2026/11/13 07:09:15 talent-search: warrior-arms: wrote /tmp/tmp.iYyCKf6tIr/alliance/talents/warrior-arms-raid.md in 7s
+2026/11/13 07:09:54 rotation-search: warrior-arms: wrote /tmp/tmp.iYyCKf6tIr/horde/rotation/warrior-arms-raid.md in 39s
+2026/11/13 07:10:01 talent-search: warrior-arms: wrote /tmp/tmp.iYyCKf6tIr/horde/talents/warrior-arms-raid.md in 7s
+2026/11/13 07:10:25 rotation-search: paladin-retribution: wrote /tmp/tmp.iYyCKf6tIr/alliance/rotation/paladin-retribution-raid.md in 24s
+2026/11/13 07:10:32 talent-search: paladin-retribution: wrote /tmp/tmp.iYyCKf6tIr/alliance/talents/paladin-retribution-raid.md in 7s
+2026/11/13 07:10:57 rotation-search: paladin-retribution: wrote /tmp/tmp.iYyCKf6tIr/horde/rotation/paladin-retribution-raid.md in 25s
+2026/11/13 07:11:04 talent-search: paladin-retribution: wrote /tmp/tmp.iYyCKf6tIr/horde/talents/paladin-retribution-raid.md in 7s
+2026/11/13 07:11:18 rotation-search: priest-shadow: wrote /tmp/tmp.iYyCKf6tIr/alliance/rotation/priest-shadow-raid.md in 14s
+2026/11/13 07:11:24 talent-search: priest-shadow: wrote /tmp/tmp.iYyCKf6tIr/alliance/talents/priest-shadow-raid.md in 6s
+2026/11/13 07:11:39 rotation-search: priest-shadow: wrote /tmp/tmp.iYyCKf6tIr/horde/rotation/priest-shadow-raid.md in 14s
+2026/11/13 07:11:45 talent-search: priest-shadow: wrote /tmp/tmp.iYyCKf6tIr/horde/talents/priest-shadow-raid.md in 6s
+2026/11/13 07:11:54 rotation-search: shaman-enhancement: wrote /tmp/tmp.iYyCKf6tIr/alliance/rotation/shaman-enhancement-raid.md in 10s
+2026/11/13 07:12:02 talent-search: shaman-enhancement: wrote /tmp/tmp.iYyCKf6tIr/alliance/talents/shaman-enhancement-raid.md in 7s
+2026/11/13 07:12:11 rotation-search: shaman-enhancement: wrote /tmp/tmp.iYyCKf6tIr/horde/rotation/shaman-enhancement-raid.md in 9s
+2026/11/13 07:12:18 talent-search: shaman-enhancement: wrote /tmp/tmp.iYyCKf6tIr/horde/talents/shaman-enhancement-raid.md in 7s
+2026/11/13 07:12:57 rotation-search: mage-arcane: wrote /tmp/tmp.iYyCKf6tIr/alliance/rotation/mage-arcane-raid.md in 39s
+2026/11/13 07:13:02 talent-search: mage-arcane: wrote /tmp/tmp.iYyCKf6tIr/alliance/talents/mage-arcane-raid.md in 5s
+2026/11/13 07:13:40 rotation-search: mage-arcane: wrote /tmp/tmp.iYyCKf6tIr/horde/rotation/mage-arcane-raid.md in 37s
+2026/11/13 07:13:45 talent-search: mage-arcane: wrote /tmp/tmp.iYyCKf6tIr/horde/talents/mage-arcane-raid.md in 5s
+2026/11/13 07:14:02 rotation-search: mage-fire: wrote /tmp/tmp.iYyCKf6tIr/alliance/rotation/mage-fire-raid.md in 16s
+2026/11/13 07:14:07 talent-search: mage-fire: wrote /tmp/tmp.iYyCKf6tIr/alliance/talents/mage-fire-raid.md in 6s
+2026/11/13 07:14:39 rotation-search: mage-fire: wrote /tmp/tmp.iYyCKf6tIr/horde/rotation/mage-fire-raid.md in 32s
+2026/11/13 07:14:46 talent-search: mage-fire: wrote /tmp/tmp.iYyCKf6tIr/horde/talents/mage-fire-raid.md in 6s
+2026/11/13 07:15:04 rotation-search: warlock-demonology: wrote /tmp/tmp.iYyCKf6tIr/alliance/rotation/warlock-demonology-raid.md in 18s
+2026/11/13 07:15:10 talent-search: warlock-demonology: wrote /tmp/tmp.iYyCKf6tIr/alliance/talents/warlock-demonology-raid.md in 7s
+2026/11/13 07:15:43 rotation-search: warlock-demonology: wrote /tmp/tmp.iYyCKf6tIr/horde/rotation/warlock-demonology-raid.md in 33s
+2026/11/13 07:15:50 talent-search: warlock-demonology: wrote /tmp/tmp.iYyCKf6tIr/horde/talents/warlock-demonology-raid.md in 7s
+2026/11/13 07:16:09 rotation-search: warlock-destruction: wrote /tmp/tmp.iYyCKf6tIr/alliance/rotation/warlock-destruction-raid.md in 19s
+2026/11/13 07:16:14 talent-search: warlock-destruction: wrote /tmp/tmp.iYyCKf6tIr/alliance/talents/warlock-destruction-raid.md in 5s
+2026/11/13 07:16:34 rotation-search: warlock-destruction: wrote /tmp/tmp.iYyCKf6tIr/horde/rotation/warlock-destruction-raid.md in 20s
+2026/11/13 07:16:40 talent-search: warlock-destruction: wrote /tmp/tmp.iYyCKf6tIr/horde/talents/warlock-destruction-raid.md in 6s
+remote-test: exit 0 in 1076s (5a2e58f3d53476d703cc7f71d0fdf9b013f960ff)
+exit 0
