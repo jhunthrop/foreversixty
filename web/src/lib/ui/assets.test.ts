@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { FAVICON, catalogueIconUrl, iconUrl } from './assets';
+import { ART_CSS_VARS, BAND_ART, BAND_ART_INLINE, FAVICON, catalogueIconUrl, iconUrl } from './assets';
 import { SEAL, sealFor } from './seal';
 import { PLACEHOLDER_ICON } from '../icons/placeholder';
 
@@ -60,5 +60,17 @@ describe('sealFor', () => {
 describe('FAVICON', () => {
   it('is the tiny bold flat seal, byte for byte the nav set (tools/art/build_art.py copies both)', () => {
     expect(publicFile(FAVICON.svg).equals(publicFile(SEAL.flatTiny))).toBe(true);
+  });
+});
+
+describe('BAND_ART_INLINE', () => {
+  it('is the phone band file, byte for byte, as a WebP data URL', () => {
+    const [head, body] = BAND_ART_INLINE.split(',');
+    expect(head).toBe('data:image/webp;base64');
+    expect(Buffer.from(body ?? '', 'base64').equals(publicFile(BAND_ART.phone))).toBe(true);
+  });
+
+  it('is what the pages paint the band with, so it needs no request of its own', () => {
+    expect(ART_CSS_VARS['--art-band-phone']).toBe(`url('${BAND_ART_INLINE}')`);
   });
 });
