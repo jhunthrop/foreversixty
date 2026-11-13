@@ -6,7 +6,7 @@ Lane `sim-dpswar`, brief `design/reviews/sim-accuracy/brief.md`. Scope: Fury and
 - Fork branch `lane/sim-dpswar` from master 4c595ee6b, the pin at the start.
 - Client on the site: 1.60.1.70790 with its push layer. Live client: 1.60.1.70888, hotfix-layered rows (wago.tools `useHotfixes=1`, the 12 November fetch).
 
-**Totals: 1 confirmed bug, old, fixed: Deep Wounds' ticks crit in the engine (the owner's bleed rule) where the client flags Forever's Deep Wound (412613) Can't Crit and 146 logged ticks hold no crit. Arms raid 60 -2.6 to -2.8%, Arms bare 60 -3.3 to -3.7%, Fury raid 60 -2.1 to -2.2%, Fury bare 60 -2.8 to -3.0%; Protection threat moves a little. 0 new data (the 70888 rows and the push move no number these cards use). Open, with strong evidence: every logged Rend tick runs 30 to 130% above the client's base and grows with the warrior, a server-side term the client row does not show; the formula needs a level 60 advanced log. Still no Arms, Fury or level 60 warrior log. Engine pin 4c595ee6b to [PIN].**
+**Totals: 1 confirmed bug, old, fixed: Deep Wounds' ticks crit in the engine (the owner's bleed rule) where the client flags Forever's Deep Wound (412613) Can't Crit and 146 logged ticks hold no crit. Arms raid 60 -2.6 to -2.8%, Arms bare 60 -3.3 to -3.7%, Fury raid 60 -2.1 to -2.2%, Fury bare 60 -2.8 to -3.0%; Protection threat moves a little. 0 new data (the 70888 rows and the push move no number these cards use). Open, with strong evidence: every logged Rend tick runs 30 to 130% above the client's base and grows with the warrior, a server-side term the client row does not show; the formula needs a level 60 advanced log. Still no Arms, Fury or level 60 warrior log. Engine pin 4c595ee6b to bc54f7ba5.**
 
 ## Method
 
@@ -61,7 +61,7 @@ The Arms raid build cannot reach Death Wish: Mortal Strike needs 31 Arms points,
 
 **Finding.** The engine's periodic crit rule (owner, 2026-10-31: every bleed crits) reached Deep Wounds, so its four ticks rolled crit at the melee crit chance with the 2.0 physical multiplier. Forever's Deep Wound is not a bleed aura but the server's 412613, a school-damage spell the client marks Can't Crit (SpellMisc Attributes_2 0x20000000) and treat-as-periodic; it is the one bleed in the warrior's kit with the flag (Rend 11574 has neither bit). The launch logs read the same: 0 critical ticks in 146 (L1) against Rend's 6.7%.
 
-**Fix.** `core.DotConfig.NeverCrits`, which keeps a dot off the crit roll whatever the bleed rule says, set on Deep Wounds with the client row and the log count beside it (E [FORKSHA]). Red first: `TestDeepWoundsTicksNeverCrit` (four ticks at 200% crit, want none critical) fails at the pin with 4 critical ticks and passes at the fix; it replaces `TestDeepWoundsTicksCritWithoutRefreshing`, whose comment also misread 12834's mask as having no periodic bit (it has 0x10000; the logs, not the mask, are what rule a periodic proc out, L2).
+**Fix.** `core.DotConfig.NeverCrits`, which keeps a dot off the crit roll whatever the bleed rule says, set on Deep Wounds with the client row and the log count beside it (E 3c00ebb7d). Red first: `TestDeepWoundsTicksNeverCrit` (four ticks at 200% crit, want none critical) fails at the pin with 4 critical ticks and passes at the fix; it replaces `TestDeepWoundsTicksCritWithoutRefreshing`, whose comment also misread 12834's mask as having no periodic bit (it has 0x10000; the logs, not the mask, are what rule a periodic proc out, L2).
 
 **Before and after** (spec-breakdown, 10,000 iterations, seed 1, the published entries; `dps-warriors/job_b_bands.txt` at the pin and at the fix):
 
@@ -105,7 +105,12 @@ Arms and Fury have no rank rows. Leveling orders: the round 29 walks and the mel
 
 ## Gates
 
-[GATES]
+On the box, one run at a time (`dps-warriors/fork_tests.sh`, `gates.sh`, `gates2.sh`):
+
+- **Fork, in a throwaway worktree of the box's clone:** `TestDeepWoundsTicksNeverCrit` red at 4c595ee6b ("ticked 0 plain and 4 critical at 200% crit, want 4 plain and none"), green at 3c00ebb7d; `go test -tags=with_db -p 1` over `sim/core`, `sim/warrior/...`, `sim/common/...` and `sim/conformance`: every package ok but the two suite goldens, `TestP1DPSWarrior` and `TestP1TankWarrior`, which moved as expected and were regenerated at bc54f7ba5 (both ok after).
+- **Site, pinned to bc54f7ba5:** `go vet ./...`; `go test ./request/` (the three warrior ladder goldens rewritten: Arms 30 to 60 -0.1 to -2.2%, Fury 60 -2.0%, Protection 60 +0.3% damage, every other spec's unchanged), `./leveling/`, `./rankchoices/`, `./score/`, `./adapter/`, `./cmd/spec-breakdown/`, `./cmd/leveling-bis/`, `./cmd/talent-search/`, `./cmd/addon-builds/`: ok. `apl-check` against the pinned fork: every copy matches. `npm run lint` clean; after `npm run sync`, `astro check` 0 errors (2,310 files) and `npx vitest run src/lib/sim src/content/guides src/lib/guides` 131 files, 2,481 tests passed (the first gates run skipped the sync and failed both on the missing generated data; the second run is the one that counts).
+- **A red this lane found on main and fixed forward:** `TestCommittedAddonBuildsFollowTheGuides` fails on origin/main because the shamans-at-60 lane's Elemental and Enhancement level 60 builds reached the guides but not `addon-builds.json` (CI's sim job builds and vets without tests in launch mode, so it did not catch it); the file is regenerated here (`go run ./cmd/addon-builds`, the four shaman orders), and the test passes.
+- **wow-player:** not owed, no build, rotation, rank row, guide or card text changed.
 
 ## Measure at refresh
 
@@ -116,7 +121,10 @@ Arms and Fury have no rank rows. Leveling orders: the round 29 walks and the mel
 
 ## Shas
 
-[SHAS]
+- **Fork `lane/sim-dpswar` on master 4c595ee6b:** 3c00ebb7d (the fix and its test; the test is red at the pin, see Gates), bc54f7ba5 (the two suite goldens). Master fast-forwarded to bc54f7ba5.
+- **Site pin:** bc54f7ba5 (`make engine-pin`: `sim/enginever/version.go`, `web/src/lib/sim/version.ts`, the three sim fixtures).
+- **Site:** the pin, the ladder goldens the gates rewrote, this report and its job files (`dps-warriors/`), the ledger row and MR90 and MR91. No guide, card, coach, build, rotation or rank row changed, so no wow-player pass was owed.
+- **Shared code:** `core.DotConfig.NeverCrits` (core/dot.go), read by Deep Wounds alone.
 
 ## Sources
 
