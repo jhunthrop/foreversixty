@@ -37,6 +37,8 @@ VARIANTS = {
     'tankflash-paced70': {'and': {'vals': [tank_hp_below(0.35), pace(0.7)]}},
     'tankflash-paced90': {'and': {'vals': [tank_hp_below(0.35), pace(0.9)]}},
     'tankflash-under20': tank_hp_below(0.2),
+    # a tank under 20% always gets the fast heal; under 35% only on the pace
+    'tankflash-hybrid': {'or': {'vals': [tank_hp_below(0.2), {'and': {'vals': [tank_hp_below(0.35), pace(0.9)]}}]}},
 }
 
 for spec in ('priest-discipline', 'priest-holy'):
