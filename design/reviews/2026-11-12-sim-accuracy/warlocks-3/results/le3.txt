@@ -1,0 +1,250 @@
+remote-test: 9809b5db24cde55779443d5e288faabb0a5cc4c3 -> forever-ci on 192.168.1.182 (run 20261112234311-9809b5db2-54109, in sim): bash ../design/reviews/2026-11-12-sim-accuracy/warlocks-3/run.sh ../design/reviews/2026-11-12-sim-accuracy/warlocks-3/jobs-le3.txt /tmp/wl3-le3 10000
+remote-test: engine pinned to b80063d67
+aff-raid-horde-le3 seed 1 warlock-affliction DPS 758.83 +/- 0.28
+=== begin aff-raid-horde-le3 seed 1
+2026/11/12 23:45:04 Running 10000 iterations on 16 concurrent sims.
+2026/11/12 23:45:05 All 16 sims finished successfully.
+warlock-affliction  DPS 758.83 +/- 0.28
+out of mana: 0.0 s of 180 s
+consumes: [elixir_of_shadow_power flask_of_supreme_power greater_arcane_elixir cerebral_cortex_compound food_baked_salmon main_hand_imbue:brilliant_wizard_oil major_mana_potion conjured_demonic_rune]
+buffs: [arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Wrack (1316697) | 268.0 | 35.3 | 19.17 | 102.61 | 470 | 24.3 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Corruption (11672) | 205.4 | 27.1 | 19.58 | 95.94 | 385 | 24.3 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Bane of Agony (11713) | 173.8 | 22.9 | 11.17 | 114.32 | 274 | 24.3 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Siphon Life (18881) | 70.7 | 9.3 | 10.02 | 90.73 | 140 | 24.4 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Shadow Bolt (11661) | 41.2 | 5.4 | 6.10 | 5.50 | 1348 | 21.9 | 9.7 | 0.0 | 0.0 | 0.0 |
+| Demonic Sacrifice (18788) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Summon Imp (688) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Blood Fury (20572) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 12662 | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 13444 | 0.0 | 0.0 | 1.68 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Life Tap (11689) | 0.0 | 0.0 | 3.11 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Amplify Curse (18288) | 0.0 | 0.0 | 1.40 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 13968 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 32.24 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Trueshot Aura (20906) | 100.1 | 1.00 |
+| Thrash (21919) | 100.1 | 1.00 |
+| Demon Armor (11735) | 100.1 | 1.00 |
+| Strength of Earth Totem (10442) | 100.1 | 1.00 |
+| Nightfall (18094) | 100.1 | 1.00 |
+| Demonic Sacrifice (18788) | 100.1 | 1.00 |
+| Burning Shadow (18789) | 100.1 | 1.00 |
+| Battle Shout (11551) | 100.1 | 1.00 |
+| Heart of the Lion (409583) | 100.1 | 1.00 |
+| Blessing of Might (19838) | 100.1 | 2.00 |
+| Shadow Trance (17941) | 20.1 | 7.93 |
+| Blood Fury (20572) | 16.7 | 2.00 |
+| item 13968 | 11.1 | 1.00 |
+| Amplify Curse (18288) | 1.2 | 1.40 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 2997.4 | 2190.4 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 768.7 | 768.7 |
+| OtherActionDamageTaken | ResourceTypeHealth | -1596.5 | -1596.5 |
+| item 13444 | ResourceTypeMana | 3033.8 | 3033.8 |
+| item 12662 | ResourceTypeMana | 2395.2 | 2395.2 |
+| Corruption (11672) | ResourceTypeMana | -5678.3 | -5678.3 |
+| Shadow Bolt (11661) | ResourceTypeMana | -2256.1 | -2256.1 |
+| Life Tap (11689) | ResourceTypeMana | 2050.7 | 2050.7 |
+| Wrack (1316697) | ResourceTypeMana | -3834.4 | -3834.4 |
+| Siphon Life (18881) | ResourceTypeHealth | 12732.5 | 1534.4 |
+| Siphon Life (18881) | ResourceTypeMana | -3658.4 | -3658.4 |
+| Bane of Agony (11713) | ResourceTypeMana | -2401.3 | -2401.3 |
+| Judgement of Wisdom (20355) | ResourceTypeMana | 1501.3 | 1501.3 |
+=== end aff-raid-horde-le3
+aff-raid-alliance-le3 seed 1 warlock-affliction DPS 768.68 +/- 0.28
+=== begin aff-raid-alliance-le3 seed 1
+2026/11/12 23:45:05 Running 10000 iterations on 16 concurrent sims.
+2026/11/12 23:45:05 All 16 sims finished successfully.
+warlock-affliction  DPS 768.68 +/- 0.28
+out of mana: 0.0 s of 180 s
+consumes: [elixir_of_shadow_power flask_of_supreme_power greater_arcane_elixir cerebral_cortex_compound food_baked_salmon main_hand_imbue:brilliant_wizard_oil major_mana_potion conjured_demonic_rune]
+buffs: [arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Wrack (1316697) | 271.7 | 35.3 | 19.14 | 102.46 | 477 | 25.1 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Corruption (11672) | 208.5 | 27.1 | 19.55 | 95.81 | 392 | 25.2 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Bane of Agony (11713) | 176.0 | 22.9 | 11.17 | 114.30 | 277 | 25.1 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Siphon Life (18881) | 71.5 | 9.3 | 10.00 | 90.58 | 142 | 25.1 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Shadow Bolt (11661) | 41.5 | 5.4 | 6.07 | 5.48 | 1363 | 22.6 | 9.7 | 0.0 | 0.0 | 0.0 |
+| Summon Imp (688) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Demonic Sacrifice (18788) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 12662 | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 13968 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 32.40 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Life Tap (11689) | 0.0 | 0.0 | 3.29 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 13444 | 0.0 | 0.0 | 1.68 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Amplify Curse (18288) | 0.0 | 0.0 | 1.40 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Heart of the Lion (409583) | 100.1 | 1.00 |
+| Strength of Earth Totem (10442) | 100.1 | 1.00 |
+| Nightfall (18094) | 100.1 | 1.00 |
+| Demonic Sacrifice (18788) | 100.1 | 1.00 |
+| Burning Shadow (18789) | 100.1 | 1.00 |
+| Demon Armor (11735) | 100.1 | 1.00 |
+| Thrash (21919) | 100.1 | 1.00 |
+| Blessing of Might (19838) | 100.1 | 2.00 |
+| Battle Shout (11551) | 100.1 | 1.00 |
+| Trueshot Aura (20906) | 100.1 | 1.00 |
+| Shadow Trance (17941) | 20.1 | 7.91 |
+| item 13968 | 11.1 | 1.00 |
+| Amplify Curse (18288) | 1.2 | 1.40 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 2997.6 | 2190.6 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 792.1 | 792.1 |
+| OtherActionDamageTaken | ResourceTypeHealth | -1597.2 | -1597.2 |
+| item 13444 | ResourceTypeMana | 3032.0 | 3032.0 |
+| item 12662 | ResourceTypeMana | 2395.1 | 2395.1 |
+| Corruption (11672) | ResourceTypeMana | -5670.7 | -5670.7 |
+| Shadow Bolt (11661) | ResourceTypeMana | -2247.4 | -2247.4 |
+| Life Tap (11689) | ResourceTypeMana | 2215.4 | 2215.4 |
+| Wrack (1316697) | ResourceTypeMana | -3827.7 | -3827.7 |
+| Siphon Life (18881) | ResourceTypeHealth | 12868.8 | 1536.6 |
+| Siphon Life (18881) | ResourceTypeMana | -3648.5 | -3648.5 |
+| Bane of Agony (11713) | ResourceTypeMana | -2401.7 | -2401.7 |
+| Judgement of Wisdom (20355) | ResourceTypeMana | 1500.6 | 1500.6 |
+=== end aff-raid-alliance-le3
+aff-bare-60-le3 seed 1 warlock-affliction DPS 403.11 +/- 0.10
+=== begin aff-bare-60-le3 seed 1
+2026/11/12 23:45:05 Running 10000 iterations on 16 concurrent sims.
+2026/11/12 23:45:06 All 16 sims finished successfully.
+warlock-affliction  DPS 403.11 +/- 0.10
+out of mana: 0.0 s of 180 s
+consumes: []
+buffs: []
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Wrack (1316697) | 106.4 | 26.4 | 14.73 | 79.85 | 240 | 8.1 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Corruption (11672) | 86.5 | 21.5 | 15.39 | 78.65 | 198 | 8.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Bane of Agony (11713) | 83.6 | 20.7 | 11.84 | 115.18 | 131 | 8.1 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Immolate (11668) | 45.1 | 11.2 | 10.81 | 55.31 | 147 | 5.9 | 1.6 | 0.0 | 0.0 | 0.0 |
+| Succubus: OtherActionAttack#1 | 40.4 | 10.0 | 90.57 | 79.96 | 91 | 0.0 | 5.2 | 6.5 | 40.0 | 14.1 |
+| Siphon Life (18881) | 34.6 | 8.6 | 8.31 | 75.09 | 83 | 8.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Succubus: Lash of Pain (11780) | 6.7 | 1.7 | 15.51 | 14.14 | 85 | 7.7 | 8.9 | 0.0 | 0.0 | 0.0 |
+| Curse of the Elements (1311680) | 0.0 | 0.0 | 1.02 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 18.36 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Blood Fury (20572) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 13968 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Amplify Curse (18288) | 0.0 | 0.0 | 1.41 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Life Tap (11689) | 0.0 | 0.0 | 18.36 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Demon Armor (11735) | 100.1 | 1.00 |
+| Blood Fury (20572) | 16.7 | 2.00 |
+| item 13968 | 11.1 | 1.00 |
+| Amplify Curse (18288) | 2.0 | 1.41 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 0.0 | 0.0 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 452.2 | 452.2 |
+| Corruption (11672) | ResourceTypeMana | -4464.1 | -4464.1 |
+| Immolate (11668) | ResourceTypeMana | -3999.6 | -3999.6 |
+| Life Tap (11689) | ResourceTypeMana | 13239.2 | 13239.2 |
+| Wrack (1316697) | ResourceTypeMana | -2945.3 | -2945.3 |
+| Siphon Life (18881) | ResourceTypeHealth | 6221.2 | 0.0 |
+| Siphon Life (18881) | ResourceTypeMana | -3034.8 | -3034.8 |
+| Curse of the Elements (1311680) | ResourceTypeMana | -204.6 | -204.6 |
+| Bane of Agony (11713) | ResourceTypeMana | -2545.5 | -2545.5 |
+=== end aff-bare-60-le3
+aff-bare-40-le3 seed 1 warlock-affliction DPS 180.31 +/- 0.05
+=== begin aff-bare-40-le3 seed 1
+2026/11/12 23:45:06 Running 10000 iterations on 16 concurrent sims.
+2026/11/12 23:45:06 All 16 sims finished successfully.
+warlock-affliction  DPS 180.31 +/- 0.05
+out of mana: 0.0 s of 180 s
+consumes: []
+buffs: []
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Wrack (1316697) | 46.0 | 25.5 | 14.02 | 73.88 | 112 | 7.2 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Corruption (7648) | 40.4 | 22.4 | 14.78 | 73.62 | 99 | 7.2 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Bane of Agony (11711) | 38.6 | 21.4 | 11.69 | 110.36 | 63 | 7.2 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Immolate (11665) | 19.1 | 10.6 | 10.70 | 53.67 | 64 | 5.1 | 2.1 | 0.0 | 0.0 | 0.0 |
+| Succubus: OtherActionAttack#1 | 18.0 | 10.0 | 90.57 | 79.29 | 41 | 0.0 | 6.0 | 6.5 | 39.9 | 6.3 |
+| Siphon Life (18879) | 14.9 | 8.3 | 8.21 | 68.50 | 39 | 7.2 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Succubus: Lash of Pain (7816) | 3.4 | 1.9 | 15.51 | 13.89 | 44 | 7.5 | 10.5 | 0.0 | 0.0 | 0.0 |
+| Blood Fury (20572) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Curse of the Elements (1311677) | 0.0 | 0.0 | 1.11 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Amplify Curse (18288) | 0.0 | 0.0 | 1.40 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Life Tap (11687) | 0.0 | 0.0 | 19.34 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 19.34 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Demon Armor (11733) | 100.1 | 1.00 |
+| Blood Fury (20572) | 16.7 | 2.00 |
+| Amplify Curse (18288) | 2.2 | 1.40 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 132.0 | 96.0 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 433.4 | 433.4 |
+| Corruption (7648) | ResourceTypeMana | -2365.2 | -2365.2 |
+| Immolate (11665) | ResourceTypeMana | -2353.1 | -2353.1 |
+| Life Tap (11687) | ResourceTypeMana | 8098.9 | 8098.9 |
+| Wrack (1316697) | ResourceTypeMana | -2804.4 | -2804.4 |
+| Siphon Life (18879) | ResourceTypeHealth | 2683.4 | 0.0 |
+| Siphon Life (18879) | ResourceTypeMana | -1683.3 | -1683.3 |
+| Curse of the Elements (1311677) | ResourceTypeMana | -166.5 | -166.5 |
+| Bane of Agony (11711) | ResourceTypeMana | -1519.9 | -1519.9 |
+=== end aff-bare-40-le3
+aff-bare-40 seed 1 warlock-affliction DPS 180.55 +/- 0.05
+=== begin aff-bare-40 seed 1
+2026/11/12 23:45:07 Running 10000 iterations on 16 concurrent sims.
+2026/11/12 23:45:07 All 16 sims finished successfully.
+warlock-affliction  DPS 180.55 +/- 0.05
+out of mana: 0.0 s of 180 s
+consumes: []
+buffs: []
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Wrack (1316697) | 45.9 | 25.4 | 13.99 | 73.75 | 112 | 7.2 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Corruption (7648) | 40.2 | 22.3 | 14.71 | 73.25 | 99 | 7.2 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Bane of Agony (11711) | 39.0 | 21.6 | 11.73 | 111.23 | 63 | 7.2 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Immolate (11665) | 19.3 | 10.7 | 10.80 | 54.11 | 64 | 5.1 | 2.1 | 0.0 | 0.0 | 0.0 |
+| Succubus: OtherActionAttack#1 | 18.0 | 9.9 | 90.57 | 79.26 | 41 | 0.0 | 6.0 | 6.5 | 40.0 | 6.3 |
+| Siphon Life (18879) | 14.9 | 8.2 | 8.19 | 68.38 | 39 | 7.2 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Succubus: Lash of Pain (7816) | 3.4 | 1.9 | 15.51 | 13.88 | 44 | 7.5 | 10.5 | 0.0 | 0.0 | 0.0 |
+| OtherActionManaGain | 0.0 | 0.0 | 19.34 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Blood Fury (20572) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Curse of the Elements (1311677) | 0.0 | 0.0 | 1.11 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Life Tap (11687) | 0.0 | 0.0 | 19.34 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Amplify Curse (18288) | 0.0 | 0.0 | 1.40 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Demon Armor (11733) | 100.1 | 1.00 |
+| Blood Fury (20572) | 16.7 | 2.00 |
+| Amplify Curse (18288) | 2.2 | 1.40 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionManaRegen#1 | ResourceTypeMana | 132.0 | 96.0 |
+| OtherActionManaRegen#2 | ResourceTypeMana | 435.6 | 435.6 |
+| Corruption (7648) | ResourceTypeMana | -2353.4 | -2353.4 |
+| Immolate (11665) | ResourceTypeMana | -2375.2 | -2375.2 |
+| Life Tap (11687) | ResourceTypeMana | 8098.3 | 8098.3 |
+| Wrack (1316697) | ResourceTypeMana | -2798.8 | -2798.8 |
+| Siphon Life (18879) | ResourceTypeHealth | 2677.9 | 0.0 |
+| Siphon Life (18879) | ResourceTypeMana | -1679.9 | -1679.9 |
+| Curse of the Elements (1311677) | ResourceTypeMana | -166.5 | -166.5 |
+| Bane of Agony (11711) | ResourceTypeMana | -1524.3 | -1524.3 |
+=== end aff-bare-40
+remote-test: exit 0 in 4s (9809b5db24cde55779443d5e288faabb0a5cc4c3)

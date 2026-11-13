@@ -1,0 +1,7 @@
+remote-test: 3d9250dae05b10485d3442832f92da16c10b9c8a -> forever-ci on 192.168.1.182 (run 20261112234931-3d9250dae-97531, in sim): bash -c FOREVER_UPDATE_GOLDEN=1 go test ./request/ -run "TestRotationLadder/warlock-affliction$" -count=1 && echo GOLDEN-BEGIN && cat request/testdata/ladder/warlock-affliction.golden.md && echo GOLDEN-END
+remote-test: engine pinned to b80063d67
+FAIL	github.com/jhunthrop/foreversixty/sim/request [setup failed]
+# github.com/jhunthrop/foreversixty/sim/request
+internal/spellranks/spellranks.go:50:12: pattern spellranks.json: no matching files found
+FAIL
+remote-test: exit 1 in 0s (3d9250dae05b10485d3442832f92da16c10b9c8a)
