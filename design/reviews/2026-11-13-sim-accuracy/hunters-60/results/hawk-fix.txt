@@ -1,0 +1,14 @@
+remote-test: 34a700d6e9f9c4e1e37061a1cc966f45951879fe -> forever-ci on 192.168.1.182 (run 20261113034741-34a700d6e-44405, in sim): bash ../design/reviews/2026-11-13-sim-accuracy/hunters-60/jobs.sh ../design/reviews/2026-11-13-sim-accuracy/hunters-60/jobs_hawk.txt 10000
+remote-test: engine pinned to b21d938ae
+hawk-raid-horde-guide hunter-beast-mastery DPS 963.27 +/- 0.28 out of mana: 0.0 s of 180 s
+hawk-raid-horde-a hunter-beast-mastery DPS 937.69 +/- 0.27 out of mana: 0.0 s of 180 s
+hawk-raid-horde-b hunter-beast-mastery DPS 950.59 +/- 0.28 out of mana: 0.0 s of 180 s
+hawk-bare-horde-guide hunter-beast-mastery DPS 476.16 +/- 0.14 out of mana: 5.2 s of 180 s
+hawk-bare-horde-a hunter-beast-mastery DPS 447.25 +/- 0.12 out of mana: 5.2 s of 180 s
+hawk-bare-horde-b hunter-beast-mastery DPS 459.23 +/- 0.13 out of mana: 5.2 s of 180 s
+hawk-raid-alliance-guide hunter-beast-mastery DPS 971.17 +/- 0.28 out of mana: 0.0 s of 180 s
+hawk-raid-alliance-a hunter-beast-mastery DPS 944.44 +/- 0.27 out of mana: 0.0 s of 180 s
+hawk-raid-alliance-b hunter-beast-mastery DPS 957.08 +/- 0.27 out of mana: 0.0 s of 180 s
+hawk-bare-alliance-guide hunter-beast-mastery DPS 482.67 +/- 0.15 out of mana: 9.2 s of 180 s
+hawk-bare-alliance-a hunter-beast-mastery DPS 453.21 +/- 0.13 out of mana: 9.2 s of 180 s
+remote-test: exit 0 in 18s (34a700d6e9f9c4e1e37061a1cc966f45951879fe)
