@@ -132156,7 +132156,7 @@
     "druid-balance": {
       "leveling": {
         "name": "Balance leveling",
-        "why": "The leveling build takes Heart of the Wild and Reflection, because mana is what runs out while questing, plus all five points of Naturalist (2% damage a point) and Nature's Grace once you reach it.",
+        "why": "Heart of the Wild and Reflection keep your mana up for questing",
         "order": [
           [
             1,
@@ -132417,7 +132417,7 @@
       },
       "raid": {
         "name": "Balance raid",
-        "why": "The raid build moves Heart of the Wild and Reflection into Improved Starfire, Eclipse and Subtlety: the full Starfire loop.",
+        "why": "Trades Heart of the Wild and Reflection for the Starfire loop",
         "order": [
           [
             1,
@@ -132680,7 +132680,7 @@
     "druid-feral": {
       "leveling": {
         "name": "Feral leveling",
-        "why": "The leveling build takes Brutal Impact for a longer Pounce stun and Feral Charge, which in Forever is two buttons: the Bear Form charge and interrupt, and a Cat Form leap behind the target on a 30 second cooldown, which puts you straight into Shred position.",
+        "why": "Brutal Impact for Pounce, Feral Charge to leap behind for Shred",
         "order": [
           [
             2,
@@ -132941,7 +132941,7 @@
       },
       "raid": {
         "name": "Feral raid",
-        "why": "The raid build skips Furor. In Forever it no longer hands you 40 energy on a shift; it gives back the energy you left Cat Form with, plus 10 for each second out of form that you did not spend as a bear.",
+        "why": "Trades Brutal Impact and Feral Charge for full Rend and Tear",
         "order": [
           [
             2,
@@ -133204,7 +133204,7 @@
     "druid-feral-bear": {
       "leveling": {
         "name": "Feral Bear leveling",
-        "why": "The build is 41 points of Feral and 10 of Restoration. It tanks from level 10 to 60 with no respec.",
+        "why": "Bear tank on Thick Hide armor, Natural Reaction and Lacerate",
         "order": [
           [
             2,
@@ -133465,7 +133465,7 @@
       },
       "raid": {
         "name": "Feral Bear raid",
-        "why": "The build is 41 points of Feral and 10 of Restoration. It tanks from level 10 to 60 with no respec.",
+        "why": "Bear tank on Thick Hide armor, Natural Reaction and Lacerate",
         "order": [
           [
             2,
@@ -133728,7 +133728,7 @@
     "druid-restoration": {
       "leveling": {
         "name": "Restoration leveling",
-        "why": "The build is 40 points of Restoration and 11 of Balance. It is built for a tank-healing fight that runs your mana down.",
+        "why": "HoT tank healer: Bloom heals on expiry, Reflection saves mana",
         "order": [
           [
             3,
@@ -133989,7 +133989,7 @@
       },
       "raid": {
         "name": "Restoration raid",
-        "why": "The build is 40 points of Restoration and 11 of Balance. It is built for a tank-healing fight that runs your mana down.",
+        "why": "HoT tank healer: Bloom heals on expiry, Reflection saves mana",
         "order": [
           [
             3,
@@ -134252,7 +134252,7 @@
     "hunter-beast-mastery": {
       "leveling": {
         "name": "Beast Mastery leveling",
-        "why": "Out in the world, keep the level 60 build: all five points of Efficiency keep you shooting, and you will run out of mana long before you run out of targets.",
+        "why": "Efficiency keeps you shooting, Improved Tracking adds damage",
         "order": [
           [
             1,
@@ -134513,7 +134513,7 @@
       },
       "raid": {
         "name": "Beast Mastery raid",
-        "why": "The raid build moves two points out of Efficiency and the four in Improved Tracking into Improved Stings and Mortal Shots.",
+        "why": "Drops Improved Tracking for Mortal Shots and Improved Stings",
         "order": [
           [
             1,
@@ -134776,7 +134776,7 @@
     "hunter-marksmanship": {
       "leveling": {
         "name": "Marksmanship leveling",
-        "why": "You level with the pet: thirty-one points in Marksmanship take the talents that raise your big shots and your auto shot, plus Rapid Killing for a shorter Rapid Fire and Rapid Recuperation to keep your mana coming back while you shoot; fifteen in Beast Mastery take Deadly Aspects and the pet talents, and five in Survival take Improved Tracking.",
+        "why": "Rapid Recuperation keeps mana up, Rapid Killing chains kills",
         "order": [
           [
             2,
@@ -135037,7 +135037,7 @@
       },
       "raid": {
         "name": "Marksmanship raid",
-        "why": "At 60, for raids, the pet goes: thirty-three points in Marksmanship trade Rapid Killing and Rapid Recuperation for Lone Wolf, Sniper Shot, the last two ranks of Barrage and two points of Improved Stings, five in Beast Mastery keep Deadly Aspects, and thirteen in Survival take Improved Tracking, Survivalist and Surefooted.",
+        "why": "Drops the pet for Lone Wolf, Sniper Shot and full Barrage",
         "order": [
           [
             2,
@@ -135300,7 +135300,7 @@
     "hunter-survival": {
       "leveling": {
         "name": "Survival leveling",
-        "why": "Thirty-three points in Survival take every melee damage talent, thirteen in Marksmanship take Careful Aim, Rapid Killing and Lone Wolf, and five in Beast Mastery take Deadly Aspects.",
+        "why": "Melee hunter: Lone Wolf, Predator's Edge and Lightning Reflexes",
         "order": [
           [
             3,
@@ -135561,7 +135561,7 @@
       },
       "raid": {
         "name": "Survival raid",
-        "why": "Thirty-three points in Survival take every melee damage talent, thirteen in Marksmanship take Careful Aim, Rapid Killing and Lone Wolf, and five in Beast Mastery take Deadly Aspects.",
+        "why": "Melee hunter: Lone Wolf, Predator's Edge and Lightning Reflexes",
         "order": [
           [
             3,
@@ -135824,7 +135824,7 @@
     "mage-arcane": {
       "leveling": {
         "name": "Arcane leveling",
-        "why": "The leveling build spends 31 points in Arcane for Arcane Power and a 32nd on Arcane Wrath, then goes to Frost for the filler: Frost Channeling (3 points: 15% cheaper Frostbolts and 30% less threat from them), all five ranks of Ice Shards, and three ranks of Incineration in Fire for Arcane Blast crit.",
+        "why": "Arcane Blast stacks, with an Ice Shards Frostbolt as your filler",
         "order": [
           [
             1,
@@ -136085,7 +136085,7 @@
       },
       "raid": {
         "name": "Arcane raid",
-        "why": "The raid build puts 32 points in Arcane and takes its second tree from Fire.",
+        "why": "Trades Ice Shards and Frostbolt talents for Ignite and Pyroblast",
         "order": [
           [
             1,
@@ -136348,7 +136348,7 @@
     "mage-fire": {
       "leveling": {
         "name": "Fire leveling",
-        "why": "The level 60 build is the raid build with one change for the open world: Wand Specialization takes two of Improved Channeling's points, because a leveling mage finishes mobs with the wand while the mana comes back, and 25% more wand damage is worth more there than pushback protection on Arcane Missiles.",
+        "why": "Wand Specialization finishes mobs while your mana comes back",
         "order": [
           [
             2,
@@ -136609,7 +136609,7 @@
       },
       "raid": {
         "name": "Fire raid",
-        "why": "Combustion asks for 30 points above it. The Fire damage talents above it come to 26, and five ranks of Accelerant make it 31.",
+        "why": "Trades Wand Specialization for full Improved Channeling",
         "order": [
           [
             2,
@@ -136872,7 +136872,7 @@
     "mage-frost": {
       "leveling": {
         "name": "Frost leveling",
-        "why": "Out of a raid, in dungeon gear with no Mana Spring under you, mana runs out before the fight does, so the level 60 build puts three of them into Arcane Meditation, which keeps half your mana regeneration going while you cast, and the other two into Improved Channeling, the last Arcane points worth taking: with all five, your Arcane Missiles never lose casting time when you take a hit.",
+        "why": "Fingers of Frost into Ice Lance, with Arcane Meditation for mana",
         "order": [
           [
             3,
@@ -137133,7 +137133,7 @@
       },
       "raid": {
         "name": "Frost raid",
-        "why": "In a raid they go into Fire for five ranks of Incineration, which adds 10% crit to Ice Lance.",
+        "why": "Trades Arcane Meditation for Incineration's Ice Lance crit",
         "order": [
           [
             3,
@@ -137396,7 +137396,7 @@
     "paladin-holy": {
       "leveling": {
         "name": "Holy leveling",
-        "why": "The build is 31 Holy, 12 Protection and 8 Retribution.",
+        "why": "Healer on Oath of Light, Holy Shock and Illumination refunds",
         "order": [
           [
             1,
@@ -137657,7 +137657,7 @@
       },
       "raid": {
         "name": "Holy raid",
-        "why": "The build is 31 Holy, 12 Protection and 8 Retribution.",
+        "why": "Healer on Oath of Light, Holy Shock and Illumination refunds",
         "order": [
           [
             1,
@@ -137920,7 +137920,7 @@
     "paladin-protection": {
       "leveling": {
         "name": "Protection leveling",
-        "why": "The build is 10 Holy, 33 Protection and 8 Retribution.",
+        "why": "Block tank on Holy Shield, Iron Creed and Shieldsworn",
         "order": [
           [
             2,
@@ -138181,7 +138181,7 @@
       },
       "raid": {
         "name": "Protection raid",
-        "why": "The build is 10 Holy, 33 Protection and 8 Retribution.",
+        "why": "Block tank on Holy Shield, Iron Creed and Shieldsworn",
         "order": [
           [
             2,
@@ -138444,7 +138444,7 @@
     "paladin-retribution": {
       "leveling": {
         "name": "Retribution leveling",
-        "why": "The leveling build is 14 Holy, 7 Protection and 30 Retribution.",
+        "why": "Champion of the Light by 40, and Reverence for questing mana",
         "order": [
           [
             3,
@@ -138705,7 +138705,7 @@
       },
       "raid": {
         "name": "Retribution raid",
-        "why": "The raid build moves Reverence's two points into the third rank of Precision and Unsealed Wrath.",
+        "why": "Trades Reverence for Precision and the Unsealed Wrath twist",
         "order": [
           [
             3,
@@ -138968,7 +138968,7 @@
     "priest-discipline": {
       "leveling": {
         "name": "Discipline leveling",
-        "why": "Deep Discipline for Penance and Divine Aegis, with Holy taken for faster, cheaper heals.",
+        "why": "Shield healer on Penance, Divine Aegis and Soul Warding",
         "order": [
           [
             1,
@@ -139229,7 +139229,7 @@
       },
       "raid": {
         "name": "Discipline raid",
-        "why": "Deep Discipline for Penance and Divine Aegis, with Holy taken for faster, cheaper heals.",
+        "why": "Shield healer on Penance, Divine Aegis and Soul Warding",
         "order": [
           [
             1,
@@ -139492,7 +139492,7 @@
     "priest-holy": {
       "leveling": {
         "name": "Holy leveling",
-        "why": "Deep Holy for Prayer of Mending, with 17 points in Discipline for stronger, cheaper Renews and mana.",
+        "why": "Holy healer on Prayer of Mending and Spiritual Guidance",
         "order": [
           [
             2,
@@ -139753,7 +139753,7 @@
       },
       "raid": {
         "name": "Holy raid",
-        "why": "Deep Holy for Prayer of Mending, with 17 points in Discipline for stronger, cheaper Renews and mana.",
+        "why": "Holy healer on Prayer of Mending and Spiritual Guidance",
         "order": [
           [
             2,
@@ -140016,7 +140016,7 @@
     "priest-shadow": {
       "leveling": {
         "name": "Shadow leveling",
-        "why": "The leveling build opens with two points in Wand Specialization for the wand that finishes your mobs, and its last points go to Discipline.",
+        "why": "Spirit Tap is your drink between pulls, Blackout your stun",
         "order": [
           [
             1,
@@ -140277,7 +140277,7 @@
       },
       "raid": {
         "name": "Shadow raid",
-        "why": "The raid build trades Wand Specialization, Blackout and Spirit Tap for Early Demise, Devouring Contagion, Silence, both points of Shadow Reach, one of Dark Inspiration and the last point of Improved Mind Blast.",
+        "why": "Trades Spirit Tap and Blackout for Shadow Reach and Early Demise",
         "order": [
           [
             3,
@@ -140540,7 +140540,7 @@
     "rogue-assassination": {
       "leveling": {
         "name": "Assassination leveling",
-        "why": "The level 60 build is the one you level with. It trades Vigor, Blood Splatter, a point of Improved Slice and Dice and the Combat points past Precision for Improved Gouge, Remorseless Attacks, Improved Poisons and a point each of Master of Deception and Opportunity, which shine on trash and while leveling.",
+        "why": "Improved Poisons and Improved Gouge carry trash and leveling",
         "order": [
           [
             1,
@@ -140801,7 +140801,7 @@
       },
       "raid": {
         "name": "Assassination raid",
-        "why": "The raid build goes 31/20/0: down Assassination to Mutilate, with Seal Fate, Venom and all five points of Relentless Strikes on the way, then twenty points into Combat for Coup de Grace, Puncturing Wounds, Precision, Flawless Execution, Weapon Expertise and Aggression.",
+        "why": "Trades Improved Poisons for Weapon Expertise and Aggression",
         "order": [
           [
             1,
@@ -141064,7 +141064,7 @@
     "rogue-combat": {
       "leveling": {
         "name": "Combat leveling",
-        "why": "You level and run dungeons with the level 60 build, 14/34/3: Improved Gouge and Remorseless Attacks in place of Lethality and two points of Improved Slice and Dice, Master of Deception in place of Opportunity, a third point of Ruthlessness, and a point of Efficient Strikes plus the fifth points of Hack and Slash and Lightning Reflexes in place of the fifth Flash of Steel and both points of Composure.",
+        "why": "Improved Gouge and Efficient Strikes for trash and the way up",
         "order": [
           [
             2,
@@ -141325,7 +141325,7 @@
       },
       "raid": {
         "name": "Combat raid",
-        "why": "The raid build goes 12/34/5: Combat to Adrenaline Rush with all five points of Flash of Steel, Assassination for Malice, Ruthlessness, Improved Slice and Dice and Lethality, and five points of Opportunity for Backstab.",
+        "why": "Trades Improved Gouge for Lethality, Opportunity and Composure",
         "order": [
           [
             2,
@@ -141588,7 +141588,7 @@
     "rogue-subtlety": {
       "leveling": {
         "name": "Subtlety leveling",
-        "why": "One build does everything: 12 in Assassination for Malice, Ruthlessness, Improved Slice and Dice, Blood Splatter and a point of Lethality, 8 in Combat for Coup de Grace, Efficient Strikes and Precision, then 31 down Subtlety to Death Mark.",
+        "why": "Hemorrhage builds, Boot Knife adds points, Death Mark cashes in",
         "order": [
           [
             3,
@@ -141849,7 +141849,7 @@
       },
       "raid": {
         "name": "Subtlety raid",
-        "why": "One build does everything: 12 in Assassination for Malice, Ruthlessness, Improved Slice and Dice, Blood Splatter and a point of Lethality, 8 in Combat for Coup de Grace, Efficient Strikes and Precision, then 31 down Subtlety to Death Mark.",
+        "why": "Hemorrhage builds, Boot Knife adds points, Death Mark cashes in",
         "order": [
           [
             3,
@@ -142112,7 +142112,7 @@
     "shaman-elemental": {
       "leveling": {
         "name": "Elemental leveling",
-        "why": "The leveling build spends every point in Elemental until Lightning Mastery at 40: Call of Thunder at 30 and Lightning Overload at 31 to 33 come before Trial by Fire's second point at 34.",
+        "why": "Lightning Mastery at 40, Shamanistic Focus for cheaper shocks",
         "order": [
           [
             1,
@@ -142373,7 +142373,7 @@
       },
       "raid": {
         "name": "Elemental raid",
-        "why": "The raid build keeps the same 31 Elemental points, Thundering Strikes, Ancestral Knowledge and Tidal Focus, and trades Shamanistic Focus for the third point of Mindfulness.",
+        "why": "Trades Shamanistic Focus for the last point of Mindfulness",
         "order": [
           [
             1,
@@ -142636,7 +142636,7 @@
     "shaman-enhancement": {
       "leveling": {
         "name": "Enhancement leveling",
-        "why": "The leveling build puts its Elemental points into Convection and Elemental Devastation: shocks and bolts a tenth cheaper, and 9% melee crit for 10 seconds after a spell crits.",
+        "why": "Improved Stormstrike and Mindfulness fund shocks on long pulls",
         "order": [
           [
             2,
@@ -142897,7 +142897,7 @@
       },
       "raid": {
         "name": "Enhancement raid",
-        "why": "The raid build drops Convection and spends its Elemental points on Concussion, Elemental Devastation, Reverberation and Elemental Focus: Earth Shock hits harder and comes back sooner, and now and then a spell is free.",
+        "why": "Trades Convection and Improved Stormstrike for Concussion",
         "order": [
           [
             2,
@@ -143160,7 +143160,7 @@
     "shaman-restoration": {
       "leveling": {
         "name": "Restoration leveling",
-        "why": "Forty-one points in Restoration and ten in Enhancement. Thundering Strikes is 5% crit on your heals, because in Forever it raises spells as well as attacks, and crits are what fire Water Shield.",
+        "why": "Healing Wave healer on Healing Way, with Water Shield for mana",
         "order": [
           [
             3,
@@ -143421,7 +143421,7 @@
       },
       "raid": {
         "name": "Restoration raid",
-        "why": "Forty-one points in Restoration and ten in Enhancement. Thundering Strikes is 5% crit on your heals, because in Forever it raises spells as well as attacks, and crits are what fire Water Shield.",
+        "why": "Healing Wave healer on Healing Way, with Water Shield for mana",
         "order": [
           [
             3,
@@ -143684,7 +143684,7 @@
     "warlock-affliction": {
       "leveling": {
         "name": "Affliction leveling",
-        "why": "The leveling build carries you on Soul Siphon and Wrack while you quest, fills Malevolence and takes Nightfall once Wrack is yours, and from 47 spends its points on Bane and Aftermath for a faster, harder Immolate.",
+        "why": "Wrack and Soul Siphon carry the quests, Bane speeds Immolate",
         "order": [
           [
             1,
@@ -143945,7 +143945,7 @@
       },
       "raid": {
         "name": "Affliction raid",
-        "why": "The raid build goes to 35 points in Affliction for all five points of Malevolence, Nightfall, Soul Siphon and Wrack, sacrifices the Imp through Demonic Sacrifice, and spends its Destruction points on Improved Shadow Bolt, so a Nightfall bolt that crits sets up your Wrack and DoTs.",
+        "why": "Sacrifices the Imp and trades Bane for Improved Shadow Bolt",
         "order": [
           [
             1,
@@ -144208,7 +144208,7 @@
     "warlock-demonology": {
       "leveling": {
         "name": "Demonology leveling",
-        "why": "The leveling build stops at 30 Demonology points, before Demonic Pact, keeps Improved Corruption, and puts all 5 points in Unholy Power rather than Improved Imp, since you level with the Voidwalker or the Succubus.",
+        "why": "Soul Link and Unholy Power with a Voidwalker or Succubus out",
         "order": [
           [
             2,
@@ -144469,7 +144469,7 @@
       },
       "raid": {
         "name": "Demonology raid",
-        "why": "The raid build goes to Pact and spends its Destruction points on Shadow Bolt.",
+        "why": "Trades Improved Corruption for Demonic Pact and Ruin",
         "order": [
           [
             2,
@@ -144732,7 +144732,7 @@
     "warlock-destruction": {
       "leveling": {
         "name": "Destruction leveling",
-        "why": "The leveling build also takes Molten Skin and Destructive Reach for the quests: Molten Skin takes 6% off every hit you take, and Destructive Reach adds 20% range to your Destruction spells, so you can stand clear of cleaves and fire on the floor.",
+        "why": "Molten Skin and Destructive Reach keep you safe while questing",
         "order": [
           [
             3,
@@ -144993,7 +144993,7 @@
       },
       "raid": {
         "name": "Destruction raid",
-        "why": "The raid build keeps the leveling build's Destruction core and drops its safety picks: Destructive Reach and Molten Skin come out, Aftermath goes to 5 and Cataclysm to 3.",
+        "why": "Trades Molten Skin for full Aftermath, Cataclysm and Pandemic",
         "order": [
           [
             3,
@@ -145256,7 +145256,7 @@
     "warrior-arms": {
       "leveling": {
         "name": "Arms leveling",
-        "why": "The level 60 build puts one point in Improved Heroic Strike, two in Deflection and five in Iron Will, which takes 15% off every stun and fear on you.",
+        "why": "Improved Charge for pull rage, Iron Will against stuns and fears",
         "order": [
           [
             1,
@@ -145517,7 +145517,7 @@
       },
       "raid": {
         "name": "Arms raid",
-        "why": "The raid build drops Iron Will, Deflection and Improved Charge.",
+        "why": "Iron Will and Charge go to Enrage, Execute and Reckless Swings",
         "order": [
           [
             1,
@@ -145780,7 +145780,7 @@
     "warrior-fury": {
       "leveling": {
         "name": "Fury leveling",
-        "why": "The build also puts two points in Improved Berserker Rage, so every Berserker Rage brings 10 rage and breaks any slow on you, and two in Improved Charge, part of the points the rows above Deep Wounds ask for; the 6 extra rage on every Charge on trash, in dungeons and out in the world comes free.",
+        "why": "Dual wield on Flurry and Bloodthirst, Reckless Swings for rage",
         "order": [
           [
             2,
@@ -146041,7 +146041,7 @@
       },
       "raid": {
         "name": "Fury raid",
-        "why": "The build also puts two points in Improved Berserker Rage, so every Berserker Rage brings 10 rage and breaks any slow on you, and two in Improved Charge, part of the points the rows above Deep Wounds ask for; the 6 extra rage on every Charge on trash, in dungeons and out in the world comes free.",
+        "why": "Dual wield on Flurry and Bloodthirst, Reckless Swings for rage",
         "order": [
           [
             2,
@@ -146304,7 +146304,7 @@
     "warrior-protection": {
       "leveling": {
         "name": "Protection leveling",
-        "why": "The Arms points go to Deflection for 5% parry, Improved Heroic Strike for a cheaper rage dump, and Improved Rend into Deep Wounds.",
+        "why": "Shield tank on Shield Slam, Defiance and Bastion threat",
         "order": [
           [
             3,
@@ -146565,7 +146565,7 @@
       },
       "raid": {
         "name": "Protection raid",
-        "why": "The Arms points go to Deflection for 5% parry, Improved Heroic Strike for a cheaper rage dump, and Improved Rend into Deep Wounds.",
+        "why": "Shield tank on Shield Slam, Defiance and Bastion threat",
         "order": [
           [
             3,
