@@ -114,7 +114,7 @@ local SLOT_IDS = { head = 1, chest = 5, legs = 7, finger1 = 11, finger2 = 12, tr
 	main_hand = 16, off_hand = 17 }
 
 describe("SlotMarks", function()
-	local SlotMarks, ItemTooltip, Chip, Theme, Prefs, Follow
+	local SlotMarks, ItemTooltip, Chip, Theme, Prefs, Follow, BagAddons
 	local state
 
 	--- `worn` is { [slot] = link }, `bag` a list of links in bag 0, `extra` more client globals.
@@ -170,6 +170,7 @@ describe("SlotMarks", function()
 		helper.load("Progress")
 		ItemTooltip = helper.load("ItemTooltip")
 		Chip = helper.load("Chip")
+		BagAddons = helper.load("BagAddons")
 		SlotMarks = helper.load("SlotMarks")
 		Follow.build = { classSlug = "warrior", gear = {}, order = {} }
 		ItemTooltip.data = DATA
@@ -630,7 +631,7 @@ describe("SlotMarks", function()
 			assert.are.equal(string.format(L.diagBagAddon, "Baganator"), SlotMarks.diagLine())
 		end)
 
-		it("says nothing in /fs diag once the hook has reached the bag addon's buttons", function()
+		it("names the bag addon as showing the arrow once the hook has reached its buttons", function()
 			local mixin = { UpdateNewItem = function() end }
 			start({ chest = WORN_CHEST }, { BAG_CHEST }, {
 				ContainerFrameItemButtonMixin = mixin,
@@ -644,7 +645,7 @@ describe("SlotMarks", function()
 			button.GetID = function() return 1 end
 			button.GetParent = function() return holder end
 			button:UpdateNewItem(2)
-			assert.is_nil(SlotMarks.diagLine())
+			assert.are.equal(string.format(L.diagBagAddonOn, "Baganator"), SlotMarks.diagLine())
 		end)
 
 		it("says nothing in /fs diag with no bag addon", function()
@@ -682,7 +683,7 @@ describe("SlotMarks", function()
 			start({ chest = WORN_CHEST }, { BAG_CHEST, PLATE_CHEST }, { Baganator = fake,
 				C_AddOns = loaded("Baganator") })
 			SlotMarks.register()
-			local widget = fake.widgets[SlotMarks.BAGANATOR_WIDGET]
+			local widget = fake.widgets[BagAddons.BAGANATOR_WIDGET]
 			assert.is_table(widget)
 			assert.are.equal(L.baganatorArrow, widget.label)
 			assert.are.same({ corner = "top_right", priority = 1 }, widget.defaultPosition)
@@ -695,14 +696,14 @@ describe("SlotMarks", function()
 			assert.is_false(widget.onUpdate(glyph, {}))
 			-- The paper doll and the bag agree: the chest slot carries the arrow too.
 			assert.is_true(SlotMarks.current().arrows.chest == true)
-			assert.is_nil(SlotMarks.diagLine())
+			assert.are.equal(string.format(L.diagBagAddonOn, "Baganator"), SlotMarks.diagLine())
 		end)
 
 		it("follows the marks switch and asks Baganator to redraw on every refresh", function()
 			local fake = baganator()
 			start({ chest = WORN_CHEST }, { BAG_CHEST }, { Baganator = fake, C_AddOns = loaded("Baganator") })
 			SlotMarks.register()
-			local widget = fake.widgets[SlotMarks.BAGANATOR_WIDGET]
+			local widget = fake.widgets[BagAddons.BAGANATOR_WIDGET]
 			SlotMarks.refresh(DATA, "BAG_UPDATE_DELAYED")
 			assert.are.equal(1, fake.refreshes)
 			Prefs.setFlag("slotMarks", false)
@@ -710,15 +711,90 @@ describe("SlotMarks", function()
 		end)
 
 		it("registers once, also when Baganator loads after this addon", function()
-			start({ chest = WORN_CHEST }, { BAG_CHEST }, { C_AddOns = loaded("Baganator") })
+			start({ chest = WORN_CHEST }, { BAG_CHEST }, { C_AddOns = loaded("Baganator"), Baganator = false })
 			SlotMarks.register()
-			assert.is_false(SlotMarks.baganator == true)
+			assert.is_false(BagAddons.isAttached("Baganator"))
 			local fake = baganator()
 			_G.Baganator = fake
 			SlotMarks.onAddonLoaded("Baganator")
 			SlotMarks.onAddonLoaded("Baganator")
-			assert.is_true(SlotMarks.baganator)
-			assert.is_true(fake.widgets[SlotMarks.BAGANATOR_WIDGET].onUpdate(nil, { itemLink = BAG_CHEST }))
+			assert.is_true(BagAddons.isAttached("Baganator"))
+			assert.is_true(fake.widgets[BagAddons.BAGANATOR_WIDGET].onUpdate(nil, { itemLink = BAG_CHEST }))
+		end)
+	end)
+
+	-- 2.0.44: Bagnon (and the other bag addons, tests/bag_addons_spec.lua) through its own hook,
+	-- end to end: the same 12 px arrow on the chip's listed item only, redrawn on every refresh.
+	describe("Bagnon's bags", function()
+		--- Bagnon's BagBrother item class (core/classes/item.lua): Update(info) on a button.
+		local function bagnon()
+			local itemClass = { Update = function(button, info) button.info = info or button.info end }
+			return { Item = itemClass }
+		end
+
+		local function bagnonButton(itemLink)
+			local button = _G.CreateFrame("Button", nil, _G.CreateFrame("Frame"))
+			button.IsVisible = function() return true end
+			button.info = { hyperlink = itemLink }
+			return button
+		end
+
+		local function loaded(name)
+			return { IsAddOnLoaded = function(addon) return addon == name end }
+		end
+
+		it("puts the arrow on the bag item the chip lists, and only there", function()
+			local fake = bagnon()
+			start({ chest = WORN_CHEST }, { BAG_CHEST, PLATE_CHEST }, { Bagnon = fake, C_AddOns = loaded("Bagnon") })
+			SlotMarks.register()
+			local upgrade, other = bagnonButton(BAG_CHEST), bagnonButton(PLATE_CHEST)
+			fake.Item.Update(upgrade)
+			fake.Item.Update(other)
+			assert.is_true(arrowOn(upgrade))
+			assert.is_false(arrowOn(other))
+			assert.are.equal(Theme.SIZES.mark, SlotMarks.marksOn(upgrade).arrow:GetWidth())
+			assert.are.equal(string.format(L.diagBagAddonOn, "Bagnon"), SlotMarks.diagLine())
+		end)
+
+		it("redraws from the button's own item on a refresh, and follows the marks switch", function()
+			local fake = bagnon()
+			start({ chest = WORN_CHEST }, { BAG_CHEST }, { Bagnon = fake, C_AddOns = loaded("Bagnon") })
+			SlotMarks.register()
+			local button = bagnonButton(BAG_CHEST)
+			fake.Item.Update(button)
+			assert.is_true(arrowOn(button))
+			-- The pooled button now shows another item: the refresh reads it again.
+			button.info = { hyperlink = WORN_RING }
+			SlotMarks.refresh(DATA, "BAG_UPDATE_DELAYED")
+			assert.is_false(arrowOn(button))
+			button.info = { hyperlink = BAG_CHEST }
+			SlotMarks.refresh(DATA, "BAG_UPDATE_DELAYED")
+			assert.is_true(arrowOn(button))
+			Prefs.setFlag("slotMarks", false)
+			SlotMarks.refresh(DATA)
+			assert.is_false(arrowOn(button))
+		end)
+
+		it("attaches when Bagnon loads after this addon, once", function()
+			start({ chest = WORN_CHEST }, { BAG_CHEST }, { C_AddOns = loaded("Bagnon"), ToggleBackpack = function() end,
+				Bagnon = false })
+			SlotMarks.register()
+			_G.ToggleBackpack()
+			assert.are.equal(string.format(L.diagBagAddon, "Bagnon"), SlotMarks.diagLine())
+			local fake = bagnon()
+			_G.Bagnon = fake
+			SlotMarks.onAddonLoaded("Bagnon")
+			SlotMarks.onAddonLoaded("Bagnon")
+			local calls = 0
+			local button = bagnonButton(BAG_CHEST)
+			local markLinkButton = SlotMarks.markLinkButton
+			SlotMarks.marker.mark = function(...)
+				calls = calls + 1
+				return markLinkButton(...)
+			end
+			fake.Item.Update(button)
+			assert.are.equal(1, calls)
+			assert.are.equal(string.format(L.diagBagAddonOn, "Bagnon"), SlotMarks.diagLine())
 		end)
 	end)
 

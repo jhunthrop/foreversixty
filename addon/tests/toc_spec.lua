@@ -29,8 +29,9 @@ describe("the TOC", function()
 		-- The surfaces (spec section 7): the chip replaces the tracker and the toast;
 		-- the talent marks draw TalentGlow's ring and read the chip's level.
 		"surfaces/Chip.lua", "surfaces/TalentMarks.lua",
-		-- The paper-doll and bag marks (L4.1): read the chip's list and the tooltip's Next line.
-		"surfaces/SlotMarks.lua",
+		-- The paper-doll and bag marks (L4.1): read the chip's list and the tooltip's Next line;
+		-- the bag addons' own hooks (BagAddons) take the arrow from them.
+		"surfaces/BagAddons.lua", "surfaces/SlotMarks.lua",
 		-- The quest reward, roll and dungeon marks (L4.2): read the tooltip's own verdict.
 		"surfaces/RewardMarks.lua",
 		-- The build dialog (L3.4): built on its first open; Options opens it.

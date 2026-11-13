@@ -686,6 +686,8 @@ local L = {
 	diagBagAddon = "Bag marks: off in %s's bags. The marks on your character panel still show.",
 	-- Before the bags were opened this session there is nothing to judge yet (fix round 1, M4).
 	diagBagAddonUnchecked = "Bag marks: not checked yet (open your bags)",
+	-- /fs diag: a bag addon that draws its own bags, with the upgrade arrow attached to it.
+	diagBagAddonOn = "Bag marks: the upgrade arrow shows in %s's bags",
 	-- /fs diag verbose: which of the client's bag paths the bag marks hooked.
 	diagBagHooks = "Bag marks: hooked through %s",
 	-- Baganator's corner list names the arrow by this.

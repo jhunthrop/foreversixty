@@ -34,6 +34,7 @@ local Gear = ns.Gear or require("Gear")
 local ItemTooltip = ns.ItemTooltip or require("ItemTooltip")
 local Chip = ns.Chip or require("Chip")
 local Rules = ns.Rules or require("Rules")
+local BagAddons = ns.BagAddons or require("BagAddons")
 
 local SlotMarks = {}
 
@@ -44,9 +45,10 @@ SlotMarks.data = nil
 --- SlotMarks.refresh dropped it: the next mark drawn reads the client again.
 SlotMarks.state = nil
 
---- Bag addons that draw their own bags: /fs diag names one that is loaded while the
---- bag hook has not reached its buttons (ruling 3: their API is never touched).
-SlotMarks.BAG_ADDONS = { "Baganator", "Bagnon", "AdiBags", "ArkInventory", "BetterBags", "Combuctor", "LiteBag" }
+--- Bag addons that draw their own bags: /fs diag names each one loaded and whether the
+--- arrow is attached to it (surfaces/BagAddons.lua, or the client hook reaching its buttons).
+SlotMarks.BAG_ADDONS = { "Baganator", "Bagnon", "Bagnonium", "AdiBags", "ArkInventory", "BetterBags", "Combuctor",
+	"LiteBag" }
 
 --- The paths the bag hook went in through, by name (for /fs diag verbose).
 SlotMarks.bagHooks = {}
@@ -646,6 +648,7 @@ function SlotMarks.refresh(data, event)
 	end
 	if not enabled() then
 		SlotMarks.hideAll()
+		BagAddons.refresh()
 		return
 	end
 	SlotMarks.drawPaperDoll()
@@ -655,7 +658,7 @@ function SlotMarks.refresh(data, event)
 			SlotMarks.markBagButton(button, ask(button, "GetBagID") or bag, ask(button, "GetID"))
 		end
 	end
-	SlotMarks.refreshBaganator()
+	SlotMarks.refreshBagAddons()
 end
 
 -- The hooks ------------------------------------------------------------------
@@ -710,7 +713,7 @@ function SlotMarks.register()
 	end
 	SlotMarks.registered = true
 	local hooks = SlotMarks.hookBags()
-	SlotMarks.registerBaganator()
+	SlotMarks.attachBagAddons()
 	if #hooks > 0 then
 		Theme.noteVerbose(string.format(L.diagBagHooks, table.concat(hooks, ", ")))
 	else
@@ -738,13 +741,11 @@ function SlotMarks.hookBagOpen()
 	end
 end
 
--- Baganator ------------------------------------------------------------------
+-- The bag addons ---------------------------------------------------------------
 
---- Baganator draws its own bags, so no client hook reaches its buttons (2.0.43: the owner's bags
---- showed no arrow while the paper doll did). Its public corner-widget API takes the arrow instead:
---- one widget, the same 12 px glyph, in the top right corner where the default bags show it.
-SlotMarks.BAGANATOR_WIDGET = "foreversixty_upgrade"
-SlotMarks.BAGANATOR_CORNER = { corner = "top_right", priority = 1 }
+--- The bag addons' buttons the arrow is on, and how each reads its item's link (weak keys):
+--- a marks refresh redraws each that still shows from its own reader.
+local linkButtons = setmetatable({}, { __mode = "k" })
 
 --- Whether the carried `link` is on the chip's list: the arrow's own rule for any bag's button.
 --- False with the marks off or the link unknown; never raises (a bag addon calls it).
@@ -756,74 +757,78 @@ function SlotMarks.isBagUpgrade(link)
 	return ok and type(state) == "table" and state.links[link] == true
 end
 
---- Baganator's public API table, or nil without Baganator (or one too old for corner widgets).
-local function baganatorApi()
-	local addon = Compat.clientGlobal("Baganator", "table")
-	local api = addon ~= nil and addon.API or nil
-	if type(api) ~= "table" or type(api.RegisterCornerWidget) ~= "function" then
-		return nil
+local function markLinkButton(button, readLink)
+	if type(button) ~= "table" then
+		return
 	end
-	return api
+	linkButtons[button] = readLink
+	SlotMarks.bagsOpened = true
+	SlotMarks.reachedAddonButton = true
+	local ok, link = pcall(readLink, button)
+	setArrow(button, ok and SlotMarks.isBagUpgrade(link))
 end
 
---- Registers the arrow as a Baganator corner widget, once: true once it is registered.
-function SlotMarks.registerBaganator()
-	if SlotMarks.baganator then
-		return true
-	end
-	local api = baganatorApi()
-	if api == nil then
-		return false
-	end
-	local ok, err = pcall(api.RegisterCornerWidget, L.baganatorArrow, SlotMarks.BAGANATOR_WIDGET,
-		function(_, details)
-			return SlotMarks.isBagUpgrade(type(details) == "table" and details.itemLink or nil)
-		end,
-		function(itemButton)
-			return (buildGlyph(itemButton))
-		end,
-		SlotMarks.BAGANATOR_CORNER, true)
-	if not ok then
-		Theme.note(string.format(L.diagSlotMarksFailed, tostring(err)))
-		return false
-	end
-	SlotMarks.baganator = true
-	SlotMarks.bagHooks[#SlotMarks.bagHooks + 1] = "Baganator"
-	return true
+--- A bag addon drew `button`: the arrow on it when readLink(button) is on the chip's list.
+function SlotMarks.markLinkButton(button, readLink)
+	guarded(markLinkButton, button, readLink)
 end
 
---- Asks Baganator to redraw its buttons' widgets after the marks were read again.
-function SlotMarks.refreshBaganator()
-	local api = SlotMarks.baganator and baganatorApi() or nil
-	if api ~= nil and type(api.RequestItemButtonsRefresh) == "function" then
-		pcall(api.RequestItemButtonsRefresh)
-	end
-end
+--- What the bag addons' adapters (surfaces/BagAddons.lua) draw the arrow with.
+SlotMarks.marker = {
+	isUpgrade = SlotMarks.isBagUpgrade,
+	buildGlyph = function(parent) return buildGlyph(parent) end,
+	mark = SlotMarks.markLinkButton,
+}
 
---- ADDON_LOADED: Baganator loading after this addon gets the arrow too.
-function SlotMarks.onAddonLoaded(name)
-	if name == "Baganator" then
-		SlotMarks.registerBaganator()
-	end
-end
-
---- /fs diag's line for a bag addon that draws its own bags (fix round 1, M4): "not
---- checked yet (open your bags)" until the bags were opened (a bag-open call or any
---- bag update the hooks saw), then "off in <addon>'s bags" while the hook has reached
---- none of its buttons; nil once it has, or with no such addon loaded.
-function SlotMarks.diagLine()
-	if SlotMarks.reachedAddonButton then
-		return nil
-	end
-	for _, name in ipairs(SlotMarks.BAG_ADDONS) do
-		if Compat.isAddOnLoaded(name) and not (name == "Baganator" and SlotMarks.baganator) then
-			if not SlotMarks.bagsOpened then
-				return L.diagBagAddonUnchecked
-			end
-			return string.format(L.diagBagAddon, name)
+--- Redraws the arrow on every bag addon button it was drawn on that still shows.
+function SlotMarks.refreshBagAddons()
+	for button, readLink in pairs(linkButtons) do
+		if visible(button) then
+			SlotMarks.markLinkButton(button, readLink)
 		end
 	end
-	return nil
+	BagAddons.refresh()
+end
+
+--- Attaches the arrow to every bag addon loaded now; names each in /fs diag verbose.
+function SlotMarks.attachBagAddons()
+	local names, errors = BagAddons.attachAll(SlotMarks.marker)
+	for _, name in ipairs(names) do
+		SlotMarks.bagHooks[#SlotMarks.bagHooks + 1] = name
+	end
+	for _, failure in ipairs(errors) do
+		Theme.note(string.format(L.diagSlotMarksFailed, failure[1] .. ": " .. tostring(failure[2])))
+	end
+end
+
+--- ADDON_LOADED: a bag addon loading after this addon gets the arrow too.
+function SlotMarks.onAddonLoaded(name)
+	local attached, err = BagAddons.onAddonLoaded(name, SlotMarks.marker)
+	if attached then
+		SlotMarks.bagHooks[#SlotMarks.bagHooks + 1] = name
+	elseif err ~= nil then
+		Theme.note(string.format(L.diagSlotMarksFailed, name .. ": " .. tostring(err)))
+	end
+end
+
+--- /fs diag's line for the bag addons that draw their own bags (fix round 1, M4; 2.0.44):
+--- each one loaded, named, with "the arrow shows" once the arrow is attached to it (its own
+--- API, or the client hook reached its buttons); else "not checked yet (open your bags)" until
+--- the bags were opened, then "off in <addon>'s bags". Nil with no such addon loaded.
+function SlotMarks.diagLine()
+	local lines = {}
+	for _, name in ipairs(SlotMarks.BAG_ADDONS) do
+		if Compat.isAddOnLoaded(name) then
+			if BagAddons.isAttached(name) or SlotMarks.reachedAddonButton then
+				lines[#lines + 1] = string.format(L.diagBagAddonOn, name)
+			elseif not SlotMarks.bagsOpened then
+				lines[#lines + 1] = L.diagBagAddonUnchecked
+			else
+				lines[#lines + 1] = string.format(L.diagBagAddon, name)
+			end
+		end
+	end
+	return #lines > 0 and table.concat(lines, "; ") or nil
 end
 
 ns.SlotMarks = SlotMarks
