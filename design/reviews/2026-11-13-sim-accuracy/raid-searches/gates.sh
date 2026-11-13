@@ -23,7 +23,7 @@ gate() {
 make simdb >/dev/null
 for g in ${*:-vitest request tools}; do
 	case $g in
-	vitest) gate web npx vitest run src/lib/sim ;;
+	vitest) gate web npm test -- src/lib/sim ;;
 	request) gate sim nice -n 15 env GOMAXPROCS=5 go test ./request/ -count=1 ;;
 	tools)
 		gate sim go vet ./cmd/heal-builds/ ./cmd/rotation-search/ ./cmd/talent-search/ ./enginever/
