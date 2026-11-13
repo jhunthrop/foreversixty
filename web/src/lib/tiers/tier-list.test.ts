@@ -157,15 +157,17 @@ describe('ties', () => {
     expect(tied([100, 98.9])).toEqual([null, null]);
   });
 
-  it('never marks a tank list', () => {
+  it('marks a tank pair within the margin and leaves one past it alone', () => {
     const rows = rankRole(
       [
         tankInput('a', 'a', 'A', { dtps: 300, effective_health: 1, tps: 1 }),
         tankInput('b', 'b', 'B', { dtps: 300.5, effective_health: 1, tps: 1 }),
+        tankInput('c', 'c', 'C', { dtps: 345, effective_health: 1, tps: 1 }),
       ],
       'tank',
     );
-    expect(rows.map((r) => r.tie)).toEqual([null, null]);
+    expect(rows.map((r) => r.tie)).toEqual(['below', 'above', null]);
+    expect(rows.map((r) => r.rank)).toEqual([1, 1, 3]);
   });
 });
 
