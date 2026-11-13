@@ -87,7 +87,7 @@ The search drops Vampiric Embrace (15286) for +4.0% Alliance and +3.7% Horde: on
 
 **Finding.** `sim/cmd/heal-builds` built its gear from the band's `item_id`s alone; the healer raid bands wear healing enchants (Priest Holy raid 60: 1509 on head and legs, 1891 chest, 1901 wrist, 8212 main hand). Every healer build comparison since the tool existed ran without them.
 
-**Fix.** `bisBand.gear()` wears `enchant_id`, as `spec-breakdown` and the two searches do. Red first: `TestBuildRequestWearsTheBandsPublishedEnchants` fails at e80f024f6 (`gear enchants map[head:0 main_hand:0]`) and passes at c0f2d1618.
+**Fix.** `bisBand.gear()` wears `enchant_id`, as `spec-breakdown` and the two searches do. Red first: `TestBuildRequestWearsTheBandsPublishedEnchants` fails at 61c92c6cf (`gear enchants map[head:0 main_hand:0]`) and passes at c719c0579.
 
 **Reach.** No published number moves: `heal-builds` only compares hand-picked builds. The healer guides' builds were chosen on unenchanted gear; their next healer lane should re-run its comparison (Open).
 
@@ -104,7 +104,7 @@ The search drops Vampiric Embrace (15286) for +4.0% Alliance and +3.7% Horde: on
 ## Sim changes in this landing
 
 - **Fork:** 07f5a9f99 (red), 70dd8eb24 (Hammer of the Righteous weapon rule), on master.
-- **Site:** e80f024f6 (red), c0f2d1618 and the slot type (heal-builds wears the published enchants); `engine: pin 70dd8eb24`; the Protection ladder golden; this report, `raid-searches/` (scripts, reports, logs) and the ledger row. No build, rotation, guide, card or BiS change, so no wow-player round and no MR row.
+- **Site:** 61c92c6cf (red), c719c0579 and the slot type (heal-builds wears the published enchants); `engine: pin 70dd8eb24`; the Protection ladder golden; this report, `raid-searches/` (scripts, reports, logs) and the ledger row. No build, rotation, guide, card or BiS change, so no wow-player round and no MR row.
 
 ## Sources
 
