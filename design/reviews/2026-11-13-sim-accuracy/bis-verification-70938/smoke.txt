@@ -1,0 +1,3 @@
+warrior-arms-dps-bare30-alliance-published -spec warrior-arms -preset bare -band 30 -faction alliance -iterations 3000 -seed 7
+priest-holy-heal-bare40-alliance-published -spec priest-holy -preset bare -band 40 -faction alliance -iterations 3000 -seed 7
+paladin-protection-tank-bare40-alliance-published -spec paladin-protection -preset bare -band 40 -faction alliance -iterations 3000 -seed 7
