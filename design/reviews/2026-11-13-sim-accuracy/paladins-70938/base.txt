@@ -1,0 +1,8 @@
+ret-raid60 -spec paladin-retribution -preset raid -band 60
+ret-bare60 -spec paladin-retribution -preset bare -band 60
+ret-bare50 -spec paladin-retribution -preset bare -band 50
+ret-bare30 -spec paladin-retribution -preset bare -band 30 -level 31
+prot-raid60 -spec paladin-protection -preset raid -band 60 -tank
+prot-bare60 -spec paladin-protection -preset bare -band 60 -tank
+prot-bare50 -spec paladin-protection -preset bare -band 50 -tank
+prot-bare30 -spec paladin-protection -preset bare -band 30 -level 33 -tank
