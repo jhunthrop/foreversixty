@@ -1,0 +1,6149 @@
+[
+ {
+  "report": "HTZLXWQJq6Dt3pbG",
+  "fight": 25,
+  "boss": "Lucifron",
+  "seconds": 69.112,
+  "players": 34,
+  "tanks": 3,
+  "member_dtps": 28.874589726260133,
+  "healers": [
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 4371,
+    "overheal": 5057,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 10355,
+    "overheal": 3700,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 6459,
+    "overheal": 5715,
+    "gains": {
+     "17531": [
+      "Restore Mana",
+      1649
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 10450,
+    "overheal": 8448,
+    "gains": {
+     "17531": [
+      "Restore Mana",
+      1557
+     ],
+     "15604": [
+      "Second Wind",
+      300
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 22072,
+    "overheal": 1568,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 23378,
+    "overheal": 4893,
+    "gains": {
+     "17531": [
+      "Restore Mana",
+      2223
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 12173,
+    "overheal": 8082,
+    "gains": {
+     "17531": [
+      "Restore Mana",
+      1767
+     ],
+     "27869": [
+      "Dark Rune",
+      1159
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 5120,
+    "overheal": 10104,
+    "gains": {
+     "17531": [
+      "Restore Mana",
+      1692
+     ],
+     "15701": [
+      "Night Dragon's Breath",
+      427
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Druid",
+    "spec": "Restoration",
+    "healing": 9536,
+    "overheal": 8708,
+    "gains": {
+     "16666": [
+      "Demonic Rune",
+      1140
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 881,
+    "overheal": 8009,
+    "gains": {
+     "17531": [
+      "Restore Mana",
+      1689
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   }
+  ],
+  "mt_dtps": 541.8595902303508,
+  "mt_spike5": 1.8578967762357217
+ },
+ {
+  "report": "tRr7C38QZdYTBvDm",
+  "fight": 1,
+  "boss": "Lucifron",
+  "seconds": 23.783,
+  "players": 39,
+  "tanks": 3,
+  "member_dtps": 60.100118198339615,
+  "healers": [
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 6514,
+    "overheal": 3435,
+    "gains": {
+     "18194": [
+      "Mana Regeneration",
+      40
+     ],
+     "20272": [
+      "Illumination",
+      700
+     ],
+     "25894": [
+      "Greater Blessing of Wisdom",
+      180
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 7082,
+    "overheal": 855,
+    "gains": {
+     "20272": [
+      "Illumination",
+      280
+     ],
+     "25894": [
+      "Greater Blessing of Wisdom",
+      180
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 4471,
+    "overheal": 430,
+    "gains": {
+     "25894": [
+      "Greater Blessing of Wisdom",
+      180
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 3653,
+    "overheal": 0,
+    "gains": {
+     "25894": [
+      "Greater Blessing of Wisdom",
+      144
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 6456,
+    "overheal": 697,
+    "gains": {
+     "20272": [
+      "Illumination",
+      140
+     ],
+     "25894": [
+      "Greater Blessing of Wisdom",
+      180
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 6383,
+    "overheal": 788,
+    "gains": {
+     "20272": [
+      "Illumination",
+      280
+     ],
+     "18194": [
+      "Mana Regeneration",
+      32
+     ],
+     "25894": [
+      "Greater Blessing of Wisdom",
+      144
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 8836,
+    "overheal": 3145,
+    "gains": {
+     "20272": [
+      "Illumination",
+      840
+     ],
+     "25894": [
+      "Greater Blessing of Wisdom",
+      108
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 3966,
+    "overheal": 533,
+    "gains": {
+     "25894": [
+      "Greater Blessing of Wisdom",
+      144
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   }
+  ],
+  "mt_dtps": 735.4833284278686,
+  "mt_spike5": 1.5127769153051922
+ },
+ {
+  "report": "LWpDjPVzghYkc7m8",
+  "fight": 13,
+  "boss": "Lucifron",
+  "seconds": 33.156,
+  "players": 39,
+  "tanks": 3,
+  "member_dtps": 17.130299861932144,
+  "healers": [
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 2488,
+    "overheal": 234,
+    "gains": {
+     "25894": [
+      "Greater Blessing of Wisdom",
+      180
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 4381,
+    "overheal": 3461,
+    "gains": {
+     "25894": [
+      "Greater Blessing of Wisdom",
+      216
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 5748,
+    "overheal": 4228,
+    "gains": {
+     "25894": [
+      "Greater Blessing of Wisdom",
+      180
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 10598,
+    "overheal": 3648,
+    "gains": {
+     "25894": [
+      "Greater Blessing of Wisdom",
+      180
+     ],
+     "18194": [
+      "Mana Regeneration",
+      32
+     ],
+     "20272": [
+      "Illumination",
+      560
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 5677,
+    "overheal": 5101,
+    "gains": {
+     "25894": [
+      "Greater Blessing of Wisdom",
+      144
+     ],
+     "20272": [
+      "Illumination",
+      560
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 3021,
+    "overheal": 2896,
+    "gains": {
+     "25894": [
+      "Greater Blessing of Wisdom",
+      216
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 6282,
+    "overheal": 3186,
+    "gains": {
+     "25894": [
+      "Greater Blessing of Wisdom",
+      180
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 8325,
+    "overheal": 4334,
+    "gains": {
+     "25894": [
+      "Greater Blessing of Wisdom",
+      216
+     ],
+     "20272": [
+      "Illumination",
+      560
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 5755,
+    "overheal": 1889,
+    "gains": {
+     "25894": [
+      "Greater Blessing of Wisdom",
+      180
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   }
+  ],
+  "mt_dtps": 677.705392689106,
+  "mt_spike5": 1.4068675057934363
+ },
+ {
+  "report": "CWaYr1p4JgbA9DBf",
+  "fight": 6,
+  "boss": "Magmadar",
+  "seconds": 57.775,
+  "players": 40,
+  "tanks": 2,
+  "member_dtps": 28.22063813796716,
+  "healers": [
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 8922,
+    "overheal": 10374,
+    "gains": {
+     "20272": [
+      "\u542f\u53d1",
+      1260
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      432
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 9539,
+    "overheal": 3725,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      396
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 4990,
+    "overheal": 7313,
+    "gains": {
+     "20272": [
+      "\u542f\u53d1",
+      280
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      432
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 7934,
+    "overheal": 7569,
+    "gains": {
+     "20272": [
+      "\u542f\u53d1",
+      500
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      432
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 13670,
+    "overheal": 5183,
+    "gains": {
+     "17531": [
+      "\u6062\u590d\u6cd5\u529b",
+      1963
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      432
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Druid",
+    "spec": "Restoration",
+    "healing": 4775,
+    "overheal": 8486,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 9027,
+    "overheal": 12328,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      432
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 9347,
+    "overheal": 1586,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      432
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 8075,
+    "overheal": 7663,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      432
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 7498,
+    "overheal": 7515,
+    "gains": {
+     "20272": [
+      "\u542f\u53d1",
+      700
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      432
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 20137,
+    "overheal": 6657,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      432
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   }
+  ],
+  "mt_dtps": 463.9723063608827,
+  "mt_spike5": 2.263024242519834
+ },
+ {
+  "report": "12YWpcVhnqxmRf6J",
+  "fight": 14,
+  "boss": "Magmadar",
+  "seconds": 54.515,
+  "players": 38,
+  "tanks": 1,
+  "member_dtps": 34.17903825131194,
+  "healers": [
+   {
+    "class": "Druid",
+    "spec": "Restoration",
+    "healing": 5615,
+    "overheal": 7147,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      360
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 9472,
+    "overheal": 9782,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      396
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 6426,
+    "overheal": 1815,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      396
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 5616,
+    "overheal": 14746,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      396
+     ],
+     "20272": [
+      "\u542f\u53d1",
+      760
+     ],
+     "15604": [
+      "\u590d\u82cf\u4e4b\u98ce",
+      300
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 7845,
+    "overheal": 14106,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      360
+     ],
+     "20272": [
+      "\u542f\u53d1",
+      1140
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 5559,
+    "overheal": 1354,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      396
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 7938,
+    "overheal": 12414,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      396
+     ],
+     "20272": [
+      "\u542f\u53d1",
+      1120
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 7261,
+    "overheal": 6877,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      396
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 5387,
+    "overheal": 12134,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      396
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 8883,
+    "overheal": 5873,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      360
+     ],
+     "20272": [
+      "\u542f\u53d1",
+      840
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 6738,
+    "overheal": 7563,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      360
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 12383,
+    "overheal": 12673,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      396
+     ],
+     "17531": [
+      "\u6062\u590d\u6cd5\u529b",
+      2021
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   }
+  ],
+  "mt_dtps": 368.5224250206365,
+  "mt_spike5": 2.755495913874732
+ },
+ {
+  "report": "YD1ZCWAbt4rNaGg6",
+  "fight": 11,
+  "boss": "Magmadar",
+  "seconds": 97.307,
+  "players": 40,
+  "tanks": 2,
+  "member_dtps": 37.23483949064085,
+  "healers": [
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 15680,
+    "overheal": 5535,
+    "gains": {
+     "17360": [
+      "\u6cd5\u529b\u4e4b\u6f6e",
+      1160
+     ],
+     "10494": [
+      "\u6cd5\u529b\u4e4b\u6cc9",
+      74
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 15776,
+    "overheal": 22425,
+    "gains": {
+     "17531": [
+      "\u6062\u590d\u6cd5\u529b",
+      1692
+     ],
+     "16666": [
+      "\u6076\u9b54\u7b26\u6587",
+      907
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 7470,
+    "overheal": 17111,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 22054,
+    "overheal": 1444,
+    "gains": {
+     "27869": [
+      "\u9ed1\u6697\u7b26\u6587",
+      1133
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 23984,
+    "overheal": 8727,
+    "gains": {
+     "23571": [
+      "\u6cd5\u529b\u6f8e\u6e43",
+      532
+     ],
+     "17531": [
+      "\u6062\u590d\u6cd5\u529b",
+      2223
+     ],
+     "27869": [
+      "\u9ed1\u6697\u7b26\u6587",
+      906
+     ],
+     "17360": [
+      "\u6cd5\u529b\u4e4b\u6f6e",
+      1160
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Druid",
+    "spec": "Restoration",
+    "healing": 13778,
+    "overheal": 13528,
+    "gains": {
+     "17531": [
+      "\u6062\u590d\u6cd5\u529b",
+      1806
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 18291,
+    "overheal": 3789,
+    "gains": {
+     "17360": [
+      "\u6cd5\u529b\u4e4b\u6f6e",
+      1160
+     ],
+     "10494": [
+      "\u6cd5\u529b\u4e4b\u6cc9",
+      288
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 22577,
+    "overheal": 6074,
+    "gains": {
+     "17531": [
+      "\u6062\u590d\u6cd5\u529b",
+      2116
+     ],
+     "27869": [
+      "\u9ed1\u6697\u7b26\u6587",
+      1016
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 21810,
+    "overheal": 11999,
+    "gains": {
+     "17531": [
+      "\u6062\u590d\u6cd5\u529b",
+      2227
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 20522,
+    "overheal": 8695,
+    "gains": {
+     "17531": [
+      "\u6062\u590d\u6cd5\u529b",
+      1842
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Druid",
+    "spec": "Restoration",
+    "healing": 17605,
+    "overheal": 11477,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   }
+  ],
+  "mt_dtps": 430.0204507383847,
+  "mt_spike5": 3.1896309375262013
+ },
+ {
+  "report": "N6pPqAtVDhXb2wfv",
+  "fight": 22,
+  "boss": "Gehennas",
+  "seconds": 28.56,
+  "players": 40,
+  "tanks": 3,
+  "member_dtps": 46.344348550230904,
+  "healers": [
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 8128,
+    "overheal": 4734,
+    "gains": {
+     "20272": [
+      "Illumination",
+      560
+     ],
+     "25894": [
+      "Gro\u00dfer Segen der Weisheit",
+      216
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 9461,
+    "overheal": 3175,
+    "gains": {
+     "18194": [
+      "Manaregeneration",
+      40
+     ],
+     "25894": [
+      "Gro\u00dfer Segen der Weisheit",
+      216
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 9543,
+    "overheal": 2304,
+    "gains": {
+     "18194": [
+      "Manaregeneration",
+      48
+     ],
+     "25894": [
+      "Gro\u00dfer Segen der Weisheit",
+      216
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 6947,
+    "overheal": 8549,
+    "gains": {
+     "25894": [
+      "Gro\u00dfer Segen der Weisheit",
+      216
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 5027,
+    "overheal": 2259,
+    "gains": {
+     "20272": [
+      "Illumination",
+      560
+     ],
+     "25894": [
+      "Gro\u00dfer Segen der Weisheit",
+      216
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 4285,
+    "overheal": 8368,
+    "gains": {
+     "20272": [
+      "Illumination",
+      1325
+     ],
+     "25894": [
+      "Gro\u00dfer Segen der Weisheit",
+      216
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 7909,
+    "overheal": 1030,
+    "gains": {
+     "18194": [
+      "Manaregeneration",
+      48
+     ],
+     "20272": [
+      "Illumination",
+      280
+     ],
+     "25894": [
+      "Gro\u00dfer Segen der Weisheit",
+      216
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Druid",
+    "spec": "Restoration",
+    "healing": 9596,
+    "overheal": 2352,
+    "gains": {
+     "18194": [
+      "Manaregeneration",
+      40
+     ],
+     "25894": [
+      "Gro\u00dfer Segen der Weisheit",
+      180
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 6100,
+    "overheal": 4586,
+    "gains": {
+     "20272": [
+      "Illumination",
+      700
+     ],
+     "25894": [
+      "Gro\u00dfer Segen der Weisheit",
+      180
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 7075,
+    "overheal": 4646,
+    "gains": {
+     "20272": [
+      "Illumination",
+      700
+     ],
+     "25894": [
+      "Gro\u00dfer Segen der Weisheit",
+      216
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   }
+  ],
+  "mt_dtps": 853.8865546218487,
+  "mt_spike5": 1.387196130117249
+ },
+ {
+  "report": "txJYQ28zVNP4RXwT",
+  "fight": 3,
+  "boss": "Gehennas",
+  "seconds": 42.54,
+  "players": 40,
+  "tanks": 3,
+  "member_dtps": 46.174030165567544,
+  "healers": [
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 6371,
+    "overheal": 8669,
+    "gains": {
+     "10494": [
+      "\u6cd5\u529b\u4e4b\u6cc9",
+      161
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 6571,
+    "overheal": 4044,
+    "gains": {
+     "10494": [
+      "\u6cd5\u529b\u4e4b\u6cc9",
+      238
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 3204,
+    "overheal": 10577,
+    "gains": {
+     "18194": [
+      "\u6cd5\u529b\u56de\u590d",
+      56
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 11037,
+    "overheal": 11405,
+    "gains": {
+     "10494": [
+      "\u6cd5\u529b\u4e4b\u6cc9",
+      276
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 5716,
+    "overheal": 5797,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 10844,
+    "overheal": 3984,
+    "gains": {
+     "10494": [
+      "\u6cd5\u529b\u4e4b\u6cc9",
+      251
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 6476,
+    "overheal": 4206,
+    "gains": {
+     "17531": [
+      "\u6062\u590d\u6cd5\u529b",
+      1763
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 12225,
+    "overheal": 6824,
+    "gains": {
+     "10494": [
+      "\u6cd5\u529b\u4e4b\u6cc9",
+      275
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 8119,
+    "overheal": 6403,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 8117,
+    "overheal": 360,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Druid",
+    "spec": "Restoration",
+    "healing": 3369,
+    "overheal": 7195,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 10286,
+    "overheal": 8435,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   }
+  ],
+  "mt_dtps": 462.69393511988716,
+  "mt_spike5": 1.9517501649058684
+ },
+ {
+  "report": "CWaYr1p4JgbA9DBf",
+  "fight": 10,
+  "boss": "Gehennas",
+  "seconds": 38.715,
+  "players": 40,
+  "tanks": 4,
+  "member_dtps": 56.97404106935296,
+  "healers": [
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 5442,
+    "overheal": 3543,
+    "gains": {
+     "20272": [
+      "\u542f\u53d1",
+      560
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      252
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 9401,
+    "overheal": 1216,
+    "gains": {
+     "20272": [
+      "\u542f\u53d1",
+      840
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      252
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 12287,
+    "overheal": 5996,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      252
+     ],
+     "27869": [
+      "\u9ed1\u6697\u7b26\u6587",
+      940
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 15204,
+    "overheal": 16953,
+    "gains": {
+     "17531": [
+      "\u6062\u590d\u6cd5\u529b",
+      1999
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      252
+     ],
+     "27869": [
+      "\u9ed1\u6697\u7b26\u6587",
+      1270
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 16841,
+    "overheal": 1724,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      252
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 6754,
+    "overheal": 7733,
+    "gains": {
+     "20272": [
+      "\u542f\u53d1",
+      980
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      252
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Druid",
+    "spec": "Restoration",
+    "healing": 3295,
+    "overheal": 1718,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 7946,
+    "overheal": 7456,
+    "gains": {
+     "20272": [
+      "\u542f\u53d1",
+      1400
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      252
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 10590,
+    "overheal": 7728,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      252
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 10969,
+    "overheal": 3421,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      252
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 11251,
+    "overheal": 4551,
+    "gains": {
+     "17531": [
+      "\u6062\u590d\u6cd5\u529b",
+      1686
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      252
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   }
+  ],
+  "mt_dtps": 358.82732790907914,
+  "mt_spike5": 3.1121300681917434
+ },
+ {
+  "report": "tBwgbCZhQY61J7mf",
+  "fight": 27,
+  "boss": "Garr",
+  "seconds": 60.303,
+  "players": 40,
+  "tanks": 6,
+  "member_dtps": 2.6318074117861663,
+  "healers": [
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 10242,
+    "overheal": 13830,
+    "gains": {
+     "17531": [
+      "Restore Mana",
+      1909
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 5938,
+    "overheal": 5553,
+    "gains": {
+     "17531": [
+      "Restore Mana",
+      1750
+     ],
+     "15604": [
+      "Second Wind",
+      300
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 13459,
+    "overheal": 4042,
+    "gains": {
+     "17531": [
+      "Restore Mana",
+      1507
+     ],
+     "15604": [
+      "Second Wind",
+      300
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 7696,
+    "overheal": 6934,
+    "gains": {
+     "18194": [
+      "Mana Regeneration",
+      96
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 10353,
+    "overheal": 7439,
+    "gains": {
+     "23571": [
+      "Mana Surge",
+      55
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 3102,
+    "overheal": 5789,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 8063,
+    "overheal": 7102,
+    "gains": {
+     "10494": [
+      "Mana Spring",
+      123
+     ],
+     "17360": [
+      "Mana Tide",
+      1160
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 8775,
+    "overheal": 6556,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Druid",
+    "spec": "Restoration",
+    "healing": 7125,
+    "overheal": 12138,
+    "gains": {
+     "17531": [
+      "Restore Mana",
+      1629
+     ],
+     "15604": [
+      "Second Wind",
+      180
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 21683,
+    "overheal": 9069,
+    "gains": {
+     "17531": [
+      "Restore Mana",
+      2249
+     ],
+     "16666": [
+      "Demonic Rune",
+      1440
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 11364,
+    "overheal": 9571,
+    "gains": {
+     "10494": [
+      "Mana Spring",
+      262
+     ],
+     "17360": [
+      "Mana Tide",
+      580
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   }
+  ],
+  "mt_dtps": 391.904217037295,
+  "mt_spike5": 3.000498836049218
+ },
+ {
+  "report": "yLkTvNw2Q8tZKrpH",
+  "fight": 18,
+  "boss": "Garr",
+  "seconds": 60.292,
+  "players": 40,
+  "tanks": 6,
+  "member_dtps": 0.0,
+  "healers": [
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 12694,
+    "overheal": 9091,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      396
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Druid",
+    "spec": "Restoration",
+    "healing": 5748,
+    "overheal": 5398,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      324
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 11074,
+    "overheal": 14204,
+    "gains": {
+     "15604": [
+      "\u590d\u82cf\u4e4b\u98ce",
+      300
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      432
+     ],
+     "20272": [
+      "\u542f\u53d1",
+      1120
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 5910,
+    "overheal": 11326,
+    "gains": {
+     "17531": [
+      "\u6062\u590d\u6cd5\u529b",
+      1898
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      396
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 11317,
+    "overheal": 3461,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      432
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 10208,
+    "overheal": 12477,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      360
+     ],
+     "20272": [
+      "\u542f\u53d1",
+      1445
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 12404,
+    "overheal": 11722,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      396
+     ],
+     "20272": [
+      "\u542f\u53d1",
+      1865
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 6326,
+    "overheal": 8075,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      396
+     ],
+     "20272": [
+      "\u542f\u53d1",
+      980
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 2470,
+    "overheal": 7103,
+    "gains": {
+     "17531": [
+      "\u6062\u590d\u6cd5\u529b",
+      1594
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      432
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 15111,
+    "overheal": 8903,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      156
+     ],
+     "20272": [
+      "\u542f\u53d1",
+      1840
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 12910,
+    "overheal": 10541,
+    "gains": {
+     "17531": [
+      "\u6062\u590d\u6cd5\u529b",
+      1840
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      360
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   }
+  ],
+  "mt_dtps": 487.22881974391294,
+  "mt_spike5": 1.9190757477718174
+ },
+ {
+  "report": "BazvkCxhqdjZGK1T",
+  "fight": 12,
+  "boss": "Garr",
+  "seconds": 56.299,
+  "players": 40,
+  "tanks": 4,
+  "member_dtps": 17.03207674894561,
+  "healers": [
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 12493,
+    "overheal": 7107,
+    "gains": {
+     "27869": [
+      "\u9ed1\u6697\u7b26\u6587",
+      1081
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      36
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 8476,
+    "overheal": 6603,
+    "gains": {
+     "20272": [
+      "\u542f\u53d1",
+      420
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      360
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 16191,
+    "overheal": 2760,
+    "gains": {
+     "20272": [
+      "\u542f\u53d1",
+      280
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      72
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 8712,
+    "overheal": 8339,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      396
+     ],
+     "11903": [
+      "\u6062\u590d\u6cd5\u529b",
+      739
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 10667,
+    "overheal": 8558,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      360
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 15106,
+    "overheal": 8063,
+    "gains": {
+     "27869": [
+      "\u9ed1\u6697\u7b26\u6587",
+      1496
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      396
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 10142,
+    "overheal": 7966,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      360
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 10469,
+    "overheal": 7125,
+    "gains": {
+     "27869": [
+      "\u9ed1\u6697\u7b26\u6587",
+      920
+     ],
+     "20272": [
+      "\u542f\u53d1",
+      420
+     ],
+     "17531": [
+      "\u6062\u590d\u6cd5\u529b",
+      1832
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      396
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 10930,
+    "overheal": 5774,
+    "gains": {
+     "20272": [
+      "\u542f\u53d1",
+      980
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      396
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 13503,
+    "overheal": 5289,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      360
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Druid",
+    "spec": "Restoration",
+    "healing": 18033,
+    "overheal": 7794,
+    "gains": {
+     "16666": [
+      "\u6076\u9b54\u7b26\u6587",
+      1402
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      396
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   }
+  ],
+  "mt_dtps": 646.2459368727687,
+  "mt_spike5": 2.1798788032250083
+ },
+ {
+  "report": "BhpPNaC8x4L23GFk",
+  "fight": 49,
+  "boss": "Shazzrah",
+  "seconds": 41.323,
+  "players": 39,
+  "tanks": 2,
+  "member_dtps": 71.81263493728706,
+  "healers": [
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 14373,
+    "overheal": 9375,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      252
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 13232,
+    "overheal": 2863,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      252
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 5291,
+    "overheal": 4898,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      252
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 8326,
+    "overheal": 4343,
+    "gains": {
+     "20272": [
+      "\u542f\u53d1",
+      980
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      216
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 2489,
+    "overheal": 4028,
+    "gains": {
+     "20272": [
+      "\u542f\u53d1",
+      395
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      180
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 10899,
+    "overheal": 7975,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      288
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 15086,
+    "overheal": 3758,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      216
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 13713,
+    "overheal": 9021,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      288
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 12368,
+    "overheal": 2498,
+    "gains": {
+     "20272": [
+      "\u542f\u53d1",
+      700
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      252
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Druid",
+    "spec": "Restoration",
+    "healing": 5177,
+    "overheal": 2846,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   }
+  ],
+  "mt_dtps": 368.438883914527,
+  "mt_spike5": 2.1504003462454016
+ },
+ {
+  "report": "PzkBpm3w8nRNvWdh",
+  "fight": 21,
+  "boss": "Shazzrah",
+  "seconds": 26.147,
+  "players": 38,
+  "tanks": 1,
+  "member_dtps": 70.56258844226872,
+  "healers": [
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 2104,
+    "overheal": 3433,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 2981,
+    "overheal": 1753,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Druid",
+    "spec": "Restoration",
+    "healing": 283,
+    "overheal": 0,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 5419,
+    "overheal": 4662,
+    "gains": {
+     "18194": [
+      "\u6cd5\u529b\u56de\u590d",
+      32
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 3651,
+    "overheal": 2833,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 5358,
+    "overheal": 5318,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 5569,
+    "overheal": 4458,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 5232,
+    "overheal": 8624,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 7862,
+    "overheal": 1894,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 10871,
+    "overheal": 5057,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   }
+  ],
+  "mt_dtps": 296.63058859524995,
+  "mt_spike5": 2.0349766627771295
+ },
+ {
+  "report": "4qYN8Zd7xnPWrF2R",
+  "fight": 36,
+  "boss": "Shazzrah",
+  "seconds": 30.836,
+  "players": 40,
+  "tanks": 2,
+  "member_dtps": 80.65760457701525,
+  "healers": [
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 4614,
+    "overheal": 1706,
+    "gains": {
+     "10494": [
+      "\u6cd5\u529b\u4e4b\u6cc9",
+      184
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 9336,
+    "overheal": 2526,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 5207,
+    "overheal": 416,
+    "gains": {
+     "10494": [
+      "\u6cd5\u529b\u4e4b\u6cc9",
+      189
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 5007,
+    "overheal": 368,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Druid",
+    "spec": "Restoration",
+    "healing": 7953,
+    "overheal": 1382,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 6203,
+    "overheal": 1516,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 3145,
+    "overheal": 1510,
+    "gains": {
+     "10494": [
+      "\u6cd5\u529b\u4e4b\u6cc9",
+      202
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 10629,
+    "overheal": 2284,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 11394,
+    "overheal": 2501,
+    "gains": {
+     "18194": [
+      "\u6cd5\u529b\u56de\u590d",
+      48
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 1707,
+    "overheal": 0,
+    "gains": {
+     "18194": [
+      "\u6cd5\u529b\u56de\u590d",
+      40
+     ],
+     "10494": [
+      "\u6cd5\u529b\u4e4b\u6cc9",
+      137
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 4676,
+    "overheal": 206,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   }
+  ],
+  "mt_dtps": 503.21053314307954,
+  "mt_spike5": 1.7002602739726027
+ },
+ {
+  "report": "Jt3rCyKXTRnZpbWv",
+  "fight": 22,
+  "boss": "Baron Geddon",
+  "seconds": 61.0,
+  "players": 40,
+  "tanks": 2,
+  "member_dtps": 23.55090595340811,
+  "healers": [
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 4585,
+    "overheal": 4232,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      432
+     ],
+     "18194": [
+      "\u6cd5\u529b\u56de\u590d",
+      96
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 4396,
+    "overheal": 20132,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      432
+     ],
+     "20272": [
+      "\u542f\u53d1",
+      1540
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 2274,
+    "overheal": 8918,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      396
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 17706,
+    "overheal": 1676,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      468
+     ],
+     "17531": [
+      "\u6062\u590d\u6cd5\u529b",
+      1531
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Druid",
+    "spec": "Restoration",
+    "healing": 1608,
+    "overheal": 2634,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      324
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 5074,
+    "overheal": 8809,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      432
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 4537,
+    "overheal": 12560,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      396
+     ],
+     "20272": [
+      "\u542f\u53d1",
+      980
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 8040,
+    "overheal": 13486,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      432
+     ],
+     "20272": [
+      "\u542f\u53d1",
+      1260
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Druid",
+    "spec": "Restoration",
+    "healing": 2702,
+    "overheal": 18570,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      432
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 8631,
+    "overheal": 19938,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      396
+     ],
+     "20272": [
+      "\u542f\u53d1",
+      1820
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 2442,
+    "overheal": 9680,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      396
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 4554,
+    "overheal": 18935,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      396
+     ],
+     "20272": [
+      "\u542f\u53d1",
+      1120
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   }
+  ],
+  "mt_dtps": 255.9016393442623,
+  "mt_spike5": 3.8232232520943406
+ },
+ {
+  "report": "qN2WCyAaxp6VYgMF",
+  "fight": 51,
+  "boss": "Baron Geddon",
+  "seconds": 61.775,
+  "players": 40,
+  "tanks": 2,
+  "member_dtps": 23.547679396792265,
+  "healers": [
+   {
+    "class": "Druid",
+    "spec": "Restoration",
+    "healing": 10042,
+    "overheal": 17143,
+    "gains": {
+     "18194": [
+      "Mana Regeneration",
+      88
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Druid",
+    "spec": "Restoration",
+    "healing": 7161,
+    "overheal": 6352,
+    "gains": {
+     "18194": [
+      "Mana Regeneration",
+      88
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 7979,
+    "overheal": 6647,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 1616,
+    "overheal": 9225,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 11592,
+    "overheal": 9479,
+    "gains": {
+     "15604": [
+      "Second Wind",
+      300
+     ],
+     "18194": [
+      "Mana Regeneration",
+      88
+     ],
+     "17531": [
+      "Restore Mana",
+      1812
+     ],
+     "16666": [
+      "Demonic Rune",
+      1329
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 0,
+    "overheal": 2101,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 9488,
+    "overheal": 4112,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 3981,
+    "overheal": 3745,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 3162,
+    "overheal": 3176,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 14343,
+    "overheal": 10492,
+    "gains": {
+     "17360": [
+      "Mana Tide",
+      1160
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 6284,
+    "overheal": 3637,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   }
+  ],
+  "mt_dtps": 401.8130311614731,
+  "mt_spike5": 3.316880608350758
+ },
+ {
+  "report": "wc7mKTpD42hy6JZq",
+  "fight": 33,
+  "boss": "Baron Geddon",
+  "seconds": 76.378,
+  "players": 40,
+  "tanks": 2,
+  "member_dtps": 27.897948017547073,
+  "healers": [
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 3590,
+    "overheal": 9819,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 7667,
+    "overheal": 16109,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Druid",
+    "spec": "Restoration",
+    "healing": 10560,
+    "overheal": 11610,
+    "gains": {
+     "16191": [
+      "\u6cd5\u529b\u4e4b\u6f6e",
+      680
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 7930,
+    "overheal": 4923,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 7202,
+    "overheal": 11406,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 9558,
+    "overheal": 9283,
+    "gains": {
+     "17531": [
+      "\u6062\u590d\u6cd5\u529b",
+      2222
+     ],
+     "16191": [
+      "\u6cd5\u529b\u4e4b\u6f6e",
+      510
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 7221,
+    "overheal": 9604,
+    "gains": {
+     "10494": [
+      "\u6cd5\u529b\u4e4b\u6cc9",
+      263
+     ],
+     "17531": [
+      "\u6062\u590d\u6cd5\u529b",
+      2076
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 10789,
+    "overheal": 8210,
+    "gains": {
+     "17531": [
+      "\u6062\u590d\u6cd5\u529b",
+      1909
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 15283,
+    "overheal": 9745,
+    "gains": {
+     "17531": [
+      "\u6062\u590d\u6cd5\u529b",
+      1454
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 4596,
+    "overheal": 9262,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 14534,
+    "overheal": 10957,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 2405,
+    "overheal": 4547,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 5077,
+    "overheal": 5454,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   }
+  ],
+  "mt_dtps": 379.61193013695043,
+  "mt_spike5": 2.951297076057831
+ },
+ {
+  "report": "adNHLAJF4nQhmkP9",
+  "fight": 51,
+  "boss": "Sulfuron Harbinger",
+  "seconds": 27.325,
+  "players": 40,
+  "tanks": 4,
+  "member_dtps": 50.16875063535631,
+  "healers": [
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 8288,
+    "overheal": 5008,
+    "gains": {
+     "20272": [
+      "Illumination",
+      420
+     ],
+     "25894": [
+      "Greater Blessing of Wisdom",
+      180
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 7986,
+    "overheal": 11060,
+    "gains": {
+     "18194": [
+      "Mana Regeneration",
+      48
+     ],
+     "25894": [
+      "Greater Blessing of Wisdom",
+      216
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 11614,
+    "overheal": 8401,
+    "gains": {
+     "18194": [
+      "Mana Regeneration",
+      48
+     ],
+     "25894": [
+      "Greater Blessing of Wisdom",
+      216
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 4754,
+    "overheal": 6675,
+    "gains": {
+     "25894": [
+      "Greater Blessing of Wisdom",
+      216
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 5790,
+    "overheal": 6402,
+    "gains": {
+     "20272": [
+      "Illumination",
+      560
+     ],
+     "25894": [
+      "Greater Blessing of Wisdom",
+      216
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 16609,
+    "overheal": 12524,
+    "gains": {
+     "18194": [
+      "Mana Regeneration",
+      48
+     ],
+     "25894": [
+      "Greater Blessing of Wisdom",
+      216
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 4522,
+    "overheal": 402,
+    "gains": {
+     "25894": [
+      "Greater Blessing of Wisdom",
+      216
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 9638,
+    "overheal": 4240,
+    "gains": {
+     "20272": [
+      "Illumination",
+      840
+     ],
+     "25894": [
+      "Greater Blessing of Wisdom",
+      216
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   }
+  ],
+  "mt_dtps": 667.5571820677036,
+  "mt_spike5": 1.9471268006965332
+ },
+ {
+  "report": "ptGj4B6cfgTNaYLR",
+  "fight": 46,
+  "boss": "Sulfuron Harbinger",
+  "seconds": 63.08,
+  "players": 40,
+  "tanks": 4,
+  "member_dtps": 22.092756992883817,
+  "healers": [
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 5582,
+    "overheal": 11633,
+    "gains": {
+     "20272": [
+      "\u542f\u53d1",
+      1120
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      432
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 4581,
+    "overheal": 9175,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      396
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 17793,
+    "overheal": 7820,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      432
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 13038,
+    "overheal": 4743,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      396
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 3795,
+    "overheal": 14169,
+    "gains": {
+     "20272": [
+      "\u542f\u53d1",
+      1165
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      432
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 11797,
+    "overheal": 5219,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      396
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 3990,
+    "overheal": 14168,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      396
+     ],
+     "18194": [
+      "\u6cd5\u529b\u56de\u590d",
+      8
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 16280,
+    "overheal": 11619,
+    "gains": {
+     "20272": [
+      "\u542f\u53d1",
+      1420
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      432
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Druid",
+    "spec": "Restoration",
+    "healing": 7907,
+    "overheal": 6169,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      432
+     ],
+     "18194": [
+      "\u6cd5\u529b\u56de\u590d",
+      96
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 9572,
+    "overheal": 14286,
+    "gains": {
+     "20272": [
+      "\u542f\u53d1",
+      1540
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      432
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   }
+  ],
+  "mt_dtps": 446.16360177552315,
+  "mt_spike5": 2.7739294013500055
+ },
+ {
+  "report": "RWBZrF3kPVTAxQKG",
+  "fight": 52,
+  "boss": "Sulfuron Harbinger",
+  "seconds": 67.474,
+  "players": 40,
+  "tanks": 4,
+  "member_dtps": 20.38151320837985,
+  "healers": [
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 13085,
+    "overheal": 15090,
+    "gains": {
+     "20272": [
+      "\u542f\u53d1",
+      1400
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      504
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 4731,
+    "overheal": 21773,
+    "gains": {
+     "20272": [
+      "\u542f\u53d1",
+      1840
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      468
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 15059,
+    "overheal": 16322,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      468
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 2889,
+    "overheal": 4100,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      468
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 7256,
+    "overheal": 17562,
+    "gains": {
+     "20272": [
+      "\u542f\u53d1",
+      1560
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      432
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 10602,
+    "overheal": 16780,
+    "gains": {
+     "17531": [
+      "\u6062\u590d\u6cd5\u529b",
+      1720
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      432
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 8304,
+    "overheal": 19503,
+    "gains": {
+     "20272": [
+      "\u542f\u53d1",
+      1400
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      432
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 6429,
+    "overheal": 8305,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      468
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 14349,
+    "overheal": 19504,
+    "gains": {
+     "17531": [
+      "\u6062\u590d\u6cd5\u529b",
+      2241
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      468
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 15385,
+    "overheal": 13003,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      468
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 4457,
+    "overheal": 8208,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      432
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   }
+  ],
+  "mt_dtps": 396.73059252452794,
+  "mt_spike5": 3.0342792759931587
+ },
+ {
+  "report": "MtBfwgKpx9rWXHZh",
+  "fight": 71,
+  "boss": "Golemagg the Incinerator",
+  "seconds": 78.772,
+  "players": 39,
+  "tanks": 4,
+  "member_dtps": 17.989350820813776,
+  "healers": [
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 13759,
+    "overheal": 8917,
+    "gains": {
+     "20272": [
+      "\u542f\u53d1",
+      560
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      540
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 13712,
+    "overheal": 13582,
+    "gains": {
+     "15604": [
+      "\u590d\u82cf\u4e4b\u98ce",
+      300
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      540
+     ],
+     "11903": [
+      "\u6062\u590d\u6cd5\u529b",
+      873
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 13052,
+    "overheal": 12012,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      540
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 16196,
+    "overheal": 26052,
+    "gains": {
+     "20272": [
+      "\u542f\u53d1",
+      2680
+     ],
+     "15604": [
+      "\u590d\u82cf\u4e4b\u98ce",
+      90
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      504
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 14887,
+    "overheal": 18700,
+    "gains": {
+     "20272": [
+      "\u542f\u53d1",
+      2380
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      504
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 13209,
+    "overheal": 7685,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      540
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 16785,
+    "overheal": 22213,
+    "gains": {
+     "20272": [
+      "\u542f\u53d1",
+      1120
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      504
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 22292,
+    "overheal": 7893,
+    "gains": {
+     "17531": [
+      "\u6062\u590d\u6cd5\u529b",
+      2195
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      576
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 10509,
+    "overheal": 9326,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      540
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 13517,
+    "overheal": 20179,
+    "gains": {
+     "20272": [
+      "\u542f\u53d1",
+      3020
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      504
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   }
+  ],
+  "mt_dtps": 446.2626313918651,
+  "mt_spike5": 2.581430490261921
+ },
+ {
+  "report": "3knV4H9Zfb6KThqB",
+  "fight": 51,
+  "boss": "Golemagg the Incinerator",
+  "seconds": 48.952,
+  "players": 40,
+  "tanks": 3,
+  "member_dtps": 8.268441672592678,
+  "healers": [
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 5529,
+    "overheal": 17820,
+    "gains": {
+     "20272": [
+      "Illumination",
+      980
+     ],
+     "25894": [
+      "Greater Blessing of Wisdom",
+      324
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Druid",
+    "spec": "Restoration",
+    "healing": 9133,
+    "overheal": 12708,
+    "gains": {
+     "18194": [
+      "Mana Regeneration",
+      80
+     ],
+     "25894": [
+      "Greater Blessing of Wisdom",
+      360
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 9054,
+    "overheal": 10533,
+    "gains": {
+     "25894": [
+      "Greater Blessing of Wisdom",
+      360
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 13877,
+    "overheal": 11082,
+    "gains": {
+     "25894": [
+      "Greater Blessing of Wisdom",
+      360
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 10024,
+    "overheal": 13299,
+    "gains": {
+     "20272": [
+      "Illumination",
+      1400
+     ],
+     "25894": [
+      "Greater Blessing of Wisdom",
+      305
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 14967,
+    "overheal": 12640,
+    "gains": {
+     "20272": [
+      "Illumination",
+      1820
+     ],
+     "25894": [
+      "Greater Blessing of Wisdom",
+      324
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 10179,
+    "overheal": 6954,
+    "gains": {
+     "20272": [
+      "Illumination",
+      560
+     ],
+     "25894": [
+      "Greater Blessing of Wisdom",
+      288
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 11232,
+    "overheal": 18132,
+    "gains": {
+     "18194": [
+      "Mana Regeneration",
+      56
+     ],
+     "25894": [
+      "Greater Blessing of Wisdom",
+      216
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 7387,
+    "overheal": 14151,
+    "gains": {
+     "20272": [
+      "Illumination",
+      840
+     ],
+     "25894": [
+      "Greater Blessing of Wisdom",
+      324
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 10251,
+    "overheal": 9439,
+    "gains": {
+     "25894": [
+      "Greater Blessing of Wisdom",
+      360
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   }
+  ],
+  "mt_dtps": 902.8231737211963,
+  "mt_spike5": 1.664395810269948
+ },
+ {
+  "report": "7nhWRDvtx3YmMPky",
+  "fight": 66,
+  "boss": "Golemagg the Incinerator",
+  "seconds": 78.113,
+  "players": 38,
+  "tanks": 4,
+  "member_dtps": 18.844494514357404,
+  "healers": [
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 15786,
+    "overheal": 5122,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 26144,
+    "overheal": 8118,
+    "gains": {
+     "27869": [
+      "Dark Rune",
+      1441
+     ],
+     "15604": [
+      "Second Wind",
+      300
+     ],
+     "10494": [
+      "Mana Spring",
+      302
+     ],
+     "17531": [
+      "Restore Mana",
+      1451
+     ],
+     "17360": [
+      "Mana Tide",
+      1160
+     ],
+     "18194": [
+      "Mana Regeneration",
+      120
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 14244,
+    "overheal": 17010,
+    "gains": {
+     "15604": [
+      "Second Wind",
+      300
+     ],
+     "10494": [
+      "Mana Spring",
+      49
+     ],
+     "17360": [
+      "Mana Tide",
+      1160
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 13971,
+    "overheal": 8745,
+    "gains": {
+     "17360": [
+      "Mana Tide",
+      1160
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 16244,
+    "overheal": 15510,
+    "gains": {
+     "17530": [
+      "Restore Mana",
+      1387
+     ],
+     "16666": [
+      "Demonic Rune",
+      1095
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 12611,
+    "overheal": 11818,
+    "gains": {
+     "10494": [
+      "Mana Spring",
+      302
+     ],
+     "17360": [
+      "Mana Tide",
+      1160
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 19204,
+    "overheal": 11460,
+    "gains": {
+     "27869": [
+      "Dark Rune",
+      1134
+     ],
+     "17355": [
+      "Mana Tide",
+      920
+     ],
+     "17531": [
+      "Restore Mana",
+      1688
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 22067,
+    "overheal": 11871,
+    "gains": {
+     "15604": [
+      "Second Wind",
+      300
+     ],
+     "10494": [
+      "Mana Spring",
+      250
+     ],
+     "17360": [
+      "Mana Tide",
+      1160
+     ],
+     "17531": [
+      "Restore Mana",
+      2024
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 17216,
+    "overheal": 16956,
+    "gains": {
+     "16666": [
+      "Demonic Rune",
+      970
+     ],
+     "10494": [
+      "Mana Spring",
+      296
+     ],
+     "17360": [
+      "Mana Tide",
+      1160
+     ],
+     "17531": [
+      "Restore Mana",
+      1871
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 12972,
+    "overheal": 15740,
+    "gains": {
+     "27869": [
+      "Dark Rune",
+      1493
+     ],
+     "10494": [
+      "Mana Spring",
+      251
+     ],
+     "17360": [
+      "Mana Tide",
+      1160
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   }
+  ],
+  "mt_dtps": 748.3389448619308,
+  "mt_spike5": 2.325619680039926
+ },
+ {
+  "report": "6NMrJqkgWCz9vydc",
+  "fight": 50,
+  "boss": "Majordomo Executus",
+  "seconds": 108.181,
+  "players": 40,
+  "tanks": 5,
+  "member_dtps": 35.94689851795998,
+  "healers": [
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 16117,
+    "overheal": 7701,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 23794,
+    "overheal": 8879,
+    "gains": {
+     "17531": [
+      "\u6062\u590d\u6cd5\u529b",
+      2028
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 15023,
+    "overheal": 12819,
+    "gains": {
+     "17360": [
+      "\u6cd5\u529b\u4e4b\u6f6e",
+      1160
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 18562,
+    "overheal": 17472,
+    "gains": {
+     "17531": [
+      "\u6062\u590d\u6cd5\u529b",
+      1889
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 49262,
+    "overheal": 22522,
+    "gains": {
+     "27869": [
+      "\u9ed1\u6697\u7b26\u6587",
+      969
+     ],
+     "17531": [
+      "\u6062\u590d\u6cd5\u529b",
+      1840
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 17942,
+    "overheal": 11409,
+    "gains": {
+     "17360": [
+      "\u6cd5\u529b\u4e4b\u6f6e",
+      1160
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 21696,
+    "overheal": 17350,
+    "gains": {
+     "17360": [
+      "\u6cd5\u529b\u4e4b\u6f6e",
+      1160
+     ],
+     "17531": [
+      "\u6062\u590d\u6cd5\u529b",
+      1991
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 14333,
+    "overheal": 9634,
+    "gains": {
+     "17360": [
+      "\u6cd5\u529b\u4e4b\u6f6e",
+      1160
+     ],
+     "17531": [
+      "\u6062\u590d\u6cd5\u529b",
+      1475
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Druid",
+    "spec": "Restoration",
+    "healing": 12458,
+    "overheal": 11993,
+    "gains": {
+     "15604": [
+      "\u590d\u82cf\u4e4b\u98ce",
+      300
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 24512,
+    "overheal": 5873,
+    "gains": {
+     "17531": [
+      "\u6062\u590d\u6cd5\u529b",
+      1666
+     ],
+     "27869": [
+      "\u9ed1\u6697\u7b26\u6587",
+      1373
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 11584,
+    "overheal": 13494,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   }
+  ],
+  "mt_dtps": 340.8916538024237,
+  "mt_spike5": 2.3890418148621713
+ },
+ {
+  "report": "bGyXp7Rr8VxTCdF2",
+  "fight": 31,
+  "boss": "Majordomo Executus",
+  "seconds": 73.105,
+  "players": 40,
+  "tanks": 5,
+  "member_dtps": 65.01959021759309,
+  "healers": [
+   {
+    "class": "Druid",
+    "spec": "Restoration",
+    "healing": 26890,
+    "overheal": 7152,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      540
+     ],
+     "17531": [
+      "\u6062\u590d\u6cd5\u529b",
+      2238
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 17385,
+    "overheal": 15495,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      504
+     ],
+     "20272": [
+      "\u542f\u53d1",
+      2240
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 14276,
+    "overheal": 8147,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      504
+     ],
+     "17531": [
+      "\u6062\u590d\u6cd5\u529b",
+      1482
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 25536,
+    "overheal": 13097,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      504
+     ],
+     "17531": [
+      "\u6062\u590d\u6cd5\u529b",
+      1587
+     ],
+     "18194": [
+      "\u6cd5\u529b\u56de\u590d",
+      120
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 28375,
+    "overheal": 18894,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      504
+     ],
+     "27869": [
+      "\u9ed1\u6697\u7b26\u6587",
+      1293
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 24889,
+    "overheal": 15611,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      468
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 23612,
+    "overheal": 9689,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      504
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 26185,
+    "overheal": 4716,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      452
+     ],
+     "20272": [
+      "\u542f\u53d1",
+      2380
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 13655,
+    "overheal": 7711,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      396
+     ],
+     "20272": [
+      "\u542f\u53d1",
+      1720
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 16396,
+    "overheal": 8915,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      504
+     ],
+     "20272": [
+      "\u542f\u53d1",
+      1120
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 20053,
+    "overheal": 5305,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      504
+     ],
+     "17531": [
+      "\u6062\u590d\u6cd5\u529b",
+      1968
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   }
+  ],
+  "mt_dtps": 343.3964845085835,
+  "mt_spike5": 2.152087316762269
+ },
+ {
+  "report": "aVLKrAy7kNbCWHMf",
+  "fight": 86,
+  "boss": "Majordomo Executus",
+  "seconds": 104.766,
+  "players": 35,
+  "tanks": 5,
+  "member_dtps": 58.95742257348122,
+  "healers": [
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 30202,
+    "overheal": 9856,
+    "gains": {
+     "17360": [
+      "Manaflut",
+      1160
+     ],
+     "17531": [
+      "Mana wiederherstellen",
+      1453
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Druid",
+    "spec": "Restoration",
+    "healing": 26839,
+    "overheal": 12938,
+    "gains": {
+     "16666": [
+      "D\u00e4monische Rune",
+      1248
+     ],
+     "17531": [
+      "Mana wiederherstellen",
+      1853
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 39233,
+    "overheal": 19979,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Druid",
+    "spec": "Restoration",
+    "healing": 24096,
+    "overheal": 13366,
+    "gains": {
+     "18194": [
+      "Manaregeneration",
+      168
+     ],
+     "15604": [
+      "Zweiter Wind",
+      300
+     ],
+     "27869": [
+      "Dunkelrune",
+      1264
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 40000,
+    "overheal": 19942,
+    "gains": {
+     "27869": [
+      "Dunkelrune",
+      1129
+     ],
+     "17531": [
+      "Mana wiederherstellen",
+      1553
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 36866,
+    "overheal": 13099,
+    "gains": {
+     "17360": [
+      "Manaflut",
+      1160
+     ],
+     "18194": [
+      "Manaregeneration",
+      160
+     ],
+     "17531": [
+      "Mana wiederherstellen",
+      2098
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 41129,
+    "overheal": 12860,
+    "gains": {
+     "18194": [
+      "Manaregeneration",
+      168
+     ],
+     "17531": [
+      "Mana wiederherstellen",
+      2044
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 18442,
+    "overheal": 17059,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 25042,
+    "overheal": 17078,
+    "gains": {
+     "18194": [
+      "Manaregeneration",
+      160
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   }
+  ],
+  "mt_dtps": 437.5369871905007,
+  "mt_spike5": 2.618779650392489
+ },
+ {
+  "report": "RZm4z9bMK36v1fLA",
+  "fight": 28,
+  "boss": "Ragnaros",
+  "seconds": 60.181,
+  "players": 40,
+  "tanks": 2,
+  "member_dtps": 42.26110881297559,
+  "healers": [
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 11510,
+    "overheal": 8715,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      360
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 18717,
+    "overheal": 14227,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      432
+     ],
+     "20272": [
+      "\u542f\u53d1",
+      1820
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Druid",
+    "spec": "Restoration",
+    "healing": 11887,
+    "overheal": 14045,
+    "gains": {
+     "18194": [
+      "\u6cd5\u529b\u56de\u590d",
+      96
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      432
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 9544,
+    "overheal": 14710,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      432
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 15548,
+    "overheal": 21227,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      432
+     ],
+     "20272": [
+      "\u542f\u53d1",
+      1260
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 8271,
+    "overheal": 4337,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      432
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 11643,
+    "overheal": 22878,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      432
+     ],
+     "20272": [
+      "\u542f\u53d1",
+      2240
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 5705,
+    "overheal": 12714,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      432
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 19252,
+    "overheal": 14594,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      432
+     ],
+     "20272": [
+      "\u542f\u53d1",
+      1960
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 7872,
+    "overheal": 6470,
+    "gains": {
+     "17531": [
+      "\u6062\u590d\u6cd5\u529b",
+      2120
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      360
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 13602,
+    "overheal": 9257,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      432
+     ],
+     "20272": [
+      "\u542f\u53d1",
+      560
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   }
+  ],
+  "mt_dtps": 1220.4516375600274,
+  "mt_spike5": 1.6571854577197644
+ },
+ {
+  "report": "XQT24p1NcrGVYvJh",
+  "fight": 64,
+  "boss": "Ragnaros",
+  "seconds": 69.443,
+  "players": 39,
+  "tanks": 1,
+  "member_dtps": 58.15030426317078,
+  "healers": [
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 14540,
+    "overheal": 5378,
+    "gains": {
+     "25894": [
+      "Greater Blessing of Wisdom",
+      397
+     ],
+     "20272": [
+      "Illumination",
+      930
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 19537,
+    "overheal": 7669,
+    "gains": {
+     "25894": [
+      "Greater Blessing of Wisdom",
+      468
+     ],
+     "20272": [
+      "Illumination",
+      1120
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 20181,
+    "overheal": 7841,
+    "gains": {
+     "17531": [
+      "Restore Mana",
+      1571
+     ],
+     "27869": [
+      "Dark Rune",
+      1433
+     ],
+     "25894": [
+      "Greater Blessing of Wisdom",
+      504
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Druid",
+    "spec": "Restoration",
+    "healing": 21039,
+    "overheal": 13176,
+    "gains": {
+     "16666": [
+      "Demonic Rune",
+      1106
+     ],
+     "19854": [
+      "Blessing of Wisdom",
+      504
+     ],
+     "18194": [
+      "Mana Regeneration",
+      112
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 19075,
+    "overheal": 11550,
+    "gains": {
+     "25894": [
+      "Greater Blessing of Wisdom",
+      504
+     ],
+     "20272": [
+      "Illumination",
+      1680
+     ],
+     "18194": [
+      "Mana Regeneration",
+      104
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 17429,
+    "overheal": 13274,
+    "gains": {
+     "25894": [
+      "Greater Blessing of Wisdom",
+      432
+     ],
+     "20272": [
+      "Illumination",
+      1725
+     ],
+     "18194": [
+      "Mana Regeneration",
+      88
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 15824,
+    "overheal": 8177,
+    "gains": {
+     "25894": [
+      "Greater Blessing of Wisdom",
+      504
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   }
+  ],
+  "mt_dtps": 530.3774318505825,
+  "mt_spike5": 2.018810701093947
+ },
+ {
+  "report": "NdmD2TYgCLc7hW1P",
+  "fight": 99,
+  "boss": "Ragnaros",
+  "seconds": 80.194,
+  "players": 40,
+  "tanks": 3,
+  "member_dtps": 49.89420924528289,
+  "healers": [
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 16311,
+    "overheal": 8374,
+    "gains": {
+     "18194": [
+      "Mana Regeneration",
+      120
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 17159,
+    "overheal": 22000,
+    "gains": {
+     "16666": [
+      "Demonic Rune",
+      1135
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 16896,
+    "overheal": 21036,
+    "gains": {
+     "18194": [
+      "Mana Regeneration",
+      128
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 14951,
+    "overheal": 18901,
+    "gains": {
+     "15604": [
+      "Second Wind",
+      300
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 11182,
+    "overheal": 22528,
+    "gains": {
+     "17531": [
+      "Restore Mana",
+      1409
+     ],
+     "18194": [
+      "Mana Regeneration",
+      128
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 16038,
+    "overheal": 14771,
+    "gains": {
+     "27869": [
+      "Dark Rune",
+      981
+     ],
+     "18194": [
+      "Mana Regeneration",
+      128
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Druid",
+    "spec": "Restoration",
+    "healing": 19725,
+    "overheal": 19692,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 16712,
+    "overheal": 19177,
+    "gains": {
+     "18194": [
+      "Mana Regeneration",
+      128
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 24439,
+    "overheal": 28423,
+    "gains": {
+     "17531": [
+      "Restore Mana",
+      1614
+     ],
+     "27869": [
+      "Dark Rune",
+      1307
+     ],
+     "18194": [
+      "Mana Regeneration",
+      120
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 12610,
+    "overheal": 22761,
+    "gains": {
+     "16666": [
+      "Demonic Rune",
+      1184
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   }
+  ],
+  "mt_dtps": 514.2155273461855,
+  "mt_spike5": 2.844482084557206
+ },
+ {
+  "report": "JakHgTdFvZ13PL4Y",
+  "fight": 1,
+  "boss": "Onyxia",
+  "seconds": 338.805,
+  "players": 30,
+  "tanks": 1,
+  "member_dtps": 26.931675172729307,
+  "healers": [
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 18069,
+    "overheal": 13955,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      2124
+     ],
+     "20353": [
+      "\u667a\u6167\u5ba1\u5224",
+      59
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 57978,
+    "overheal": 20406,
+    "gains": {
+     "20272": [
+      "\u542f\u53d1",
+      4480
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      2412
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Druid",
+    "spec": "Restoration",
+    "healing": 36561,
+    "overheal": 28712,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      2412
+     ],
+     "20353": [
+      "\u667a\u6167\u5ba1\u5224",
+      118
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 48516,
+    "overheal": 18321,
+    "gains": {
+     "20272": [
+      "\u542f\u53d1",
+      1700
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      2340
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 24670,
+    "overheal": 10617,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      1584
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 33585,
+    "overheal": 21150,
+    "gains": {
+     "20272": [
+      "\u542f\u53d1",
+      2005
+     ],
+     "20351": [
+      "\u667a\u6167\u5723\u5370",
+      90
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      2340
+     ],
+     "20353": [
+      "\u667a\u6167\u5ba1\u5224",
+      413
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 42302,
+    "overheal": 25540,
+    "gains": {
+     "15604": [
+      "\u590d\u82cf\u4e4b\u98ce",
+      300
+     ],
+     "20272": [
+      "\u542f\u53d1",
+      1745
+     ],
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      2412
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 26250,
+    "overheal": 8467,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      2412
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 44725,
+    "overheal": 20912,
+    "gains": {
+     "25894": [
+      "\u5f3a\u6548\u667a\u6167\u795d\u798f",
+      2232
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   }
+  ],
+  "mt_dtps": 303.90932837472883,
+  "mt_spike5": 3.897503938132591
+ },
+ {
+  "report": "YKJmC3dBZn2Hrbp1",
+  "fight": 72,
+  "boss": "Onyxia",
+  "seconds": 122.996,
+  "players": 39,
+  "tanks": 1,
+  "member_dtps": 30.98731494905269,
+  "healers": [
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 7583,
+    "overheal": 12236,
+    "gains": {
+     "17531": [
+      "Restore Mana",
+      1505
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 19628,
+    "overheal": 18637,
+    "gains": {
+     "17531": [
+      "Restore Mana",
+      1937
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Druid",
+    "spec": "Restoration",
+    "healing": 7355,
+    "overheal": 11525,
+    "gains": {
+     "17531": [
+      "Restore Mana",
+      1907
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 6534,
+    "overheal": 12845,
+    "gains": {
+     "17531": [
+      "Restore Mana",
+      2007
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 22915,
+    "overheal": 14119,
+    "gains": {
+     "17531": [
+      "Restore Mana",
+      1604
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 8452,
+    "overheal": 4644,
+    "gains": {},
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 6136,
+    "overheal": 12399,
+    "gains": {
+     "17360": [
+      "Mana Tide",
+      870
+     ],
+     "10494": [
+      "Mana Spring",
+      98
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 20780,
+    "overheal": 9631,
+    "gains": {
+     "27869": [
+      "Dark Rune",
+      1419
+     ],
+     "15604": [
+      "Second Wind",
+      300
+     ],
+     "17531": [
+      "Restore Mana",
+      2207
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 17163,
+    "overheal": 10117,
+    "gains": {
+     "17360": [
+      "Mana Tide",
+      580
+     ],
+     "16666": [
+      "Demonic Rune",
+      1364
+     ],
+     "17531": [
+      "Restore Mana",
+      2143
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Shaman",
+    "spec": "Restoration",
+    "healing": 17468,
+    "overheal": 16401,
+    "gains": {
+     "27869": [
+      "Dark Rune",
+      1277
+     ],
+     "15604": [
+      "Second Wind",
+      300
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   }
+  ],
+  "mt_dtps": 170.33074246316954,
+  "mt_spike5": 5.155958518043047
+ },
+ {
+  "report": "PG7jC4pzDfKcTBJx",
+  "fight": 5,
+  "boss": "Onyxia",
+  "seconds": 136.176,
+  "players": 40,
+  "tanks": 4,
+  "member_dtps": 25.640021410201182,
+  "healers": [
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 23309,
+    "overheal": 6580,
+    "gains": {
+     "25894": [
+      "Greater Blessing of Wisdom",
+      891
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 13232,
+    "overheal": 16348,
+    "gains": {
+     "25894": [
+      "Greater Blessing of Wisdom",
+      936
+     ],
+     "20272": [
+      "Illumination",
+      1110
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 11411,
+    "overheal": 25322,
+    "gains": {
+     "25894": [
+      "Greater Blessing of Wisdom",
+      1008
+     ],
+     "20353": [
+      "Judgement of Wisdom",
+      236
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 11466,
+    "overheal": 8289,
+    "gains": {
+     "25894": [
+      "Greater Blessing of Wisdom",
+      360
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Druid",
+    "spec": "Restoration",
+    "healing": 11335,
+    "overheal": 19821,
+    "gains": {
+     "20353": [
+      "Judgement of Wisdom",
+      59
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 29087,
+    "overheal": 13239,
+    "gains": {
+     "11903": [
+      "Restore Mana",
+      736
+     ],
+     "25894": [
+      "Greater Blessing of Wisdom",
+      864
+     ],
+     "16666": [
+      "Demonic Rune",
+      1094
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 17086,
+    "overheal": 10010,
+    "gains": {
+     "25894": [
+      "Greater Blessing of Wisdom",
+      828
+     ],
+     "20353": [
+      "Judgement of Wisdom",
+      354
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Priest",
+    "spec": "Holy",
+    "healing": 8628,
+    "overheal": 10107,
+    "gains": {
+     "25894": [
+      "Greater Blessing of Wisdom",
+      936
+     ],
+     "20353": [
+      "Judgement of Wisdom",
+      118
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 21143,
+    "overheal": 9745,
+    "gains": {
+     "25894": [
+      "Greater Blessing of Wisdom",
+      900
+     ],
+     "20272": [
+      "Illumination",
+      1585
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 22209,
+    "overheal": 18892,
+    "gains": {
+     "25894": [
+      "Greater Blessing of Wisdom",
+      900
+     ],
+     "20353": [
+      "Judgement of Wisdom",
+      59
+     ],
+     "20272": [
+      "Illumination",
+      2240
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   },
+   {
+    "class": "Paladin",
+    "spec": "Holy",
+    "healing": 22828,
+    "overheal": 19510,
+    "gains": {
+     "25894": [
+      "Greater Blessing of Wisdom",
+      972
+     ],
+     "20272": [
+      "Illumination",
+      2015
+     ]
+    },
+    "mana_start": null,
+    "mana_min": null,
+    "mana_end": null
+   }
+  ],
+  "mt_dtps": 222.12430971683705,
+  "mt_spike5": 4.476409434838996
+ }
+]

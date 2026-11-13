@@ -1,0 +1,12 @@
+kills 33; length s: median 61, p75 78, p90 107, max 339
+by boss: Lucifron 33, Magmadar 58, Gehennas 39, Garr 60, Shazzrah 31, Baron Geddon 62, Sulfuron Harbinger 63, Golemagg the Incinerator 78, Majordomo Executus 105, Ragnaros 69, Onyxia 136
+main tank dtps median 446 (p25 368, p75 542); largest 5 s over mean 5 s: median 2.33 (p75 3.00)
+other players dtps median 31 (p75 50); healers a kill median 11
+damage a healer faces (main tank + every other player, over the healers) median 144
+
+| healer | healer kills | minutes | overheal % median (p25 to p75) | Major Mana Potions a min | runes a min | logged mana a min by source |
+|---|---|---|---|---|---|---|
+| Holy Priest | 166 | 197 | 44 (30 to 54) | 0.22 | 0.11 | Major Mana Potion 389; Blessing of Wisdom 231; Dark Rune 94; Demonic Rune 40; Mana Tide 24 |
+| Holy Paladin | 88 | 101 | 44 (35 to 58) | 0.01 | 0.01 | Illumination 1015; Blessing of Wisdom 401; Major Mana Potion 18; Second Wind 10; Dark Rune 9 |
+| Restoration Shaman | 57 | 69 | 39 (27 to 47) | 0.25 | 0.10 | Major Mana Potion 457; Mana Tide 285; Dark Rune 84; Mana Spring 45; Demonic Rune 37 |
+| Restoration Druid | 31 | 40 | 48 (36 to 60) | 0.13 | 0.13 | Major Mana Potion 236; Blessing of Wisdom 168; Demonic Rune 123; Dark Rune 32; Second Wind 20 |

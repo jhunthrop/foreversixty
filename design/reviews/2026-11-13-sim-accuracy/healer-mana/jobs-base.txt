@@ -1,0 +1,5 @@
+druid-restoration-raid-a -spec druid-restoration -preset raid -band 60 -faction alliance -seed 1 -iterations 2000
+paladin-holy-raid-a -spec paladin-holy -preset raid -band 60 -faction alliance -seed 1 -iterations 2000
+priest-discipline-raid-a -spec priest-discipline -preset raid -band 60 -faction alliance -seed 1 -iterations 2000
+priest-holy-raid-a -spec priest-holy -preset raid -band 60 -faction alliance -seed 1 -iterations 2000
+shaman-restoration-raid-a -spec shaman-restoration -preset raid -band 60 -faction alliance -seed 1 -iterations 2000
