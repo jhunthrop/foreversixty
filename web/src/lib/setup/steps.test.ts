@@ -203,6 +203,10 @@ describe('setupSteps: signed in', () => {
     );
     const done: Me = { ...me34, bnet_import: { state: 'done', at: '2026-11-06T09:00:00Z' } };
     expect(texts(steps({ me: done })[0])).toHaveLength(1);
+    // A failed state left from an earlier sign-in, with characters since brought in by the visit
+    // refresh, says nothing: the row is simply done.
+    const stale: Me = { ...me34, bnet_import: { state: 'failed', at: '2026-11-06T09:00:00Z' } };
+    expect(texts(steps({ me: stale })[0])).toHaveLength(1);
   });
 
   it('web-setup-import-failed: no characters, the failed line replaces the no-character lead, Refresh stays primary', () => {

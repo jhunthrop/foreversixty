@@ -91,13 +91,16 @@ export function importPending(me: Me, now: Date): boolean {
 }
 
 /** The line that says what the last import left out, when it did: the missing count (partial, or
- *  failed with every character skipped), else that a failed run did not finish. Empty otherwise. */
+ *  failed with every character skipped), else, with no character in, that a failed run did not
+ *  finish. A failed state beside characters says nothing: the visit refresh brought them in and
+ *  only the next sign-in rewrites the state. Empty otherwise. */
 function importShortfall(me: Me): StepLineOut[] {
   const run = me.bnet_import;
   if (run === undefined || run.state === 'running' || run.state === 'done') return [];
   const missing = run.unresolved ?? 0;
   if (missing > 0) return [line(addonCopy.setupImportMissing(missing), 'warn')];
-  return run.state === 'failed' ? [line(addonCopy.setupImportFailed, 'warn')] : [];
+  const failedEmpty = run.state === 'failed' && me.characters.length === 0;
+  return failedEmpty ? [line(addonCopy.setupImportFailed, 'warn')] : [];
 }
 
 const line = (text: string, tone: StepTone = 'muted', extra: Partial<StepLineOut> = {}): StepLineOut => ({
