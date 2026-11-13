@@ -79,8 +79,10 @@ func TankRunOf(player *proto.UnitMetrics, iterations int32, health float64) Tank
 // TankFigures is what one tank run measured and the score made of it.
 type TankFigures struct {
 	EffectiveHealth float64
-	DTPS            float64
-	TPS             float64
+	// Health is the character's maximum health the run was measured at.
+	Health float64
+	DTPS   float64
+	TPS    float64
 	// TPSError is TPS's standard error: the race sweep judges tanks on
 	// threat alone (owner rule) and needs its noise.
 	TPSError      float64
@@ -115,6 +117,7 @@ func NewTankFigures(run TankRunResult, bossRawDPS float64) (TankFigures, error) 
 		TankRiskPerTMI*run.TMI.Error
 	return TankFigures{
 		EffectiveHealth: effectiveHealth,
+		Health:          run.Health,
 		DTPS:            run.DTPS.Mean,
 		TPS:             run.TPS.Mean,
 		TPSError:        run.TPS.Error,

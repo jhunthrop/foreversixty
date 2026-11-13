@@ -60,7 +60,11 @@ type tankMetricsReport struct {
 	ChanceOfDeath   float64 `json:"chance_of_death"`
 	TPS             float64 `json:"tps"`
 	EffectiveHealth float64 `json:"effective_health"`
-	DPS             float64 `json:"dps"`
+	// Health is the character's maximum health. Effective health is this
+	// times the boss's raw damage over the damage taken, so it is never a
+	// second, independent figure beside DTPS; Health is.
+	Health float64 `json:"health"`
+	DPS    float64 `json:"dps"`
 }
 
 func tankReportOf(f simscore.TankFigures) *tankMetricsReport {
@@ -70,6 +74,7 @@ func tankReportOf(f simscore.TankFigures) *tankMetricsReport {
 		ChanceOfDeath:   f.ChanceOfDeath,
 		TPS:             f.TPS,
 		EffectiveHealth: f.EffectiveHealth,
+		Health:          f.Health,
 		DPS:             f.DPS,
 	}
 }
