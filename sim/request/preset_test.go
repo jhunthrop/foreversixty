@@ -62,20 +62,52 @@ func TestEveryRealPresetEntryResolvesForEverySpec(t *testing.T) {
 	}
 }
 
-func TestRaidPresetBuffsAreTheSameForEverySpec(t *testing.T) {
+func TestRaidPresetBuffsAreTheSameForEverySpecOfARole(t *testing.T) {
 	presets := loadRealPresets(t)
-	var first []string
+	first := map[string][]string{}
 	for _, spec := range specs.All {
 		resolved, err := presets.Resolve(RaidPreset, spec)
 		if err != nil {
 			t.Fatal(err)
 		}
 		got := buffAndDebuffIDs(resolved)
-		if first == nil {
-			first = got
-		} else if !slices.Equal(first, got) {
-			t.Errorf("%s: buffs differ from the first spec's:\n%v\n%v", spec.Spec, got, first)
+		if want, seen := first[spec.Role]; !seen {
+			first[spec.Role] = got
+		} else if !slices.Equal(want, got) {
+			t.Errorf("%s: buffs differ from the first %s spec's:\n%v\n%v", spec.Spec, spec.Role, got, want)
 		}
+	}
+}
+
+// A raid keeps a warrior's Thunder Clap on the boss whoever tanks (owner
+// ruling, 2026-11-13): every tank carries it, so a bear or paladin tank is
+// not judged against a boss swinging 20% faster than the warrior's. Nobody
+// else is swung at, so the damage dealers and healers do not carry it.
+func TestRaidPresetSlowsTheBossForEveryTankOnly(t *testing.T) {
+	presets := loadRealPresets(t)
+	for _, spec := range specs.All {
+		resolved, err := presets.Resolve(RaidPreset, spec)
+		if err != nil {
+			t.Fatal(err)
+		}
+		has := slices.Contains(entryIDs(resolved.Debuffs), "thunder_clap")
+		if want := spec.Role == "tank"; has != want {
+			t.Errorf("%s (%s): carries thunder_clap = %v, want %v", spec.Spec, spec.Role, has, want)
+		}
+	}
+}
+
+func TestRaidPresetThunderClapReachesTheEngineAsTheTwentyPercentSlow(t *testing.T) {
+	resolved, err := loadRealPresets(t).Resolve(RaidPreset, specs.ByKey["druid-feral-bear"])
+	if err != nil {
+		t.Fatal(err)
+	}
+	set, err := buffsFor(buffAndDebuffIDs(resolved))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := set.Debuffs.GetThunderClap(); got != proto.TristateEffect_TristateEffectRegular {
+		t.Errorf("Debuffs.ThunderClap = %v, want the plain 20%% slow (Regular)", got)
 	}
 }
 
@@ -252,6 +284,15 @@ func TestLoadPresetsRejectsBadIDs(t *testing.T) {
 	for name, c := range cases {
 		if _, err := LoadPresets(writePresets(t, c.body)); !errors.Is(err, c.want) {
 			t.Errorf("%s: err = %v, want %v", name, err, c.want)
+		}
+	}
+}
+
+func TestLoadPresetsRejectsABadRoleDebuff(t *testing.T) {
+	const template = `{"presets":{"raid":{"label":"x","buffs":[],"debuffs":[],"debuffs_by_role":{"tank":[{"id":%q,"label":"L","reason":"r"}]},"consumes":{"groups":{}}}}}`
+	for id, want := range map[string]error{"no_such_debuff": ErrUnknownBuff, "battle_shout": ErrPresetMisfiled} {
+		if _, err := LoadPresets(writePresets(t, fmt.Sprintf(template, id))); !errors.Is(err, want) {
+			t.Errorf("%s: err = %v, want %v", id, err, want)
 		}
 	}
 }
