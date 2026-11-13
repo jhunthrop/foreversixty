@@ -688,6 +688,8 @@ local L = {
 	diagBagAddonUnchecked = "Bag marks: not checked yet (open your bags)",
 	-- /fs diag verbose: which of the client's bag paths the bag marks hooked.
 	diagBagHooks = "Bag marks: hooked through %s",
+	-- Baganator's corner list names the arrow by this.
+	baganatorArrow = "Forever Sixty upgrade",
 	diagNoBagHook = "Bag marks: this client has no bag hook; the bag marks are off.",
 	diagSlotMarksFailed = "The paper-doll and bag marks failed once and turned themselves off until /reload: %s",
 	-- The quest reward and roll marks (design/specs/2026-11-08-addon-ux.md section 2.4): gold

@@ -654,6 +654,74 @@ describe("SlotMarks", function()
 		end)
 	end)
 
+	-- 2.0.43 (the owner's bags): Baganator draws its own bags and no client hook reaches its buttons,
+	-- so the paper doll had the arrow and the bags did not. Its public corner-widget API takes it.
+	describe("Baganator's bags", function()
+		--- Baganator's API as it ships (API/Main.lua): the widgets registered, the refreshes asked for.
+		local function baganator()
+			local fake = { widgets = {}, refreshes = 0 }
+			fake.API = {
+				RegisterCornerWidget = function(label, id, onUpdate, onInit, defaultPosition, isFast)
+					assert(id and label and onUpdate and onInit and not fake.widgets[id])
+					fake.widgets[id] = { label = label, onUpdate = onUpdate, onInit = onInit,
+						defaultPosition = defaultPosition, isFast = isFast }
+				end,
+				RequestItemButtonsRefresh = function()
+					fake.refreshes = fake.refreshes + 1
+				end,
+			}
+			return fake
+		end
+
+		local function loaded(name)
+			return { IsAddOnLoaded = function(addon) return addon == name end }
+		end
+
+		it("puts the arrow in Baganator's top right corner on the bag item the chip lists, and only there", function()
+			local fake = baganator()
+			start({ chest = WORN_CHEST }, { BAG_CHEST, PLATE_CHEST }, { Baganator = fake,
+				C_AddOns = loaded("Baganator") })
+			SlotMarks.register()
+			local widget = fake.widgets[SlotMarks.BAGANATOR_WIDGET]
+			assert.is_table(widget)
+			assert.are.equal(L.baganatorArrow, widget.label)
+			assert.are.same({ corner = "top_right", priority = 1 }, widget.defaultPosition)
+			local itemButton = _G.CreateFrame("Button", nil, _G.CreateFrame("Frame"))
+			local glyph = widget.onInit(itemButton)
+			assert.are.equal(Theme.SIZES.mark, glyph:GetWidth())
+			assert.are.equal(Theme.SIZES.mark, glyph:GetHeight())
+			assert.is_true(widget.onUpdate(glyph, { itemLink = BAG_CHEST }))
+			assert.is_false(widget.onUpdate(glyph, { itemLink = PLATE_CHEST }))
+			assert.is_false(widget.onUpdate(glyph, {}))
+			-- The paper doll and the bag agree: the chest slot carries the arrow too.
+			assert.is_true(SlotMarks.current().arrows.chest == true)
+			assert.is_nil(SlotMarks.diagLine())
+		end)
+
+		it("follows the marks switch and asks Baganator to redraw on every refresh", function()
+			local fake = baganator()
+			start({ chest = WORN_CHEST }, { BAG_CHEST }, { Baganator = fake, C_AddOns = loaded("Baganator") })
+			SlotMarks.register()
+			local widget = fake.widgets[SlotMarks.BAGANATOR_WIDGET]
+			SlotMarks.refresh(DATA, "BAG_UPDATE_DELAYED")
+			assert.are.equal(1, fake.refreshes)
+			Prefs.setFlag("slotMarks", false)
+			assert.is_false(widget.onUpdate(nil, { itemLink = BAG_CHEST }))
+		end)
+
+		it("registers once, also when Baganator loads after this addon", function()
+			start({ chest = WORN_CHEST }, { BAG_CHEST }, { C_AddOns = loaded("Baganator") })
+			SlotMarks.register()
+			assert.is_false(SlotMarks.baganator == true)
+			local fake = baganator()
+			_G.Baganator = fake
+			SlotMarks.onAddonLoaded("Baganator")
+			SlotMarks.onAddonLoaded("Baganator")
+			assert.is_true(SlotMarks.baganator)
+			assert.is_true(fake.widgets[SlotMarks.BAGANATOR_WIDGET].onUpdate(nil, { itemLink = BAG_CHEST }))
+		end)
+	end)
+
 	-- Fix round 1 (the live hunter, the review). I1: GetItemInfoInstant's second return is
 	-- the item type, a string; feeding the whole multi-return to tonumber made it the base.
 	describe("fix round 1", function()

@@ -371,12 +371,11 @@ end
 --- textures ({ fill, outline } each). From the atlas: SetAtlas(name, true), then the explicit
 --- 12 x 12 (the order keeps the atlas's own tex coords). Else the addon's own parts, green,
 --- each with a 1 px black outline a sublevel behind.
-local function buildArrow(overlay)
+local function buildGlyph(parent)
 	local size = Theme.SIZES.mark
-	local glyph = CreateFrame("Frame", nil, overlay)
+	local glyph = CreateFrame("Frame", nil, parent)
 	Theme.noteFrame("Slot mark arrow", "a bag or paper doll slot first drawn")
 	glyph:SetSize(size, size)
-	glyph:SetPoint("TOPRIGHT", overlay, "TOPRIGHT", 0, 0)
 	if atlasArrow() then
 		local texture = glyph:CreateTexture(nil, "OVERLAY", nil, MARK_SUBLEVEL)
 		-- A texture without SetAtlas draws the addon's parts instead (fix round 7).
@@ -399,6 +398,12 @@ local function buildArrow(overlay)
 		fill:SetPoint("TOPLEFT", glyph, "TOPLEFT", x, -y)
 		parts[index] = { fill = fill, outline = outline }
 	end
+	return glyph, parts
+end
+
+local function buildArrow(overlay)
+	local glyph, parts = buildGlyph(overlay)
+	glyph:SetPoint("TOPRIGHT", overlay, "TOPRIGHT", 0, 0)
 	return glyph, parts
 end
 
@@ -646,9 +651,11 @@ function SlotMarks.refresh(data, event)
 	SlotMarks.drawPaperDoll()
 	for button, bag in pairs(bagButtons) do
 		if visible(button) then
-			SlotMarks.markBagButton(button, bag, ask(button, "GetID"))
+			-- A pooled button (the combined bags') may show another bag now: its own answer first.
+			SlotMarks.markBagButton(button, ask(button, "GetBagID") or bag, ask(button, "GetID"))
 		end
 	end
+	SlotMarks.refreshBaganator()
 end
 
 -- The hooks ------------------------------------------------------------------
@@ -703,6 +710,7 @@ function SlotMarks.register()
 	end
 	SlotMarks.registered = true
 	local hooks = SlotMarks.hookBags()
+	SlotMarks.registerBaganator()
 	if #hooks > 0 then
 		Theme.noteVerbose(string.format(L.diagBagHooks, table.concat(hooks, ", ")))
 	else
@@ -730,6 +738,75 @@ function SlotMarks.hookBagOpen()
 	end
 end
 
+-- Baganator ------------------------------------------------------------------
+
+--- Baganator draws its own bags, so no client hook reaches its buttons (2.0.43: the owner's bags
+--- showed no arrow while the paper doll did). Its public corner-widget API takes the arrow instead:
+--- one widget, the same 12 px glyph, in the top right corner where the default bags show it.
+SlotMarks.BAGANATOR_WIDGET = "foreversixty_upgrade"
+SlotMarks.BAGANATOR_CORNER = { corner = "top_right", priority = 1 }
+
+--- Whether the carried `link` is on the chip's list: the arrow's own rule for any bag's button.
+--- False with the marks off or the link unknown; never raises (a bag addon calls it).
+function SlotMarks.isBagUpgrade(link)
+	if type(link) ~= "string" or not enabled() then
+		return false
+	end
+	local ok, state = pcall(SlotMarks.current)
+	return ok and type(state) == "table" and state.links[link] == true
+end
+
+--- Baganator's public API table, or nil without Baganator (or one too old for corner widgets).
+local function baganatorApi()
+	local addon = Compat.clientGlobal("Baganator", "table")
+	local api = addon ~= nil and addon.API or nil
+	if type(api) ~= "table" or type(api.RegisterCornerWidget) ~= "function" then
+		return nil
+	end
+	return api
+end
+
+--- Registers the arrow as a Baganator corner widget, once: true once it is registered.
+function SlotMarks.registerBaganator()
+	if SlotMarks.baganator then
+		return true
+	end
+	local api = baganatorApi()
+	if api == nil then
+		return false
+	end
+	local ok, err = pcall(api.RegisterCornerWidget, L.baganatorArrow, SlotMarks.BAGANATOR_WIDGET,
+		function(_, details)
+			return SlotMarks.isBagUpgrade(type(details) == "table" and details.itemLink or nil)
+		end,
+		function(itemButton)
+			return (buildGlyph(itemButton))
+		end,
+		SlotMarks.BAGANATOR_CORNER, true)
+	if not ok then
+		Theme.note(string.format(L.diagSlotMarksFailed, tostring(err)))
+		return false
+	end
+	SlotMarks.baganator = true
+	SlotMarks.bagHooks[#SlotMarks.bagHooks + 1] = "Baganator"
+	return true
+end
+
+--- Asks Baganator to redraw its buttons' widgets after the marks were read again.
+function SlotMarks.refreshBaganator()
+	local api = SlotMarks.baganator and baganatorApi() or nil
+	if api ~= nil and type(api.RequestItemButtonsRefresh) == "function" then
+		pcall(api.RequestItemButtonsRefresh)
+	end
+end
+
+--- ADDON_LOADED: Baganator loading after this addon gets the arrow too.
+function SlotMarks.onAddonLoaded(name)
+	if name == "Baganator" then
+		SlotMarks.registerBaganator()
+	end
+end
+
 --- /fs diag's line for a bag addon that draws its own bags (fix round 1, M4): "not
 --- checked yet (open your bags)" until the bags were opened (a bag-open call or any
 --- bag update the hooks saw), then "off in <addon>'s bags" while the hook has reached
@@ -739,7 +816,7 @@ function SlotMarks.diagLine()
 		return nil
 	end
 	for _, name in ipairs(SlotMarks.BAG_ADDONS) do
-		if Compat.isAddOnLoaded(name) then
+		if Compat.isAddOnLoaded(name) and not (name == "Baganator" and SlotMarks.baganator) then
 			if not SlotMarks.bagsOpened then
 				return L.diagBagAddonUnchecked
 			end

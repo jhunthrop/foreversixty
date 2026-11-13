@@ -584,6 +584,8 @@ function Options.onEvent(_, event, ...)
 		-- So does the guild frame (Blizzard_Communities): the guild tab's button is made on it.
 		GuildTab.refresh(Options.data)
 		GroupPanel.refresh(Options.data)
+		-- Baganator draws its own bags: the bag arrow goes in as its corner widget.
+		SlotMarks.onAddonLoaded((...))
 		return
 	end
 	if event == "READY_CHECK_FINISHED" then
