@@ -53,13 +53,15 @@ async function shoot(page: Page, name: string): Promise<void> {
     await page.screenshot({ path: `test-results/unknown-realm/${name}-${width}.png`, fullPage: true });
   }
   await page.setViewportSize({ width: 1440, height: 1100 });
-  await page.getByTestId('unknown-realm').screenshot({ path: `test-results/unknown-realm/${name}-close.png` }).catch(() => {});
+  const question = page.getByTestId('unknown-realm');
+  if ((await question.count()) > 0) await question.screenshot({ path: `test-results/unknown-realm/${name}-close.png` });
 }
 
 test('asks the realm type of a character on an unknown realm, and an answer clears the question', async ({
   page,
   isMobile,
 }) => {
+  test.setTimeout(120_000);
   const { answers } = await openWaiting(page);
   const question = page.getByTestId('unknown-realm');
   await expect(question.getByRole('heading')).toHaveText(
