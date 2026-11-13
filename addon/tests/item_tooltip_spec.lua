@@ -1979,13 +1979,6 @@ describe("measuring what is drawn", function()
 		assert.are.equal(4, measure("|TInterface\\Icons\\X:16|tIcon"))
 	end)
 
-	it("takes the client's widest row, a double line's two texts and the gap between", function()
-		local rows = { { left = "Abomination Bones" }, { left = "Chest", right = "Mail" },
-			{ left = "|cff1eff00Enchanted: Attack Power +4 and Armor +16|r" } }
-		assert.are.equal(#"Enchanted: Attack Power +4 and Armor +16", ItemTooltip.widestRow(rows, visible, 20))
-		assert.are.equal(5 + 20 + 4, ItemTooltip.widestRow({ { left = "Chest", right = "Mail" } }, visible, 20))
-		assert.is_nil(ItemTooltip.widestRow(rows, nil, 20))
-	end)
 end)
 
 describe("fitting each line to the client's width", function()
@@ -2388,7 +2381,7 @@ describe("the hook's width contract and enchant wiring", function()
 		local tip = {
 			GetName = function() return NAME end,
 			NumLines = function() return #rows end,
-			AddLine = function(_, text) rows[#rows + 1] = { left = text } end,
+			AddLine = function(_, text, _, _, _, wrap) rows[#rows + 1] = { left = text, wrap = wrap } end,
 			AddDoubleLine = function(_, left, right) rows[#rows + 1] = { left = left, right = right } end,
 			Show = function() end,
 		}
@@ -2410,20 +2403,17 @@ describe("the hook's width contract and enchant wiring", function()
 	end
 
 	before_each(function()
-		saved.rawMeasure, saved.contextFor, saved.data = ItemTooltip.rawMeasure, ItemTooltip.contextFor, ItemTooltip.data
+		saved.contextFor, saved.data = ItemTooltip.contextFor, ItemTooltip.data
 		saved.cache, saved.rows, saved.scan = ItemTooltip.cache, Compat.inventoryTooltipRows, Compat.scanFrame
 		for _, name in ipairs(globals) do
 			saved[name] = _G[name]
-		end
-		ItemTooltip.rawMeasure = function()
-			return function(text) return #text end
 		end
 		ItemTooltip.resetCache()
 		Gear.enchantCache = {}
 	end)
 
 	after_each(function()
-		ItemTooltip.rawMeasure, ItemTooltip.contextFor, ItemTooltip.data = saved.rawMeasure, saved.contextFor, saved.data
+		ItemTooltip.contextFor, ItemTooltip.data = saved.contextFor, saved.data
 		ItemTooltip.cache, Compat.inventoryTooltipRows, Compat.scanFrame = saved.cache, saved.rows, saved.scan
 		for _, name in ipairs(globals) do
 			_G[name] = saved[name]
@@ -2534,7 +2524,7 @@ describe("the hook's width contract and enchant wiring", function()
 
 	-- (a) The client's widest row; a Next line far wider shortens its name, and the room
 	-- stays the client's own width after our lines are added.
-	it("measures the client's width before any line of ours and never grows it", function()
+	it("draws a long pick name whole, wrapping as the client's own lines do, never cut (2.0.43)", function()
 		local client = { { left = "Abomination Bones" }, { left = "Chest", right = "Mail" } }
 		local tip, rows = specTip(client)
 		ItemTooltip.data = { classes = { warrior = { tabs = { { name = "Arms" } } } },
@@ -2555,10 +2545,72 @@ describe("the hook's width contract and enchant wiring", function()
 			}
 		end
 		ItemTooltip.onTooltip(tip, "item:50")
-		assert.are.equal(#"Chest" + ItemTooltip.PAIR_GAP + #"Mail", ItemTooltip.lastRoom)
 		local nextRow = ItemTooltip.stripEscapes(rows[#client + 1].left)
+		assert.is_truthy(nextRow:find("A Very Long Breastplate Of The Defias Overseer", 1, true), nextRow)
 		assert.is_truthy(nextRow:find(ItemTooltip.figure(16, "dps"), 1, true))
-		assert.is_truthy(nextRow:find(L.tooltipNamePending, 1, true))
+		assert.is_nil(nextRow:find(L.tooltipNamePending, 1, true))
+		for index = #client + 1, #rows do
+			assert.is_true(rows[index].wrap, "row " .. index)
+		end
+	end)
+
+	-- 2.0.43: the shipped data's longest pick name and longest source, on a tooltip far narrower
+	-- than either, come out whole on wrapping lines.
+	it("draws the shipped data's longest pick name and longest source whole, wrapped (2.0.43)", function()
+		local Data = require("Data")
+		local longestName = ""
+		for _, name in pairs(Data.bisNames) do
+			if type(name) == "string" and #name > #longestName then
+				longestName = name
+			end
+		end
+		local longestPacked, longestSource = nil, ""
+		for _, bands in pairs(Data.bis) do
+			for _, factions in pairs(bands) do
+				for _, slots in pairs(type(factions) == "table" and factions or {}) do
+					for _, packed in pairs(type(slots) == "table" and slots or {}) do
+						local pick = Gear.decodePick(packed, Data.bisSources)
+						local text = pick ~= nil and ItemTooltip.sourceLine(pick) or nil
+						if type(text) == "string" and #text > #longestSource then
+							longestPacked, longestSource = packed, text
+						end
+					end
+				end
+			end
+		end
+		assert.is_true(#longestName >= 30, longestName)
+		assert.is_true(#longestSource >= 40, longestSource)
+		local pick = Gear.decodePick(longestPacked, Data.bisSources)
+		local client = { { left = "Worn Chest" }, { left = "Chest", right = "Mail" } }
+		local tip, rows = specTip(client)
+		ItemTooltip.data = { classes = { warrior = { tabs = { { name = "Arms" } } } },
+			weights = { ["warrior-arms"] = { strength = 2 } },
+			dpsPerPoint = { ["warrior-arms"] = { reference = "attack_power", dps = 0.5 } },
+			bisSources = Data.bisSources,
+			bis = { ["warrior-arms"] = { [20] = { alliance = { chest = longestPacked } } } } }
+		ItemTooltip.contextFor = function(data)
+			return {
+				data = data, spec = "warrior-arms", classToken = "WARRIOR", level = 20, faction = "alliance",
+				current = Gear.currentWeights(data, "warrior-arms", nil, KEY),
+				equipped = { chest = { itemId = 50, link = "item:50", stats = { strength = 4 } } },
+				nameOf = function(id) return id == pick.item_id and longestName or nil end,
+				statsOf = function() return { strength = 20 } end,
+				isCached = function() return true end, qualityHex = function() return nil end,
+				isMissing = function() return false end, bindTypeOf = function() return nil end,
+				item = { itemId = 50, link = "item:50", equipLocation = "INVTYPE_CHEST", itemClass = 4,
+					itemSubClass = 3, stats = { strength = 4 } },
+			}
+		end
+		ItemTooltip.onTooltip(tip, "item:50")
+		local ours = {}
+		for index = #client + 1, #rows do
+			assert.is_true(rows[index].wrap, "row " .. index)
+			ours[#ours + 1] = ItemTooltip.stripEscapes(rows[index].left)
+		end
+		local text = table.concat(ours, "\n")
+		assert.is_truthy(text:find(longestName, 1, true), text)
+		assert.is_truthy(text:find(ItemTooltip.stripEscapes(longestSource), 1, true), text)
+		assert.is_nil(text:find(L.tooltipNamePending, 1, true), text)
 	end)
 
 	-- (b) A worn chest (+8 Strength) enchanted +4 attack power: a bag chest
@@ -2604,8 +2656,8 @@ describe("the hook's width contract and enchant wiring", function()
 		assert.are.equal(1, entries)
 	end)
 
-	-- On a narrow tooltip every line of ours is drawn fitted, the client's widest row
-	-- ("Abomination Bones", 17 wide) the room.
+	-- On a narrow tooltip every line of ours is drawn whole and wraps (2.0.43): the client's widest
+	-- row ("Abomination Bones", 17 wide) no longer cuts them.
 	describe("on a narrow tooltip", function()
 		local DATA6 = { classes = { warrior = { tabs = { { name = "Arms" } } } },
 			weights = { ["warrior-arms"] = { strength = 2, attack_power = 1 } },
@@ -2614,7 +2666,6 @@ describe("the hook's width contract and enchant wiring", function()
 				[20] = { alliance = { chest = "100|D|The Deadmines: Defias Overseer|0.14" } },
 				[30] = { alliance = { chest = "200|D|Scarlet Monastery: Herod|0.2" } },
 			} } }
-		local ROOM = #"Abomination Bones"
 
 		local function hover(item, equipped, current, client)
 			local tip, rows = specTip(client or { { left = "Abomination Bones" } })
@@ -2637,8 +2688,8 @@ describe("the hook's width contract and enchant wiring", function()
 
 		local function assertFitted(rows)
 			for index = 2, #rows do
-				assert.is_true(#ItemTooltip.stripEscapes(rows[index].left) <= ROOM,
-					"row " .. index .. ": " .. tostring(rows[index].left))
+				assert.is_true(rows[index].wrap, "row " .. index .. ": " .. tostring(rows[index].left))
+				assert.is_nil(ItemTooltip.stripEscapes(rows[index].left):find(L.tooltipNamePending, 1, true))
 				assert.is_nil(rows[index].right)
 			end
 		end
@@ -2720,14 +2771,11 @@ describe("the hook's width contract and enchant wiring", function()
 			assert.are.same({ { left = "Next upgrade: Ranger Bow +3.3 DPS" }, { left = "World drop" } }, rows)
 		end)
 
-		it("Waist: the pick's name shortened before its gain is ever cut, never widening the tooltip", function()
+		it("Waist: the pick's name and its source whole, wrapping past the client's widest row (2.0.43)", function()
 			local rows = hover("waist", "INVTYPE_WAIST", { itemId = 42, link = "item:42:belt", stats = { strength = 5 } })
-			-- "Next upgrade: Blackened Defias Belt +1.1 DPS" is 44 wide, the client's widest row 41.
-			assert.is_true(#rows[1].left <= #F6)
-			assert.is_truthy(rows[1].left:find("^Next upgrade: Blackened"))
-			assert.is_truthy(rows[1].left:find("+1.1 DPS$"))
-			-- The source drops its chance before the boss is ever cut.
-			assert.are.equal("The Deadmines · Captain Greenskin", rows[2].left)
+			-- "Next upgrade: Blackened Defias Belt +1.1 DPS" is 44 wide, the client's widest row 41: it wraps.
+			assert.are.same({ { left = "Next upgrade: Blackened Defias Belt +1.1 DPS" },
+				{ left = "The Deadmines · Captain Greenskin · 30% drop" } }, rows)
 		end)
 	end)
 

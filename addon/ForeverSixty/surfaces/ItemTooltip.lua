@@ -1845,101 +1845,11 @@ local function opColor(key)
 	return Theme.rgb(Theme.HEX[key or "body"])
 end
 
---- The gap the client keeps between a double line's left and right text.
-ItemTooltip.PAIR_GAP = 20
+--- AddLine's wrap flag on every line this addon adds to an item tooltip: wrapped at the tooltip's
+--- width, never cut.
+local WRAP = true
 
---- A hidden font string on the tooltip's own font, made on the first hover
---- that needs one (never at load) and reused.
-local measurer
-
---- The widest of the client's own lines: each row's left text, plus its right
---- text and the pair gap for a double line, as `measure` reads them (visible
---- text only). nil with no rows or nothing to measure with. Pure.
-function ItemTooltip.widestRow(rows, measure, gap)
-	if type(measure) ~= "function" then
-		return nil
-	end
-	local widest
-	for _, row in ipairs(rows or {}) do
-		local width = 0
-		if type(row.left) == "string" and row.left ~= "" then
-			width = measure(row.left) or 0
-		end
-		if type(row.right) == "string" and row.right ~= "" then
-			width = width + (gap or 0) + (measure(row.right) or 0)
-		end
-		if widest == nil or width > widest then
-			widest = width
-		end
-	end
-	return widest
-end
-
---- The client's own lines on `tooltip` as { left, right } rows, before this
---- addon adds any: read from its TextLeft/TextRight font strings.
-local function clientRows(tooltip)
-	local name = type(tooltip.GetName) == "function" and tooltip:GetName() or nil
-	if name == nil or type(tooltip.NumLines) ~= "function" then
-		return nil
-	end
-	local rows = {}
-	for index = 1, tooltip:NumLines() do
-		local left = _G[name .. "TextLeft" .. index]
-		local right = _G[name .. "TextRight" .. index]
-		rows[index] = {
-			left = left ~= nil and left:GetText() or nil,
-			right = right ~= nil and (type(right.IsShown) ~= "function" or right:IsShown()) and right:GetText() or nil,
-		}
-	end
-	return rows
-end
-
---- The raw width of a text on `tooltip`'s own font: a hidden font string made
---- on the first hover that needs one (never at load), set to the tooltip's
---- body font. A field, so a spec can measure without a client.
-function ItemTooltip.rawMeasure(tooltip)
-	if measurer == nil then
-		local frame = CreateFrame("Frame", nil, UIParent)
-		Theme.noteFrame("Tooltip measurer", "the first tooltip measured")
-		frame:Hide()
-		measurer = frame:CreateFontString(nil, "ARTWORK", "GameTooltipText")
-	end
-	local sample = _G[tooltip:GetName() .. "TextLeft2"]
-	if sample ~= nil and type(sample.GetFont) == "function" then
-		local fontPath, size, flags = sample:GetFont()
-		if fontPath ~= nil then
-			measurer:SetFont(fontPath, size, flags)
-		end
-	end
-	return function(text)
-		measurer:SetText(text)
-		if type(measurer.GetUnboundedStringWidth) == "function" then
-			return measurer:GetUnboundedStringWidth()
-		end
-		return measurer:GetStringWidth()
-	end
-end
-
---- `measure` (visible text -> width, on the tooltip's own font) and the room
---- every line of this addon is fitted to: the client's own widest line,
---- measured before the section is added, so the section never widens the
---- tooltip. nil, nil where the client cannot say (the lines are drawn whole).
-local function measureFor(tooltip)
-	local ok, measure, room = pcall(function()
-		local rows = clientRows(tooltip)
-		if rows == nil or #rows == 0 then
-			return nil, nil
-		end
-		local visible = ItemTooltip.visibleMeasure(ItemTooltip.rawMeasure(tooltip))
-		return visible, ItemTooltip.widestRow(rows, visible, ItemTooltip.PAIR_GAP)
-	end)
-	if not ok then
-		return nil, nil
-	end
-	return measure, room
-end
-
---- One section line as the lines it is drawn on, fitted to `room`.
+--- One section line as the lines it is drawn on: whole without `measure`, else fitted to `room`.
 function ItemTooltip.fitLine(line, measure, room)
 	if line.kind == "alternatives" then
 		return ItemTooltip.fitAlternatives(line.entries, measure, room)
@@ -1978,11 +1888,7 @@ function ItemTooltip.visibleLines(lines, shift)
 	return shown
 end
 
---- Draws a section (`entry`: { lines, target, pending, head }) directly after the lines
---- already on `tooltip`, with no blank row and no header (G1): each line in its colour, fitted
---- to `room` as `measure` reads it (nil: drawn whole), the Shift block only while Shift is
---- held. Then the compare tooltip for the entry's target, and the hover `redraw` re-runs once
---- an item it waits for arrives (ItemTooltip.onItemInfoReceived).
+
 --- Whether a section may show `tooltip`: it is up already, or its owner is on screen under the
 --- mouse (the hover that just set it). A tooltip the client rebuilt while hidden (its data
 --- updated after the hover left, a new item in the bags) stays hidden.
@@ -1995,11 +1901,17 @@ function ItemTooltip.mayShow(tooltip)
 		and type(owner.IsMouseOver) == "function" and owner:IsMouseOver() == true
 end
 
-local function drawEntry(tooltip, entry, measure, room, redraw)
+--- Draws a section (`entry`: { lines, target, pending, head }) directly after the lines
+--- already on `tooltip`, with no blank row and no header (G1): each line whole in its colour and
+--- wrapping inside the tooltip as the client's own lines do (2.0.43: a long item name or "where it
+--- drops" was cut with an ellipsis), the Shift block only while Shift is held. Then the compare
+--- tooltip for the entry's target, and the hover `redraw` re-runs once an item it waits for
+--- arrives (ItemTooltip.onItemInfoReceived).
+local function drawEntry(tooltip, entry, redraw)
 	for _, line in ipairs(ItemTooltip.visibleLines(entry.lines, Theme.shiftDown())) do
 		local r, g, b = opColor(line.color)
-		for _, text in ipairs(ItemTooltip.fitLine(line, measure, room)) do
-			tooltip:AddLine(text, r, g, b)
+		for _, text in ipairs(ItemTooltip.fitLine(line)) do
+			tooltip:AddLine(text, r, g, b, WRAP)
 		end
 	end
 	if not ItemTooltip.mayShow(tooltip) then
@@ -2090,9 +2002,6 @@ local function addLines(tooltip, itemLink)
 	if #entry.lines == 0 then
 		return
 	end
-	local measure, room = measureFor(tooltip)
-	-- The room every line was fitted to: the client's own width, never ours.
-	ItemTooltip.lastRoom = room
 	local shown = entry
 	if level > 0 then
 		shown = {}
@@ -2101,7 +2010,7 @@ local function addLines(tooltip, itemLink)
 		end
 		shown.lines = capLines(entry.lines, level)
 	end
-	drawEntry(tooltip, shown, measure, room, function()
+	drawEntry(tooltip, shown, function()
 		-- Re-running SetHyperlink re-fires the hook that called
 		-- onTooltip, so the tooltip is rebuilt with the data that
 		-- just arrived rather than gaining a second copy of the section.
@@ -2234,7 +2143,7 @@ function ItemTooltip.appendEmptySlotSection(tooltip, slot, button)
 		end
 		return
 	end
-	drawEntry(tooltip, entry, nil, nil, redraw)
+	drawEntry(tooltip, entry, redraw)
 	appendedSection[tooltip] = true
 	ItemTooltip.noteShiftHover(tooltip, entry.lines, function()
 		return type(tooltip.GetOwner) ~= "function" or tooltip:GetOwner() == button
