@@ -1,0 +1,16 @@
+shaman #7: unhasted swing gaps n 9 min 2.83 median 3.389; AP median 999.0; white base median 250.0 (n 22), SS base median 267.0 (n 8)
+   if speed 2.8: weapon roll median 50; 100% model SS 286, 150% model 429, logged 267.0
+   if speed 3.3: weapon roll median 15; 100% model SS 250, 150% model 375, logged 267.0
+   if speed 3.4: weapon roll median 7; 100% model SS 243, 150% model 364, logged 267.0
+shaman #5: unhasted swing gaps n 13 min 2.102 median 3.388; AP median 988.0; white base median 248.0 (n 19), SS base median 254.0 (n 1)
+   if speed 2.1: weapon roll median 100; 100% model SS 333, 150% model 499, logged 254.0
+   if speed 3.3: weapon roll median 15; 100% model SS 248, 150% model 372, logged 254.0
+   if speed 3.4: weapon roll median 8; 100% model SS 241, 150% model 361, logged 254.0
+shaman #2: unhasted swing gaps n 9 min 2.692 median 2.745; AP median 867.0; white base median 189.0 (n 13), SS base median 227.0 (n 11)
+   if speed 2.7: weapon roll median 22; 100% model SS 226, 150% model 339, logged 227.0
+   if speed 2.8: weapon roll median 16; 100% model SS 220, 150% model 330, logged 227.0
+   if speed 2.9: weapon roll median 9; 100% model SS 214, 150% model 321, logged 227.0
+shaman #4: unhasted swing gaps n 12 min 3.041 median 3.103; AP median 905.0; white base median 216.5 (n 16), SS base median 231.5 (n 8)
+   if speed 3.0: weapon roll median 23; 100% model SS 236, 150% model 354, logged 231.5
+   if speed 3.1: weapon roll median 16; 100% model SS 229, 150% model 344, logged 231.5
+   if speed 3.2: weapon roll median 10; 100% model SS 223, 150% model 334, logged 231.5

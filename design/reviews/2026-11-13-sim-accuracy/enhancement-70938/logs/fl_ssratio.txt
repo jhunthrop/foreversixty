@@ -1,0 +1,12 @@
+white q25 q50 q75 q95 max [104, 121, 131, 146, 155] n 330
+SS    q25 q50 q75 q95 max [122, 130, 137, 151, 161] n 127
+quantile ratios [1.173, 1.074, 1.046, 1.034, 1.039]
+per-target median ratio 1.098 targets 43
+model 100%: AP from white q95 155, predicted SS q95 146 vs logged 151
+model 150%: AP from white q95 155, predicted SS q95 220 vs logged 151
+white q25 q50 q75 q95 max [71, 74, 78, 85, 92] n 257
+SS    q25 q50 q75 q95 max [81, 85, 89, 97, 100] n 110
+quantile ratios [1.141, 1.149, 1.141, 1.141, 1.087]
+per-target median ratio 1.145 targets 41
+model 100%: AP from white q95 154, predicted SS q95 89 vs logged 97
+model 150%: AP from white q95 154, predicted SS q95 134 vs logged 97

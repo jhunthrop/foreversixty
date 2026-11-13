@@ -1,0 +1,60 @@
+== ctxi.. shaman #1 real level >= 28 (adv 29.0) fights 2 span 2026-11-12 20:30:36.219200 to 2026-11-12 20:36:48.508200 UTC
+   white swings 15 (landed 15), swing gap median 3.380 p90 3.4536001682281494
+   Stormstrike casts 8 gaps 4 min 2.7860000133514404 p10 2.7860000133514404; damage 3 crit 0 missed {'MISS': 2, 'DODGE': 1}; SS/white median non-crit 1.0439024390243903 (base 1.0526315789473684; SS [106, 107, 115] white median 102.5)
+   Maelstrom Weapon gains 0 over 39 s of melee bouts = 0.0/min; melee events {'white': 15, 'Stormstrike': 6, 'Windfury Weapon': 4}; gains by trigger {}
+   Windfury Weapon procs 2 (4 strikes, crit 0, glancing 0); min gap None; Windfury Totem extra attacks 0 ({}); same-timestamp both 0; landed main-hand hits 18
+   Flametongue Totem procs {}
+   casts {'Stormstrike:17364': 8, 'Earth Shock:8046': 6, 'Cure Poison:526': 3, 'Lightning Shield:905': 2, 'Ghost Wolf:1238640': 2, 'Flametongue Totem:8227': 1}
+   damage share {'white': '48%', 'Earth Shock': '23%', 'Windfury Weapon': '13%', 'Stormstrike': '10%', 'Lightning Shield': '5%', '1292675': '1%'} total 3413
+== ctxi.. shaman #2 real level >= 24 (adv 30.0) fights 2 span 2026-11-12 20:34:02.044200 to 2026-11-12 20:46:54.327200 UTC
+   white swings 31 (landed 23), swing gap median 2.750 p90 2.884999990463257
+   Stormstrike casts 15 gaps 9 min 7.963000059127808 p10 7.963000059127808; damage 12 crit 1 missed {'MISS': 2}; SS/white median non-crit 1.1925925925925926 (base 1.2010582010582012; SS [156, 152, 156, 165, 161, 173, 159, 174, 174, 168, 160] white median 135.0)
+   Maelstrom Weapon gains 0 over 61 s of melee bouts = 0.0/min; melee events {'white': 31, 'Stormstrike': 14}; gains by trigger {}
+   Windfury Weapon procs 0 (0 strikes, crit 0, glancing 0); min gap None; Windfury Totem extra attacks 0 ({}); same-timestamp both 0; landed main-hand hits 35
+   Flametongue Totem procs {}
+   casts {'Stormstrike:17364': 15, 'Earth Shock:8046': 14, 'Lightning Shield:905': 5, 'Searing Totem:6363': 5, 'Totemic Recall:36936': 3, '8618:8618': 3, 'Ghost Wolf:1238640': 2}
+   damage share {'white': '40%', 'Earth Shock': '27%', 'Stormstrike': '26%', 'Lightning Shield': '7%'} total 8202
+== ctxi.. shaman #3 real level >= 26 (adv 29.0) fights 1 span 2026-11-12 20:33:54.741200 to 2026-11-12 20:36:14.301200 UTC
+   white swings 9 (landed 6), swing gap median 3.411 p90 None
+   Stormstrike casts 4 gaps 3 min 7.98799991607666 p10 7.98799991607666; damage 3 crit 0 missed {'MISS': 1}; SS/white median non-crit 0.8775510204081632 (base 0.8815165876777251; SS [129, 129, 138] white median 147.0)
+   Maelstrom Weapon gains 0 over 24 s of melee bouts = 0.0/min; melee events {'Stormstrike': 4, 'white': 9}; gains by trigger {}
+   Windfury Weapon procs 0 (0 strikes, crit 0, glancing 0); min gap None; Windfury Totem extra attacks 0 ({}); same-timestamp both 0; landed main-hand hits 9
+   Flametongue Totem procs {}
+   casts {'Earth Shock:8046': 6, 'Stormstrike:17364': 4, 'Lightning Shield:905': 2, 'Ghost Wolf:1238640': 2, '20572:20572': 1, 'Mana Spring Totem:5675': 1, 'Stoneskin Totem:8155': 1, 'Healing Wave:939': 1}
+   damage share {'white': '38%', 'Earth Shock': '38%', 'Stormstrike': '16%', 'Lightning Shield': '8%'} total 2534
+== ctxi.. shaman #4 real level >= 32 (adv 31.0) fights 2 span 2026-11-12 20:32:05.965200 to 2026-11-12 20:37:19.003200 UTC
+   white swings 16 (landed 16), swing gap median 3.103 p90 3.1648998498916625
+   Stormstrike casts 8 gaps 6 min 3.443999767303467 p10 3.443999767303467; damage 8 crit 0 missed {}; SS/white median non-crit 1.0817610062893082 (base 1.069284064665127; SS [183, 163, 186, 161, 161, 181, 163, 187] white median 159.0)
+   Maelstrom Weapon gains 0 over 38 s of melee bouts = 0.0/min; melee events {'white': 16, 'Stormstrike': 8, 'Windfury Weapon': 6}; gains by trigger {}
+   Windfury Weapon procs 3 (6 strikes, crit 0, glancing 0); min gap 18.646; Windfury Totem extra attacks 0 ({}); same-timestamp both 0; landed main-hand hits 24
+   Flametongue Totem procs {}
+   casts {'Stormstrike:17364': 8, 'Earth Shock:8046': 8, '8618:8618': 6, 'Magma Totem:8190': 1, 'Fire Nova:408343': 1, 'Lightning Shield:905': 1, 'Ghost Wolf:1238640': 1}
+   damage share {'white': '36%', 'Earth Shock': '25%', 'Stormstrike': '19%', 'Windfury Weapon': '14%', 'Fire Nova': '5%'} total 7163
+== ju2t.. shaman #5 real level >= 42 (adv 45.0) fights 6 span 2026-11-13 18:37:00.635000 to 2026-11-13 18:43:40.229000 UTC
+   white swings 24 (landed 23), swing gap median 3.379 p90 3.5089998960494997
+   Stormstrike casts 11 gaps 5 min 4.918000221252441 p10 4.918000221252441; damage 2 crit 1 missed {}; SS/white median non-crit 1.025974025974026 (base 1.0241935483870968; SS [158] white median 154.0)
+   Maelstrom Weapon gains 32 over 57 s of melee bouts = 33.6/min; melee events {'white': 24, 'Stormstrike': 2, 'Windfury Totem': 3, 'Windfury Weapon': 6}; gains by trigger {'Stormstrike': 7, 'white': 10, 'unseen': 6, 'Stormstrike+Windfury Totem': 2, 'Windfury Weapon+white': 7}
+   Lightning Bolt 10391: cast time 0.00 s, Maelstrom events at cast [('REMOVED', nan), ('REFRESH', nan), ('REMOVED_DOSE', 4.0)], ready buff up True
+   Lightning Bolt 10391: cast time 0.00 s, Maelstrom events at cast [('REMOVED', nan), ('REMOVED_DOSE', 4.0), ('REFRESH', nan)], ready buff up True
+   Lightning Bolt 10391: cast time 0.00 s, Maelstrom events at cast [('REFRESH', nan), ('REMOVED_DOSE', 4.0), ('REMOVED', nan)], ready buff up True
+   Windfury Weapon procs 3 (6 strikes, crit 1, glancing 0); min gap 3.39; Windfury Totem extra attacks 3 ({'SPELL_DAMAGE': 2, 'SPELL_MISSED': 1}); same-timestamp both 0; landed main-hand hits 25
+   Flametongue Totem procs {}
+   casts {'Stormstrike:17364': 11, 'Earth Shock:10412': 5, 'Windfury Totem:10613': 4, 'Lightning Shield:8134': 4, 'Maelstrom Ready!:408501': 4, 'Ghost Wolf:1238640': 3, 'Flame Shock:10447': 3, 'Earthbind Totem:2484': 3, 'Totemic Recall:36936': 3, 'Frost Shock:8058': 3, 'Lightning Bolt:10391': 3, 'Strength of Earth Totem:8161': 2, 'Totemic Call:437009': 1, '20572:20572': 1, 'Rage of the Farseer:425336': 1, '556:556': 1}
+   damage share {'white': '46%', 'Windfury Weapon': '16%', 'Windfury Totem': '10%', 'Lightning Bolt': '8%', 'Earth Shock': '7%', 'Stormstrike': '6%', 'Frost Shock': '4%', 'Lightning Shield': '3%'} total 8379
+== ju2t.. shaman #6 real level >= 40 (adv 45.0) fights 2 span 2026-11-13 18:56:56.897000 to 2026-11-13 18:57:28.158000 UTC
+   white swings 5 (landed 4), swing gap median 2.719 p90 None
+   Stormstrike casts 3 gaps 2 min 3.2829999923706055 p10 3.2829999923706055; damage 2 crit 2 missed {'PARRY': 1}; SS/white median non-crit None (base None; SS [] white median None)
+   Maelstrom Weapon gains 6 over 11 s of melee bouts = 32.8/min; melee events {'white': 5, 'Stormstrike': 3, 'Windfury Weapon': 2}; gains by trigger {'white': 3, 'Stormstrike+white': 1, 'Stormstrike+Windfury Weapon': 2}
+   Windfury Weapon procs 1 (2 strikes, crit 0, glancing 0); min gap None; Windfury Totem extra attacks 0 ({}); same-timestamp both 0; landed main-hand hits 6
+   Flametongue Totem procs {}
+   casts {'Stormstrike:17364': 3, 'Flame Shock:10447': 1, 'Earth Shock:10412': 1, 'Ghost Wolf:1238640': 1, 'Maelstrom Ready!:408501': 1}
+   damage share {'white': '28%', 'Stormstrike': '22%', 'Flame Shock': '14%', 'Windfury Weapon': '11%', 'Lightning Shield': '11%', 'Earth Shock': '11%', 'Flametongue Attack': '4%'} total 3047
+== ju2t.. shaman #7 real level >= 44 (adv 46.0) fights 6 span 2026-11-13 18:45:50.781000 to 2026-11-13 18:50:25.710000 UTC
+   white swings 26 (landed 25), swing gap median 3.319 p90 3.4794000148773194
+   Stormstrike casts 11 gaps 8 min 7.978000164031982 p10 7.978000164031982; damage 10 crit 2 missed {'PARRY': 1}; SS/white median non-crit 1.0716612377850163 (base 1.068; SS [163, 165, 172, 164, 173, 163, 171, 150] white median 153.5)
+   Maelstrom Weapon gains 28 over 73 s of melee bouts = 22.9/min; melee events {'white': 26, 'Stormstrike': 11, 'Windfury Weapon': 18, 'Windfury Totem': 6}; gains by trigger {'Stormstrike+white': 1, 'Stormstrike': 4, 'white': 6, 'Stormstrike+Windfury Totem+Windfury Weapon': 3, 'Windfury Totem+white': 1, 'Windfury Weapon+white': 6, 'Windfury Totem+Windfury Weapon+white': 3, 'unseen': 1, 'Stormstrike+Windfury Weapon': 3}
+   Lightning Bolt 10392: cast time 0.00 s, Maelstrom events at cast [('REFRESH', nan), ('REMOVED', nan), ('REMOVED_DOSE', 4.0)], ready buff up True
+   Windfury Weapon procs 10 (18 strikes, crit 2, glancing 0); min gap 2.185; Windfury Totem extra attacks 6 ({'SPELL_DAMAGE': 4, 'SPELL_MISSED': 2}); same-timestamp both 4; landed main-hand hits 35
+   Flametongue Totem procs {}
+   casts {'Stormstrike:17364': 11, 'Earth Shock:10412': 6, 'Totemic Recall:36936': 5, 'Windfury Totem:10613': 4, 'Lightning Shield:8134': 4, 'Lesser Healing Wave:10466': 4, 'Flame Shock:10447': 3, 'Maelstrom Ready!:408501': 3, 'Lightning Bolt:10392': 1, 'Poison Cleansing Totem:8166': 1, 'Strength of Earth Totem:8161': 1}
+   damage share {'white': '25%', 'Windfury Weapon': '25%', 'Earth Shock': '12%', 'Stormstrike': '12%', 'Lightning Shield': '10%', 'Windfury Totem': '8%', 'Flame Shock': '7%', 'Lightning Bolt': '2%'} total 15918

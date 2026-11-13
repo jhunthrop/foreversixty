@@ -1,0 +1,27 @@
+== 2855 Zurin: fight time 25 s over 2 encounters
+   swing gap median 1.970 p90 2.090 (n 10)
+   Stormstrike casts 2, gaps n 1 min 9.087 p10 None median 9.087; gaps <7.9 s 0, 7.9-8.6 0
+   Stormstrike outcomes {'damage': 1, 'block': 1, 'parry': 1}; white outcomes {'damage': 8, 'parry': 2, 'dodge': 1}
+   SS/white non-crit: median 3.085 (SS 91 n 1, white 29.5 n 8); upper-half medians 2.844
+   Windfury Weapon: procs 4 strikes 5 {'parry': 1, 'damage': 2, 'miss': 2}, min proc gap 2.114, procs per landed main-hand hit 0.444; Windfury Totem extra attacks 0; same-ms both 0
+   Flametongue Totem procs {}; Maelstrom events 0
+   casts/min {'Lightning Shield:905': 4.87, 'Stormstrike:17364': 4.87, 'Earth Shock:8046': 4.87, 'Windfury Weapon:8232': 2.44, 'Stoneskin Totem:8155': 2.44, 'Mana Spring Totem:5675': 2.44, 'Searing Totem:6363': 2.44, 'Stoneform:20594': 2.44}
+   damage share {'Earth Shock': '31%', 'Windfury Weapon': '23%', 'Auto Attack': '20%', 'Lightning Shield': '16%', 'Stormstrike': '9%'} total 1001, dps over fight time 40.6
+== 2856 Reykus: fight time 1910 s over 63 encounters
+   swing gap median 3.303 p90 3.945 (n 319)
+   Stormstrike casts 156, gaps n 102 min 7.99 p10 8.002600000000001 median 9.107; gaps <7.9 s 0, 7.9-8.6 34
+   Stormstrike outcomes {'damage': 127, 'miss': 8, 'damage+crit': 10, 'parry': 5, 'block': 4, 'dodge': 6}; white outcomes {'parry': 19, 'damage': 330, 'miss': 17, 'damage+crit': 29, 'dodge': 31, 'block': 5}
+   SS/white non-crit: median 1.074 (SS 130 n 127, white 121.0 n 330); upper-half medians 1.042
+   Windfury Weapon: procs 0 strikes 0 {}, min proc gap None, procs per landed main-hand hit 0.000; Windfury Totem extra attacks 0; same-ms both 0
+   Flametongue Totem procs {}; Maelstrom events 0
+   casts/min {'Stormstrike:17364': 4.9, 'Flame Shock:8053': 2.51, 'Lightning Bolt:943': 2.42, 'Earth Shock:8046': 1.82, 'Lesser Healing Wave:8004': 0.97, 'Fire Nova:408342': 0.88, 'Magma Totem:8190': 0.82, 'Healing Wave:939': 0.53, 'Totemic Projection:437009': 0.47, 'Call of the Elements:66842': 0.41, 'Flametongue Totem:8227': 0.38, 'Berserking:20554': 0.35, 'Mana Spring Totem:5675': 0.31, 'Rapid Regeneration:1260270': 0.25}
+   damage share {'Auto Attack': '38%', 'Stormstrike': '16%', 'Flametongue Attack': '14%', 'Flame Shock': '11%', 'Fire Nova': '8%', 'Earth Shock': '7%', 'Lightning Bolt': '4%', 'Cursed Murloc Eye': '1%', 'Lightning Shield': '1%', 'Retribution Aura': '0%'} total 115641, dps over fight time 60.6
+== 2857 Eridium: fight time 1009 s over 50 encounters
+   swing gap median 2.901 p90 3.633 (n 247)
+   Stormstrike casts 125, gaps n 77 min 7.982 p10 7.999 median 8.483; gaps <7.9 s 0, 7.9-8.6 40
+   Stormstrike outcomes {'damage': 110, 'damage+crit': 6, 'dodge': 3, 'parry': 4, 'block': 4, 'miss': 2}; white outcomes {'damage': 257, 'damage+crit': 29, 'block': 5, 'dodge': 7, 'miss': 4, 'parry': 5}
+   SS/white non-crit: median 1.149 (SS 85.0 n 110, white 74 n 257); upper-half medians 1.141
+   Windfury Weapon: procs 0 strikes 0 {}, min proc gap None, procs per landed main-hand hit 0.000; Windfury Totem extra attacks 0; same-ms both 0
+   Flametongue Totem procs {}; Maelstrom events 0
+   casts/min {'Stormstrike:17364': 7.43, 'Earth Shock:8046': 6.0, 'Magma Totem:8190': 1.66, 'Fire Nova:408342': 0.89, 'Skinning:8618': 0.65, 'Mana Spring Totem:5675': 0.54, 'Totemic Projection:437009': 0.54, 'Strength of Earth Totem:8160': 0.36, 'Lightning Shield:905': 0.3, 'Stoneskin Totem:8155': 0.24, 'Flame Shock:8052': 0.24, 'Lesser Healing Wave:8004': 0.12, 'Call of the Elements:66842': 0.12, 'Healing Wave:939': 0.06}
+   damage share {'Auto Attack': '36%', 'Earth Shock': '26%', 'Stormstrike': '16%', 'Flametongue Attack': '15%', 'Fire Nova': '5%', 'Lightning Shield': '1%', 'Retribution Aura': '1%', 'Flame Shock': '1%'} total 63904, dps over fight time 63.3

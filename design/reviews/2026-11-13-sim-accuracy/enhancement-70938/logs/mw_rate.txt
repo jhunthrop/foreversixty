@@ -1,0 +1,23 @@
+shaman #5 (own_an numbering): melee events {'white': 24, 'SS': 11, 'WFT': 3, 'WFW': 6}, gains matched 26, gains with no logged melee event 6
+   whitex1                      clusters  19 gains   8 per cluster 0.42 per hit 0.42
+   SSx1                         clusters   8 gains   7 per cluster 0.88 per hit 0.88
+   WFWx2+whitex1                clusters   3 gains   7 per cluster 2.33 per hit 0.78
+   SSx1+WFTx1                   clusters   2 gains   2 per cluster 1.00 per hit 0.50
+   SSx1+whitex1                 clusters   1 gains   2 per cluster 2.00 per hit 1.00
+   WFTx1+whitex1                clusters   1 gains   0 per cluster 0.00 per hit 0.00
+shaman #6 (own_an numbering): melee events {'white': 5, 'SS': 3, 'WFW': 2}, gains matched 6, gains with no logged melee event 0
+   whitex1                      clusters   5 gains   3 per cluster 0.60 per hit 0.60
+   SSx1                         clusters   2 gains   1 per cluster 0.50 per hit 0.50
+   SSx1+WFWx2                   clusters   1 gains   2 per cluster 2.00 per hit 0.67
+shaman #7 (own_an numbering): melee events {'white': 26, 'SS': 11, 'WFW': 18, 'WFT': 6}, gains matched 27, gains with no logged melee event 1
+   whitex1                      clusters  14 gains   6 per cluster 0.43 per hit 0.43
+   SSx1                         clusters   6 gains   3 per cluster 0.50 per hit 0.50
+   WFWx2+whitex1                clusters   4 gains   6 per cluster 1.50 per hit 0.50
+   SSx1+whitex1                 clusters   2 gains   2 per cluster 1.00 per hit 0.50
+   WFTx1+WFWx2+whitex1          clusters   2 gains   2 per cluster 1.00 per hit 0.25
+   WFWx1+whitex1                clusters   1 gains   0 per cluster 0.00 per hit 0.00
+   SSx1+WFTx1+WFWx2             clusters   1 gains   3 per cluster 3.00 per hit 0.75
+   WFTx1+whitex1                clusters   1 gains   1 per cluster 1.00 per hit 0.50
+   WFTx1+WFWx1+whitex1          clusters   1 gains   1 per cluster 1.00 per hit 0.33
+   SSx1+WFTx1+whitex1           clusters   1 gains   0 per cluster 0.00 per hit 0.00
+   SSx1+WFWx2                   clusters   1 gains   3 per cluster 3.00 per hit 1.00
