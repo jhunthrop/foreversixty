@@ -186,10 +186,11 @@ func (s *Service) refreshOneCharacter(ctx context.Context, sc staleCharacter, ro
 	defer func() { _ = tx.Rollback(ctx) }()
 
 	var key, region, ruleset, name string
+	var realmID int64
 	err = tx.QueryRow(ctx,
-		`select key, region, ruleset, name from characters
+		`select key, region, ruleset, name, coalesce(bnet_realm_id, 0) from characters
 		 where bnet_character_id = $1 and coalesce(realm_slug, '') = $2 and source = 'bnet'`,
-		sc.BnetCharacterID, sc.RealmSlug).Scan(&key, &region, &ruleset, &name)
+		sc.BnetCharacterID, sc.RealmSlug).Scan(&key, &region, &ruleset, &name, &realmID)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return nil
 	}
@@ -200,10 +201,14 @@ func (s *Service) refreshOneCharacter(ctx context.Context, sc staleCharacter, ro
 	if err != nil {
 		return err
 	}
+	key, ruleset, err = s.resolveUnknownInPlace(ctx, tx, key, region, ruleset, name, realmID)
+	if err != nil {
+		return err
+	}
 
 	ref := characterRef{
 		UserID: sc.UserID, Region: region, Ruleset: ruleset, Key: key,
-		RealmSlug: sc.RealmSlug, Name: name, BnetID: sc.BnetCharacterID,
+		RealmSlug: sc.RealmSlug, Name: name, BnetID: sc.BnetCharacterID, RealmID: realmID,
 	}
 	var guildWritten, unavailable bool
 	if err := s.enrichInTx(ctx, tx, &ref, rosterCache, &guildWritten, &unavailable); err != nil {

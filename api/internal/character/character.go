@@ -25,6 +25,12 @@ const (
 	RulesetHardcore = "hardcore"
 )
 
+// RulesetUnknown keys a Battle.net character whose realm no source has typed
+// yet (bnetimport's unknown-realm path): it is never one of Rulesets, so no
+// ranking, page or form accepts it, and the player's answer, a realm table
+// entry or the realm's agreed answers move the character off it.
+const RulesetUnknown = "unknown"
+
 // Rulesets is every valid ruleset, in the order the site lists them.
 var Rulesets = []string{RulesetNormal, RulesetPvP, RulesetRP, RulesetHardcore}
 

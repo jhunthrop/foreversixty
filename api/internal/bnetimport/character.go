@@ -30,6 +30,12 @@ type characterRef struct {
 	RealmSlug string
 	Name      string
 	BnetID    int64
+	// RealmID is the realm id the account profile's protected-character link
+	// carries; 0 when it carried none.
+	RealmID int64
+	// Answered is true when Ruleset is the player's own answer to the
+	// unknown-realm question (realm_answer.go), not a realm source's.
+	Answered bool
 }
 
 // writeCharacterRow is the first import pass for one character (spec §4.2
@@ -45,6 +51,9 @@ func (s *Service) writeCharacterRow(ctx context.Context, ref characterRef, ch bn
 	}
 	defer func() { _ = tx.Rollback(ctx) }()
 
+	if err := s.carryProvisionalKey(ctx, tx, ref); err != nil {
+		return false, err
+	}
 	if err := s.rekeyIfNeeded(ctx, tx, ref.UserID, ref.Region, ref.Key, ch.ID); err != nil {
 		return false, err
 	}
@@ -56,19 +65,21 @@ func (s *Service) writeCharacterRow(ctx context.Context, ref characterRef, ch bn
 	tag, err := tx.Exec(ctx,
 		`insert into characters (key, region, ruleset, name, class, user_id, realm_slug, realm_name,
 		    level, faction, bnet_character_id, source, imported_at, refreshed_at,
-		    race, gender, bnet_account, bnet_captured_at)
+		    race, gender, bnet_account, bnet_captured_at, bnet_realm_id, ruleset_answered)
 		 values ($1, $2, $3, $4, $5, $6, nullif($7, ''), nullif($8, ''), $9, nullif($10, ''), $11, 'bnet', now(),
-		    now() - interval '1 day', nullif($12, ''), nullif($13, ''), $14, now())
+		    now() - interval '1 day', nullif($12, ''), nullif($13, ''), $14, now(), nullif($15::bigint, 0), $16)
 		 on conflict (key) do update set
 		   name = excluded.name, class = excluded.class, user_id = excluded.user_id,
 		   realm_slug = excluded.realm_slug, realm_name = excluded.realm_name,
 		   level = excluded.level, faction = excluded.faction, bnet_character_id = excluded.bnet_character_id,
 		   source = 'bnet', imported_at = now(),
 		   race = excluded.race, gender = excluded.gender,
-		   bnet_account = coalesce(excluded.bnet_account, characters.bnet_account), bnet_captured_at = now()
+		   bnet_account = coalesce(excluded.bnet_account, characters.bnet_account), bnet_captured_at = now(),
+		   bnet_realm_id = coalesce(excluded.bnet_realm_id, characters.bnet_realm_id),
+		   ruleset_answered = excluded.ruleset_answered
 		 where characters.user_id is null or characters.user_id = excluded.user_id`,
 		ref.Key, ref.Region, ref.Ruleset, ch.Name, ch.ClassSlug, ref.UserID, ch.RealmSlug, ch.RealmName,
-		ch.Level, faction, ch.ID, ch.RaceName, ch.GenderType, rawOrNil(accountRaw))
+		ch.Level, faction, ch.ID, ch.RaceName, ch.GenderType, rawOrNil(accountRaw), ref.RealmID, ref.Answered)
 	if err != nil {
 		return false, fmt.Errorf("bnetimport: write character %s: %w", ref.Key, err)
 	}
@@ -241,6 +252,11 @@ func (s *Service) syncCharacterGuild(ctx context.Context, tx pgx.Tx, ref *charac
 		return profile, false, false, err
 	}
 	ruleset, key = ref.Ruleset, ref.Key
+	// A character on a realm no source has typed has no ruleset to resolve its
+	// guild under; the guild follows once the player answers or the realm resolves.
+	if ruleset == character.RulesetUnknown {
+		return profile, false, false, nil
+	}
 
 	if !profile.HasGuild {
 		if prevGuildID != nil && prevSource == "bnet" {
@@ -368,7 +384,14 @@ func rulesetForRealm(realms []bnetapi.Realm, slug string) (ruleset string, ok bo
 
 // rulesetSources names, for the needs_ruleset log line, every field
 // rulesetFor reads, in order.
-const rulesetSources = "realm.slug,protected_character.realm_id,realm_table,profile.ruleset,addon_row"
+const rulesetSources = "realm.slug,protected_character.realm_id,realm_table,profile.ruleset,addon_row,own_row,realm_answers"
+
+// resolvedRuleset is what rulesetFor found: the ruleset, and whether it is the
+// player's own answer to the unknown-realm question.
+type resolvedRuleset struct {
+	Ruleset  string
+	Answered bool
+}
 
 // rulesetFor resolves an account character's ruleset, the middle segment
 // of its key, from the first source that names one:
@@ -380,33 +403,44 @@ const rulesetSources = "realm.slug,protected_character.realm_id,realm_table,prof
 //     2026-11-05), then in the committed Forever realm table
 //     (bnetapi.Client.KnownRealm), which needs no call at all;
 //  3. the character profile's own ruleset ("PvP", "Roleplay PvP");
-//  4. this account's own addon row of the same name (rulesetFromAddonRow).
+//  4. this account's own addon row of the same name (rulesetFromAddonRow);
+//  5. this character's own Battle.net row, when it is keyed by a ruleset:
+//     the player's answer to the unknown-realm question, or what an earlier
+//     source named (a profile since made private never demotes it);
+//  6. the realm's agreed answers (realmConsensus): two or more players, none
+//     disagreeing.
 //
-// ok is false when none does (a realm the table has no evidence for and a
-// profile not yet public, or private). There is no default: a guessed ruleset
-// keys the character, and its guild, wrongly, which is how every sign-up from
-// 2026-11-05 to 2026-11-09 landed on normal. The caller skips such a
-// character and says so.
+// ok is false when none does. There is no default: a guessed ruleset keys the
+// character, and its guild, wrongly, which is how every sign-up from
+// 2026-11-05 to 2026-11-09 landed on normal. The caller keys such a character
+// under character.RulesetUnknown and the setup page asks its player.
 func (s *Service) rulesetFor(ctx context.Context, userID int64, region string, realms []bnetapi.Realm,
-	ch bnetapi.AccountCharacter) (ruleset string, ok bool, err error) {
+	ch bnetapi.AccountCharacter) (resolved resolvedRuleset, ok bool, err error) {
 	if ch.RealmSlug != "" {
 		if ruleset, ok := rulesetForRealm(realms, ch.RealmSlug); ok {
-			return ruleset, true, nil
+			return resolvedRuleset{Ruleset: ruleset}, true, nil
 		}
 	}
 	if ruleset, ok := s.rulesetForRealmID(region, realms, ch.RealmID); ok {
-		return ruleset, true, nil
+		return resolvedRuleset{Ruleset: ruleset}, true, nil
 	}
 	profile, _, err := s.Client.Character(ctx, region, ch.RealmSlug, ch.Name)
 	switch {
 	case errors.Is(err, bnetapi.ErrNotFound) || errors.Is(err, bnetapi.ErrForbidden):
 	case err != nil:
-		return "", false, fmt.Errorf("bnetimport: ruleset from profile of %s: %w", ch.Name, err)
+		return resolvedRuleset{}, false, fmt.Errorf("bnetimport: ruleset from profile of %s: %w", ch.Name, err)
 	case profile.Ruleset != "":
 		s.noteUnlistedRealm(region, ch.RealmID, profile.Ruleset)
-		return profile.Ruleset, true, nil
+		return resolvedRuleset{Ruleset: profile.Ruleset}, true, nil
 	}
-	return s.rulesetFromAddonRow(ctx, userID, region, ch.Name)
+	if ruleset, ok, err := s.rulesetFromAddonRow(ctx, userID, region, ch.Name); err != nil || ok {
+		return resolvedRuleset{Ruleset: ruleset}, ok, err
+	}
+	if resolved, ok, err := s.rulesetFromOwnRow(ctx, userID, region, ch.ID); err != nil || ok {
+		return resolved, ok, err
+	}
+	ruleset, ok, err := realmConsensus(ctx, s.Pool, region, ch.RealmID)
+	return resolvedRuleset{Ruleset: ruleset}, ok, err
 }
 
 // rulesetForRealmID is the ruleset of the realm with this id: from the

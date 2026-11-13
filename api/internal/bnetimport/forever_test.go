@@ -2,10 +2,8 @@
 package bnetimport
 
 import (
-	"bytes"
 	"context"
 	"errors"
-	"log/slog"
 	"net/http"
 	"os"
 	"strings"
@@ -187,50 +185,6 @@ func TestImportAccountKeysByTheRealmTableWhenBlizzardListsNoRealm(t *testing.T) 
 	}
 }
 
-// With the realm index gone, the realm id unknown to the table and the profile
-// not yet public, nothing names the ruleset: the character is skipped and
-// counted, never keyed as normal, and the log line names the realm id and that
-// the character was skipped.
-func TestImportAccountSkipsACharacterNoSourceNamesARulesetFor(t *testing.T) {
-	f := newBlizzardFixture(t)
-	f.rawJSON(foreverAccountPath, []byte(`{"wow_accounts":[{"id":1,"characters":[
-		{"name":"Newly","surname":"Rolled","id":9100,"playable_class":{"name":"Rogue"},
-		 "playable_race":{"name":"Gnome"},"gender":{"type":"FEMALE"},"faction":{"type":"ALLIANCE"},"level":3,
-		 "protected_character":{"href":"https://us.api.blizzard.com/profile/user/wow/protected-character/6999-9100?namespace=profile-forever-us"}}]}]}`))
-	f.json(http.MethodGet, "/data/wow/realm/index?namespace=dynamic-forever-us", http.StatusNotFound, nil)
-	for _, sub := range []string{"", "/equipment", "/character-media"} {
-		f.json(http.MethodGet, "/profile/wow/character/newly-rolled"+sub+"?namespace=profile-forever-us", http.StatusNotFound, nil)
-	}
-	svc := foreverService(t, f)
-	var logs bytes.Buffer
-	svc.Log = slog.New(slog.NewTextHandler(&logs, nil))
-	uid := seedUser(t, svc.Pool)
-
-	summary, err := svc.ImportAccount(context.Background(), uid, "user-oauth-token")
-	if err != nil {
-		t.Fatal(err)
-	}
-	if summary.Characters != 0 || summary.Skipped != 1 {
-		t.Fatalf("summary = %+v, want the one character skipped", summary)
-	}
-	var n int
-	if err := svc.Pool.QueryRow(context.Background(),
-		`select count(*) from characters where user_id = $1`, uid).Scan(&n); err != nil {
-		t.Fatal(err)
-	}
-	if n != 0 {
-		t.Fatalf("characters = %d, want none keyed by a guessed ruleset", n)
-	}
-	line := logs.String()
-	for _, want := range []string{"op=needs_ruleset", "realm_id=6999", "realm_known=false", "fallback=skip"} {
-		if !strings.Contains(line, want) {
-			t.Errorf("needs_ruleset line lacks %s:\n%s", want, line)
-		}
-	}
-	if strings.Contains(line, "op=realms") {
-		t.Errorf("the import warned about the realm index itself; bnetapi owns that line once an hour:\n%s", line)
-	}
-}
 
 func TestImportAccountListsEveryCharacterBeforeTheBudgetRunsOut(t *testing.T) {
 	f := foreverFixture(t)

@@ -13,6 +13,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/apptesters"
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/billing"
+	"github.com/jhunthrop/foreversixty/api/internal/bnetimport"
 	"github.com/jhunthrop/foreversixty/api/internal/builds"
 	"github.com/jhunthrop/foreversixty/api/internal/coach"
 	"github.com/jhunthrop/foreversixty/api/internal/creators"
@@ -104,6 +105,9 @@ type Deps struct {
 	// AppTesters serves the phone apps' beta signup (foreversixty.gg/app) and the owner's list
 	// of it; nil leaves them unmounted.
 	AppTesters *apptesters.Service
+	// RealmAnswers serves the unknown-realm question's answer (POST /v1/me/realm-answers); nil
+	// (the Battle.net character import off) leaves it unmounted.
+	RealmAnswers *bnetimport.Service
 
 	TrustedProxyHops int
 }
@@ -210,6 +214,9 @@ func NewRouter(d Deps) http.Handler {
 	}
 	if d.AppTesters != nil {
 		apptesters.Mount(mux, d.AppTesters)
+	}
+	if d.RealmAnswers != nil {
+		bnetimport.MountRealmAnswers(mux, d.RealmAnswers)
 	}
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such route", nil)

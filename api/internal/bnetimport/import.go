@@ -229,18 +229,15 @@ func byLevel(chars []bnetapi.AccountCharacter) []bnetapi.AccountCharacter {
 	return out
 }
 
-// errNeedsRuleset is writeAccountRow's answer for a character no source
-// names a ruleset for (rulesetFor): it is skipped, never keyed as normal.
-var errNeedsRuleset = errors.New("bnetimport: no source names this character's ruleset")
-
-// opNeedsRuleset is the log op a skipped character is reported under; the
-// bnet_needs_ruleset log-based metric counts it.
+// opNeedsRuleset is the log op a character no source names a ruleset for is
+// reported under; the bnet_needs_ruleset log-based metric counts it. Such a
+// character is imported under character.RulesetUnknown and its player asked.
 const opNeedsRuleset = "needs_ruleset"
 
 // writeAccountRows is the first pass: one characters row per character,
-// keyed by the ruleset rulesetFor resolves. A collision (the key already
-// belongs to another account) and a character with no ruleset are each
-// counted in summary.Skipped and logged.
+// keyed by the ruleset rulesetFor resolves, or by character.RulesetUnknown
+// when nothing names one. A collision (the key already belongs to another
+// account) is counted in summary.Skipped and logged.
 func (s *Service) writeAccountRows(ctx context.Context, userID int64, region string, realms []bnetapi.Realm,
 	chars []bnetapi.AccountCharacter, summary *auth.ImportSummary) ([]characterRef, error) {
 	written := make([]characterRef, 0, len(chars))
@@ -249,17 +246,6 @@ func (s *Service) writeAccountRows(ctx context.Context, userID int64, region str
 			return written, ErrBudget
 		}
 		ref, wrote, err := s.writeAccountRow(ctx, userID, region, realms, ch)
-		if errors.Is(err, errNeedsRuleset) {
-			// Counted by the bnet_needs_ruleset log-based metric
-			// (docs/runbooks/launch-day.md); the next sign-in retries it. The
-			// line names the realm id so the Forever realm table can learn it.
-			summary.Skipped++
-			_, realmKnown := s.Client.KnownRealm(region, ch.RealmID)
-			s.logger().Warn("bnetimport", "op", opNeedsRuleset, "user_id", userID, "region", region,
-				"bnet_character_id", ch.ID, "realm_id", ch.RealmID, "realm_known", realmKnown,
-				"fields_checked", rulesetSources, "fallback", "skip")
-			continue
-		}
 		if err != nil {
 			if errors.Is(err, context.DeadlineExceeded) || ctx.Err() != nil {
 				return written, ErrBudget
@@ -278,19 +264,26 @@ func (s *Service) writeAccountRows(ctx context.Context, userID int64, region str
 }
 
 // writeAccountRow resolves one account character's ruleset and key and
-// writes its row.
+// writes its row. A character no source names a ruleset for is keyed under
+// character.RulesetUnknown, never a guess, and logged with its realm id so
+// the Forever realm table can learn it.
 func (s *Service) writeAccountRow(ctx context.Context, userID int64, region string, realms []bnetapi.Realm,
 	ch bnetapi.AccountCharacter) (characterRef, bool, error) {
-	ruleset, ok, err := s.rulesetFor(ctx, userID, region, realms, ch)
+	resolved, ok, err := s.rulesetFor(ctx, userID, region, realms, ch)
 	if err != nil {
 		return characterRef{Key: ch.Name}, false, err
 	}
 	if !ok {
-		return characterRef{Key: ch.Name}, false, errNeedsRuleset
+		// Counted by the bnet_needs_ruleset log-based metric (docs/runbooks/launch-day.md).
+		_, realmKnown := s.Client.KnownRealm(region, ch.RealmID)
+		s.logger().Warn("bnetimport", "op", opNeedsRuleset, "user_id", userID, "region", region,
+			"bnet_character_id", ch.ID, "realm_id", ch.RealmID, "realm_known", realmKnown,
+			"fields_checked", rulesetSources, "fallback", "ask")
+		resolved = resolvedRuleset{Ruleset: character.RulesetUnknown}
 	}
 	ref := characterRef{
-		UserID: userID, Region: region, Ruleset: ruleset, Key: character.Key(region, ruleset, ch.Name),
-		RealmSlug: ch.RealmSlug, Name: ch.Name, BnetID: ch.ID,
+		UserID: userID, Region: region, Ruleset: resolved.Ruleset, Key: character.Key(region, resolved.Ruleset, ch.Name),
+		RealmSlug: ch.RealmSlug, Name: ch.Name, BnetID: ch.ID, RealmID: ch.RealmID, Answered: resolved.Answered,
 	}
 	wrote, err := s.writeCharacterRow(ctx, ref, ch)
 	return ref, wrote, err

@@ -57,7 +57,7 @@ func (s *Service) moveKey(ctx context.Context, tx pgx.Tx, oldKey, newKey, newRul
 		return nil, false, nil
 	}
 	counts := KeyMoveCounts{}
-	tag, err := tx.Exec(ctx, `update characters set key = $1, ruleset = $2 where key = $3`, newKey, newRuleset, oldKey)
+	tag, err := tx.Exec(ctx, `update characters set key = $1, ruleset = $2, ruleset_answered = false where key = $3`, newKey, newRuleset, oldKey)
 	if err != nil {
 		return nil, false, fmt.Errorf("bnetimport: rekey %s: %w", oldKey, err)
 	}
