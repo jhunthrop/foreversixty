@@ -125,7 +125,7 @@ Frost and the bare Arcane builds take no Ignite. Ignite was 10.6% of Fire raid 6
 ## Gates
 
 - **Fork, box, throwaway worktree** (`crit-flags/fork_tests.sh`): both tests red at 79358b3c2, green at 8f61b9e6a; `go test -tags=with_db -p 1` over `sim/core`, `sim/mage/...`, `sim/druid/...`, `sim/warlock/...`, `sim/hunter/...`, `sim/common/...`: ok; `sim/conformance` ok but O2. No suite golden moved (the class suite fixtures cast none of the four channels and carry no Ignite build).
-- **Site, pinned to 8f61b9e6a** (`crit-flags/gates.sh`): see the landing commit; the ladder goldens the gates rewrote are in the landing.
+- **Site, pinned to 8f61b9e6a** (`crit-flags/gates.sh`, `gates2.sh`): `npm run lint` clean; after `npm run sync`, `astro check` 0 errors (2,310 files) and `npx vitest run src/lib/sim src/content/guides src/lib/guides` 131 files, 2,481 tests passed; `apl_check` against the pinned fork clean; `go vet ./...`; `go test ./request/` with the ladder goldens rewritten (only `mage-fire.golden.md` moved), then `./request/`, `./leveling/`, `./rankchoices/`, `./score/`, `./adapter/`, `./cmd/spec-breakdown/`, `./cmd/leveling-bis/`, `./cmd/addon-builds/`, `./cmd/talent-search/`: ok.
 - **wow-player, mage:** SHIP on the one Fire guide line (the burn never crits); fire.md, arcane.md, the Fire card notes and the Fire coach read correctly with Ignite's ticks flat.
 
 ## Measure at refresh
