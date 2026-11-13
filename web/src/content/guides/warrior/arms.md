@@ -6,7 +6,7 @@ role: dps
 build: 'FS1:1.60.1.70790:warrior:night-elf:12323213132215201/0505/205:'
 buildWhy: 'Improved Charge for pull rage, Iron Will against stuns and fears'
 raidBuild: 'FS1:1.60.1.70790:warrior:night-elf:30303213132215201/05050005012/1:'
-raidBuildWhy: 'Trades Iron Will and Improved Charge for Reckless Swings'
+raidBuildWhy: 'Iron Will and Charge go to Enrage, Execute and Reckless Swings'
 recommendedRaces: [night-elf, undead]
 statPriority: [Hit, Critical strike, Strength, Agility, Attack power, Melee haste]
 description: 'Two-hander in Battle Stance: Rend and Bloodthrill feed Overpower, Mortal Strike on cooldown, and a stance swap for Recklessness at 20%.'

@@ -4,7 +4,7 @@ classSlug: hunter
 spec: marksmanship
 role: dps
 build: 'FS1:1.60.1.70790:hunter:night-elf:53200005/005055200152105/5:'
-buildWhy: 'Rapid Recuperation refills mana and Rapid Killing chains kills'
+buildWhy: 'Rapid Recuperation keeps mana up, Rapid Killing chains kills'
 raidBuild: 'FS1:1.60.1.70790:hunter:night-elf:5/0052550011503051/50005003:'
 raidBuildWhy: 'Drops the pet for Lone Wolf, Sniper Shot and full Barrage'
 recommendedRaces: [night-elf, troll]
