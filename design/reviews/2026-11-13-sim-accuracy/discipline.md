@@ -2,7 +2,7 @@
 
 Lane brief: `design/reviews/sim-accuracy/brief.md`. Lane `sim-disc`. Site from origin/main d730bbcac, fork from master 5515ae0ef (the pin). Client on the site: 1.60.1.70790 with its hotfix push; live client 1.60.1.70888. Scope: Discipline end to end against the tier list's raid 60 healer row (Restoration druid 1,024.0, Restoration shaman 895.8, Holy priest 882.0, Holy paladin 780.8, Discipline 596.6, 12 Nov), with Holy beside it because the two share the bug.
 
-**Totals: 1 confirmed bug, old, fixed (a card bug shared by both priest cards). 0 engine bugs, 0 new data. The rest of the gap is real under the heal profile, and the report says where it comes from and what Discipline brings that HPS does not show.** Engine pin 5515ae0ef to 186440a08 (the fork carries the card copy, `ui/healing_priest/apls`, nothing else).
+**Totals: 1 confirmed bug, old, fixed (a card bug shared by both priest cards). 0 engine bugs, 0 new data. The rest of the gap is real under the heal profile, and the report says where it comes from and what Discipline brings that HPS does not show.** Engine pin 5515ae0ef to f46237344 (the fork carries the card copy, `ui/healing_priest/apls`, nothing else; 186440a08 was the first, fully paced version of the line, replaced in the lane, see H2).
 
 ## What the HPS metric counts for a Discipline priest
 
@@ -43,7 +43,7 @@ No Forever-new Discipline mechanic is missing: the tree's new throughput is Pena
 
 | # | bug | origin | fix | evidence |
 |---|---|---|---|---|
-| F1 | **The tank's emergency Flash Heal was never paced.** Both priest cards fire Flash Heal on a tank under 35% with no mana condition, while the party's emergency Flash Heals have waited on 70% of the pace since round 6. In the raid fight the bar runs dry at 91 s and the tank is under 35% often after that, so Discipline cast 27 Flash Heals a fight at 3.48 healing per mana (the worst on its card), 10,000 mana, more than any other spell it casts; each displaced a Greater Heal at 4.8 to 5.0. | old (the card since round 6) | the tank's Flash Heal line waits on the card's own filler pace (mana at least 90% of the share of the fight left) on both cards; Greater Heal on a tank under 50% stays unpaced, so the emergency still has an answer when the bar is behind | `spec-breakdown -heal` (below); the variants that measured it |
+| F1 | **The tank's emergency Flash Heal was never paced.** Both priest cards fire Flash Heal on a tank under 35% with no mana condition, while the party's emergency Flash Heals have waited on 70% of the pace since round 6. In the raid fight the bar runs dry at 91 s and the tank is under 35% often after that, so Discipline cast 27 Flash Heals a fight at 3.48 healing per mana (the worst on its card), 10,000 mana, more than any other spell it casts; each displaced a Greater Heal at 4.8 to 5.0. | old (the card since round 6) | on both cards the tank's Flash Heal fires under 20% whatever the mana, and under 35% only on the card's own filler pace (mana at least 90% of the share of the fight left); Greater Heal on a tank under 50% stays unpaced | `spec-breakdown -heal` (below); the variants that measured it |
 
 **Rotation variants measured first** (raid 60, Alliance, seed 1, 5,000 iterations, effective HPS; the files are in `discipline/`):
 
@@ -58,35 +58,36 @@ No Forever-new Discipline mechanic is missing: the tree's new throughput is Pena
 | no party Flash Heal | 604.7 (+0.1%) | |
 | tank Flash Heal under 20% only | 624.4 (+3.4%) | 884.2 (+1.6%) |
 | tank Flash Heal on 70% of the pace | 652.1 (+8.0%) | 890.7 (+2.3%) |
-| **tank Flash Heal on 90% of the pace (adopted)** | **654.4 (+8.4%)** | **892.9 (+2.6%)** |
+| tank Flash Heal on 90% of the pace | 654.4 (+8.4%) | 892.9 (+2.6%) |
+| **tank Flash Heal under 20% always, under 35% on 90% of the pace (adopted)** | **624.2 (+3.4%)** | **881.2 (+1.3%)** |
 
-The adopted line keeps Flash Heal on the card (5 casts a fight at raid 60, the first minute and a half, while the bar keeps pace) and gains beyond the error at every cell; dropping it entirely would gain a hair more but leaves no fast heal at all, which the adoption rule does not allow. Shielding the party loses at every gate: a party member takes about 83 damage a second from the pulses, so a 1,220 shield at 375 mana is worse healing per mana than the Greater Heal it displaces, and Weakened Soul is never what holds the shield back. The rotation search (`sim/cmd/rotation-search`) does not run healers (`errSkipped`), so these were measured by hand on `spec-breakdown -rotation`.
+The fully paced line gains the most at raid 60, but measured over every band it left a leveling Discipline priest with no fast heal at all (0 to 0.1 Flash Heals a fight on the bare bands, and none at any rung of the leveling ladder), which the adoption rule does not allow (H2). The adopted line keeps the true emergency unpaced: a tank under 20% always gets the Flash Heal, a tank under 35% gets it only while the bar keeps pace. It gains beyond the error at every Discipline cell, keeps Flash Heal cast at every band (Discipline 0.7 to 4.2 a fight bare, 16.5 at raid 60), and leaves Holy's bare 40 and 50 within the error. Shielding the party loses at every gate: a party member takes about 83 damage a second from the pulses, so a 1,220 shield at 375 mana is worse healing per mana than the Greater Heal it displaces, and Weakened Soul is never what holds the shield back. The rotation search (`sim/cmd/rotation-search`) does not run healers (`errSkipped`), so these were measured by hand on `spec-breakdown -rotation`.
 
 ## Before and after
 
-`spec-breakdown -heal`, the published band entries, 10,000 iterations, effective HPS; before is the pin 5515ae0ef on the published card, after the same engine on the new card (the fork change is the card copy only). Combined error under 0.07% in every cell.
+`spec-breakdown -heal`, the published band entries, 10,000 iterations, effective HPS; before is the pin 5515ae0ef on the published card, after the same engine on the adopted card (the fork change is the card copy only). Combined error 0.03 to 0.07% in every cell. Flash Heal casts a fight in brackets.
 
 | cell | Discipline before | after | gain | Holy before | after | gain |
 |---|---|---|---|---|---|---|
-| raid 60 Alliance s1 | 603.89 | 654.40 | +8.36% | 870.08 | 892.68 | +2.60% |
-| raid 60 Alliance s50001 | 603.71 | 654.22 | +8.37% | 869.77 | 892.31 | +2.59% |
-| raid 60 Horde s1 | 596.88 | 648.70 | +8.68% | 881.68 | 900.77 | +2.17% |
-| raid 60 Horde s50001 | 596.33 | 648.62 | +8.77% | 882.00 | 900.92 | +2.15% |
-| bare 60 Alliance | 287.42 | 303.60 | +5.63% | 417.51 | 418.63 | +0.27% |
-| bare 60 Horde | 287.30 | 303.01 | +5.47% | 424.34 | 428.29 | +0.93% |
-| bare 50 Alliance / Horde | 206.99 / 210.58 | 209.46 / 213.40 | +1.19 / +1.34% | 258.80 / 272.68 | 258.62 / 272.45 | -0.07 / -0.08% (within error) |
-| bare 40 Alliance / Horde | 144.56 / 149.01 | 148.76 / 151.86 | +2.91 / +1.91% | 175.92 / 184.46 | 175.92 / 184.44 | 0.00 / -0.01% |
-| bare 30 Alliance / Horde | 94.71 / 96.51 | 95.45 / 97.13 | +0.78 / +0.64% | 76.68 / 79.89 | 76.75 / 82.08 | +0.09 / +2.74% |
-| bare 20 Alliance / Horde | 46.39 / 45.43 | 47.28 / 46.32 | +1.92 / +1.96% | 41.97 / 40.61 | 42.76 / 41.44 | +1.88 / +2.04% |
+| raid 60 Alliance s1 | 603.89 (27.2) | 624.16 (16.5) | +3.36% | 870.08 (24.2) | 881.20 (19.4) | +1.28% |
+| raid 60 Alliance s50001 | 603.71 | 624.38 | +3.42% | 869.77 | 881.62 | +1.36% |
+| raid 60 Horde s1 | 596.88 (28.7) | 620.56 (16.4) | +3.97% | 881.68 (24.6) | 893.01 (17.8) | +1.29% |
+| raid 60 Horde s50001 | 596.33 | 620.30 | +4.02% | 882.00 | 893.35 | +1.29% |
+| bare 60 Alliance | 287.42 (7.5) | 292.53 (4.2) | +1.78% | 417.51 (4.3) | 418.36 (1.5) | +0.20% |
+| bare 60 Horde | 287.30 (9.5) | 295.96 (3.6) | +3.01% | 424.34 (9.8) | 429.11 (4.0) | +1.12% |
+| bare 50 Alliance / Horde | 206.99 / 210.58 | 207.61 / 211.93 | +0.30 / +0.64% | 258.80 / 272.68 | 258.62 / 272.41 | -0.07 / -0.10% (within error) |
+| bare 40 Alliance / Horde | 144.56 / 149.01 | 144.82 / 149.19 | +0.18 / +0.12% | 175.92 / 184.46 | 175.92 / 184.44 | 0.00 / -0.01% |
+| bare 30 Alliance / Horde | 94.71 / 96.51 | 94.92 / 96.76 | +0.22 / +0.26% | 76.68 / 79.89 | 76.71 / 80.30 | +0.04 / +0.51% |
+| bare 20 Alliance / Horde | 46.39 / 45.43 | 46.49 / 45.53 | +0.22 / +0.22% | 41.97 / 40.61 | 42.16 / 40.85 | +0.45 / +0.59% |
 
-Raid 60 tank Flash Heals: Discipline 27 to 5 a fight, Holy 24 to 16; the mana lasts 4 s longer for Discipline and 2 s for Holy. On the tier list's Alliance raid row, Discipline moves from 31% behind Holy to 27% behind, and from 41.7% to about 36% behind the top. The published numbers move at the next ranking (MR94).
+The mana lasts 3 to 4 s longer at raid 60 for Discipline and about 2 s for Holy. On the tier list's Alliance raid row, Discipline moves from 31% behind Holy to 29% behind, and from 41.7% to about 39% behind the top. The published numbers move at the next ranking (MR94).
 
 ## Is the rest of the gap real?
 
 Yes, under this profile, and the engine is right about why. Three things make it:
 
 1. **Mana.** The fight is longer than any priest's bar. Holy gets 12 mana a second back from Litany of Light (a Holy talent Discipline cannot reach) and its best spell, Prayer of Mending, returns 11 healing per mana; Discipline's best spells (Penance 6.3, Renew 6.5) are on a cooldown or a slot, and its fillers return 3.5 to 5. Holy's spend is 41k against Discipline's 37k, at 6.4 healing per mana against 5.0.
-2. **Throughput while the mana lasts is close.** Over the first 90 s (`-duration 90`, raid 60 Alliance): Restoration druid 1,092, Holy 1,149, Restoration shaman 995, Discipline 955. Discipline is 17% behind Holy and 4% behind the shaman there; the 300 s fight's mana turns that into 27%.
+2. **Throughput while the mana lasts is close.** Over the first 90 s (`-duration 90`, raid 60 Alliance): Restoration druid 1,092, Holy 1,149, Restoration shaman 995, Discipline 955. Discipline is 17% behind Holy and 4% behind the shaman there; the 300 s fight's mana turns that into 29% on the fixed card.
 3. **The profile rewards no overheal-free healing.** Almost nothing overheals in the raid fight (Discipline 3%), because the damage is sized so healers cover 60 to 80% of it. A shield's real-raid edge (it lands before the hit and cannot overheal) is worth nothing when every heal lands on a hurt target anyway.
 
 What Discipline brings that HPS does not show, for the tier page:
@@ -99,6 +100,7 @@ Suggested tier page line for the Discipline row (the other lane owns the page; n
 
 ## Held and open
 
+- **H2, the tank's Flash Heal fully paced** (no under-20% line; fork 186440a08, the lane's first version): raid 60 Discipline +8.4 to +8.8% and Holy +2.2 to +2.6%, bare 60 +5.5 to +5.6% and +0.3 to +0.9%, but a Discipline priest then casts no Flash Heal at any bare band or ladder rung (the ladder golden listed it as a zero-cast line at every level). Held under the adoption rule; the owner can take it if a fast heal that is never cast below 60 is acceptable.
 - **H1, Flash Heal off the cards entirely.** +9.5% Discipline and +1.1% Holy at raid 60 on Alliance seed 1, but it removes the fast heal; the adoption rule keeps it. Not adopted.
 - **O1, the profile's overheal.** The profile is sized so healers cover 60 to 80% of what comes in, which makes the raid fight a mana fight with almost no overheal. That is its stated rule (`heal-profile.json` tuning), not a bug, but it is the main reason a shield healer ranks last; whether the healer list should also show a shorter or burstier fight is the owner's call.
 - **O2, a level 60 Discipline log.** The first raid logs (9 Dec) settle the shield share, the shield waste and Penance's share in a real raid.
@@ -106,9 +108,9 @@ Suggested tier page line for the Discipline row (the other lane owns the page; n
 
 ## Guide and card
 
-- Both cards: the tank Flash Heal line's condition and note; the top-level notes record the change. `make apl-sync` wrote the two copies (`sim/request/apl`, the fork's `ui/healing_priest/apls`); fork commit 186440a08.
-- Guides: Discipline's Flash Heal paragraph (keep it for a tank about to die while the mana keeps up; behind, a Greater Heal started before the hit), Holy's Flash Heal paragraph likewise; both `updated` stamps read 2026-11-13.
-- wow-player: SHIP WITH FIXES for both classes, both fixes taken (the Discipline note's wording, the Holy note's pace covering the party as well); `discipline/wow-player.md`.
+- Both cards: the tank Flash Heal line's condition and note; the top-level notes record the change. `make apl-sync` wrote the two copies (`sim/request/apl`, the fork's `ui/healing_priest/apls`); fork commits 186440a08 (fully paced) and f46237344 (adopted).
+- Guides: Discipline's and Holy's Flash Heal paragraphs (a tank about to die gets it whatever the bar says; a tank who is only low gets it while the mana keeps up; behind, a Greater Heal started before the hit); both `updated` stamps read 2026-11-13.
+- wow-player: first pass SHIP WITH FIXES for both classes, both fixes taken; second pass on the adopted line's text SHIP for both, the optional Holy readability split taken; `discipline/wow-player.md`.
 
 ## Measure at refresh
 
