@@ -104,8 +104,8 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 20 | 00000000000000000-15301100000000000-00000000000000000 | main_hand:7230 | 22.2 | 9 | other:attack/1=14.3, spell:1311654=8.9, spell:1866=4.8, spell:1311655=3.5, spell:20271=3.5 | {SpellID: 1239570}, {SpellID: 1310994}, {SpellID: 20594} |
 | 30 | 00000000000000000-15302102510001000-00000000000000000 | main_hand:13045 | 34.8 | 10 | other:attack/1=17.4, spell:20231=10.4, spell:680=5.3, spell:20183=4.3, spell:20271=3.3 | {SpellID: 20594} |
 | 38 | 00000000000000000-15302102513501000-00000000000000000 | main_hand:7758 | 46.3 | 10 | other:attack/1=18.9, spell:20415=13.5, spell:2495=5.3, spell:20411=5.3, spell:20271=4.3 | {SpellID: 20594} |
-| 40 | 00000000000000000-15302102513501011-00000000000000000 | main_hand:7758 | 54.7 | 12 | other:attack/1=18.8, spell:2495=8.4, spell:20415=7.9, spell:407632=3.2, spell:20411=2.9 | {SpellID: 20594} |
-| 50 | 05003000000000000-15302102513501031-00000000000000000 | main_hand:7758 | 69.8 | 12 | other:attack/1=18.8, spell:5569=8.5, spell:20417=8.0, spell:407632=3.5, spell:20413=3.4 | {SpellID: 20594} |
+| 40 | 00000000000000000-15302102513501011-00000000000000000 | main_hand:7758 | 48.1 | 10 | other:attack/1=18.9, spell:2495=8.5, spell:20415=7.8, spell:20411=3.6, spell:20271=2.6 | {SpellID: 20594} |
+| 50 | 05003000000000000-15302102513501031-00000000000000000 | main_hand:7758 | 63.4 | 10 | other:attack/1=18.9, spell:20417=9.9, spell:5569=8.4, spell:20413=4.0, spell:20271=3.0 | {SpellID: 20594} |
 | 60 | 05005000000000000-15302102513501031-50030000000000000 | main_hand:22736 | 106.9 | 12 | other:attack/1=67.9, spell:10333=30.3, spell:20418=7.5, spell:20414=2.3, spell:407632=1.5 | {SpellID: 20594} |
 
 ## Learned but unused (informational)
@@ -167,8 +167,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - paladin-protection level=38 kind=zero_casts spell="Divine Protection" id=5573 authored=5573
 - paladin-protection level=38 kind=zero_casts spell="Holy Shield" id=20925 authored=1239570
 - paladin-protection level=40 kind=unresolved_id action={SpellID: 20594}
+- paladin-protection level=40 kind=zero_casts id=407632 authored=407632 (untracked ability; not in spellranks.json's rank chains)
+- paladin-protection level=40 kind=zero_casts spell="Divine Protection" id=5573 authored=5573
 - paladin-protection level=40 kind=zero_casts spell="Holy Shield" id=20927 authored=1239570
 - paladin-protection level=50 kind=unresolved_id action={SpellID: 20594}
+- paladin-protection level=50 kind=zero_casts id=407632 authored=407632 (untracked ability; not in spellranks.json's rank chains)
+- paladin-protection level=50 kind=zero_casts spell="Divine Protection" id=5573 authored=5573
 - paladin-protection level=50 kind=zero_casts spell="Holy Shield" id=20928 authored=1239570
 - paladin-protection level=60 kind=unresolved_id action={SpellID: 20594}
 - paladin-protection level=60 kind=zero_casts spell="Holy Shield" id=1239570 authored=1239570
