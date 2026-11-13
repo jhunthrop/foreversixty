@@ -588,7 +588,7 @@ local L = {
 	-- Gold: the band's pick, worn or in the bags (spec 2.2 cases 8 and 18): "Best for 40 to 49", and
 	-- "Best at 60" in the top band.
 	tooltipBestFor = "Best for %s",
-	tooltipBestAtCap = "Best at %d",
+	tooltipBestAtCap = "Best at level %d",
 	-- Gold: a bag item a band ahead names, for a character under its first band (case 11).
 	tooltipYourBisAt = "Best in slot at level %d",
 	-- White: a worn item the band's pick does not beat (case 19), the pick named, so the player sees
@@ -597,6 +597,9 @@ local L = {
 	-- pick gains nothing, "As good as the 40 to 49 pick: <pick>" under the floor or unscored.
 	tooltipBeatsPick = "Better than the %s pick: %s",
 	tooltipMatchesPick = "As good as the %s pick: %s",
+	-- Shift, under those: the pick's own figure against what is worn, said as the pick's ("Pick:
+	-- −0.3 DPS"), so a minus under "Better than" never reads as yours losing.
+	tooltipPickFigure = "Pick: %s",
 	-- White, with nothing to name: the pick is worn in the item's other slot, or the client cannot
 	-- show the pick or any of its alternatives.
 	tooltipNoUpgradeUntil = "No upgrade until level %d",

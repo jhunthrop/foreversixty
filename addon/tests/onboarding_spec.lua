@@ -175,6 +175,24 @@ describe("Onboarding, the pure model", function()
 		assert.is_nil(TourExample.example({}))
 	end)
 
+	it("says the tooltip's own gold line on a pick in the character's band: Best for its span", function()
+		local data = {
+			bis = { ["hunter-beast-mastery"] = {
+				[40] = { alliance = { chest = "6468|D|Wailing Caverns: Mutanus the Devourer|0.31" } },
+				[50] = { alliance = { chest = "6468|D|Wailing Caverns: Mutanus the Devourer|0.31" } },
+				[60] = { alliance = { chest = "6469|D|Wailing Caverns: Mutanus the Devourer|0.31" } },
+			} },
+			bisNames = { [6468] = "Deviate Scale Belt", [6469] = "Venomstrike" },
+		}
+		local pick = TourExample.dataPick(data, "hunter-beast-mastery", 42, "alliance")
+		assert.is_false(pick.upcoming)
+		assert.are.equal(60, pick.after)
+		local example = TourExample.example({ pick = pick })
+		assert.are.same({ "Best for 40 to 59", "clientGold" }, example.lines[1])
+		local top = TourExample.example({ pick = TourExample.dataPick(data, "hunter-beast-mastery", 60, "alliance") })
+		assert.are.same({ "Best at level 60", "clientGold" }, top.lines[1])
+	end)
+
 	-- The example is read from the shipped Data.lua at runtime, so a nightly refresh redraws it. This
 	-- pins the shape only (data contracts are floors), never which item the nightly picked.
 	it("reads a named main hand from the shipped data for a level 6 Beast Mastery hunter", function()

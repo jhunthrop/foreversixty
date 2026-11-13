@@ -832,7 +832,7 @@ def board_onboarding_1_hover():
 HOVER_HINT = ('<div class="tt" style="position:absolute;left:-30px;bottom:30px;min-width:0;width:300px;'
               'font-size:12.5px;line-height:16px;text-align:left;color:#fff"><div style="color:#ffd100;font-size:14px;'
               'line-height:18px">Tooltips only</div><div>Turns off everything but the tooltip lines.</div>'
-              '<div>Ends the tour. /fs help opens it again.</div></div>')
+              '<div>Ends the tour. /fs tour opens it again.</div></div>')
 
 
 def board_onboarding_1_solo():

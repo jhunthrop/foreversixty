@@ -2,7 +2,8 @@
 
 ## Unreleased
 
-- Hovering what you wear names the band's pick for the slot in every case: "Best for 40 to 49" in gold when you wear it, "Better than the 40 to 49 pick: Stalker's Leather Belt" or "As good as the 40 to 49 pick: ..." when yours holds, then "At level 50: Stalker's Mail Belt". "No upgrade until level 50" no longer hides the pick. A pick that holds for two bands reads "Best for 30 to 49".
+- Hovering what you wear names the band's pick for the slot in every case: "Best for 40 to 49" in gold when you wear it, "Better than the 40 to 49 pick: Stalker's Leather Belt" or "As good as the 40 to 49 pick: ..." when yours holds, then "At level 50: Stalker's Mail Belt". "No upgrade until level 50" no longer hides the pick. A pick that holds for two bands reads "Best for 30 to 49". The top band reads "Best at level 60". With Shift, the pick's own figure reads "Pick: −0.3 DPS".
+- A worn item the band's pick beats shows "Next upgrade: <pick>" and then the next band's pick, "At level 50: <pick>"; where the upgrade drops waits under Shift.
 - The tour shows once more to everyone with this version, and once on any install, reinstall or wiped SavedVariables. /fs tour opens it again any time; the Settings page lists the command.
 
 ## 2.0.40

@@ -78,9 +78,9 @@ describe("the band word and the lines built from it", function()
 		assert.are.equal("level 60", ItemTooltip.bandWord(60, nil))
 	end)
 
-	it("says Best for the band in the player's words, Best at 60 at the cap", function()
+	it("says Best for the band in the player's words, Best at level 60 at the cap", function()
 		assert.are.equal("Best for 40 to 49", ItemTooltip.bestText(40, 50))
-		assert.are.equal("Best at 60", ItemTooltip.bestText(60, nil))
+		assert.are.equal("Best at level 60", ItemTooltip.bestText(60, nil))
 	end)
 
 	it("says the worn item beats the band's pick, or is as good, by the pick's gain", function()
@@ -138,7 +138,9 @@ describe("the owner's level 42 Beast Mastery hunter, Brigade Girdle of the Bandi
 			-- Shift: the pick's own figure under the floor, its source (the 50 pick's is the same
 			-- profession, said once), then the attribution.
 			assert.are.same({ "figure", "source", "attribution" }, kinds(lines, "shift"))
-			assert.is_truthy(lines[3].text:find(L.tooltipMinus, 1, true))
+			-- The figure is the pick's, said so: "Pick: −0.3 DPS" never reads as the worn belt losing.
+			local prefix = string.format(L.tooltipPickFigure, L.tooltipMinus)
+			assert.are.equal(prefix, lines[3].text:sub(1, #prefix))
 		end
 	end)
 
@@ -241,13 +243,17 @@ describe("every hunter slot at every band edge, both factions", function()
 		end)
 	end)
 
-	it("leads with the band's pick as the next upgrade over a worn item it beats", function()
-		sweep(function(spec, faction, level, _, slot, id, label)
+	it("leads with the band's pick as the next upgrade over a worn item it beats, then the next band's", function()
+		sweep(function(spec, faction, level, band, slot, id, label)
 			local lines = ItemTooltip.section(ctx(spec, level, faction, slot, worn(slot, DUMMY, {}), {},
 				{ agility = 100 }))
-			local first = texts(lines)[1]
-			assert.is_truthy(first:find(L.tooltipNextLabel, 1, true), label .. ": " .. tostring(first))
-			assert.is_truthy(first:find(Data.bisNames[id], 1, true), label)
+			local shown = texts(lines)
+			assert.is_truthy(shown[1]:find(L.tooltipNextLabel, 1, true), label .. ": " .. tostring(shown[1]))
+			assert.is_truthy(shown[1]:find(Data.bisNames[id], 1, true), label)
+			local at = atLine(spec, faction, slot, nextDiffering(spec, faction, slot, band, id))
+			if at ~= nil then
+				assert.are.equal(at, shown[2], label)
+			end
 		end)
 	end)
 end)

@@ -659,7 +659,7 @@ describe("ItemTooltip.section", function()
 		local lines = texts(ItemTooltip.section(ctx({ level = 35, item = { itemId = 200, link = "item:200",
 			equipLocation = "INVTYPE_CHEST", itemClass = 4, itemSubClass = 3, stats = { strength = 10 } } })))
 		assert.are.same({ upLine(6), ItemTooltip.bestText(30, nil) }, lines)
-		assert.are.equal("Best at 30", lines[2])
+		assert.are.equal("Best at level 30", lines[2])
 	end)
 
 	-- Case 10: an upgrade the character cannot wear until a level.
@@ -676,14 +676,16 @@ describe("ItemTooltip.section", function()
 		local WORN = { itemId = 50, link = WORN_LINK, equipLocation = "INVTYPE_CHEST", itemClass = 4,
 			itemSubClass = 3, stats = { strength = 4 } }
 
-		-- Case 16.
-		it("leads with the next upgrade in white, its source under it, the details under Shift", function()
+		-- Case 16: the band's pick as the next upgrade, then the next band's pick with its level (owner,
+		-- 2026-11-13); the upgrade's source and the At pick's own under Shift.
+		it("leads with the next upgrade in white, the next band's pick under it, the details under Shift", function()
 			local lines, target, _, head = ItemTooltip.section(ctx({ item = WORN }))
 			assert.is_true(head.equipped)
-			assert.are.same({ ItemTooltip.nextLine("Defias Overseer Chest", 16, "dps"), NEXT_SOURCE }, texts(lines))
+			assert.are.same({ ItemTooltip.nextLine("Defias Overseer Chest", 16, "dps"), AT_30 }, texts(lines))
 			assert.are.equal("tooltipBody", lines[1].color)
-			assert.are.equal("source", lines[2].kind)
-			assert.are.same({ "breakdown", "alternatives", "attribution" }, shiftKinds(lines))
+			assert.are.equal("at", lines[2].kind)
+			assert.are.same({ "breakdown", "source", "source", "alternatives", "attribution" }, shiftKinds(lines))
+			assert.are.equal(NEXT_SOURCE, find(lines, "source").text)
 			assert.are.equal(100, target.itemId)
 		end)
 
@@ -1129,7 +1131,8 @@ describe("ItemTooltip.section", function()
 			assert.is_nil(find(wornWith(nil), "enchant"))
 			local noted = wornWith(true)
 			assert.are.equal(ItemTooltip.nextLine("Defias Overseer Chest", 16, "dps"), noted[1].text)
-			assert.are.same({ "breakdown", "alternatives", "enchant", "attribution" }, shiftKinds(noted))
+			assert.are.same({ "breakdown", "source", "source", "alternatives", "enchant", "attribution" },
+				shiftKinds(noted))
 			assert.are.equal(L.tooltipEnchantNote, find(noted, "enchant").text)
 		end)
 	end)
@@ -1210,7 +1213,9 @@ describe("ItemTooltip.section", function()
 			assert.are.equal(ItemTooltip.nextLine("Arugal's Axe", nil, "dps"), shown[1])
 			assert.are.equal(L.tooltipNextLabel .. " Arugal's Axe", ItemTooltip.stripEscapes(shown[1]))
 			assert.is_nil(lines[1].upgrade.gain)
-			assert.are.equal(string.format(L.tooltipSourceDrop, "Shadowfang Keep", "Arugal", 10), shown[2])
+			-- The next band's pick under it; the upgrade's source waits under Shift.
+			assert.are.equal(string.format(L.tooltipAtBandName, 30, "Herod's Axe"), shown[2])
+			assert.are.equal(string.format(L.tooltipSourceDrop, "Shadowfang Keep", "Arugal", 10), find(lines, "source").text)
 			assert.are.equal(ItemTooltip.fitAlternatives({ { name = "Quest Blade", unit = "dps" } })[1],
 				find(lines, "alternatives").text)
 			for _, line in ipairs(lines) do
@@ -2278,7 +2283,7 @@ describe("the At line's source and wording", function()
 		assert.are.equal("No upgrade for this slot", L.tooltipNoUpgradeSlot)
 		-- Owner 2026-11-13: the band in the player's words on the pick, the pick named on what holds.
 		assert.are.equal("Best for 40 to 49", ItemTooltip.bestText(40, 50))
-		assert.are.equal("Best at 60", ItemTooltip.bestText(60, nil))
+		assert.are.equal("Best at level 60", ItemTooltip.bestText(60, nil))
 		assert.are.equal("Better than the 40 to 49 pick: Avenger's Armor",
 			ItemTooltip.holdText(40, 50, "Avenger's Armor", -0.3))
 		assert.are.equal("As good as the level 60 pick: Avenger's Armor",

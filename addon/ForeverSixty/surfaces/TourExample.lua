@@ -20,8 +20,9 @@ TourExample.EXAMPLE_SLOTS = { "main_hand", "chest", "legs" }
 --- Page 2's tooltip example (review 2026-11-10): the lines the item tooltip adds, on a real item.
 --- `input.upgrade` (the panel's first upgrade row: name, hex, gain, unit, detail) gives the arrow
 --- and its figure over "<slot> · <source>"; else `input.pick` (a data pick: name, hex, band,
---- upcoming, and the decoded pick) gives "Best in slot" ("Best in slot at level 20" below the first
---- band) over its source. { name, hex, lines = { { text, colour }, ... } }, or nil. Pure.
+--- upcoming, after, and the decoded pick) gives the tooltip's own gold line, "Best for 40 to 49"
+--- ("Best in slot at level 20" below the first band), over its source.
+--- { name, hex, lines = { { text, colour }, ... } }, or nil. Pure.
 function TourExample.example(input)
 	local upgrade, pick = input.upgrade, input.pick
 	if type(upgrade) == "table" and type(upgrade.gain) == "number" and upgrade.name ~= nil then
@@ -31,7 +32,8 @@ function TourExample.example(input)
 		} }
 	end
 	if type(pick) == "table" and pick.name ~= nil then
-		local verdict = pick.upcoming and string.format(L.tooltipYourBisAt, pick.band) or L.tooltipYourBis
+		local verdict = pick.upcoming and string.format(L.tooltipYourBisAt, pick.band)
+			or ItemTooltip.bestText(pick.band, pick.after)
 		return { name = pick.name, hex = pick.hex or Theme.HEX.strong, lines = {
 			{ verdict, "clientGold" }, { ItemTooltip.sourceLine(pick.pick), "tooltipMuted" },
 		} }
@@ -40,7 +42,8 @@ function TourExample.example(input)
 end
 
 --- The data's pick for `spec` at `level` in the first of EXAMPLE_SLOTS that has one, from the band
---- the level is in, else the first band ahead of it (upcoming). Pure on `data`.
+--- the level is in, else the first band ahead of it (upcoming), with `after` the first later band
+--- whose pick for the slot differs (the gold line's span). Pure on `data`.
 function TourExample.dataPick(data, spec, level, faction)
 	local specBis = type(data) == "table" and type(data.bis) == "table" and data.bis[spec] or nil
 	if specBis == nil or faction == nil then
@@ -57,7 +60,7 @@ function TourExample.dataPick(data, spec, level, faction)
 		if pick ~= nil then
 			local names = type(data.bisNames) == "table" and data.bisNames or {}
 			return { pick = pick, itemId = pick.item_id, band = band, upcoming = upcoming,
-				name = names[pick.item_id] }
+				after = ItemTooltip.bandAfter(data, spec, faction, slot, band, pick.item_id), name = names[pick.item_id] }
 		end
 	end
 	return nil

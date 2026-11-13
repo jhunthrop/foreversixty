@@ -129,12 +129,15 @@ def worn_lines(level: int, worn_id: int, worn_stats: dict, shift=False):
     delta = gain(level, pick_id, worn_stats)
     after = band_after(band, pick_id)
     if delta >= 1.0:
-        lines = [l(f'{locale("tooltipNextLabel")} {iname(pick_id)} <span style="color:{green}">{figure(delta)}</span>'),
-                 l(crafted_source(), color=grey)]
-        return lines, []
+        # Case 16: the band's pick as the next upgrade, then the next band's pick; its source under Shift.
+        lines = [l(f'{locale("tooltipNextLabel")} {iname(pick_id)} <span style="color:{green}">{figure(delta)}</span>')]
+        if after is None:
+            return lines + [l(crafted_source(), color=grey)], []
+        return lines + [l(at_text(after), color=grey)], [l(crafted_source(), color=g)]
     lines = [l(hold_text(band, after, iname(pick_id), delta))]
-    # The pick's figure and source; the next band's pick is the same profession, said once.
-    detail = [l(figure(delta), color=g), l(crafted_source(), color=g)]
+    # The pick's figure, said as the pick's, and its source; the next band's pick is the same
+    # profession, said once.
+    detail = [l(locale('tooltipPickFigure') % figure(delta), color=g), l(crafted_source(), color=g)]
     if after is not None:
         lines.append(l(at_text(after), color=grey))
     return lines, detail
@@ -179,7 +182,7 @@ def board_after():
     plain, detail = worn_lines(42, BANDIT_ID, BANDIT_STATS)
     shift = tooltip(bandit_client_lines() + plain + detail + [l(attribution(), color=C['grey'])], width=350)
     return board('<b>After</b> · the same hover. The band\'s pick is named and yours is said to beat it; the next '
-                 'band\'s pick follows. Right: with Shift, the pick\'s own figure and where it comes from.',
+                 'band\'s pick follows. Right: with Shift, the pick\'s own figure against yours and where it comes from.',
                  f'<div class="col"><div class="note"><b>Default</b></div>{tooltip(bandit_client_lines() + plain, width=330)}</div>'
                  f'<div class="col"><div class="note"><b>Shift held</b></div>{shift}</div>')
 

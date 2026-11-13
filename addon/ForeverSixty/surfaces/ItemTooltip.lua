@@ -1385,6 +1385,17 @@ function ItemTooltip.section(ctx)
 		return lines
 	end
 
+	--- Adds a Shift line unless the same line is already there (two crafted picks from one
+	--- profession: the source is said once).
+	local function addOnce(line)
+		for _, earlier in ipairs(reasons) do
+			if earlier.kind == line.kind and earlier.text == line.text then
+				return
+			end
+		end
+		reasons[#reasons + 1] = line
+	end
+
 	local support
 	local noUpgradeText = nextBand ~= nil and string.format(L.tooltipNoUpgradeUntil, nextBand) or L.tooltipNoUpgradeSlot
 	if wornSlot ~= nil then
@@ -1398,10 +1409,23 @@ function ItemTooltip.section(ctx)
 				reasons[#reasons + 1] = line
 			end
 		elseif nextLine ~= nil then
-			-- Case 16 (17 with no figure): the slot's next upgrade, its source under it.
-			verdict, support = nextLine, sourceLine
+			-- Case 16 (17 with no figure): the band's pick as the slot's next upgrade, then the band
+			-- whose pick changes (owner, 2026-11-13: always the next band's pick with its level), the
+			-- upgrade's source under Shift; with no later band, its source under it.
+			verdict = nextLine
+			local after = ItemTooltip.bandAfter(data, ctx.spec, ctx.faction, pickSlotOf(pick.item_id), currentBand,
+				pick.item_id)
+			local at = after ~= nil and atLineFor(after, false) or nil
+			support = at or sourceLine
 			if nextLine.breakdown ~= nil then
 				reasons[#reasons + 1] = nextLine.breakdown
+			end
+			if at ~= nil and sourceLine ~= nil then
+				reasons[#reasons + 1] = { kind = "source", pick = sourceLine.pick, boe = sourceLine.boe,
+					text = sourceLine.text, color = "muted", detail = true }
+			end
+			for _, line in ipairs(atDetail(at)) do
+				addOnce(line)
 			end
 		elseif holds then
 			-- Case 18: worn and the pick; case 19: the pick gains under the floor. Both name the band
@@ -1423,7 +1447,8 @@ function ItemTooltip.section(ctx)
 					fit = { name = name, build = build } }
 				-- Shift: the pick's own figure, then where it comes from.
 				if holdGain ~= nil and holdGain ~= 0 then
-					reasons[#reasons + 1] = { kind = "figure", text = ItemTooltip.figure(holdGain, unit), color = "muted" }
+					reasons[#reasons + 1] = { kind = "figure", color = "muted",
+						text = string.format(L.tooltipPickFigure, ItemTooltip.figure(holdGain, unit)) }
 				end
 				local boe = isBoe(pickId)
 				local source = ItemTooltip.sourceLine(pick, boe)
@@ -1434,14 +1459,7 @@ function ItemTooltip.section(ctx)
 			end
 			support = after ~= nil and atLineFor(after, false) or nil
 			for _, line in ipairs(atDetail(support)) do
-				-- Two crafted picks from one profession: the source is said once.
-				local said = false
-				for _, earlier in ipairs(reasons) do
-					said = said or (earlier.kind == line.kind and earlier.text == line.text)
-				end
-				if not said then
-					reasons[#reasons + 1] = line
-				end
+				addOnce(line)
 			end
 		elseif pick == nil and next(pending) == nil then
 			-- Case 21: the band names no pick for the slot.
