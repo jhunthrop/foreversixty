@@ -29,6 +29,7 @@ describe('UnknownRealmQuestion', () => {
       expect(html).toMatch(new RegExp(`<button[^>]*data-testid="unknown-realm-choice-${id}"[^>]*>[\\s\\S]*?${label}`));
     }
     expect(html).toContain(unknownRealmCopy.rpPvp);
+    expect(html.indexOf(unknownRealmCopy.rpPvp)).toBeLessThan(html.indexOf('unknown-realm-choice-normal'));
     expect(html).toMatch(/role="group"[^>]*aria-labelledby="unknown-realm-us-unknown-newly-rolled"/);
   });
 

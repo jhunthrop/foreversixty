@@ -23,10 +23,10 @@ const realmAnswersPerHour = 30
 const maxRealmAnswerBody = 1 << 10
 
 const (
-	msgAnswerInvalid  = "send a character key and one of normal, pvp, rp or hardcore"
-	msgAnswerNotYours = "that character is not one of yours waiting for its realm type"
-	msgAnswerTaken    = "another account already has a character of that name on that realm type"
-	msgAnswerFailed   = "could not save the realm type just now"
+	msgAnswerInvalid  = "Send a character key and one of normal, pvp, rp or hardcore."
+	msgAnswerNotYours = "That character is not one of yours waiting for its realm type."
+	msgAnswerTaken    = "Another account already has a character of that name on that realm type. Check the realm type in game."
+	msgAnswerFailed   = "Could not save the realm type just now."
 )
 
 type realmAnswerBody struct {

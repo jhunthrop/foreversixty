@@ -90,14 +90,14 @@ test('a refused answer says why in the wipe colour and keeps the question', asyn
       body: JSON.stringify({
         ok: false,
         data: null,
-        error: { code: 'taken', message: 'another account already has a character of that name on that realm type' },
+        error: { code: 'taken', message: 'Another account already has a character of that name on that realm type. Check the realm type in game.' },
         request_id: 'unknown-realm',
       }),
     }),
   );
   const question = page.getByTestId('unknown-realm');
   await question.getByRole('button', { name: 'Roleplay' }).click();
-  await expect(question.getByRole('alert')).toContainText('another account already has a character');
+  await expect(question.getByRole('alert')).toContainText('Another account already has a character');
   await expect(question.getByRole('button', { name: 'Normal' })).toBeEnabled();
   await page.getByTestId('unknown-realm').screenshot({ path: 'test-results/unknown-realm/refused-close.png' });
 });

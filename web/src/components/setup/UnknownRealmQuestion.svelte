@@ -30,6 +30,13 @@
   let pending = $state<{ key: string; ruleset: string } | null>(null);
   let errors = $state<Record<string, string>>({});
 
+  /** The API's sentence, capitalised and closed, then the retry word. */
+  function refusal(error: unknown): string {
+    const raw = error instanceof Error && error.message.trim() !== '' ? error.message.trim() : unknownRealmCopy.failed;
+    const sentence = `${raw.charAt(0).toUpperCase()}${raw.slice(1)}`;
+    return withRetry(sentence.endsWith('.') ? sentence : `${sentence}.`);
+  }
+
   async function choose(key: string, ruleset: string): Promise<void> {
     if (pending !== null) return;
     pending = { key, ruleset };
@@ -38,8 +45,7 @@
       const newKey = await answer(key, ruleset);
       onAnswered?.(key, newKey);
     } catch (error) {
-      const message = error instanceof Error && error.message !== '' ? error.message : unknownRealmCopy.failed;
-      errors = { ...errors, [key]: withRetry(message.endsWith('.') ? message : `${message}.`) };
+      errors = { ...errors, [key]: refusal(error) };
     } finally {
       pending = null;
     }
@@ -61,9 +67,9 @@
             <CharacterName name={character.name} cls={character.class} crestSize={20} class="inline-flex" />
             {unknownRealmCopy.questionTail}
           </h2>
-          <p class="text-muted text-[14px] leading-5">{unknownRealmCopy.why}</p>
+          <p class="text-muted text-[14px] leading-5">{unknownRealmCopy.why} {unknownRealmCopy.rpPvp}</p>
         </div>
-        <div class="flex flex-wrap gap-2" role="group" aria-labelledby={headingId}>
+        <div class="unknown-realm-choices" role="group" aria-labelledby={headingId}>
           {#each REALM_CHOICES as choice (choice.id)}
             <Button
               size="md"
@@ -77,7 +83,6 @@
             </Button>
           {/each}
         </div>
-        <p class="text-muted text-[13px] leading-5">{unknownRealmCopy.rpPvp}</p>
         {#if errors[character.key]}
           <p class="text-wipe text-[14px] leading-5" role="alert">{errors[character.key]}</p>
         {/if}
@@ -87,7 +92,25 @@
 {/if}
 
 <style>
+  /* The next thing to do on the plate: the gold rule a step that waits on the player carries. */
+  .unknown-realm-item {
+    box-shadow: inset 2px 0 0 var(--color-gold);
+  }
   .unknown-realm-item + .unknown-realm-item {
     border-top: 1px solid var(--color-line-soft);
+  }
+  /* Four equal buttons, so "Saving…" never moves its neighbours; two by two on a phone. */
+  .unknown-realm-choices {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 7.5rem));
+    gap: 8px;
+  }
+  .unknown-realm-choices :global(button) {
+    width: 100%;
+  }
+  @media (max-width: 599px) {
+    .unknown-realm-choices {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
 </style>
