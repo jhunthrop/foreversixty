@@ -494,14 +494,16 @@ end
 --- The BiS pick for one spec, band, faction and slot under the source filter (Sources.resolve):
 --- `sources` is a Sources state, this character's for the band by default (Sources.ALL for another
 --- player's gear). A pair's second slot resolves its first slot's pick first. nil when the data names
---- none; nil and true when it names one but the sources on leave the slot without an option.
+--- none; nil and true when it names one but the sources on leave the slot without an option. A
+--- Data.lua generated before the filter (no `bisSources`) has nothing to filter on: its picks stand.
 function Gear.pick(spec, band, faction, slot, data, sources)
+	data = data or ns.Data
 	local published = Gear.publishedPick(spec, band, faction, slot, data)
 	if published == nil then
 		return nil
 	end
 	sources = sources or Sources.state(band)
-	if sources.all then
+	if sources.all or type(data.bisSources) ~= "table" then
 		return published
 	end
 	local first = Sources.PAIR_FIRST[slot]
