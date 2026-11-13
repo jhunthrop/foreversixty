@@ -11,6 +11,9 @@ wago.tools keeps every pushed row it saw at https://wago.tools/hotfixes: one
 entry per (push, record) with the record's status and, for a valid record, its
 values in the table's column order. `layer_rows` is the one layering rule:
 
+* the push is read twice: enUS entries of every status (removals and
+  invalidations carry no values) and every locale's entries that carry
+  values (`pipeline.hotfix_push_store.fetch_values`);
 * per record id, the newest push wins (push id, then wago's entry id); a
   valid entry wago kept no values for (the enUS copies of push 16778086 at
   70938, whose deDE and frFR copies carry them) never outranks an older one
@@ -646,7 +649,9 @@ def layer_hotfix_push(
 
     Unless a `fetch` is given, the push is read over the one saved in
     raw/wago-push/entries.json (`pipeline.hotfix_push_store`): only what is
-    new, or the full crawl when nothing is saved or `full` is set.
+    new, or the full crawl when nothing is saved or `full` is set. Beside it
+    the entries that carry values, every locale, are read over
+    raw/wago-push/values.json: since 70938 the enUS copies carry none.
 
     The totals are read before the push, so a push landing between the two
     reads shows as moved on the next check rather than as already layered."""
@@ -662,12 +667,20 @@ def layer_hotfix_push(
         pushed = _cached(push_dir, present)
     else:
         search = dict(totals(build, present))
+        values: Mapping[str, list[PushEntry]] = {}
         if fetch is None:
             # imported here: the store builds on this module
-            from pipeline.hotfix_push_store import STORE, saved_fetcher
+            from pipeline.hotfix_push_store import (
+                STORE,
+                VALUES_STORE,
+                saved_fetcher,
+                values_fetcher,
+            )
 
             fetch = saved_fetcher(lambda _: push_dir / STORE, full=full)
-        pushed = dict(fetch(build, present))
+            values = values_fetcher(lambda _: push_dir / VALUES_STORE, full=full)(build, present)
+        statuses = fetch(build, present)
+        pushed = {t: [*statuses.get(t, []), *values.get(t, [])] for t in present}
         _cache(push_dir, {t: pushed.get(t, []) for t in present})
     summary: dict[str, Any] = {"build": build, "search_totals": search, "tables": {}}
     for table in present:

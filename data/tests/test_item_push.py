@@ -71,9 +71,9 @@ def test_with_no_entry_carrying_values_the_newest_still_stands():
 
 
 def test_the_crawl_keeps_every_locale_and_saves_one_deciding_entry_per_record(raw):
-    assert crawl(raw) == {"ItemSparse": 2}
+    assert crawl(raw) == {"ItemSparse": 2, "Item": 0}
     saved = read_store(item_store(raw))
-    assert saved is not None and saved["tables"] == list(ITEM_PUSH_TABLES)
+    assert saved is not None and saved["tables"] == sorted(ITEM_PUSH_TABLES)
     entries = {e.record_id: e for e in saved["entries"]["ItemSparse"]}
     assert set(entries) == {870, 2801}
     assert all(e.data and e.locale != "enUS" for e in entries.values())

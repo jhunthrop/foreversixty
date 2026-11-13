@@ -42,12 +42,14 @@ import httpx
 
 from pipeline.hotfix_push import (
     ENUS_ONLY,
+    EVERY_LOCALE,
     NodeTotals,
     PushCollector,
     PushEntry,
     PushFetcher,
     _build_number,
     crawl_terms,
+    newest_per_record,
     open_client,
 )
 
@@ -148,9 +150,18 @@ def read_store(path: Path) -> dict[str, Any] | None:
 
 
 def _starting_point(
-    saved: Mapping[str, Any] | None, build: str, tables: tuple[str, ...], full: bool
+    saved: Mapping[str, Any] | None,
+    build: str,
+    tables: tuple[str, ...],
+    full: bool,
+    terms: tuple[str, ...] | None = None,
 ) -> tuple[NodeTotals, Mapping[str, list[PushEntry]], str]:
-    """The split totals and entries the crawl starts from, and the run's mode."""
+    """The split totals and entries the crawl starts from, and the run's mode.
+
+    A table the saved file does not cover forces the full crawl when searches
+    are shared between tables ("Spell" also reads SpellEffect, whose entries a
+    saved split read without them would hold). With one search per table
+    (`terms`) a new table's searches were never saved, so only it is crawled."""
     if saved is None:
         logger.info("hotfix push %s: full crawl (no saved push yet)", build)
         return {}, {}, "full"
@@ -158,7 +169,9 @@ def _starting_point(
         logger.info("hotfix push %s: full crawl (asked for)", build)
         return {}, {}, "full"
     missing = sorted(set(tables) - set(saved["tables"]))
-    if missing:
+    if missing and terms is not None:
+        logger.info("hotfix push %s: crawling the new tables %s", build, ", ".join(missing))
+    elif missing:
         logger.error(
             "hotfix push %s: FULL CRAWL, the saved push does not cover %s",
             build,
@@ -200,7 +213,7 @@ def fetch_saved(
     saved = read_store(store)
     if saved is not None and saved["build"] != build:
         raise SystemExit(f"{store} is the push of {saved['build']}, not {build}")
-    known, entries, mode = _starting_point(saved, build, tables, full)
+    known, entries, mode = _starting_point(saved, build, tables, full, terms)
     collector = PushCollector(_build_number(build), tables, locales)
     collector.add_pushed(entries)
     own = client is None
@@ -218,6 +231,57 @@ def fetch_saved(
     _keep_in_cache(store, cache_dir, build)
     logger.info("hotfix push %s: %s crawl, %d wago.tools requests", build, mode, requests[0])
     return pushed
+
+
+#: Under raw/wago-push/: the saved entries that carry values, every locale.
+VALUES_STORE = "values.json"
+
+
+def value_terms(tables: Iterable[str]) -> tuple[str, ...]:
+    """One search per table for its entries that carry values: such an entry
+    reads "<table> [<id>,..." (the bracket opens the values), and the build
+    number before the table name keeps "Spell [" from matching SpellEffect."""
+    return tuple(f"{table} [" for table in tables)
+
+
+def deciding_entries(entries: list[PushEntry]) -> list[PushEntry]:
+    """The one entry per record the layer reads. Every push of a record comes
+    in up to eleven locales with the same values, so a values store keeps the
+    deciding entry only; a later push still outranks it, so the incremental
+    crawl lands on the same result."""
+    newest = newest_per_record(entries)
+    return [newest[record_id] for record_id in sorted(newest)]
+
+
+def fetch_values(
+    build: str,
+    tables: tuple[str, ...],
+    store: Path,
+    full: bool = False,
+    client: httpx.Client | None = None,
+) -> dict[str, list[PushEntry]]:
+    """The build's pushed entries that carry values, in every locale, one per
+    record, crawled over the ones saved at `store`.
+
+    Since 70938 (2026-11-13) wago.tools lists a push's values only on some
+    locales' copies: every enUS entry of 70938's push carries `data: None`, so
+    the enUS crawl layered nothing for any table (issue #27)."""
+    return fetch_saved(
+        build,
+        tables,
+        store,
+        full=full,
+        client=client,
+        cache_dir=cache_dir_from_env(),
+        locales=EVERY_LOCALE,
+        keep=deciding_entries,
+        terms=value_terms(tables),
+    )
+
+
+def values_fetcher(store_of: Callable[[str], Path], full: bool = False) -> PushFetcher:
+    """A `layer_hotfix_push` values fetcher over the store at `store_of(build)`."""
+    return lambda build, tables: fetch_values(build, tables, store_of(build), full=full)
 
 
 def saved_fetcher(store_of: Callable[[str], Path], full: bool = False) -> PushFetcher:

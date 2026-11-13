@@ -17,8 +17,21 @@ from pathlib import Path
 import httpx
 import pytest
 
-from pipeline.hotfix_push import STATUS_REMOVED, STATUS_VALID, layer_hotfix_push, layer_rows
-from pipeline.hotfix_push_store import STORE, STORE_FORMAT, fetch_saved, full_requested, read_store
+from pipeline.hotfix_push import (
+    STATUS_REMOVED,
+    STATUS_VALID,
+    PushEntry,
+    layer_hotfix_push,
+    layer_rows,
+)
+from pipeline.hotfix_push_store import (
+    STORE,
+    STORE_FORMAT,
+    VALUES_STORE,
+    fetch_saved,
+    full_requested,
+    read_store,
+)
 
 BUILD = "1.60.1.70790"
 NUMBER = 70790
@@ -288,8 +301,8 @@ def test_the_layer_reads_the_push_over_the_saved_file_by_default(tmp_path, monke
     (raw / "SpellEffect.csv").write_text("ID,V\n1000,3\n")
     asked: list[tuple] = []
 
-    def fake(build, tables, store, full=False, cache_dir=None):
-        asked.append((build, tables, store, full, cache_dir))
+    def fake(build, tables, store, full=False, cache_dir=None, **crawl):
+        asked.append((build, tables, store.name, full, cache_dir, crawl.get("terms")))
         return {"SpellEffect": []}
 
     monkeypatch.setattr("pipeline.hotfix_push_store.fetch_saved", fake)
@@ -297,5 +310,31 @@ def test_the_layer_reads_the_push_over_the_saved_file_by_default(tmp_path, monke
     layer_hotfix_push(
         BUILD, root=tmp_path, tables=("SpellEffect",), totals=lambda b, t: {}, full=True
     )
-    store = raw / "wago-push" / STORE
-    assert asked == [(BUILD, ("SpellEffect",), store, True, tmp_path / "cache")]
+    cache = tmp_path / "cache"
+    assert sorted(asked, key=str) == sorted(
+        [
+            (BUILD, ("SpellEffect",), STORE, True, cache, None),
+            (BUILD, ("SpellEffect",), VALUES_STORE, True, cache, ("SpellEffect [",)),
+        ],
+        key=str,
+    )
+
+
+def test_the_layer_takes_the_values_another_locale_carries(tmp_path, monkeypatch):
+    """1.60.1.70938: every enUS entry of the push carries `data: None`, so a
+    layer of the enUS crawl alone changed no row of any table (issue #27)."""
+    raw = tmp_path / BUILD / "raw"
+    raw.mkdir(parents=True)
+    (raw / "SpellEffect.csv").write_text("ID,V\n1000,3\n")
+
+    def fake(build, tables, store, full=False, cache_dir=None, **crawl):
+        if crawl.get("terms") is None:
+            return {"SpellEffect": [PushEntry(2, 114008, 1000, STATUS_VALID, None)]}
+        return {"SpellEffect": [PushEntry(1, 114008, 1000, STATUS_VALID, [1000, "5"], "deDE")]}
+
+    monkeypatch.setattr("pipeline.hotfix_push_store.fetch_saved", fake)
+    record = layer_hotfix_push(
+        BUILD, root=tmp_path, tables=("SpellEffect",), totals=lambda b, t: {}
+    )
+    assert (raw / "SpellEffect.csv").read_text() == "ID,V\n1000,5\n"
+    assert record["tables"]["SpellEffect"]["changed"] == 1

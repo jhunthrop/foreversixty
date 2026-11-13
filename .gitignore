@@ -134,9 +134,10 @@ data/builds/*/raw/client/*
 !data/builds/*/raw/wago-push/
 data/builds/*/raw/wago-push/*
 !data/builds/*/raw/wago-push/entries.json
-# 2026-11-13 (issue #27): the item push read from the hotfix page (pipeline.item_push),
-# one deciding entry per record, layered last over the item tables.
+# 2026-11-13 (issue #27): the push entries that carry values, every locale, one deciding entry
+# per record: the item tables' (pipeline.item_push) and the spell side's (hotfix_push_store).
 !data/builds/*/raw/wago-push/items.json
+!data/builds/*/raw/wago-push/values.json
 data/.icon-cache/
 data/.wago-push-cache/
 

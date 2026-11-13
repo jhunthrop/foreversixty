@@ -9,8 +9,9 @@ to its pre-push speed and stats (issue #27). wago's hotfix page still lists
 the push: its enUS copies of the record carry no values, its deDE and frFR
 copies carry ItemDelay 3600.
 
-This module reads that page the way `pipeline.hotfix_push` reads it for the
-spell side, but in every locale (`EVERY_LOCALE`), and saves it in
+This module reads that page's entries that carry values, in every locale
+(`pipeline.hotfix_push_store.fetch_values`, the spell side's second read), and
+saves them in
 `raw/wago-push/items.json` (committed with the build, crawled again only
 where wago's totals moved: `pipeline.hotfix_push_store`). `layer_item_push`
 puts it over the merged item table last, by `pipeline.hotfix_push.layer_rows`'
@@ -18,11 +19,10 @@ rule: per record the newest entry with values wins, and a row read from
 another locale keeps the localised text underneath.
 
 The page's search is a substring match on "<locale> <push> <record> <build>
-<table> <values>". Only the entries with values are crawled ("ItemSparse ["):
-31,113 of 70938's 80,039, at about 3 s a search. A removal or invalidation
-carries no values, so it is not seen here; the CSV export still carries those.
-"Item [" would match ItemSparse's entries too, so the Item table's pushes
-still come from the CSV export alone.
+<table> <values>". Only the entries with values are crawled ("ItemSparse [",
+"Item ["): 31,113 of 70938's 80,039 ItemSparse entries, at about 3 s a search.
+A removal or invalidation carries no values, so it is not seen here; the CSV
+export still carries those.
 """
 
 from __future__ import annotations
@@ -31,30 +31,17 @@ from pathlib import Path
 
 import httpx
 
-from pipeline.hotfix_push import EVERY_LOCALE, PUSH_DIR, PushEntry, layer_rows, newest_per_record
-from pipeline.hotfix_push_store import cache_dir_from_env, fetch_saved, read_store
+from pipeline.hotfix_push import PUSH_DIR, layer_rows
+from pipeline.hotfix_push_store import fetch_values, read_store
 
 #: The item tables whose push is read from the hotfix page.
-ITEM_PUSH_TABLES: tuple[str, ...] = ("ItemSparse",)
-#: The searches crawled: a pushed record with values reads "<table> [<id>,...",
-#: so the bracket keeps the 49,000 value-less copies of 70938's push (enUS and
-#: others, 80,039 entries in all) out of the crawl.
-ITEM_SEARCH_TERMS: tuple[str, ...] = ("ItemSparse [",)
+ITEM_PUSH_TABLES: tuple[str, ...] = ("ItemSparse", "Item")
 #: Under raw/wago-push/: the saved item push, committed with the build.
 ITEM_STORE = "items.json"
 
 
 def item_store(raw: Path) -> Path:
     return raw / PUSH_DIR / ITEM_STORE
-
-
-def deciding_entries(entries: list[PushEntry]) -> list[PushEntry]:
-    """The one entry per record the layer reads. Every push of an item comes
-    in up to eleven locales with the same values, so the saved file keeps the
-    deciding entry only (a tenth of the crawl); a later push still outranks
-    it, so the incremental crawl lands on the same result."""
-    newest = newest_per_record(entries)
-    return [newest[record_id] for record_id in sorted(newest)]
 
 
 def fetch_item_push(
@@ -69,18 +56,7 @@ def fetch_item_push(
     raw = root / build / "raw"
     if not raw.is_dir():
         raise SystemExit(f"no raw data at {raw}; run `python -m pipeline fetch` first")
-    store = item_store(raw)
-    pushed = fetch_saved(
-        build,
-        ITEM_PUSH_TABLES,
-        store,
-        full=full,
-        client=client,
-        cache_dir=cache_dir_from_env(),
-        locales=EVERY_LOCALE,
-        keep=deciding_entries,
-        terms=ITEM_SEARCH_TERMS,
-    )
+    pushed = fetch_values(build, ITEM_PUSH_TABLES, item_store(raw), full=full, client=client)
     return {table: len(entries) for table, entries in pushed.items()}
 
 

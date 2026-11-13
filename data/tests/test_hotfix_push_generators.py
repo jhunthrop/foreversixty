@@ -154,11 +154,16 @@ def test_fetch_layers_the_push_and_the_item_pushes_after_the_download(monkeypatc
         "pipeline.wago_hotfixes.fetch_wago_hotfixes",
         lambda build, product: calls.append(("item-pushes", build, product)) or {},
     )
+    monkeypatch.setattr(
+        "pipeline.item_push.fetch_item_push",
+        lambda build, full=False: calls.append(("item-push-page", build, full)) or {},
+    )
     cli.main(["fetch", "--product", "wowf", "--build", BUILD])
     assert calls == [
         ("fetch", "wowf", BUILD),
         ("layer", BUILD, False, False),
         ("item-pushes", BUILD, "wowf"),
+        ("item-push-page", BUILD, False),
     ]
 
 
@@ -179,6 +184,10 @@ def test_fetch_prints_the_build_last_after_the_item_pushes(monkeypatch, tmp_path
     monkeypatch.setattr(
         "pipeline.wago_hotfixes.fetch_wago_hotfixes",
         lambda build, product: {"Item": 136, "ItemSparse": 165},
+    )
+    monkeypatch.setattr(
+        "pipeline.item_push.fetch_item_push",
+        lambda build, full=False: {"Item": 12, "ItemSparse": 2105},
     )
     cli.main(["fetch", "--product", "wowf", "--build", BUILD])
     assert capsys.readouterr().out.splitlines()[-1] == BUILD
