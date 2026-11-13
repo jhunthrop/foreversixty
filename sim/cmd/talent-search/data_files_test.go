@@ -82,3 +82,25 @@ func TestLoadBISBandMatchesLevelFactionAndPreset(t *testing.T) {
 		t.Fatal("bad json accepted")
 	}
 }
+
+// A raid band's slots carry the permanent enchant the ranker measured the
+// set wearing (enchant_id). A search that read the items alone simmed the
+// rogue raid builds 5 to 6% under the published set_dps (2026-11-13,
+// spec-breakdown's 2026-11-11 fix), so the search wears what the band wears.
+func TestBISBandGearWearsItsPublishedEnchants(t *testing.T) {
+	dir := t.TempDir()
+	writeFile(t, filepath.Join(dir, "bis", "a.json"), `{"bands":[
+	  {"band":60,"preset":"raid","faction":"alliance","race":"Human","slots":[
+	    {"slot":"main_hand","item_id":5,"enchant_id":1900},{"slot":"head","item_id":6}]}]}`)
+	band, err := loadBISBand(dir, "a", 60, "alliance", "raid")
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := map[string]int{}
+	for _, g := range band.gear() {
+		got[g.Slot] = g.Enchant
+	}
+	if got["main_hand"] != 1900 || got["head"] != 0 || len(got) != 2 {
+		t.Fatalf("gear enchants %v, want main_hand 1900 and a bare head", got)
+	}
+}
