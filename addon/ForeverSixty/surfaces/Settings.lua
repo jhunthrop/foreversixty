@@ -49,7 +49,7 @@ SettingsPage.SWITCHES = {
 }
 
 --- The Gear sources group (source filter spec 5), after the switches: a heading with Default at its
---- right (only while a choice is saved), one hint line, then one switch row per kind, generated from
+--- right (only while a choice is saved), then one switch row per kind, generated from
 --- Sources.KINDS like the Sources flyout's rows, each with its count at the right. A second list:
 --- SWITCHES stays booleans of Prefs.
 SettingsPage.SOURCE_ROWS = {}
@@ -311,8 +311,7 @@ function SettingsPage.layout(width, rowHeights, warned)
 	y = y + S.padding
 	layout.sourcesHeading = -y
 	y = y + S.settingsLine
-	layout.sourcesHint = -y
-	y = y + S.settingsLine + S.gap
+	y = y + S.gap
 	layout.sourceRows = {}
 	for index = 1, #SettingsPage.SOURCE_ROWS do
 		layout.sourceRows[index] = -y
@@ -410,7 +409,6 @@ local function arrange(warned)
 	SettingsPage.sourcesDefault:ClearAllPoints()
 	SettingsPage.sourcesDefault:SetPoint("TOPRIGHT", content, "TOPLEFT", layout.x + layout.dividerWidth,
 		layout.sourcesHeading)
-	place(SettingsPage.sourcesHint, content, layout.x, layout.sourcesHint)
 	for index, row in ipairs(SettingsPage.sourceToggles) do
 		place(row.toggle.frame, content, layout.x, layout.sourceRows[index])
 	end
@@ -488,7 +486,7 @@ function SettingsPage.build(panel)
 end
 
 --- The Gear sources group's parts: the heading in the commands heading's style with Default at its
---- right, the hint, and a switch row per kind with its count right-aligned in the row.
+--- right, and a switch row per kind with its count right-aligned in the row.
 function SettingsPage.buildSources(content, layout)
 	local S = Theme.SIZES
 	SettingsPage.sourcesHeading = Widgets.label(content, L.sourcesSettingsHeading, "gold", "normal")
@@ -496,7 +494,6 @@ function SettingsPage.buildSources(content, layout)
 		Sources.reset()
 	end)
 	SettingsPage.sourcesDefault = default
-	SettingsPage.sourcesHint = Widgets.label(content, L.sourcesSettingsHint, "muted", "small")
 	SettingsPage.sourceToggles = {}
 	for index, row in ipairs(SettingsPage.SOURCE_ROWS) do
 		local kind = row.kind
@@ -523,6 +520,7 @@ function SettingsPage.refreshSources()
 		local parts = SettingsPage.sourceToggles[index]
 		parts.toggle:SetChecked(row.checked)
 		parts.count:SetText(row.count)
+		parts.toggle.label:SetTextColor(Theme.rgb(Theme.HEX[row.empty and "muted" or "body"]))
 	end
 	Theme.setShown({ SettingsPage.sourcesDefault }, model.showDefault)
 end

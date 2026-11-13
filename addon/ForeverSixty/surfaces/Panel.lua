@@ -662,7 +662,8 @@ end
 
 --- The source filter at the character's band (Sources.state): { words, off (the hover's line, nil at
 --- All sources), empty (the sources on leave every slot without an option), band, counts (the
---- flyout's, Sources.counts over the band's published picks) }. nil with no spec, band or faction.
+--- flyout's, Sources.counts over the band's published picks), items (kind -> the "Slot: Item" lines
+--- of its rows' hover, Sources.kindItems named) }. nil with no spec, band or faction.
 function Panel.sourceLine(data, spec, band, faction)
 	local bySpec = spec ~= nil and type(data) == "table" and type(data.bis) == "table" and data.bis[spec] or nil
 	local slots = bySpec ~= nil and band ~= nil and bySpec[band] ~= nil and bySpec[band][faction] or nil
@@ -677,8 +678,20 @@ function Panel.sourceLine(data, spec, band, faction)
 			empty = false
 		end
 	end
+	local names = type(data.bisNames) == "table" and data.bisNames or {}
+	local items = {}
+	for kind, list in pairs(Sources.kindItems(published)) do
+		items[kind] = {}
+		for _, entry in ipairs(list) do
+			local name = Compat.itemName(entry.itemId) or names[entry.itemId]
+			if name ~= nil then
+				items[kind][#items[kind] + 1] = string.format(L.sourcesKindItem, L.gearSlotLabels[entry.slot] or entry.slot,
+					name)
+			end
+		end
+	end
 	return { words = Sources.words(state), off = Sources.offLine(state), empty = empty, band = band,
-		counts = Sources.counts(published) }
+		counts = Sources.counts(published), items = items }
 end
 
 --- Panel.sourceLine for this character now (its spec, band and faction): the Settings page's Gear
@@ -1426,13 +1439,13 @@ function Panel.toggleSources()
 	return SourcesFlyout.toggle(Panel.frame)
 end
 
---- The flyout reads the panel's band and counts (the last draw's).
+--- The flyout reads the panel's band, counts and item lines (the last draw's).
 SourcesFlyout.context = function()
 	local sources = Panel.sources
 	if sources == nil then
-		return nil, nil
+		return nil, nil, nil
 	end
-	return sources.band, sources.counts
+	return sources.band, sources.counts, sources.items
 end
 
 function Panel.isOpen()

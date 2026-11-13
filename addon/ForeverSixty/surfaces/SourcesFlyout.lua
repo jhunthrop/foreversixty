@@ -5,7 +5,7 @@
 -- Default (only while a choice is saved) clears the choice. Every click saves at once and every
 -- surface re-picks (Sources.listeners); there is no Apply.
 --
--- Pure model, thin frame: SourcesFlyout.model says what shows; the frame is built on the first open,
+-- Sources.choiceRows says what shows; the frame is built on the first open,
 -- never at login, and closes on its X, Escape, Change again, the panel closing and combat.
 local _, ns = ...
 ns = type(ns) == "table" and ns or {}
@@ -25,17 +25,35 @@ SourcesFlyout.RIGHT_ROOM = 260
 SourcesFlyout.PAD = 12
 SourcesFlyout.ROW = 22
 SourcesFlyout.TITLE = 22
-SourcesFlyout.FOOT = 30
+--- Room under the rows for Default.
+SourcesFlyout.FOOT = 22
 
---- The band the flyout reads and writes (the panel's), and the counts there; SourcesFlyout.context
---- is the panel's injection point: function() -> band, counts.
+--- The band the flyout reads and writes (the panel's), the counts there and each kind's "Slot: Item"
+--- lines; SourcesFlyout.context is the panel's injection point: function() -> band, counts, items.
 SourcesFlyout.context = function()
-	return nil, nil
+	return nil, nil, nil
 end
 
 local function shownState()
-	local band, counts = SourcesFlyout.context()
-	return Sources.state(band), counts, band
+	local band, counts, items = SourcesFlyout.context()
+	return Sources.state(band), counts, band, items
+end
+
+--- A row's hover: the kind, the best item it gives each slot, and the Reputation row's cap line at the
+--- leveling default. nil with nothing to say. Pure.
+function SourcesFlyout.rowTip(row, items)
+	local lines = {}
+	for _, line in ipairs(items or {}) do
+		lines[#lines + 1] = Theme.inlineColor("tooltipMuted", line)
+	end
+	if row.tip ~= nil then
+		lines[#lines + 1] = Theme.inlineColor("tooltipMuted", row.tip)
+	end
+	if #lines == 0 then
+		return nil
+	end
+	table.insert(lines, 1, row.label)
+	return lines
 end
 
 --- Lay the frame out for the model now.
@@ -44,14 +62,16 @@ local function draw()
 	if frame == nil then
 		return nil
 	end
-	local state, counts = shownState()
+	local state, counts, _, items = shownState()
 	local model = Sources.choiceRows(state, counts)
 	for index, row in ipairs(model.rows) do
 		local parts = SourcesFlyout.rows[index]
 		parts.toggle:SetChecked(row.checked)
 		parts.count:SetText(row.count)
 		parts.count:SetTextColor(Theme.rgb(Theme.HEX.umberMuted))
-		parts.tip = row.tip
+		-- A kind with nothing at this band stays a switch, its label muted like its 0.
+		parts.toggle.label:SetTextColor(Theme.rgb(Theme.HEX[row.empty and "umberMuted" or "body"]))
+		parts.tip = SourcesFlyout.rowTip(row, items ~= nil and items[row.kind] or nil)
 	end
 	Theme.setShown({ SourcesFlyout.defaultButton }, model.showDefault)
 	return model
@@ -90,7 +110,7 @@ local function addRow(frame, index, kind)
 	toggle.frame:SetScript("OnEnter", function(self, ...)
 		enter(self, ...)
 		if parts.tip ~= nil then
-			Theme.showLines(self, { Sources.label(kind), Theme.inlineColor("tooltipMuted", parts.tip) }, "ANCHOR_BOTTOM")
+			Theme.showLines(self, parts.tip, "ANCHOR_RIGHT")
 		end
 	end)
 	toggle.frame:SetScript("OnLeave", function(self, ...)
@@ -101,7 +121,7 @@ local function addRow(frame, index, kind)
 end
 
 --- The frame, built on the first open: the panel's own ground and edge, the title and its X, a row
---- per kind, Default and the foot line.
+--- per kind and Default.
 function SourcesFlyout.ensure()
 	if SourcesFlyout.frame ~= nil then
 		return SourcesFlyout.frame
@@ -131,10 +151,6 @@ function SourcesFlyout.ensure()
 	end)
 	default:SetPoint("TOPLEFT", frame, "TOPLEFT", SourcesFlyout.PAD, -footTop)
 	SourcesFlyout.defaultButton = default
-	local foot = Widgets.label(frame, L.sourcesFlyoutFoot, "umberMuted", "small")
-	foot:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", SourcesFlyout.PAD, SourcesFlyout.PAD)
-	foot:SetWidth(SourcesFlyout.WIDTH - SourcesFlyout.PAD * 2)
-	SourcesFlyout.footLabel = foot
 	return frame
 end
 

@@ -457,6 +457,43 @@ function Sources.resolve(pick, state, slot, mate)
 	return nil
 end
 
+--- The order a Sources row's hover lists its slots in (the character pane's, top to bottom).
+Sources.SLOT_ORDER = { "head", "neck", "shoulder", "back", "chest", "wrist", "hands", "waist", "legs", "feet",
+	"finger1", "finger2", "trinket1", "trinket2", "main_hand", "off_hand", "ranged" }
+
+--- The best item each kind gives each slot at a band, from its published picks: kind -> list of
+--- { slot, itemId } in Sources.SLOT_ORDER (the pick itself where it is that kind's, else the kind's
+--- best by-kind entry, else an alternative of that kind). What turning a kind on or off brings. Pure.
+function Sources.kindItems(picks)
+	local out = {}
+	for _, kind in ipairs(Sources.KINDS) do
+		out[kind] = {}
+	end
+	for _, slot in ipairs(Sources.SLOT_ORDER) do
+		local pick = (picks or {})[slot]
+		if pick ~= nil then
+			local best = {}
+			for _, kind in ipairs(Sources.pickKinds(pick)) do
+				best[kind] = pick.item_id
+			end
+			for _, entry in ipairs(pick.byKind or {}) do
+				best[entry.filterKind] = best[entry.filterKind] or entry.item_id
+			end
+			for _, alternative in ipairs(pick.alternatives or {}) do
+				local kind = Sources.KIND_OF_CODE[alternative.kind or ""]
+				if kind ~= nil then
+					best[kind] = best[kind] or alternative.item_id
+				end
+			end
+			for kind, itemId in pairs(best) do
+				local list = out[kind]
+				list[#list + 1] = { slot = slot, itemId = itemId }
+			end
+		end
+	end
+	return out
+end
+
 --- Gear slots with an option from each kind at a band (doll-view.ts's sourceCounts): `picks` is the
 --- band's published picks by slot. Independent of what is on. Pure.
 function Sources.counts(picks)
@@ -485,15 +522,17 @@ function Sources.counts(picks)
 	return counts
 end
 
---- What the Sources flyout and the Settings group show for a state and the band's counts (Sources.counts, nil when the band has
---- none): { rows = { { kind, label, checked, count, tip } }, showDefault }. A count reads "-" with no
---- counts; at the leveling default the Reputation row is off and says what still counts. Pure.
+--- What the Sources flyout and the Settings group show for a state and the band's counts
+--- (Sources.counts, nil when the band has none): { rows = { { kind, label, checked, count, empty, tip } },
+--- showDefault }. A count reads "-" with no counts; `empty` is a kind with no option at the band (its
+--- row is muted, still a switch); at the leveling default the Reputation row is off and says what
+--- still counts. Pure.
 function Sources.choiceRows(state, counts)
 	local rows = {}
 	for index, kind in ipairs(Sources.KINDS) do
 		local count = counts ~= nil and tostring(counts[kind] or 0) or L.sourcesCountNone
 		rows[index] = { kind = kind, label = Sources.label(kind), checked = state.set[kind] == true
-			and not (kind == "rep" and state.repCap ~= nil), count = count,
+			and not (kind == "rep" and state.repCap ~= nil), count = count, empty = count == "0",
 			tip = kind == "rep" and state.repCap ~= nil and L.sourcesRepTip or nil }
 	end
 	return { rows = rows, showDefault = state.saved == true }

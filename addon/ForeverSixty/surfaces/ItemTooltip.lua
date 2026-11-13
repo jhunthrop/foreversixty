@@ -682,7 +682,7 @@ function ItemTooltip.shortSource(pick)
 end
 
 --- The Shift line naming the published pick a source choice set aside (source filter spec 6):
---- "Best with all sources: <name>, 0.3 DPS more", the gap left out when there is none to price.
+--- "All sources: <name> +0.3 DPS", the gap left out when there is none to price.
 --- `name` is already in its quality colour. Pure.
 function ItemTooltip.setAsideText(name, gap, unit)
 	if type(gap) ~= "number" or gap <= 0 then
@@ -1460,8 +1460,9 @@ function ItemTooltip.section(ctx)
 				pick.item_id)
 			local at = after ~= nil and atLineFor(after, false) or nil
 			support = at or sourceLine
-			-- Behind Shift first, the published pick a source choice set aside.
-			if setAside ~= nil then
+			-- The published pick a source choice set aside sits directly under the source line: first
+			-- behind Shift while the source is the support line, else right after the source there.
+			if setAside ~= nil and at == nil then
 				reasons[#reasons + 1] = setAside
 			end
 			if nextLine.breakdown ~= nil then
@@ -1470,6 +1471,9 @@ function ItemTooltip.section(ctx)
 			if at ~= nil and sourceLine ~= nil then
 				reasons[#reasons + 1] = { kind = "source", pick = sourceLine.pick, boe = sourceLine.boe,
 					text = sourceLine.text, color = "muted", detail = true }
+			end
+			if setAside ~= nil and at ~= nil then
+				reasons[#reasons + 1] = setAside
 			end
 			for _, line in ipairs(atDetail(at)) do
 				addOnce(line)
