@@ -202,6 +202,11 @@ jobs:
       # (pipeline/hotfix_push.py): round 6 found Ice Barrier, Frigid Power and
       # Touch of the Grave among the pushed rows no generator read. A push it
       # cannot read fails this step rather than leaving the build shipped-only.
+      # Since 70938 wago lists a push's values only on some locales' copies (every enUS
+      # entry carries none, issue #27), so `fetch` also reads every locale's entries that
+      # carry values: the spell side's into raw/wago-push/values.json and ItemSparse's and
+      # Item's into raw/wago-push/items.json (pipeline.item_push, layered last over the item
+      # tables), both committed and crawled again only where wago's totals moved.
       # The push read is saved in builds/<build>/raw/wago-push/entries.json, which
       # the commit step's `git add builds` commits (a .gitignore exception), so the
       # next run starts from it (pipeline/hotfix_push_store.py).
