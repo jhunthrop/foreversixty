@@ -7,6 +7,7 @@
 # branch, pinned build and ranking wait) and
 # tools/tests/test_release_apps.sh (the apps' release command),
 # tools/tests/test_remeasure.sh (bis.yml's dps-per-point re-measure and its manifest),
+# tools/tests/test_bis_land.sh (bis.yml's landing of the picks on main as it is now),
 # tools/tests/test_wasm_compress.sh (the deployed sim.wasm.gz and .br and their budget gates),
 # tools/tests/test_publish_feed.sh (the releases' upload to the site's own release feed),
 # tools/tests/test_land.sh (the integrator's land/** landing command and tools/land_workflows.py),
@@ -78,6 +79,9 @@ jobs:
       - name: the dps-per-point re-measure
         if: vars.LAUNCH_MODE != 'true'
         run: bash tools/tests/test_remeasure.sh
+      - name: the BiS picks landing
+        if: vars.LAUNCH_MODE != 'true'
+        run: bash tools/tests/test_bis_land.sh
       - name: the sim.wasm.gz and sim.wasm.br compression and budgets
         if: vars.LAUNCH_MODE != 'true'
         run: bash tools/tests/test_wasm_compress.sh
