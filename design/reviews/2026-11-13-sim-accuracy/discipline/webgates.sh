@@ -6,3 +6,4 @@ npx vitest run src/content/guides src/lib/guides src/lib/sim 2>&1 | sed 's/\x1b\
 echo "vitest exit ${PIPESTATUS[0]}"
 npx astro check 2>&1 | sed 's/\x1b\[[0-9;]*m//g' | grep -E "error|Error|Result" | head -30
 echo "astro exit ${PIPESTATUS[0]}"
+cd .. && (cd data && uv run pytest -q --no-cov tests/test_apl.py tests/test_card_note_levels.py 2>&1 | tail -15); echo "pytest exit $?"
