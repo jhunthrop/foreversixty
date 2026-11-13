@@ -34,7 +34,7 @@ sources:
 
 ### Strengths
 
-- Rip at 5 combo points bleeds the boss for its whole duration, Rake's hit carries your paw's damage and its bleed grows with your attack power, and the bleeds keep Rend and Tear on for every Shred and Bite
+- Rip at 5 combo points bleeds the boss for its whole duration, Rake's hit and its bleed both grow with your attack power, and the bleeds keep Rend and Tear on for every Shred and Bite
 - Shifting Power turns mana into 40 energy every 8 seconds
 - Potions, Thistle Tea, weapon stones and Windfury Totem all work in Cat Form now
 - Your paw hits with your weapon's damage, so a real two-hander is a real upgrade
@@ -72,7 +72,7 @@ The raid build skips Furor. In Forever it no longer hands you 40 energy on a shi
 
 **Finishers.** Ferocious Bite is for 5 points while Rip still has 5 seconds or more; between 2 and 5 seconds, keep Shredding and hold the points for the Rip. Do not pool energy for the Bite. Never finish on fewer than 5 points against a boss.
 
-**Rake.** Keep it on the boss. Its hit is your paw's damage plus its own bonus, like a cheaper Claw, and the bleed takes a share of your attack power on every tick, so its 35 energy buys more than the same energy as Shred, and it is a combo point. Put it up right after a finisher and again whenever it has fallen off.
+**Rake.** Keep it on the boss. Its hit and every tick of the bleed take a share of your attack power on top of the rank's bonus, so its 35 energy buys more than the same energy as Shred, and it is a combo point. Put it up right after a finisher and again whenever it has fallen off.
 
 **Shred.** Stand behind the target, every other global.
 
@@ -125,7 +125,7 @@ Your bear hits with your weapon's DPS, so swap the starter weapon for the highes
 
 ### Levels 20 to 60
 
-Cat Form arrives at 20. Solo mobs face you, so Shred will not land: Claw builds your points and Rake, from 24, is your best button on anything that lives through its bleed, since the hit carries your paw's damage and the bleed grows with your attack power. In a group with a tank, keep Rake up and Shred from behind from 21, once the second point of Shredding Attacks has it at 48 energy; at 20, Claw buys more damage for its energy.
+Cat Form arrives at 20. Solo mobs face you, so Shred will not land: Claw builds your points and Rake, from 24, is your best button on anything that lives through its bleed, since the hit and the bleed both grow with your attack power. In a group with a tank, keep Rake up and Shred from behind from 21, once the second point of Shredding Attacks has it at 48 energy; at 20, Claw buys more damage for its energy.
 
 Open from Prowl behind the mob: Ravage once you learn it at 32, or Pounce from 36 when you want the stun. When you cannot get behind, open with Claw. Rip at 5 points on anything with a lot of health, Ferocious Bite, from 24, on the rest. From 25, Feral Charge's Cat Form leap lands you behind a mob for a Shred, and in Bear Form it is the charge you pull dungeon packs with.
 

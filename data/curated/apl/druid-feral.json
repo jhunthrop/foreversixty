@@ -281,7 +281,7 @@
         }
       },
       {
-        "notes": "When Rake is not on the target, from 24. Its hit is your paw's damage plus the rank's bonus, and the bleed takes a share of your attack power on every tick, so its energy buys more here than as Shred, and it is a combo point. Once you have Rend and Tear, a Rake on a target that already bleeds carries it on every tick.",
+        "notes": "When Rake is not on the target, from 24. Its hit and every tick of its bleed add a share of your attack power to the rank's bonus, so its energy buys more here than as Shred, and it is a combo point. Once you have Rend and Tear, a Rake on a target that already bleeds carries it on every tick.",
         "action": {
           "condition": {
             "not": {

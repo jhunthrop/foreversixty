@@ -1,0 +1,14 @@
+   2 4q5el2xsgoy7 cat2 (619, 21) DAMA 1822 56
+   1 4q5el2xsgoy7 cat2 (619, 21) PERI 1822 48
+   3 ctxicu4cuyek cat2 (584, 21) DAMA 1822 54
+   7 ctxicu4cuyek cat2 (584, 21) PERI 1822 46
+   4 ctxicu4cuyek cat2 (619, 21) DAMA 1822 56
+   2 ctxicu4cuyek cat2 (619, 21) PERI 1822 48
+  20 ctxicu4cuyek cat1 (883, 29) DAMA 1822 61
+  46 ctxicu4cuyek cat1 (883, 29) PERI 1822 53
+   3 gxrgvz4yzsi2 cat9 (663, 24) PERI 1822 49
+   2 gxrgvz4yzsi2 cat3 (713, 27) DAMA 1822 57
+   5 gxrgvz4yzsi2 cat3 (713, 27) PERI 1822 49
+   1 gxrgvz4yzsi2 cat5 (688, 25) DAMA 1822 51
+   3 gxrgvz4yzsi2 cat7 (515, 20) PERI 1822 40
+   2 gxrgvz4yzsi2 cat4 (646, 18) PERI 1822 44

@@ -1,0 +1,50 @@
+ctxicu4cuyek f77.parquet cat1 29 Ferocious Bite 1328618 DAM cp 2 E 19 advAP 883 202 360 C
+ctxicu4cuyek f77.parquet cat1 29 Ferocious Bite 1328618 DAM cp 5 E 34 advAP 883 243 194 -
+ctxicu4cuyek f77.parquet cat1 29 Ferocious Bite 1328618 DAM cp 3 E 32 advAP 883 150 121 -
+ctxicu4cuyek f77.parquet cat2 21 Ferocious Bite 1328618 DAM cp 5 E 31 advAP 584 230 168 -
+ctxicu4cuyek f77.parquet cat1 29 Ferocious Bite 1328618 DAM cp 3 E 22 advAP 883 152 123 -
+ctxicu4cuyek f77.parquet cat1 29 Ferocious Bite 1328618 DAM cp 3 E 33 advAP 883 159 128 -
+ctxicu4cuyek f77.parquet cat1 29 Ferocious Bite 1328618 DAM cp 3 E 22 advAP 883 158 127 -
+ctxicu4cuyek f78.parquet cat1 29 Ferocious Bite 1328618 DAM cp 3 E 35 advAP 883 150 120 -
+ctxicu4cuyek f78.parquet cat1 29 Ferocious Bite 1328618 DAM cp 3 E 30 advAP 883 159 128 -
+ctxicu4cuyek f78.parquet cat1 29 Ferocious Bite 1328618 DAM cp 3 E 17 advAP 883 162 129 -
+ctxicu4cuyek f78.parquet cat1 29 Ferocious Bite 1328618 DAM cp 3 E 28 advAP 883 161 130 -
+ctxicu4cuyek f78.parquet cat1 29 Ferocious Bite 1328618 DAM cp 3 E 37 advAP 883 157 276 C
+ctxicu4cuyek f78.parquet cat2 21 Ferocious Bite 1328618 DAM cp 5 E 34 advAP 584 243 354 C
+ctxicu4cuyek f78.parquet cat1 29 Ferocious Bite 1328618 DAM cp 3 E 25 advAP 883 160 128 -
+ctxicu4cuyek f78.parquet cat2 21 Ferocious Bite 1328618 DAM cp 5 E 44 advAP 584 233 169 -
+ctxicu4cuyek f78.parquet cat1 29 Ferocious Bite 1328618 DAM cp 3 E 28 advAP 883 156 126 -
+ctxicu4cuyek f78.parquet cat1 29 Ferocious Bite 1328618 DAM cp 3 E 36 advAP 883 161 286 C
+ctxicu4cuyek f78.parquet cat1 29 Ferocious Bite 1328618 DAM cp 4 E 26 advAP 883 203 163 -
+ctxicu4cuyek f78.parquet cat1 29 Ferocious Bite 1328618 DAM cp 4 E 34 advAP 883 206 165 -
+ctxicu4cuyek f78.parquet cat1 29 Ferocious Bite 1328618 DAM cp 5 E 25 advAP 883 245 196 -
+ctxicu4cuyek f78.parquet cat1 29 Ferocious Bite 1328618 DAM cp 3 E 29 advAP 883 156 126 -
+ctxicu4cuyek f78.parquet cat1 29 Ferocious Bite 1328618 DAM cp 3 E 25 advAP 883 159 282 C
+ctxicu4cuyek f78.parquet cat1 29 Ferocious Bite 1328618 DAM cp 5 E 36 advAP 883 251 198 -
+ctxicu4cuyek f78.parquet cat1 29 Ferocious Bite 1328618 DAM cp 2 E 28 advAP 883 115 93 -
+ctxicu4cuyek f78.parquet cat1 29 Ferocious Bite 1328618 DAM cp 3 E 33 advAP 883 161 284 C
+ctxicu4cuyek f78.parquet cat1 29 Ferocious Bite 1328618 DAM cp 3 E 22 advAP 883 154 124 -
+ctxicu4cuyek f78.parquet cat2 21 Ferocious Bite 1328618 DAM cp 5 E 57 advAP 584 244 178 -
+gxrgvz4yzsi2 f1.parquet cat4 18 Rip 1079 PER cp 0 E 46 advAP 646 22 22 -
+gxrgvz4yzsi2 f1.parquet cat4 18 Rip 1079 PER cp 0 E 46 advAP 646 22 22 -
+gxrgvz4yzsi2 f1.parquet cat4 18 Rip 1079 PER cp 0 E 46 advAP 646 22 22 -
+gxrgvz4yzsi2 f1.parquet cat5 25 Ferocious Bite 1328618 DAM cp 1 E 32 advAP 688 143 187 C
+gxrgvz4yzsi2 f1.parquet cat6 13 Rip 1079 PER cp -1 E 59 advAP 338 12 13 -
+gxrgvz4yzsi2 f1.parquet cat6 13 Rip 1079 PER cp -1 E 59 advAP 338 12 25 C
+gxrgvz4yzsi2 f1.parquet cat6 13 Rip 1079 PER cp -1 E 59 advAP 338 12 12 -
+gxrgvz4yzsi2 f1.parquet cat6 13 Rip 1079 PER cp -1 E 59 advAP 338 12 12 -
+gxrgvz4yzsi2 f1.parquet cat6 13 Rip 1079 PER cp -1 E 19 advAP 338 12 13 -
+gxrgvz4yzsi2 f1.parquet cat6 13 Rip 1079 PER cp -1 E 19 advAP 338 12 12 -
+gxrgvz4yzsi2 f1.parquet cat6 13 Rip 1079 PER cp -1 E 19 advAP 338 12 12 -
+gxrgvz4yzsi2 f1.parquet cat6 13 Rip 1079 PER cp -1 E 19 advAP 338 12 13 -
+gxrgvz4yzsi2 f1.parquet cat6 13 Rip 1079 PER cp -1 E 19 advAP 338 12 12 -
+gxrgvz4yzsi2 f1.parquet cat6 13 Rip 1079 PER cp -1 E 19 advAP 338 12 12 -
+gxrgvz4yzsi2 f1.parquet cat6 13 Rip 1079 PER cp -1 E 19 advAP 338 12 12 -
+gxrgvz4yzsi2 f102.parquet cat3 27 Rip 9492 PER cp 0 E 27 advAP 713 58 59 -
+gxrgvz4yzsi2 f102.parquet cat3 27 Rip 9492 PER cp 0 E 27 advAP 713 58 118 C
+gxrgvz4yzsi2 f102.parquet cat3 27 Rip 9492 PER cp 0 E 27 advAP 713 50 50 -
+gxrgvz4yzsi2 f102.parquet cat3 27 Rip 9492 PER cp 0 E 27 advAP 713 50 50 -
+gxrgvz4yzsi2 f102.parquet cat3 27 Rip 9492 PER cp 0 E 27 advAP 713 50 51 -
+gxrgvz4yzsi2 f59.parquet cat7 20 Ferocious Bite 1328618 DAM cp 4 E 43 advAP 515 184 274 C
+gxrgvz4yzsi2 f78.parquet cat8 9 Rip 1079 PER cp 1 E 43 advAP 370 10 11 -
+gxrgvz4yzsi2 f78.parquet cat8 9 Rip 1079 PER cp 1 E 43 advAP 370 10 10 -
