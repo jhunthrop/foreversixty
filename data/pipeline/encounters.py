@@ -18,7 +18,11 @@ the build cannot vouch for:
   1311680 at its top rank, not classic's 11722) and dropped others
   (there is no Curse of Shadow family), which is exactly what this
   catches;
-* `resist` is a magic school name or null.
+* `resist` is a magic school name or null;
+* `item`, the item a fight asks a player to carry (the Onyxia Scale Cloak for
+  Nefarian's Shadow Flame), must be in the build's items.json;
+* every `consumables` entry is a kind pipeline.raid_supplies knows (the
+  school protection potions), which the addon counts in the bags by kind.
 
 A build with no `loot.json` has no raid record to check against and
 ships no encounter needs, the same "absent, not empty" rule
@@ -33,6 +37,7 @@ from pathlib import Path
 from pydantic import BaseModel
 
 from pipeline.models import AddonEncounterNeeds, Source
+from pipeline.raid_supplies import KINDS
 
 CURATED_FILE = "encounter_needs.json"
 
@@ -53,6 +58,10 @@ class EncounterNeedsBoss(BaseModel):
     buffs: list[int]
     debuffs: list[int]
     resist: str | None = None
+    #: The item the fight asks each player to carry, or None.
+    item: int | None = None
+    #: The consumable kinds (pipeline.raid_supplies.KINDS) the fight asks for.
+    consumables: list[str] = []
 
 
 class EncounterNeedsFile(BaseModel):
@@ -82,6 +91,28 @@ def _known_spell_ids(path: Path) -> set[int]:
         for ranks in families.values()
         for rank in ranks
     }
+
+
+def _item_ids(path: Path) -> set[int]:
+    if not path.exists():
+        raise EncounterNeedsError(f"missing {path}")
+    file = json.loads(path.read_text(encoding="utf-8"))
+    rows = file["items"] if isinstance(file, dict) else file
+    return {row["id"] for row in rows}
+
+
+def _check_carried(boss: EncounterNeedsBoss, where: str, items_path: Path) -> None:
+    """The item and consumables a boss asks for are ones the build and the
+    catalogue know."""
+    if boss.item is not None and boss.item not in _item_ids(items_path):
+        raise EncounterNeedsError(
+            f"{where} names item {boss.item}, which {items_path} does not carry"
+        )
+    unknown = [kind for kind in boss.consumables if kind not in KINDS]
+    if unknown:
+        raise EncounterNeedsError(
+            f"{where} asks for consumables {unknown}; want kinds from {sorted(KINDS)}"
+        )
 
 
 def load_encounter_needs(
@@ -118,7 +149,12 @@ def load_encounter_needs(
             raise EncounterNeedsError(
                 f"{where} has resist {boss.resist!r}; want one of {sorted(RESIST_SCHOOLS)} or null"
             )
+        _check_carried(boss, where, root / build / "items.json")
         needs[boss.npc_id] = AddonEncounterNeeds(
-            buffs=boss.buffs, debuffs=boss.debuffs, resist=boss.resist
+            buffs=boss.buffs,
+            debuffs=boss.debuffs,
+            resist=boss.resist,
+            item=boss.item,
+            consumables=boss.consumables,
         )
     return dict(sorted(needs.items()))

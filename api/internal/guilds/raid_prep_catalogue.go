@@ -1,9 +1,10 @@
 // api/internal/guilds/raid_prep_catalogue.go
 //
-// What the raid-prep checks (owner decision D14) count, curated. Every id and name below is
+// What the raid-prep checks (owner decision D14) count: a copy of data/curated/raid-supplies.json's
+// supplies, which the addon's Data.lua also carries (a test pins the two). Every id and name below is
 // in data/builds/1.60.1.70790/simconsumes.json (checked 2026-11-06): the addon exports every
 // Consumable-class stack in the bags (supplies=) and this table decides which of them a raid
-// leader counts, so a new Forever consumable is a line here, never an addon release.
+// leader counts, so a new Forever consumable is a line here and in the curated file.
 //
 // Flasks: the four Classic raid flasks and Forever's four Natural flasks (Flask of
 // Petrification is a utility flask and is left out). Elixirs: the raid-tier battle and

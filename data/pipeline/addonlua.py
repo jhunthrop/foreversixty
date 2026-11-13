@@ -452,8 +452,9 @@ def _dps_per_point_lua(dps_per_point: dict) -> list[str]:
 
 
 def _encounter_needs_lua(encounter_needs: dict) -> list[str]:
-    """`encounterNeeds[npcId] = { buffs = {...}, debuffs = {...}, resist = "fire" }`
-    (contract 1); `resist` is left out for a boss with none, which Lua reads
+    """`encounterNeeds[npcId] = { buffs = {...}, debuffs = {...}, resist = "fire",
+    item = 15138, consumables = { "fire_protection" } }` (contract 1); `resist`,
+    `item` and `consumables` are left out for a boss with none, which Lua reads
     as nil."""
     lines = ["\tencounterNeeds = {"]
     for npc_id in sorted(encounter_needs):
@@ -461,9 +462,22 @@ def _encounter_needs_lua(encounter_needs: dict) -> list[str]:
         buffs = ", ".join(str(spell) for spell in needs.buffs)
         debuffs = ", ".join(str(spell) for spell in needs.debuffs)
         resist = f", resist = {_quote(needs.resist)}" if needs.resist is not None else ""
+        item = f", item = {needs.item}" if needs.item is not None else ""
+        kinds = ", ".join(_quote(kind) for kind in needs.consumables)
+        consumables = f", consumables = {{ {kinds} }}" if needs.consumables else ""
         lines.append(
-            f"\t\t[{npc_id}] = {{ buffs = {{ {buffs} }}, debuffs = {{ {debuffs} }}{resist} }},"
+            f"\t\t[{npc_id}] = {{ buffs = {{ {buffs} }}, debuffs = {{ {debuffs} }}"
+            f"{resist}{item}{consumables} }},"
         )
+    lines.append("\t},")
+    return lines
+
+
+def _consumables_lua(consumables: dict) -> list[str]:
+    """`consumables[itemId] = kind` (contract 1), one id per line, ids ascending."""
+    lines = ["\tconsumables = {"]
+    for item_id in sorted(consumables):
+        lines.append(f"\t\t[{item_id}] = {_quote(consumables[item_id])},")
     lines.append("\t},")
     return lines
 
@@ -515,6 +529,7 @@ def render_lua(data: AddonData) -> str:
     lines.extend(_spec_icons_lua(data.spec_icons))
     lines.extend(_dps_per_point_lua(data.dps_per_point))
     lines.extend(_encounter_needs_lua(data.encounter_needs))
+    lines.extend(_consumables_lua(data.consumables))
     lines.extend(_ability_levels_lua(data.ability_levels))
     lines.append("}")
     lines.append("")

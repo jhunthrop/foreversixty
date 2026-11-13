@@ -43,6 +43,7 @@ ForeverSixtyData = {
 			roster = 3,
 			attendance = 0.75,
 			members = { "Obnoxious Yell-ClassicBetaPvE2", "Quiet Fern-ClassicBetaPvE2" },
+			raider_ranks = { 2, 3, 4 },
 		},
 		["Dav2 Vanguard"] = {
 			standing = 2,

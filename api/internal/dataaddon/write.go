@@ -130,6 +130,13 @@ func writeGuild(bw *bufio.Writer, key string, rec guildRecord) {
 	} else {
 		field("members", "{ "+strings.Join(members, ", ")+" }")
 	}
+	if len(rec.RaiderRanks) > 0 {
+		ranks := make([]string, len(rec.RaiderRanks))
+		for i, r := range rec.RaiderRanks {
+			ranks[i] = strconv.Itoa(int(r))
+		}
+		field("raider_ranks", "{ "+strings.Join(ranks, ", ")+" }")
+	}
 	fmt.Fprintln(bw, "\t\t},")
 }
 

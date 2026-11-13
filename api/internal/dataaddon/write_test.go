@@ -109,6 +109,24 @@ func TestRenderOmitsWhatIsNotKnown(t *testing.T) {
 	}
 }
 
+func TestRenderWritesRaiderRanksOnlyWhenSet(t *testing.T) {
+	d := Data{
+		Generated: time.Date(2026, 11, 4, 0, 0, 0, 0, time.UTC),
+		Guilds: map[string]guildRecord{
+			"Iron Vanguard":     {Region: "us", Members: []string{}, RaiderRanks: []int16{2, 3, 4}},
+			"Thornwake Company": {Region: "us", Members: []string{}},
+		},
+	}
+	files, err := Render(d)
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := string(files["Data.lua"])
+	if strings.Count(got, "raider_ranks") != 1 || !strings.Contains(got, "\t\t\traider_ranks = { 2, 3, 4 },\n") {
+		t.Errorf("only the guild whose officers set them writes raider_ranks:\n%s", got)
+	}
+}
+
 func TestLuaStringEscapesOnlyWhatLuaNeeds(t *testing.T) {
 	for in, want := range map[string]string{
 		"Mörk":         `"Mörk"`,

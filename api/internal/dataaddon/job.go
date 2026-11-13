@@ -290,7 +290,8 @@ func collectGuilds(ctx context.Context, d Deps, since time.Time, identities []gu
 	records := make(map[int64]guildRecord, len(identities))
 	ranked := make([]guildStanding, 0, len(identities))
 	for _, g := range identities {
-		rec := guildRecord{Region: g.Region, Nights: nights[g.ID], Roster: len(members[g.ID]), Members: []string{}}
+		rec := guildRecord{Region: g.Region, Nights: nights[g.ID], Roster: len(members[g.ID]), Members: []string{},
+			RaiderRanks: g.RaiderRanks}
 		var fractions []float64
 		for _, key := range members[g.ID] {
 			nameKey, ok := listed[key]

@@ -6,14 +6,15 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 )
 
-// ErrInvalidSettings is returned for a bad default_visibility or
-// officer_max_rank_index in a settings PATCH.
+// ErrInvalidSettings is returned for a bad default_visibility, officer_max_rank_index or
+// raider_rank_indexes in a settings PATCH.
 var ErrInvalidSettings = errors.New("guilds: invalid settings")
 
 // minOfficerRank and maxOfficerRank bound officer_max_rank_index: a WoW
@@ -31,6 +32,36 @@ var validDefaultVisibility = map[string]bool{"public": true, "unlisted": true, "
 type SettingsPatch struct {
 	DefaultVisibility   *string
 	OfficerMaxRankIndex *int
+	// RaiderRankIndexes replaces the guild's raider ranks; an empty list clears them.
+	RaiderRankIndexes *[]int
+}
+
+// maxRankIndex is a WoW guild's lowest rank index (ranks 0-9).
+const maxRankIndex = 9
+
+// validRaiderRanks reports whether every index is a guild rank, each once.
+func validRaiderRanks(ranks []int) bool {
+	seen := map[int]bool{}
+	for _, r := range ranks {
+		if r < 0 || r > maxRankIndex || seen[r] {
+			return false
+		}
+		seen[r] = true
+	}
+	return true
+}
+
+// raiderRanksColumn is ranks sorted for the column, nil (null: not said) for none.
+func raiderRanksColumn(ranks []int) []int16 {
+	if len(ranks) == 0 {
+		return nil
+	}
+	out := make([]int16, len(ranks))
+	for i, r := range ranks {
+		out[i] = int16(r)
+	}
+	slices.Sort(out)
+	return out
 }
 
 type ClaimPendingView struct {
@@ -39,12 +70,14 @@ type ClaimPendingView struct {
 }
 
 type SettingsView struct {
-	DefaultVisibility   string            `json:"default_visibility"`
-	OfficerMaxRankIndex int               `json:"officer_max_rank_index"`
-	ClaimedBy           *ClaimHolderRef   `json:"claimed_by"`
-	ClaimPending        *ClaimPendingView `json:"claim_pending"`
-	Claim               ClaimStateView    `json:"claim"`
-	Invite              InviteView        `json:"invite"`
+	DefaultVisibility   string `json:"default_visibility"`
+	OfficerMaxRankIndex int    `json:"officer_max_rank_index"`
+	// RaiderRankIndexes are the rank indexes the guild counts as raiders, null until set.
+	RaiderRankIndexes []int16           `json:"raider_rank_indexes"`
+	ClaimedBy         *ClaimHolderRef   `json:"claimed_by"`
+	ClaimPending      *ClaimPendingView `json:"claim_pending"`
+	Claim             ClaimStateView    `json:"claim"`
+	Invite            InviteView        `json:"invite"`
 	// Discord is the guild's raid channel, for a verified officer when connect is on.
 	Discord *SettingsDiscord `json:"discord,omitempty"`
 }
@@ -67,7 +100,7 @@ func (s *Store) Settings(ctx context.Context, guildID, viewerID int64) (Settings
 	}
 	view := SettingsView{
 		DefaultVisibility: g.DefaultVisibility, OfficerMaxRankIndex: g.OfficerMaxRankIndex,
-		Invite: invite, Claim: claim, ClaimedBy: claim.ClaimedBy,
+		RaiderRankIndexes: g.RaiderRankIndexes, Invite: invite, Claim: claim, ClaimedBy: claim.ClaimedBy,
 	}
 	if g.pendingActive(now) {
 		by, err := s.claimHolderRef(ctx, guildID, *g.ClaimPendingBy)
@@ -87,8 +120,17 @@ func (s *Store) UpdateSettings(ctx context.Context, guildID, viewerID int64, in 
 		(*in.OfficerMaxRankIndex < minOfficerRank || *in.OfficerMaxRankIndex > maxOfficerRank) {
 		return SettingsView{}, ErrInvalidSettings
 	}
+	if in.RaiderRankIndexes != nil && !validRaiderRanks(*in.RaiderRankIndexes) {
+		return SettingsView{}, ErrInvalidSettings
+	}
 	if _, err := s.getGuild(ctx, guildID); err != nil {
 		return SettingsView{}, err
+	}
+	if in.RaiderRankIndexes != nil {
+		if _, err := s.Pool.Exec(ctx, `update guilds set raider_rank_indexes = $2 where id = $1`,
+			guildID, raiderRanksColumn(*in.RaiderRankIndexes)); err != nil {
+			return SettingsView{}, fmt.Errorf("guilds: update settings: %w", err)
+		}
 	}
 
 	if in.DefaultVisibility != nil {
@@ -181,6 +223,7 @@ func (s *Service) getSettings(w http.ResponseWriter, r *http.Request) {
 type settingsPatchInput struct {
 	DefaultVisibility   *string `json:"default_visibility"`
 	OfficerMaxRankIndex *int    `json:"officer_max_rank_index"`
+	RaiderRankIndexes   *[]int  `json:"raider_rank_indexes"`
 }
 
 func (s *Service) patchSettings(w http.ResponseWriter, r *http.Request) {
@@ -209,6 +252,7 @@ func (s *Service) patchSettings(w http.ResponseWriter, r *http.Request) {
 	}
 	view, err := s.Store.UpdateSettings(r.Context(), guildID, actor.UserID, SettingsPatch{
 		DefaultVisibility: in.DefaultVisibility, OfficerMaxRankIndex: in.OfficerMaxRankIndex,
+		RaiderRankIndexes: in.RaiderRankIndexes,
 	})
 	switch {
 	case errors.Is(err, ErrInvalidSettings):
@@ -216,6 +260,7 @@ func (s *Service) patchSettings(w http.ResponseWriter, r *http.Request) {
 			"that is not a valid setting", map[string]string{
 				"default_visibility":     "one of public, unlisted, guild",
 				"officer_max_rank_index": fmt.Sprintf("%d to %d", minOfficerRank, maxOfficerRank),
+				"raider_rank_indexes":    fmt.Sprintf("each 0 to %d, once", maxRankIndex),
 			})
 	case errors.Is(err, ErrNotFound):
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such guild", nil)

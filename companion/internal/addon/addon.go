@@ -71,6 +71,7 @@ const (
 	MessageLootValues = "loot_values"
 	MessageGuild      = "guild"
 	MessageAck        = "ack"
+	MessageRaidRoster = "raid_roster"
 )
 
 // knownMessage is the set of types decoded field by field. Any other
@@ -78,6 +79,7 @@ const (
 var knownMessage = map[string]bool{
 	MessageBuild: true, MessageUpgrade: true, MessageWeights: true, MessageSimResult: true,
 	MessageLastRaid: true, MessageLootValues: true, MessageGuild: true, MessageAck: true,
+	MessageRaidRoster: true,
 }
 
 // WeightEntry is one stat's weight inside a "weights" message.
@@ -111,6 +113,46 @@ type LootItemValue struct {
 	Value   float64 `json:"value"`
 	Unit    string  `json:"unit"`
 	Planned bool    `json:"planned"`
+}
+
+// RosterSignups are a raid_roster's answers, one per account; NotSigned is the accounts that
+// have not answered.
+type RosterSignups struct {
+	In        int `json:"in"`
+	Late      int `json:"late"`
+	Bench     int `json:"bench"`
+	Out       int `json:"out"`
+	NotSigned int `json:"none"`
+}
+
+// RosterRole is one roster group's In and Late rows against the raid's comp target; Wanted is
+// absent for a zone with none.
+type RosterRole struct {
+	Role   string `json:"role"`
+	Coming int    `json:"coming"`
+	Wanted *int   `json:"wanted,omitempty"`
+}
+
+// RosterJobs is how many of the raid leader's job places are held, of how many.
+type RosterJobs struct {
+	Held  int `json:"held"`
+	Total int `json:"total"`
+}
+
+// RosterMember is one row of an officer's raid_roster.
+type RosterMember struct {
+	Name   string `json:"name"`
+	Class  string `json:"class"`
+	Answer string `json:"answer"`
+	Role   string `json:"role"`
+}
+
+// RosterAssignment is one job of the raid leader's; Holders is empty when it is open.
+type RosterAssignment struct {
+	Encounter string   `json:"encounter"`
+	Label     string   `json:"label"`
+	Count     int      `json:"count"`
+	Holders   []string `json:"holders"`
 }
 
 // Message is one typed inbox message (contract 3). Its fields are the
@@ -176,6 +218,19 @@ type Message struct {
 	ClaimState       string `json:"claim_state,omitempty"`
 	PendingApprovals int    `json:"pending_approvals,omitempty"`
 	Rank             string `json:"rank,omitempty"`
+
+	// MessageRaidRoster: one open raid of the character's guild (RaidID, Raid, Title and
+	// StartsAt as on raid_signup), its size, answers, roles against the comp target and jobs
+	// held; Members and Assignments only for an officer (the API decides).
+	RaidID      int64               `json:"raid_id,omitempty"`
+	Title       string              `json:"title,omitempty"`
+	StartsAt    string              `json:"starts_at,omitempty"`
+	Size        *int                `json:"size,omitempty"`
+	Signups     *RosterSignups      `json:"signups,omitempty"`
+	Roles       []RosterRole        `json:"roles,omitempty"`
+	Jobs        *RosterJobs         `json:"jobs,omitempty"`
+	Members     *[]RosterMember     `json:"members,omitempty"`
+	Assignments *[]RosterAssignment `json:"assignments,omitempty"`
 
 	// MessageAck: when the site last saw the character's export (RFC
 	// 3339, UTC), what became of its newest in-game sim request, and when
@@ -513,6 +568,8 @@ func renderMessage(b *strings.Builder, m Message) {
 		field(b, in, "claim_state", quote(m.ClaimState))
 		field(b, in, "pending_approvals", strconv.Itoa(m.PendingApprovals))
 		field(b, in, "rank", quote(m.Rank))
+	case MessageRaidRoster:
+		renderRaidRoster(b, in, m)
 	case MessageAck:
 		field(b, in, "export_seen_at", quote(m.ExportSeenAt))
 		if m.SimRequestState != "" {
@@ -537,6 +594,54 @@ func renderMessage(b *strings.Builder, m Message) {
 		}
 	}
 	b.WriteString("\t\t},\n")
+}
+
+// renderRaidRoster writes a raid_roster's fields; members and assignments only when the API
+// sent them (an officer's).
+func renderRaidRoster(b *strings.Builder, in string, m Message) {
+	field(b, in, "raid_id", strconv.FormatInt(m.RaidID, 10))
+	field(b, in, "raid", quote(m.Raid))
+	field(b, in, "title", quote(m.Title))
+	field(b, in, "starts_at", quote(m.StartsAt))
+	if m.Size != nil {
+		field(b, in, "size", strconv.Itoa(*m.Size))
+	}
+	if s := m.Signups; s != nil {
+		field(b, in, "signups", fmt.Sprintf(`{ ["in"] = %d, ["late"] = %d, ["bench"] = %d, ["out"] = %d, ["none"] = %d }`,
+			s.In, s.Late, s.Bench, s.Out, s.NotSigned))
+	}
+	b.WriteString(in + "[\"roles\"] = {\n")
+	for _, r := range m.Roles {
+		wanted := ""
+		if r.Wanted != nil {
+			wanted = fmt.Sprintf(`, ["wanted"] = %d`, *r.Wanted)
+		}
+		fmt.Fprintf(b, "%s\t{ [\"role\"] = %s, [\"coming\"] = %d%s },\n", in, quote(r.Role), r.Coming, wanted)
+	}
+	b.WriteString(in + "},\n")
+	if j := m.Jobs; j != nil {
+		field(b, in, "jobs", fmt.Sprintf(`{ ["held"] = %d, ["total"] = %d }`, j.Held, j.Total))
+	}
+	if m.Members != nil {
+		b.WriteString(in + "[\"members\"] = {\n")
+		for _, mb := range *m.Members {
+			fmt.Fprintf(b, "%s\t{ [\"name\"] = %s, [\"class\"] = %s, [\"answer\"] = %s, [\"role\"] = %s },\n",
+				in, quote(mb.Name), quote(mb.Class), quote(mb.Answer), quote(mb.Role))
+		}
+		b.WriteString(in + "},\n")
+	}
+	if m.Assignments != nil {
+		b.WriteString(in + "[\"assignments\"] = {\n")
+		for _, a := range *m.Assignments {
+			holders := make([]string, len(a.Holders))
+			for i, h := range a.Holders {
+				holders[i] = quote(h)
+			}
+			fmt.Fprintf(b, "%s\t{ [\"encounter\"] = %s, [\"label\"] = %s, [\"count\"] = %d, [\"holders\"] = { %s } },\n",
+				in, quote(a.Encounter), quote(a.Label), a.Count, strings.Join(holders, ", "))
+		}
+		b.WriteString(in + "},\n")
+	}
 }
 
 // renderBoss writes one last_raid boss as a nested table.

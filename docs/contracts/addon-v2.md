@@ -82,8 +82,12 @@ ns.Data = {
   -- weapon damage per second of the weapons among them, each stored once per item id
   bisNames = { [6631] = "Living Root", ... },
   bisDps = { [6631] = 21.2, ... },
-  -- NEW: what each raid encounter needs, for the ready-check coverage list
-  encounterNeeds = { [<npcId>] = { buffs = { 1126, ... }, debuffs = { 7386, ... }, resist = "fire" | nil } },
+  -- NEW: what each raid encounter needs, for the ready-check coverage list, and (2026-11-13) the
+  -- item it asks each player to carry and the consumable kinds it asks for, for the hub's prep
+  encounterNeeds = { [<npcId>] = { buffs = { 1126, ... }, debuffs = { 7386, ... }, resist = "fire" | nil,
+                                   item = 15138 | nil, consumables = { "fire_protection" } | nil } },
+  -- NEW (2026-11-13): the consumables a raid counts, item id -> kind
+  consumables = { [13510] = "flask", [13931] = "food", [13457] = "fire_protection", ... },
   -- NEW: the level each rotation ability is learned, so the rotation region can say "at level N"
   abilityLevels = { [<spellId>] = 24, ... },
   rotations = { ... }, bis = { ... },        -- unchanged shapes plus the fields above
@@ -169,6 +173,20 @@ Notes for the reader:
   slot's pick at the band before (every pick of a spec's first band is new).
 - `encounterNeeds` ids are spell ids for buffs and debuffs and are used only to check the raid's
   auras; the coverage list shows spell names from the client. `resist` is a school name or nil.
+  `item` (added 2026-11-13) is the item id a fight asks each player to carry (Nefarian: the
+  Onyxia Scale Cloak against Shadow Flame), shown by the client's own item name; `consumables`
+  are kinds of the `consumables` table below the fight asks for (Onyxia and Ragnaros:
+  `"fire_protection"`). Both are absent for a boss with none. Source:
+  `data/curated/encounter_needs.json` through `pipeline.encounters`, which refuses an item the
+  build's items.json does not carry and a kind the catalogue does not know.
+- `consumables` (added 2026-11-13) is item id -> kind for every consumable a raid counts:
+  `"flask"`, `"elixir"` and `"food"` (the site's raid-prep catalogue, the same list
+  `api/internal/guilds/raid_prep_catalogue.go` copies and a guilds test pins) and the protection
+  potions by school (`"fire_protection"`, `"frost_protection"`, `"nature_protection"`,
+  `"shadow_protection"`, `"arcane_protection"`). Source: `data/curated/raid-supplies.json`
+  through `pipeline.raid_supplies`, every id and name checked against the build's
+  simconsumes.json. The ids are lookup keys, never printed; the addon names an item from the
+  client. The snapshot! v2 supplies field (contract 2) counts the bags by these kinds.
 
 ---
 
@@ -190,7 +208,7 @@ push      | buildCode | buildName           (sender must be guild rank index <= 
 loot?     | itemId | lootId
 loot!     | lootId | value(float, DPS or score) | unit("dps"|"score") | currentItemId | planned(0|1)
 snapshot? | (no fields)
-snapshot! | same fields as hello
+snapshot! | same fields as hello [ | addonVersion | attuned | encounterItems | supplies ]   (v2, optional, added 2026-11-13)
 ```
 Channels: GUILD for hello/share/push/snapshot; RAID or PARTY for loot and snapshot. Rate: at most one `hello` per 60 s per sender; `loot!` only in reply to a `loot?` seen in the last 30 s.
 
@@ -213,6 +231,19 @@ Notes for the reader:
   message without a reply.
 - `loot?` and `loot!` carry numbers computed by the one scoring function (spec 2.1). `unit`
   says which, and a `loot!` for a different `lootId` than the open request is ignored.
+- **snapshot! v2** (added 2026-11-13, the hub's Officer readiness; spec
+  `design/specs/2026-11-13-addon-hub.md` section 9). Four fields after the hello's, inside
+  version 1, so a v1 reader keeps them unread and a v1 sender's five-field snapshot! still reads:
+  `addonVersion` (the TOC `Version`, "2.0.46"), `attuned` (the site zone keys the player is
+  attuned to, comma joined: `raid:onyxias-lair` when either Onyxia chain's last quest is done or
+  the Drakefire Amulet is held), `encounterItems` (the item ids of contract 1's
+  `encounterNeeds[*].item` the player wears or carries, comma joined) and `supplies` (the carried
+  consumables counted by contract 1's kinds, `flask:2,elixir:6,food:20,fire_protection:5`,
+  kinds in that order, none at 0). Each is `-` when the client could not read it (no quest or
+  container API), never "none", and empty when it read nothing. The build followed is the
+  hello's own `buildName`. A snapshot! goes only while "Share my build with my guild" is on, so
+  a player who turned it off sends none of this. `Comms.readiness` reads the four; a receiver
+  keeps a sender's last readiness through a later hello.
 
 ---
 
@@ -370,6 +401,27 @@ Notes for the reader:
   parts `gear`, `experience`, `parses`, `attendance`, `discipline` (each a number, absent when the
   record has none). Sent for every character of an account with a record, hidden or not; the
   addon reads it only when the Data addon has nothing for the character itself.
+- **`raid_roster`** (added 2026-11-13, the hub's Guild Sign-ups and Officer roster; spec
+  `design/specs/2026-11-13-addon-hub.md` section 9): one message per raid that `raid_signup`
+  lists (planned or locked, not over, starting within 7 days), for each of the account's
+  characters verified in the raid's guild. `raid_id`, `raid`, `title` and `starts_at` as on
+  `raid_signup`; `size` (the zone's, absent when unsourced); `signups` = `{ in, late, bench, out,
+  none }`, the answers one per account (the raid page's own counting, an account's best place)
+  and `none` the guild's verified accounts with no answer; `roles`, the four roster groups
+  `tank`, `healer`, `melee`, `ranged` in that order, each `{ role, coming, wanted }` with
+  `coming` its In and Late rows (the four add up to in + late) and `wanted` the raid's comp
+  target (the officer's own, else the zone default; absent for a zone with none); `jobs` =
+  `{ held, total }`, the raid leader's job places held of how many. **Names go to officers
+  only**: when the account holds the site's verified officer or leader rank in the guild (the
+  rank the raid page's officer views read), the message also carries `members`, each sign-up
+  row and each verified character whose account has not answered, `{ name, class, answer, role }`
+  (`answer` in, late, bench, out or none; `class` the site's lowercase slug; `role` the roster
+  group), and `assignments`, each job `{ encounter, label, count, holders }` (`holders` the
+  names in it, an empty list when open). Everyone else gets the counts alone. The message is
+  nested, so the companion renders it as a type it knows (a companion from before 2026-11-13
+  skips it and says so in its log). `docs/contracts/fixtures/inbox-raid-roster.json` is an
+  officer's message (made-up names); the API, the companion and the addon (`Codec.raidRosters`)
+  each pin it.
 - **`accepts`** (top level, added 2026-11-08): a list of the outbox entry names the companion
   uploads beyond `export`, `sim_request` and `roster_snapshot`; today at most
   `{ "raid_answer" }`. The companion writes it; the API's `GET /v1/addon/inbox` body omits it.
@@ -471,7 +523,8 @@ ForeverSixtyData = {
     -- a verified guild member with no logs yet
     ["Quiet Fern-ClassicBetaPvE2"] = { score = nil, item_level = 22, spec = "warrior-fury", profile = "/character/us/normal/quiet-fern" },
   },
-  guilds = { ["OLYMPUS XXVII"] = { standing = 3, nights = 4, roster = 31, attendance = 0.8, members = { "Obnoxious Yell-ClassicBetaPvE2", "Quiet Fern-ClassicBetaPvE2", ... } } },
+  guilds = { ["OLYMPUS XXVII"] = { standing = 3, nights = 4, roster = 31, attendance = 0.8, members = { "Obnoxious Yell-ClassicBetaPvE2", "Quiet Fern-ClassicBetaPvE2", ... },
+                                   raider_ranks = { 2, 3, 4 } } },
 }
 ```
 Tiers by score: `common` < 500, `uncommon` < 1000, `rare` < 1500, `epic` < 2000, `legendary` ≥ 2000. These thresholds are provisional: the API lane sets the final numbers from the live distribution before week 2 closes, and the addon reads `tier` from the record, never computing it.
@@ -545,7 +598,11 @@ Notes for the reader:
   distinct raid bosses killed in its unflagged reports in the last 90 days, ties by
   `attendance` (guilds still tied share a rank). `nights` is the distinct UTC dates of its
   public, unflagged reports in the last 90 days.
-  `roster` is its verified member count. `attendance` is the mean of the attendance fractions
+  `roster` is its verified member count. `raider_ranks` (added 2026-11-13) are the guild rank
+  indexes its officers count as raiders (0 is the guild master, the index `GetGuildRosterInfo`
+  answers), sorted; absent until an officer sets them (`PATCH /v1/guilds/{id}/settings`
+  `raider_rank_indexes`, migration 0103), and the addon then counts every level 60 as a raider.
+  `attendance` is the mean of the attendance fractions
   of its listed members that have a score (a no-logs member has no fraction and is not
   counted), absent when none has one.
 - `docs/contracts/fixtures/data-addon-v2.lua` is the file the API's nightly job writes for its

@@ -1052,6 +1052,10 @@ class AddonEncounterNeeds(BaseModel):
     debuffs: list[int]
     #: The school a raid stacks resistance against, or None.
     resist: str | None = None
+    #: The item the fight asks each player to carry (an item id), or None.
+    item: int | None = None
+    #: The consumable kinds the fight asks for (pipeline.raid_supplies.KINDS).
+    consumables: list[str] = []
 
 
 class AddonData(BaseModel):
@@ -1084,6 +1088,10 @@ class AddonData(BaseModel):
     #: Keyed by raid boss npc id (pipeline.encounters). Empty for a build
     #: with no loot.json raid record to check the ids against.
     encounter_needs: dict[int, AddonEncounterNeeds] = {}
+    #: Item id -> the kind it counts as (pipeline.raid_supplies): the site's raid
+    #: supplies and the protection potions. Empty for a build with no
+    #: simconsumes.json to check the ids against.
+    consumables: dict[int, str] = {}
     #: Rotation spell id -> the level the first rank of its ability is
     #: learned (pipeline.addonrotation.build_ability_levels), for the
     #: rotation region's "at level N". Every id any rotation line carries.

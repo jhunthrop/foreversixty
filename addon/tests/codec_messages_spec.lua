@@ -124,3 +124,74 @@ describe("Codec.inboxMessages, the last raid (contract 3)", function()
 		assert.are.equal("Lucifron", usable[1].bosses[1].name)
 	end)
 end)
+
+-- The raid_roster message (hub L9): the shared fixture is an officer's, so it carries names; a
+-- member's has the counts alone. Codec.raidRosters reads them for the Guild and Officer tabs.
+describe("Codec.raidRosters (contract 3)", function()
+	local json = require("dkjson")
+	local Codec
+	local KEY = "us/normal/obnoxious"
+
+	local function fixture()
+		for _, root in ipairs({ "../docs/contracts/fixtures/", "docs/contracts/fixtures/" }) do
+			local file = io.open(root .. "inbox-raid-roster.json", "rb")
+			if file then
+				local text = file:read("a")
+				file:close()
+				local decoded, _, err = json.decode(text)
+				assert(decoded, err)
+				return decoded
+			end
+		end
+		error("no inbox-raid-roster.json fixture")
+	end
+
+	before_each(function()
+		Codec = helper.load("Codec")
+	end)
+
+	it("reads the officer's fixture with its counts, roles, jobs and names", function()
+		local rosters = Codec.raidRosters({ messages = { fixture() } }, KEY)
+		assert.are.equal(1, #rosters)
+		local roster = rosters[1]
+		assert.are.equal(42, roster.raidId)
+		assert.are.equal("Onyxia's Lair", roster.raid)
+		assert.are.equal(40, roster.size)
+		assert.are.same({ ["in"] = 10, late = 2, bench = 1, out = 3, none = 16 }, roster.signups)
+		assert.are.equal(12, roster.coming)
+		assert.are.same({ role = "healer", coming = 4, wanted = 8 }, roster.roles[2])
+		assert.are.same({ held = 1, total = 2 }, roster.jobs)
+		assert.are.equal(3, #roster.members)
+		assert.are.same({ name = "Quenna", class = "priest", answer = "none", role = "healer" }, roster.members[3])
+		assert.are.same({ "Thornhide" }, roster.assignments[1].holders)
+		assert.are.same({}, roster.assignments[2].holders)
+	end)
+
+	it("gives a member's roster no names, and a role without a target no wanted", function()
+		local message = fixture()
+		message.members, message.assignments = nil, nil
+		for _, role in ipairs(message.roles) do
+			role.wanted = nil
+		end
+		local roster = Codec.raidRosters({ messages = { message } }, KEY)[1]
+		assert.is_nil(roster.members)
+		assert.is_nil(roster.assignments)
+		assert.is_nil(roster.roles[1].wanted)
+		assert.are.equal(2, roster.roles[1].coming)
+	end)
+
+	it("lists the soonest raid first and leaves out one it cannot read or another character's", function()
+		local later, sooner, broken, other = fixture(), fixture(), fixture(), fixture()
+		later.raid_id, later.starts_at = 43, "2026-12-17T02:00:00Z"
+		broken.raid_id, broken.signups = 44, { ["in"] = "ten" }
+		other.raid_id, other.character = 45, "us/normal/someone-else"
+		local rosters = Codec.raidRosters({ messages = { later, broken, sooner, other } }, KEY)
+		assert.are.equal(2, #rosters)
+		assert.are.equal(42, rosters[1].raidId)
+		assert.are.equal(43, rosters[2].raidId)
+	end)
+
+	it("answers an empty list with no inbox", function()
+		assert.are.same({}, Codec.raidRosters(nil, KEY))
+	end)
+end)

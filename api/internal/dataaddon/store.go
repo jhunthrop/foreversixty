@@ -112,7 +112,7 @@ func (s *Store) exports(ctx context.Context, keys []string) (map[string]string, 
 // is left out of this list entirely and never gets a record.
 func (s *Store) guildsWithVerifiedMembers(ctx context.Context) ([]guildIdentity, error) {
 	rows, err := s.Pool.Query(ctx,
-		`select g.id, g.region, g.ruleset, g.name
+		`select g.id, g.region, g.ruleset, g.name, g.raider_rank_indexes
 		 from guilds g
 		 where exists (
 		   select 1 from guild_characters gc
@@ -126,7 +126,7 @@ func (s *Store) guildsWithVerifiedMembers(ctx context.Context) ([]guildIdentity,
 	var out []guildIdentity
 	for rows.Next() {
 		var g guildIdentity
-		if err := rows.Scan(&g.ID, &g.Region, &g.Ruleset, &g.Name); err != nil {
+		if err := rows.Scan(&g.ID, &g.Region, &g.Ruleset, &g.Name, &g.RaiderRanks); err != nil {
 			return nil, fmt.Errorf("dataaddon: scan guild: %w", err)
 		}
 		out = append(out, g)

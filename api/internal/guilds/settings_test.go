@@ -211,3 +211,31 @@ func TestSettingsCarryTheBot(t *testing.T) {
 		t.Fatalf("bot nil = %+v", got)
 	}
 }
+
+// Raider ranks: null until set, each a guild rank once, stored sorted, cleared by an empty list.
+func TestUpdateSettingsRaiderRanks(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	ctx := context.Background()
+	gid := seedGuild(t, pool, "Forever")
+
+	view, err := s.Settings(ctx, gid, 0)
+	if err != nil || view.RaiderRankIndexes != nil {
+		t.Fatalf("a new guild's raider ranks = %v, %v, want null", view.RaiderRankIndexes, err)
+	}
+	for _, bad := range [][]int{{10}, {-1}, {2, 2}} {
+		if _, err := s.UpdateSettings(ctx, gid, 0, SettingsPatch{RaiderRankIndexes: &bad}); !errors.Is(err, ErrInvalidSettings) {
+			t.Errorf("raider ranks %v = %v, want ErrInvalidSettings", bad, err)
+		}
+	}
+	ranks := []int{4, 2, 3}
+	view, err = s.UpdateSettings(ctx, gid, 0, SettingsPatch{RaiderRankIndexes: &ranks})
+	if err != nil || fmt.Sprint(view.RaiderRankIndexes) != "[2 3 4]" {
+		t.Fatalf("view = %v, %v, want [2 3 4]", view.RaiderRankIndexes, err)
+	}
+	none := []int{}
+	view, err = s.UpdateSettings(ctx, gid, 0, SettingsPatch{RaiderRankIndexes: &none})
+	if err != nil || view.RaiderRankIndexes != nil {
+		t.Fatalf("cleared = %v, %v, want null", view.RaiderRankIndexes, err)
+	}
+}

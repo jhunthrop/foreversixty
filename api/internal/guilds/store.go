@@ -43,8 +43,11 @@ type Guild struct {
 	// contest-cooldown recentlyUpheld enforces for exactly the uphold(s)
 	// resolved at or before this instant - a later, fresh uphold is not
 	// retroactively cleared by a stale reopen.
-	ClaimReopenedAt      *time.Time
-	OfficerMaxRankIndex  int
+	ClaimReopenedAt     *time.Time
+	OfficerMaxRankIndex int
+	// RaiderRankIndexes are the rank indexes the guild counts as raiders (migration 0103), nil
+	// until an officer says.
+	RaiderRankIndexes    []int16
 	InviteTokenRotatedAt *time.Time
 	// InviteRotatedBy is the account that made the current invite link (migration 0070); nil
 	// for a link made before 0070, by a tool, or by an account since deleted.
@@ -123,11 +126,12 @@ func (s *Store) getGuild(ctx context.Context, id int64) (Guild, error) {
 	err := s.Pool.QueryRow(ctx,
 		`select id, region, ruleset, name, default_visibility, claimed_by, claimed_at, claim_pending_by,
 		        claim_requested_at, claim_contested_at, claim_contested_by, claim_reopened_at,
-		        officer_max_rank_index, invite_token_rotated_at, invite_rotated_by, faction, crest_key
+		        officer_max_rank_index, raider_rank_indexes, invite_token_rotated_at, invite_rotated_by, faction,
+		        crest_key
 		 from guilds where id = $1`, id).
 		Scan(&g.ID, &g.Region, &g.Ruleset, &g.Name, &g.DefaultVisibility, &g.ClaimedBy, &g.ClaimedAt,
 			&g.ClaimPendingBy, &g.ClaimRequestedAt, &g.ClaimContestedAt, &g.ClaimContestedBy, &g.ClaimReopenedAt,
-			&g.OfficerMaxRankIndex, &g.InviteTokenRotatedAt, &g.InviteRotatedBy, &g.Faction, &g.CrestKey)
+			&g.OfficerMaxRankIndex, &g.RaiderRankIndexes, &g.InviteTokenRotatedAt, &g.InviteRotatedBy, &g.Faction, &g.CrestKey)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return Guild{}, ErrNotFound
 	}

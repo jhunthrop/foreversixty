@@ -10,7 +10,7 @@
 -- No message ever acts on the recipient's behalf: `push` is only handed to whoever listens
 -- (after the sender's standing is checked), `snapshot?` is answered with the fields a
 -- `hello` carries, and nothing is applied automatically.
-local _, ns = ...
+local addonName, ns = ...
 ns = type(ns) == "table" and ns or {}
 local L = ns.L or require("Locale")
 local Compat = ns.Compat or require("Compat")
@@ -23,6 +23,7 @@ local Progress = ns.Progress or require("Progress")
 local Sources = ns.Sources or require("Sources")
 local Score = ns.Score or require("Score")
 local Prefs = ns.Prefs or require("Prefs")
+local RaidPrep = ns.RaidPrep or require("RaidPrep")
 
 local Comms = {}
 
@@ -50,6 +51,28 @@ Comms.FIELDS = {
 	["snapshot?"] = {},
 	["snapshot!"] = { "level", "spec", "gearGap", "buildName", "scoreDate" },
 }
+
+--- Fields a kind may carry after its own, added inside version 1 (a reader that does not know
+--- them keeps them, decode's rule). snapshot! v2: the readiness an officer reads (spec
+--- 2026-11-13-addon-hub section 9): the addon's version, the raids the player is attuned to,
+--- the encounter items held and the consumables carried by kind. A v1 snapshot! has none.
+Comms.OPTIONAL = {
+	["snapshot!"] = { "addonVersion", "attuned", "encounterItems", "supplies" },
+}
+
+--- The order the supplies field lists kinds in: the raid's three supplies, then the
+--- protection potions (Data.consumables' kinds).
+Comms.SUPPLY_KINDS = { "flask", "elixir", "food", "fire_protection", "frost_protection",
+	"nature_protection", "shadow_protection", "arcane_protection" }
+
+--- The attunements a snapshot! reports, by the site's zone key: done when any of the quests is
+--- flagged complete or any of the items is held (RaidPrep's own lists).
+Comms.ATTUNEMENTS = {
+	{ zone = "raid:onyxias-lair", quests = RaidPrep.ATTUNEMENT_QUESTS, items = RaidPrep.ATTUNEMENT_ITEMS },
+}
+
+--- "-" in a readiness field: this client could not read it (no API), never "none".
+Comms.UNKNOWN = "-"
 
 --- The channels each kind may go out on. snapshot? and snapshot! go on GUILD for the guild
 --- tab and on RAID or PARTY for the group panel; a raid leader's push goes on the group.
@@ -168,13 +191,18 @@ function Comms.encode(kind, fields)
 	end
 	fields = fields or {}
 	local parts = { tostring(Comms.VERSION), kind }
-	for index = 1, #names do
+	local optional = Comms.OPTIONAL[kind] or {}
+	for index = 1, #names + #optional do
+		local name = names[index] or optional[index - #names]
 		if fields[index] == nil then
-			return nil, "missing field " .. names[index]
+			if index <= #names then
+				return nil, "missing field " .. name
+			end
+			break
 		end
 		local value = fieldText(fields[index])
 		if value:find("[%z\r]") then
-			return nil, "control character in " .. names[index]
+			return nil, "control character in " .. name
 		end
 		parts[#parts + 1] = escape(value)
 	end
@@ -232,10 +260,192 @@ function Comms.named(kind, fields)
 	for index, value in ipairs(fields) do
 		out[index] = value
 	end
-	for index, name in ipairs(Comms.FIELDS[kind] or {}) do
+	local names = Comms.FIELDS[kind] or {}
+	for index, name in ipairs(names) do
 		out[name] = fields[index]
 	end
+	for index, name in ipairs(Comms.OPTIONAL[kind] or {}) do
+		out[name] = fields[#names + index]
+	end
 	return out
+end
+
+-- Readiness (snapshot! v2) ---------------------------------------------------------------
+
+--- "flask:2,food:20" from { flask = 2, food = 20 }, kinds in SUPPLY_KINDS' order, none at 0;
+--- "-" for nil (this client could not read its bags).
+function Comms.encodeSupplies(counts)
+	if counts == nil then
+		return Comms.UNKNOWN
+	end
+	local parts = {}
+	for _, kind in ipairs(Comms.SUPPLY_KINDS) do
+		local count = tonumber(counts[kind])
+		if count ~= nil and count > 0 then
+			parts[#parts + 1] = kind .. ":" .. string.format("%d", count)
+		end
+	end
+	return table.concat(parts, ",")
+end
+
+--- { flask = 2, food = 20 } from a supplies field; nil for "-" or anything malformed. A kind
+--- this build does not know is kept, so a later writer's kind is not lost.
+function Comms.decodeSupplies(text)
+	if type(text) ~= "string" or text == Comms.UNKNOWN then
+		return nil
+	end
+	local counts = {}
+	for part in text:gmatch("[^,]+") do
+		local kind, count = part:match("^([%w_]+):(%d+)$")
+		if kind == nil then
+			return nil
+		end
+		counts[kind] = tonumber(count)
+	end
+	return counts
+end
+
+--- A comma list as a set; nil for "-" (not read).
+local function listSet(text, asNumbers)
+	if type(text) ~= "string" or text == Comms.UNKNOWN then
+		return nil
+	end
+	local set = {}
+	for part in text:gmatch("[^,]+") do
+		set[asNumbers and tonumber(part) or part] = true
+	end
+	return set
+end
+
+--- A set's keys, sorted, comma joined.
+local function setText(set)
+	if set == nil then
+		return Comms.UNKNOWN
+	end
+	local keys = {}
+	for key in pairs(set) do
+		keys[#keys + 1] = key
+	end
+	table.sort(keys, function(left, right)
+		return tostring(left) < tostring(right)
+	end)
+	for index, key in ipairs(keys) do
+		keys[index] = tostring(key)
+	end
+	return table.concat(keys, ",")
+end
+
+--- A snapshot!'s readiness from its named fields: { addonVersion, attuned = set of zone keys,
+--- encounterItems = set of item ids, supplies = { kind = count } }, each nil when the sender
+--- could not read it; nil for a v1 snapshot! (no addonVersion). Pure.
+function Comms.readiness(named)
+	local version = type(named) == "table" and named.addonVersion or nil
+	if type(version) ~= "string" or version == "" then
+		return nil
+	end
+	return {
+		addonVersion = version ~= Comms.UNKNOWN and version or nil,
+		attuned = listSet(named.attuned, false),
+		encounterItems = listSet(named.encounterItems, true),
+		supplies = Comms.decodeSupplies(named.supplies),
+	}
+end
+
+--- Counts by kind of the consumable stacks (RaidPrep.supplies' { { itemId, count } }) that
+--- the catalogue (Data.consumables, item id -> kind) names; nil for nil stacks. Pure.
+function Comms.supplyCounts(stacks, catalogue)
+	if stacks == nil then
+		return nil
+	end
+	local counts = {}
+	for _, stack in ipairs(stacks) do
+		local kind = type(catalogue) == "table" and catalogue[stack.itemId] or nil
+		if kind ~= nil then
+			counts[kind] = (counts[kind] or 0) + (tonumber(stack.count) or 0)
+		end
+	end
+	return counts
+end
+
+--- The zone keys of Comms.ATTUNEMENTS the player has: any quest done (RaidPrep.quests'
+--- { { questId, done } }) or any item held (RaidPrep.held's { { itemId, held } }). nil when
+--- neither could be read. Pure.
+function Comms.attunedZones(quests, held)
+	if quests == nil and held == nil then
+		return nil
+	end
+	local done, have = {}, {}
+	for _, quest in ipairs(quests or {}) do
+		done[quest.questId] = quest.done
+	end
+	for _, item in ipairs(held or {}) do
+		have[item.itemId] = item.held
+	end
+	local zones = {}
+	for _, attunement in ipairs(Comms.ATTUNEMENTS) do
+		for _, id in ipairs(attunement.quests) do
+			zones[attunement.zone] = zones[attunement.zone] or done[id] == true
+		end
+		for _, id in ipairs(attunement.items) do
+			zones[attunement.zone] = zones[attunement.zone] or have[id] == true
+		end
+		if not zones[attunement.zone] then
+			zones[attunement.zone] = nil
+		end
+	end
+	return zones
+end
+
+--- Every item an encounter asks a player to carry (Data.encounterNeeds[*].item), sorted.
+function Comms.encounterItems(data)
+	local ids, seen = {}, {}
+	for _, needs in pairs(type(data) == "table" and data.encounterNeeds or {}) do
+		local id = type(needs) == "table" and needs.item or nil
+		if type(id) == "number" and not seen[id] then
+			seen[id] = true
+			ids[#ids + 1] = id
+		end
+	end
+	table.sort(ids)
+	return ids
+end
+
+--- The addon's own version from its TOC, else "-".
+function Comms.addonVersion()
+	local read = (C_AddOns and C_AddOns.GetAddOnMetadata) or GetAddOnMetadata
+	if type(read) ~= "function" then
+		return Comms.UNKNOWN
+	end
+	local ok, version = pcall(read, addonName or "ForeverSixty", "Version")
+	return ok and type(version) == "string" and version ~= "" and version or Comms.UNKNOWN
+end
+
+--- The snapshot! v2 fields, read now: version, attuned zones, encounter items held, supplies.
+function Comms.readinessFields()
+	local data = Comms.data or ns.Data
+	local container = { size = Export.containerSize, link = Export.containerLink }
+	local bags = Export.CARRIED_BAGS
+	local attunementItems = {}
+	for _, attunement in ipairs(Comms.ATTUNEMENTS) do
+		for _, id in ipairs(attunement.items) do
+			attunementItems[#attunementItems + 1] = id
+		end
+	end
+	local held = RaidPrep.held(Comms.encounterItems(data), bags, container)
+	local items
+	if held ~= nil then
+		items = {}
+		for _, item in ipairs(held) do
+			items[item.itemId] = item.held or nil
+		end
+	end
+	local catalogue = type(data) == "table" and data.consumables or nil
+	return {
+		Comms.addonVersion(),
+		setText(Comms.attunedZones(RaidPrep.quests(), RaidPrep.held(attunementItems, bags, container))),
+		setText(items),
+		Comms.encodeSupplies(Comms.supplyCounts(RaidPrep.supplies(bags, container), catalogue)),
+	}
 end
 
 -- Sending ---------------------------------------------------------------------------------
@@ -501,10 +711,16 @@ function Comms.prune(now)
 	end
 end
 
-local function remember(sender, named, channel, now)
+--- A hello keeps the readiness the sender's last snapshot! gave (with its own time); a
+--- snapshot! v2 replaces it.
+local function remember(sender, named, channel, now, kind)
+	local before = Comms.seen[sender]
+	local readiness = kind == "snapshot!" and Comms.readiness(named) or nil
 	Comms.seen[sender] = {
 		level = tonumber(named.level), spec = named.spec, gearGap = tonumber(named.gearGap),
 		buildName = named.buildName, scoreDate = named.scoreDate, channel = channel, time = now,
+		readiness = readiness or (before ~= nil and before.readiness or nil),
+		readinessTime = readiness ~= nil and now or (before ~= nil and before.readinessTime or nil),
 	}
 	Comms.prune(now)
 end
@@ -523,11 +739,24 @@ local function protect(action, ...)
 	return ok
 end
 
+--- The snapshot! fields: the hello's, then the readiness (Comms.readinessFields). A build name
+--- that would take the message past 255 bytes is shortened, never split.
+function Comms.snapshotFields()
+	local fields = Comms.helloFields()
+	for _, value in ipairs(Comms.readinessFields()) do
+		fields[#fields + 1] = value
+	end
+	while Comms.encode("snapshot!", fields) == nil and fields[4] ~= "" do
+		fields[4] = shorten(fields[4])
+	end
+	return fields
+end
+
 local function answerSnapshot(channel)
 	if not Comms.sharing() then
 		return
 	end
-	Comms.send("snapshot!", Comms.helloFields(), channel)
+	Comms.send("snapshot!", Comms.snapshotFields(), channel)
 end
 
 --- CHAT_MSG_ADDON. Anything not FS1, unreadable, from this player, or refused by its kind's
@@ -550,9 +779,9 @@ function Comms.onEvent(prefix, text, channel, sender)
 			return false
 		end
 		lastHelloFrom[sender] = now
-		remember(sender, named, channel, now)
+		remember(sender, named, channel, now, kind)
 	elseif kind == "snapshot!" then
-		remember(sender, named, channel, now)
+		remember(sender, named, channel, now, kind)
 	elseif kind == "snapshot?" then
 		-- The limit is checked first, so a refused reply never reads talents, gear or score.
 		if Comms.CHANNELS["snapshot!"][channel] and waitFor("snapshot!", channel, now) == nil then

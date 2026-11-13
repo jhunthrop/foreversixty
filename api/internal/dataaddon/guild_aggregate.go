@@ -23,6 +23,9 @@ type guildRecord struct {
 	Attendance *float64
 	// Members is the Name-Realm keys of the guild's characters that have a record, sorted.
 	Members []string
+	// RaiderRanks are the rank indexes the guild counts as raiders (guilds.raider_rank_indexes),
+	// sorted; nil until an officer says, and then it is not written.
+	RaiderRanks []int16
 }
 
 // guildIdentity names one guild with at least one verified member -- the only kind this
@@ -30,6 +33,7 @@ type guildRecord struct {
 type guildIdentity struct {
 	ID                    int64
 	Region, Ruleset, Name string
+	RaiderRanks           []int16
 }
 
 // meanAttendance is the mean of the fractions, or nil for none.

@@ -440,7 +440,11 @@ def test_the_rendered_data_lua_carries_dps_per_point_ability_levels_and_encounte
     assert result.returncode == 0, result.stderr
     reference, positive, healing, execute, debuffs, resist = result.stdout.split("|")
     assert (reference, positive, healing, execute, resist) == (
-        "attack_power", "true", "false", "24", "fire"
+        "attack_power",
+        "true",
+        "false",
+        "24",
+        "fire",
     )
     assert int(debuffs) > 0
 
@@ -487,8 +491,19 @@ def test_encounter_needs_cover_molten_core_and_onyxia():
     for npc_id in molten_core:
         assert needs[npc_id].resist == "fire", npc_id
         assert needs[npc_id].debuffs and needs[npc_id].buffs, npc_id
-    assert needs[10184].resist is None  # Onyxia
+    assert needs[10184].resist == "fire"  # Onyxia: Flame Breath and Deep Breath
+    assert needs[10184].consumables == ["fire_protection"]
+    assert needs[11583].item == 15138  # Nefarian: the Onyxia Scale Cloak
     assert 11597 in needs[LUCIFRON].debuffs  # Sunder Armor
+
+
+def test_the_consumable_catalogue_is_the_sites_and_the_protection_potions():
+    consumables = build_addon_data(BUILD).consumables
+    assert consumables[13510] == "flask"  # Flask of the Titans
+    assert consumables[20007] == "elixir"  # Mageblood Elixir
+    assert consumables[13931] == "food"  # Nightfin Soup
+    assert consumables[13457] == "fire_protection"  # Greater Fire Protection Potion
+    assert list(consumables) == sorted(consumables)
 
 
 def test_the_three_additions_render_as_contract_one_shapes():
@@ -505,8 +520,12 @@ def test_the_three_additions_render_as_contract_one_shapes():
         encounter_needs={
             10184: AddonEncounterNeeds(buffs=[11551], debuffs=[11597, 9907]),
             12118: AddonEncounterNeeds(buffs=[11551, 9885], debuffs=[11597], resist="fire"),
+            11583: AddonEncounterNeeds(
+                buffs=[], debuffs=[], resist="fire", item=15138, consumables=["fire_protection"]
+            ),
         },
         ability_levels={20662: 24, 5308: 24},
+        consumables={13510: "flask", 6049: "fire_protection"},
     )
     lua = render_lua(data)
     assert (
@@ -518,9 +537,14 @@ def test_the_three_additions_render_as_contract_one_shapes():
     assert (
         "\tencounterNeeds = {\n"
         "\t\t[10184] = { buffs = { 11551 }, debuffs = { 11597, 9907 } },\n"
+        '\t\t[11583] = { buffs = {  }, debuffs = {  }, resist = "fire", item = 15138,'
+        ' consumables = { "fire_protection" } },\n'
         '\t\t[12118] = { buffs = { 11551, 9885 }, debuffs = { 11597 }, resist = "fire" },\n'
         "\t},\n"
     ) in lua
+    assert (
+        '\tconsumables = {\n\t\t[6049] = "fire_protection",\n\t\t[13510] = "flask",\n\t},\n' in lua
+    )
     assert "\tabilityLevels = {\n\t\t[5308] = 24,\n\t\t[20662] = 24,\n\t},\n" in lua
 
 

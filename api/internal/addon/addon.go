@@ -515,6 +515,9 @@ type Service struct {
 	// RaidAnswers produces the raid_signup messages and applies the outbox's raid_answer
 	// entries (raid_answers.go). Nil sends none and defers every answer.
 	RaidAnswers RaidAnswerSource
+	// RaidRosters produces the raid_roster messages (raid_roster.go): each open raid's sign-ups,
+	// with the names for an officer. Nil sends none.
+	RaidRosters RaidRosterSource
 	// OwnScores produces the own_score messages (own_score.go): each of the account's
 	// characters' own Forever Score. Nil sends none.
 	OwnScores OwnScoreSource

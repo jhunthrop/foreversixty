@@ -145,6 +145,17 @@ type MessageEntry struct {
 	LateMinutes int    `json:"late_minutes,omitempty"`
 	AnsweredAt  string `json:"answered_at,omitempty"`
 
+	// messageRaidRoster (raid_roster.go): RaidID, Raid, Title and StartsAt as on raid_signup, the
+	// zone's size, the answers, the roles coming against the comp target and the jobs held; an
+	// officer also gets Members and Assignments. Pointers and nil slices keep every other type
+	// free of these keys.
+	Size        *int                `json:"size,omitempty"`
+	Signups     *RosterSignups      `json:"signups,omitempty"`
+	Roles       []RosterRole        `json:"roles,omitempty"`
+	Jobs        *RosterJobs         `json:"jobs,omitempty"`
+	Members     *[]RaidRosterMember `json:"members,omitempty"`
+	Assignments *[]RosterAssignment `json:"assignments,omitempty"`
+
 	// messageOwnScore (own_score.go): the character's own Forever Score record. ScoreAsOf is the
 	// record's as_of (YYYY-MM-DD); each part is absent when the record lacks it.
 	Score      *int   `json:"score,omitempty"`
@@ -484,6 +495,7 @@ func (s *Service) messages(ctx context.Context, userID int64, now time.Time) []M
 	out = append(out, s.lootValuesMessages(ctx, raids, byKey, weights)...)
 	out = append(out, s.raidAssignmentMessages(ctx, sortedExportKeys(byKey), now)...)
 	out = append(out, s.raidSignupMessages(ctx, sortedExportKeys(byKey), now)...)
+	out = append(out, s.raidRosterMessages(ctx, userID, sortedExportKeys(byKey), now)...)
 	out = append(out, s.ownScoreMessages(ctx, sortedExportKeys(byKey))...)
 	out = append(out, s.ackMessages(ctx, userID)...)
 	return out

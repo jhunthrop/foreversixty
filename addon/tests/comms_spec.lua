@@ -330,6 +330,90 @@ describe("Comms, the FS1 protocol", function()
 		end)
 	end)
 
+	-- Snapshot v2 (hub L9, contract 2's optional fields): what an officer's readiness reads.
+	describe("the readiness a snapshot! carries", function()
+		local V2 = "1|snapshot!|60|hunter-beast-mastery|14|Beast Mastery raid|2026-12-09|2.0.46|raid:onyxias-lair"
+			.. "|15138|flask:2,elixir:6,food:20,fire_protection:5"
+
+		before_each(function()
+			Comms.reset()
+		end)
+
+		it("names the v2 fields after the profile and reads them back", function()
+			local message = Comms.decode(V2)
+			local named = Comms.named("snapshot!", message.fields)
+			assert.are.equal("2.0.46", named.addonVersion)
+			local readiness = Comms.readiness(named)
+			assert.are.same({ ["raid:onyxias-lair"] = true }, readiness.attuned)
+			assert.are.same({ [15138] = true }, readiness.encounterItems)
+			assert.are.same({ flask = 2, elixir = 6, food = 20, fire_protection = 5 }, readiness.supplies)
+		end)
+
+		it("has no readiness for a v1 snapshot!, and none for a field the sender could not read", function()
+			local v1 = Comms.decode("1|snapshot!|20|warrior-arms|14|Arms leveling|-")
+			assert.is_nil(Comms.readiness(Comms.named("snapshot!", v1.fields)))
+			local unread = Comms.decode("1|snapshot!|20|warrior-arms|14|Arms|-|-|-|-|-")
+			local readiness = Comms.readiness(Comms.named("snapshot!", unread.fields))
+			assert.is_nil(readiness.addonVersion)
+			assert.is_nil(readiness.attuned)
+			assert.is_nil(readiness.encounterItems)
+			assert.is_nil(readiness.supplies)
+			local nothing = Comms.decode("1|snapshot!|20|warrior-arms|14|Arms|-|2.0.46|||")
+			readiness = Comms.readiness(Comms.named("snapshot!", nothing.fields))
+			assert.are.same({}, readiness.attuned)
+			assert.are.same({}, readiness.supplies)
+		end)
+
+		it("encodes a v1 and a v2 snapshot!, and refuses a v2 field list cut short of the profile", function()
+			assert.are.equal("1|snapshot!|20|warrior-arms|14|Arms leveling|-",
+				Comms.encode("snapshot!", { 20, "warrior-arms", 14, "Arms leveling", "-" }))
+			assert.are.equal(V2, Comms.encode("snapshot!", { 60, "hunter-beast-mastery", 14, "Beast Mastery raid",
+				"2026-12-09", "2.0.46", "raid:onyxias-lair", "15138", "flask:2,elixir:6,food:20,fire_protection:5" }))
+			assert.is_nil(Comms.encode("snapshot!", { 60, "hunter-beast-mastery", 14 }))
+		end)
+
+		it("writes the supplies in kind order, none at zero, and reads a malformed field as nothing", function()
+			assert.are.equal("flask:1,food:3,shadow_protection:2",
+				Comms.encodeSupplies({ shadow_protection = 2, food = 3, flask = 1, elixir = 0 }))
+			assert.are.equal("-", Comms.encodeSupplies(nil))
+			assert.are.equal("", Comms.encodeSupplies({}))
+			assert.is_nil(Comms.decodeSupplies("flask:two"))
+			assert.are.same({ later_kind = 4 }, Comms.decodeSupplies("later_kind:4"))
+		end)
+
+		it("counts the bags by the catalogue's kinds and leaves out what it does not name", function()
+			local catalogue = { [13510] = "flask", [13931] = "food", [13457] = "fire_protection" }
+			local stacks = { { itemId = 13510, count = 1 }, { itemId = 13931, count = 20 },
+				{ itemId = 13457, count = 5 }, { itemId = 13510, count = 2 }, { itemId = 117, count = 9 } }
+			assert.are.same({ flask = 3, food = 20, fire_protection = 5 }, Comms.supplyCounts(stacks, catalogue))
+			assert.is_nil(Comms.supplyCounts(nil, catalogue))
+		end)
+
+		it("is attuned to Onyxia's Lair by either chain's quest or by the amulet", function()
+			local zone = "raid:onyxias-lair"
+			assert.are.same({ [zone] = true }, Comms.attunedZones({ { questId = 6602, done = true } }, nil))
+			assert.are.same({ [zone] = true }, Comms.attunedZones({ { questId = 6502, done = false } },
+				{ { itemId = 16309, held = true } }))
+			assert.are.same({}, Comms.attunedZones({ { questId = 6502, done = false } }, { { itemId = 16309, held = false } }))
+			assert.is_nil(Comms.attunedZones(nil, nil))
+		end)
+
+		it("lists every encounter item once, sorted", function()
+			local data = { encounterNeeds = { [11583] = { item = 15138 }, [10184] = { resist = "fire" },
+				[1] = { item = 15138 }, [2] = { item = 9999 } } }
+			assert.are.same({ 9999, 15138 }, Comms.encounterItems(data))
+			assert.are.same({}, Comms.encounterItems(nil))
+		end)
+
+		it("keeps a sender's readiness through a later hello, and a v2 snapshot! replaces it", function()
+			Comms.onEvent("FS1", V2, "GUILD", "Other-Yell")
+			local first = Comms.seen["Other-Yell"].readiness
+			assert.are.equal("2.0.46", first.addonVersion)
+			Comms.onEvent("FS1", "1|hello|60|hunter-beast-mastery|14|Beast Mastery raid|2026-12-09", "GUILD", "Other-Yell")
+			assert.are.equal(first, Comms.seen["Other-Yell"].readiness)
+		end)
+	end)
+
 	-- Another player's message must never become a Lua error here. No client is installed:
 	-- the listeners and the reply are made to fail, and onEvent has to absorb it.
 	describe("a message from another player", function()

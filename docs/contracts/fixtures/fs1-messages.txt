@@ -6,3 +6,4 @@
 1|loot!|1204|6.3|dps|16696|1
 1|snapshot?
 1|snapshot!|20|warrior-arms|14|Arms leveling|-
+1|snapshot!|60|hunter-beast-mastery|14|Beast Mastery raid|2026-12-09|2.0.46|raid:onyxias-lair|15138|flask:2,elixir:6,food:20,fire_protection:5

@@ -258,27 +258,33 @@ func (s *Store) RaidViews(ctx context.Context, guildID, viewerID int64, raids []
 	if err != nil {
 		return nil, err
 	}
+	out, _, err := s.raidViewsIn(ctx, vc, raids)
+	return out, err
+}
+
+// raidViewsIn is RaidViews over an already loaded context, with the sign-ups it read by raid.
+func (s *Store) raidViewsIn(ctx context.Context, vc raidViewContext, raids []Raid) ([]RaidView, map[int64][]Signup, error) {
 	ids := make([]int64, len(raids))
 	for i, r := range raids {
 		ids[i] = r.ID
 	}
 	byRaid, err := s.SignupsByRaid(ctx, ids)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	out := make([]RaidView, len(raids))
 	for i, r := range raids {
 		if out[i], err = buildRaidView(r, byRaid[r.ID], vc); err != nil {
-			return nil, err
+			return nil, nil, err
 		}
 	}
 	if err := s.fillMatchViews(ctx, vc, out); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	if err := s.fillAssignments(ctx, vc, out, byRaid); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	return out, nil
+	return out, byRaid, nil
 }
 
 func buildRaidView(r Raid, signups []Signup, vc raidViewContext) (RaidView, error) {

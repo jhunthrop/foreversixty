@@ -1,0 +1,417 @@
+{
+  "notes": "The consumables a raid counts, one list for the site and the addon. supplies is the site's raid-prep catalogue (owner decision D14): the flasks, raid elixirs and buff foods a raid leader counts from the export's supplies= section (api/internal/guilds/raid_prep_catalogue.go copies it into Go, and a guilds test pins the two). protection is the school protection potions an encounter can ask for (encounter_needs.json's consumables name these kinds). The addon gets both as Data.lua's consumables (item id -> kind), counts the bags by kind for the guild snapshot and names what an encounter asks for. Every id and name is a row of the build's simconsumes.json; pipeline/raid_supplies.py refuses one that is not. Flasks: the four Classic raid flasks and Forever's four Natural flasks (Flask of Petrification is a utility flask and is left out). Elixirs: the raid-tier battle and guardian elixirs, the Blasted Lands and Zul'Gurub buffs and Forever's Fortitude and Mageblood elixirs. Food: every item whose spell is Forever's Nutritious Food (the Well Fed rework) at required level 30 or more, the level-1 copies of Tender Wolf Steak and Grilled Squid that share those spells, Dirge's Kickin' Chimaerok Chops and Blessed Sunfruit and its juice.",
+  "supplies": [
+    {
+      "item_id": 6887,
+      "name": "Spotted Yellowtail",
+      "kind": "food"
+    },
+    {
+      "item_id": 8410,
+      "name": "R.O.I.D.S.",
+      "kind": "elixir"
+    },
+    {
+      "item_id": 8411,
+      "name": "Lung Juice Cocktail",
+      "kind": "elixir"
+    },
+    {
+      "item_id": 8412,
+      "name": "Ground Scorpok Assay",
+      "kind": "elixir"
+    },
+    {
+      "item_id": 8423,
+      "name": "Cerebral Cortex Compound",
+      "kind": "elixir"
+    },
+    {
+      "item_id": 8957,
+      "name": "Spinefin Halibut",
+      "kind": "food"
+    },
+    {
+      "item_id": 9088,
+      "name": "Gift of Arthas",
+      "kind": "elixir"
+    },
+    {
+      "item_id": 9155,
+      "name": "Arcane Elixir",
+      "kind": "elixir"
+    },
+    {
+      "item_id": 9179,
+      "name": "Elixir of Greater Intellect",
+      "kind": "elixir"
+    },
+    {
+      "item_id": 9187,
+      "name": "Elixir of Greater Agility",
+      "kind": "elixir"
+    },
+    {
+      "item_id": 9264,
+      "name": "Elixir of Shadow Power",
+      "kind": "elixir"
+    },
+    {
+      "item_id": 12212,
+      "name": "Jungle Stew",
+      "kind": "food"
+    },
+    {
+      "item_id": 12820,
+      "name": "Winterfall Firewater",
+      "kind": "elixir"
+    },
+    {
+      "item_id": 13445,
+      "name": "Elixir of Greater Defense",
+      "kind": "elixir"
+    },
+    {
+      "item_id": 13447,
+      "name": "Elixir of the Sages",
+      "kind": "elixir"
+    },
+    {
+      "item_id": 13452,
+      "name": "Elixir of the Mongoose",
+      "kind": "elixir"
+    },
+    {
+      "item_id": 13453,
+      "name": "Elixir of Brute Force",
+      "kind": "elixir"
+    },
+    {
+      "item_id": 13454,
+      "name": "Greater Arcane Elixir",
+      "kind": "elixir"
+    },
+    {
+      "item_id": 13510,
+      "name": "Flask of the Titans",
+      "kind": "flask"
+    },
+    {
+      "item_id": 13511,
+      "name": "Flask of Distilled Wisdom",
+      "kind": "flask"
+    },
+    {
+      "item_id": 13512,
+      "name": "Flask of Supreme Power",
+      "kind": "flask"
+    },
+    {
+      "item_id": 13513,
+      "name": "Flask of Chromatic Resistance",
+      "kind": "flask"
+    },
+    {
+      "item_id": 13810,
+      "name": "Blessed Sunfruit",
+      "kind": "food"
+    },
+    {
+      "item_id": 13813,
+      "name": "Blessed Sunfruit Juice",
+      "kind": "food"
+    },
+    {
+      "item_id": 13927,
+      "name": "Cooked Glossy Mightfish",
+      "kind": "food"
+    },
+    {
+      "item_id": 13928,
+      "name": "Grilled Squid",
+      "kind": "food"
+    },
+    {
+      "item_id": 13929,
+      "name": "Hot Smoked Bass",
+      "kind": "food"
+    },
+    {
+      "item_id": 13930,
+      "name": "Filet of Redgill",
+      "kind": "food"
+    },
+    {
+      "item_id": 13931,
+      "name": "Nightfin Soup",
+      "kind": "food"
+    },
+    {
+      "item_id": 13932,
+      "name": "Poached Sunscale Salmon",
+      "kind": "food"
+    },
+    {
+      "item_id": 13933,
+      "name": "Lobster Stew",
+      "kind": "food"
+    },
+    {
+      "item_id": 13934,
+      "name": "Mightfish Steak",
+      "kind": "food"
+    },
+    {
+      "item_id": 13935,
+      "name": "Baked Salmon",
+      "kind": "food"
+    },
+    {
+      "item_id": 17222,
+      "name": "Spider Sausage",
+      "kind": "food"
+    },
+    {
+      "item_id": 17708,
+      "name": "Elixir of Frost Power",
+      "kind": "elixir"
+    },
+    {
+      "item_id": 18045,
+      "name": "Tender Wolf Steak",
+      "kind": "food"
+    },
+    {
+      "item_id": 18254,
+      "name": "Runn Tum Tuber Surprise",
+      "kind": "food"
+    },
+    {
+      "item_id": 20004,
+      "name": "Major Troll's Blood Elixir",
+      "kind": "elixir"
+    },
+    {
+      "item_id": 20007,
+      "name": "Mageblood Elixir",
+      "kind": "elixir"
+    },
+    {
+      "item_id": 20079,
+      "name": "Spirit of Zanza",
+      "kind": "elixir"
+    },
+    {
+      "item_id": 20080,
+      "name": "Sheen of Zanza",
+      "kind": "elixir"
+    },
+    {
+      "item_id": 20081,
+      "name": "Swiftness of Zanza",
+      "kind": "elixir"
+    },
+    {
+      "item_id": 20452,
+      "name": "Smoked Desert Dumplings",
+      "kind": "food"
+    },
+    {
+      "item_id": 21023,
+      "name": "Dirge's Kickin' Chimaerok Chops",
+      "kind": "food"
+    },
+    {
+      "item_id": 21217,
+      "name": "Sagefish Delight",
+      "kind": "food"
+    },
+    {
+      "item_id": 23715,
+      "name": "Permanent Lung Juice Cocktail",
+      "kind": "elixir"
+    },
+    {
+      "item_id": 23718,
+      "name": "Permanent Ground Scorpok Assay",
+      "kind": "elixir"
+    },
+    {
+      "item_id": 23719,
+      "name": "Permanent Cerebral Cortex Compound",
+      "kind": "elixir"
+    },
+    {
+      "item_id": 23722,
+      "name": "Permanent R.O.I.D.S.",
+      "kind": "elixir"
+    },
+    {
+      "item_id": 23794,
+      "name": "Permanent Sheen of Zanza",
+      "kind": "elixir"
+    },
+    {
+      "item_id": 23795,
+      "name": "Permanent Spirit of Zanza",
+      "kind": "elixir"
+    },
+    {
+      "item_id": 23796,
+      "name": "Permanent Swiftness of Zanza",
+      "kind": "elixir"
+    },
+    {
+      "item_id": 250065,
+      "name": "Savory Stag Sliders",
+      "kind": "food"
+    },
+    {
+      "item_id": 250066,
+      "name": "Soaring Pamplona",
+      "kind": "food"
+    },
+    {
+      "item_id": 250067,
+      "name": "Bat Hachee",
+      "kind": "food"
+    },
+    {
+      "item_id": 250068,
+      "name": "Savory Turtle Stew",
+      "kind": "food"
+    },
+    {
+      "item_id": 250069,
+      "name": "Flank au Poivre",
+      "kind": "food"
+    },
+    {
+      "item_id": 250070,
+      "name": "Bear Bruscitti",
+      "kind": "food"
+    },
+    {
+      "item_id": 250071,
+      "name": "Steaming Stag Steak",
+      "kind": "food"
+    },
+    {
+      "item_id": 250072,
+      "name": "Swiftstrike Steak",
+      "kind": "food"
+    },
+    {
+      "item_id": 250075,
+      "name": "Prehistoric Pulled Raptor",
+      "kind": "food"
+    },
+    {
+      "item_id": 250076,
+      "name": "Raptor Rouladen",
+      "kind": "food"
+    },
+    {
+      "item_id": 250334,
+      "name": "Elixir of Fortitude",
+      "kind": "elixir"
+    },
+    {
+      "item_id": 250335,
+      "name": "Elixir of Greater Fortitude",
+      "kind": "elixir"
+    },
+    {
+      "item_id": 250341,
+      "name": "Greater Mageblood Elixir",
+      "kind": "elixir"
+    },
+    {
+      "item_id": 267341,
+      "name": "Sweetpaw Jam",
+      "kind": "food"
+    },
+    {
+      "item_id": 274273,
+      "name": "Flask of Natural Accuracy",
+      "kind": "flask"
+    },
+    {
+      "item_id": 274274,
+      "name": "Flask of Natural Aggression",
+      "kind": "flask"
+    },
+    {
+      "item_id": 274275,
+      "name": "Flask of Natural Precision",
+      "kind": "flask"
+    },
+    {
+      "item_id": 274276,
+      "name": "Flask of Natural Swiftness",
+      "kind": "flask"
+    },
+    {
+      "item_id": 286152,
+      "name": "Plated Armorfish",
+      "kind": "food"
+    },
+    {
+      "item_id": 287973,
+      "name": "Tender Wolf Steak",
+      "kind": "food"
+    },
+    {
+      "item_id": 287974,
+      "name": "Grilled Squid",
+      "kind": "food"
+    }
+  ],
+  "protection": [
+    {
+      "item_id": 6048,
+      "name": "Shadow Protection Potion",
+      "kind": "shadow_protection"
+    },
+    {
+      "item_id": 6049,
+      "name": "Fire Protection Potion",
+      "kind": "fire_protection"
+    },
+    {
+      "item_id": 6050,
+      "name": "Frost Protection Potion",
+      "kind": "frost_protection"
+    },
+    {
+      "item_id": 6052,
+      "name": "Nature Protection Potion",
+      "kind": "nature_protection"
+    },
+    {
+      "item_id": 13456,
+      "name": "Greater Frost Protection Potion",
+      "kind": "frost_protection"
+    },
+    {
+      "item_id": 13457,
+      "name": "Greater Fire Protection Potion",
+      "kind": "fire_protection"
+    },
+    {
+      "item_id": 13458,
+      "name": "Greater Nature Protection Potion",
+      "kind": "nature_protection"
+    },
+    {
+      "item_id": 13459,
+      "name": "Greater Shadow Protection Potion",
+      "kind": "shadow_protection"
+    },
+    {
+      "item_id": 13461,
+      "name": "Greater Arcane Protection Potion",
+      "kind": "arcane_protection"
+    }
+  ]
+}

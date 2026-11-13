@@ -40,6 +40,7 @@ from pipeline.models import (
     AddonTalent,
 )
 from pipeline.normalize import write_model
+from pipeline.raid_supplies import load_consumables
 from pipeline.specs import load_specs, spec_icons
 from pipeline.weights import load_weights
 
@@ -165,6 +166,7 @@ def build_addon_data(
         spec_icons=_spec_icons(root, build, curated_dir),
         dps_per_point=_dps_per_point(root, build),
         encounter_needs=load_encounter_needs(root, build, curated_dir),
+        consumables=load_consumables(root, build, curated_dir),
         ability_levels=build_ability_levels(root, build, curated_dir=curated_dir),
         bis_names=bis_names,
         bis_dps=bis_dps,

@@ -32,6 +32,8 @@ local FS1_FIELDS = {
 	["hello"] = 5, ["share"] = 1, ["push"] = 2, ["loot?"] = 2, ["loot!"] = 5,
 	["snapshot?"] = 0, ["snapshot!"] = 5,
 }
+--- The fields a type may add inside version 1 (contract 2's optional fields): snapshot! v2.
+local FS1_OPTIONAL = { ["snapshot!"] = 4 }
 
 local function set(list)
 	local out = {}
@@ -332,10 +334,12 @@ describe("the v2 wire contracts, addon side", function()
 			assert.are.same(sortedKeys(expected), sortedKeys(seen))
 		end)
 
-		it("gives each message the field count its type has", function()
+		it("gives each message the field count its type has, or that and its optional fields", function()
 			for _, line in ipairs(lines) do
 				local fields = split(line)
-				assert.are.equal(FS1_FIELDS[fields[2]] + 2, #fields, line)
+				local base = FS1_FIELDS[fields[2]] + 2
+				local full = base + (FS1_OPTIONAL[fields[2]] or 0)
+				assert.is_true(#fields == base or #fields == full, line)
 			end
 		end)
 

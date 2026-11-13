@@ -186,9 +186,9 @@ function RaidPrep.quests()
 	return out
 end
 
---- Each attunement item and whether it is worn or in `bags`: { { itemId, held } }, nil
+--- Each of `ids` and whether it is worn or in `bags`: { { itemId, held } } in `ids`' order, nil
 --- without a container API (an empty read would prove nothing).
-function RaidPrep.owned(bags, container)
+function RaidPrep.held(ids, bags, container)
 	if not RaidPrep.hasContainers() then
 		return nil
 	end
@@ -208,10 +208,15 @@ function RaidPrep.owned(bags, container)
 		end
 	end
 	local out = {}
-	for index, id in ipairs(RaidPrep.ATTUNEMENT_ITEMS) do
+	for index, id in ipairs(ids) do
 		out[index] = { itemId = id, held = held[id] == true }
 	end
 	return out
+end
+
+--- Each attunement item and whether it is worn or in `bags`: RaidPrep.held of ATTUNEMENT_ITEMS.
+function RaidPrep.owned(bags, container)
+	return RaidPrep.held(RaidPrep.ATTUNEMENT_ITEMS, bags, container)
 end
 
 --- The inventory slots GetInventoryItemLink answers for worn gear (1 head to 19 tabard).

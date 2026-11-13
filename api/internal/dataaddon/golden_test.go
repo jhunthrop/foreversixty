@@ -162,6 +162,7 @@ func seedGolden(t *testing.T, pool *pgxpool.Pool, today time.Time) {
 		return id
 	}
 	olympus, vanguard := guild("Dav2 Olympus"), guild("Dav2 Vanguard")
+	run(`update guilds set raider_rank_indexes = '{2,3,4}' where id = $1`, olympus)
 	member := func(guildID int64, key string, userID int64) {
 		t.Helper()
 		run(`insert into guild_characters (guild_id, character_key, user_id, verified_at) values ($1, $2, $3, now())`,

@@ -1090,9 +1090,12 @@ end
 --- tab's last-raid region; `build` and `ack` by the build dialog (its "from the site" rows and
 --- its "Seen by the site" line); `sim_result` by the panel tab's sim region (its DPS, L4.3).
 --- `loot_values` (L5.3) by the loot council helper: the player's own row and /fs loot, "(site)".
+--- `raid_roster` (hub L9) by the Guild tab's Sign-ups and the Officer tab's roster and
+--- readiness, through Codec.raidRosters.
 Codec.MESSAGE_TYPES = { upgrade = true, weights = true, guild = true, last_raid = true, build = true, ack = true,
 	loot_values = true,
-	sim_result = true }
+	sim_result = true,
+	raid_roster = true }
 
 --- Messages of `kind` from `inbox.messages`, addressed to `key` or to no
 --- one in particular, in the order the companion wrote them. Pure: never
@@ -1116,6 +1119,92 @@ function Codec.inboxMessages(inbox, key, kind)
 		end
 	end
 	return usable
+end
+
+--- The four answer counts and the not-signed count a raid_roster's `signups` must carry.
+local ROSTER_COUNTS = { "in", "late", "bench", "out", "none" }
+
+local function isCount(value)
+	return type(value) == "number" and value >= 0 and value == math.floor(value)
+end
+
+--- A raid_roster message as the tabs read it, or nil when it is not one this build can show:
+--- { raidId, raid, title, startsAt, size, signups = { in, late, bench, out, none },
+---   coming (in + late), roles = { { role, coming, wanted } }, jobs = { held, total },
+---   members, assignments }. members and assignments are nil unless the site sent them (an
+--- officer's inbox). A role or member entry that is not well formed is left out. Pure.
+function Codec.readRaidRoster(message)
+	if type(message) ~= "table" or message.type ~= "raid_roster" or not isCount(message.raid_id)
+		or type(message.raid) ~= "string" or type(message.starts_at) ~= "string"
+		or type(message.signups) ~= "table" then
+		return nil
+	end
+	local signups = {}
+	for _, key in ipairs(ROSTER_COUNTS) do
+		if not isCount(message.signups[key]) then
+			return nil
+		end
+		signups[key] = message.signups[key]
+	end
+	local roles = {}
+	for _, role in ipairs(type(message.roles) == "table" and message.roles or {}) do
+		if type(role) == "table" and type(role.role) == "string" and isCount(role.coming)
+			and (role.wanted == nil or isCount(role.wanted)) then
+			roles[#roles + 1] = { role = role.role, coming = role.coming, wanted = role.wanted }
+		end
+	end
+	local jobs = message.jobs
+	local out = {
+		raidId = message.raid_id, raid = message.raid, title = message.title or "", startsAt = message.starts_at,
+		size = isCount(message.size) and message.size or nil, signups = signups,
+		coming = signups["in"] + signups.late, roles = roles,
+		jobs = type(jobs) == "table" and isCount(jobs.held) and isCount(jobs.total)
+			and { held = jobs.held, total = jobs.total } or nil,
+	}
+	if type(message.members) == "table" then
+		out.members = {}
+		for _, member in ipairs(message.members) do
+			if type(member) == "table" and type(member.name) == "string" and type(member.answer) == "string" then
+				out.members[#out.members + 1] = { name = member.name, class = member.class, answer = member.answer,
+					role = member.role }
+			end
+		end
+	end
+	if type(message.assignments) == "table" then
+		out.assignments = {}
+		for _, job in ipairs(message.assignments) do
+			if type(job) == "table" and type(job.label) == "string" and isCount(job.count) then
+				local holders = {}
+				for _, name in ipairs(type(job.holders) == "table" and job.holders or {}) do
+					if type(name) == "string" then
+						holders[#holders + 1] = name
+					end
+				end
+				out.assignments[#out.assignments + 1] = { encounter = job.encounter, label = job.label,
+					count = job.count, holders = holders }
+			end
+		end
+	end
+	return out
+end
+
+--- Every raid_roster for `key` (Codec.inboxMessages' addressing rule), read by
+--- Codec.readRaidRoster and soonest first; a message it cannot read is left out. Pure.
+function Codec.raidRosters(inbox, key)
+	local out = {}
+	for _, message in ipairs(Codec.inboxMessages(inbox, key, "raid_roster")) do
+		local roster = Codec.readRaidRoster(message)
+		if roster ~= nil then
+			out[#out + 1] = roster
+		end
+	end
+	table.sort(out, function(left, right)
+		if left.startsAt ~= right.startsAt then
+			return left.startsAt < right.startsAt
+		end
+		return left.raidId < right.raidId
+	end)
+	return out
 end
 
 --- `messages`, newest first. Codec.inboxMessages answers in the order the
