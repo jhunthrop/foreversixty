@@ -1,5 +1,10 @@
 # Forever Sixty
 
+## Unreleased
+
+- Hovering what you wear names the band's pick for the slot in every case: "Best for 40 to 49" in gold when you wear it, "Better than the 40 to 49 pick: Stalker's Leather Belt" or "As good as the 40 to 49 pick: ..." when yours holds, then "At level 50: Stalker's Mail Belt". "No upgrade until level 50" no longer hides the pick. A pick that holds for two bands reads "Best for 30 to 49".
+- The tour shows once more to everyone with this version, and once on any install, reinstall or wiped SavedVariables. /fs tour opens it again any time; the Settings page lists the command.
+
 ## 2.0.40
 
 - The addon no longer guesses your spec. When your talent points do not name one tree (none yet, one point, a tie or a split like 2 Holy and 2 Retribution), it asks "Are you Holy or Retribution?" on the tour's last page, in the panel and on the line by your minimap, and remembers your answer for that character. The guild tab and Inspect leave the spec blank instead of guessing too.

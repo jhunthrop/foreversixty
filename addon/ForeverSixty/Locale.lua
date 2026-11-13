@@ -22,6 +22,7 @@ local L = {
 		"/fs copy: copy my character for the site",
 		"/fs build: switch between saved builds",
 		"/fs chip: show or hide the Forever Sixty line",
+		"/fs tour: see the tour again",
 		"/fs inspect: gear and talents of your target",
 		"/fs link: copy a player's site page",
 		"/fs group: your group's specs, gear and buffs",
@@ -35,7 +36,7 @@ local L = {
 	},
 	helpTesters = {
 		"For testers: /fs diag verbose",
-		"For testers: /fs inbox, /fs hello, /fs seen, /fs record, /fs welcome, /fs drops",
+		"For testers: /fs inbox, /fs hello, /fs seen, /fs record, /fs drops",
 	},
 	-- How a printed line is prefixed with the addon's name.
 	chatLine = "%s: %s",
@@ -581,11 +582,23 @@ local L = {
 	tooltipUpgradePair = "%s as a pair with %s",
 	tooltipSide = "Sidegrade",
 	tooltipDown = "%s",
-	-- Gold: the band's pick (spec 2.2 cases 8, 11, 18).
-	tooltipYourBis = "Best in slot",
-	tooltipYourBisUntil = "Best in slot until level %d",
+	-- A band in the player's words: its levels ("40 to 49"), or the level at the top ("level 60").
+	tooltipBandSpan = "%d to %d",
+	tooltipBandCap = "level %d",
+	-- Gold: the band's pick, worn or in the bags (spec 2.2 cases 8 and 18): "Best for 40 to 49", and
+	-- "Best at 60" in the top band.
+	tooltipBestFor = "Best for %s",
+	tooltipBestAtCap = "Best at %d",
+	-- Gold: a bag item a band ahead names, for a character under its first band (case 11).
 	tooltipYourBisAt = "Best in slot at level %d",
-	-- A worn item whose slot's pick gains under the floor (case 19).
+	-- White: a worn item the band's pick does not beat (case 19), the pick named, so the player sees
+	-- the band's best for the slot and that theirs holds (owner, 2026-11-13: "No upgrade until level
+	-- 50" read as "you have the 40 band's best"): "Better than the 40 to 49 pick: <pick>" when the
+	-- pick gains nothing, "As good as the 40 to 49 pick: <pick>" under the floor or unscored.
+	tooltipBeatsPick = "Better than the %s pick: %s",
+	tooltipMatchesPick = "As good as the %s pick: %s",
+	-- White, with nothing to name: the pick is worn in the item's other slot, or the client cannot
+	-- show the pick or any of its alternatives.
 	tooltipNoUpgradeUntil = "No upgrade until level %d",
 	tooltipNoUpgradeSlot = "No upgrade for this slot",
 	-- Grey refusals (cases 4 to 6, 14, 21): the client's own red line already names the armor
@@ -1537,7 +1550,7 @@ L.tourHourAgo = "%d hour ago"
 L.tourHoursAgo = "%d hours ago"
 L.tourMinutesAgo = "%d minutes ago"
 L.tourLinks = "Click a box, then Ctrl+C."
-L.tourAgain = "/fs help opens this again."
+L.tourAgain = "/fs tour opens this again."
 -- The coordinator's ruling (2026-11-08): a small QR for the tester sign-up until the apps ship.
 L.tourAppBeta = "Join the app beta"
 L.tourSkip = "Skip tour"
@@ -1547,7 +1560,7 @@ L.tourJustTooltips = "Tooltips only"
 L.tourJustTooltipsHint = {
 	L.tourJustTooltips,
 	{ text = L.settingsTooltipsOnlyHint },
-	{ text = "Ends the tour. /fs help opens it again." },
+	{ text = "Ends the tour. /fs tour opens it again." },
 }
 L.tourNext = "Next"
 L.tourBackButton = "Back"

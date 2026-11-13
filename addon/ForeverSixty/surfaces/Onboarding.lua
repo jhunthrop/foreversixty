@@ -9,7 +9,8 @@
 -- tables out; Onboarding.draw lays a page out. The frame is built on the first show, never at
 -- load. It never shows in combat or inside an instance; combat hides it without ending it, and
 -- it comes back once after combat on the page it was on. Skip tour, Tooltips only, the X,
--- Escape and Done end it for good (ForeverSixtyDB.welcomedAt); /fs help opens it again.
+-- Escape and Done end it for good (ForeverSixtyDB.tourSeen, this tour's version; a changed tour
+-- shows once more); /fs tour and /fs help open it again.
 --
 -- Truth rule: every claim is what is built today. What is designed but not live carries a gold
 -- "coming" tag (answering in game, the phone app); the app QR is small and labelled "Join the
@@ -179,19 +180,33 @@ end
 
 -- When it shows --------------------------------------------------------------------------------------
 
---- Whether the tour is due this login: never welcomed on this account and not quieted by
---- "Tooltips only". Pure on `db` and `tooltipsOnly`.
+--- The tour's version. Bump it when the tour changes and every account sees the new tour once:
+--- ForeverSixtyDB.tourSeen holds the version the player ended (owner, 2026-11-13: deleting the
+--- addon folder keeps SavedVariables, so a stamp alone never showed a reinstall the tour). 1 was
+--- 2.0.38's tour, stamped as welcomedAt alone; 2 is the tour with its leads and the spec question.
+Onboarding.TOUR_VERSION = 2
+
+--- Whether the tour is due this login: this version not ended on this account (a first install, a
+--- reinstall that wiped SavedVariables, one that kept an older tour's stamp, or a tour that changed
+--- since) and not quieted by "Tooltips only". Pure on `db` and `tooltipsOnly`.
 function Onboarding.due(db, tooltipsOnly)
 	if tooltipsOnly then
 		return false
 	end
-	return type(db) ~= "table" or db.welcomedAt == nil
+	return type(db) ~= "table" or db.tourSeen ~= Onboarding.TOUR_VERSION
+end
+
+--- Stamps the account: this tour version ended, and the first welcome's time (the chip's first
+--- logins read it) kept from the first time it was set.
+function Onboarding.stamp()
+	ForeverSixtyDB = ForeverSixtyDB or {}
+	ForeverSixtyDB.tourSeen = Onboarding.TOUR_VERSION
+	ForeverSixtyDB.welcomedAt = ForeverSixtyDB.welcomedAt or (type(time) == "function" and time() or 0)
 end
 
 --- Ends the tour for good: the account is stamped and the frame closes.
 function Onboarding.finish()
-	ForeverSixtyDB = ForeverSixtyDB or {}
-	ForeverSixtyDB.welcomedAt = type(time) == "function" and time() or 0
+	Onboarding.stamp()
 	Onboarding.pendingAfterCombat = nil
 	if Onboarding.frame ~= nil then
 		Onboarding.frame:Hide()
@@ -685,8 +700,7 @@ function Onboarding.ensure()
 	-- it stepped aside for the Builds dialog.
 	frame:SetScript("OnHide", function()
 		if not Onboarding.hidingForCombat and not Onboarding.steppingAside then
-			ForeverSixtyDB = ForeverSixtyDB or {}
-			ForeverSixtyDB.welcomedAt = ForeverSixtyDB.welcomedAt or (type(time) == "function" and time() or 0)
+			Onboarding.stamp()
 		end
 	end)
 	Onboarding.frame = frame
@@ -842,9 +856,13 @@ function Onboarding.register()
 		end
 	end)
 	Onboarding.events = frame
-	-- The first login's welcome (SiteStatus, 5 s after entering the world) is the tour, when due.
+	-- The login's welcome (SiteStatus, 5 s after entering the world) is the tour, when due: the
+	-- tour's own rule decides (this version not ended on the account), not the welcome stamp alone.
+	SiteStatus.tourDue = function()
+		return Onboarding.due(ForeverSixtyDB, Prefs.flag("tooltipsOnly"))
+	end
 	SiteStatus.openTour = function()
-		if Onboarding.due(ForeverSixtyDB, Prefs.flag("tooltipsOnly")) then
+		if SiteStatus.tourDue() then
 			Onboarding.open(1)
 		end
 	end

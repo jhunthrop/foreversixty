@@ -990,7 +990,7 @@ def connect_rows(seen=None):
 
 
 LINKS_LINE = f'<div style="font-size:12px;color:{U["muted"]}">Click a box, then Ctrl+C.</div>'
-DONE_LINE = f'<div style="font-size:12px;color:{U["muted"]};margin-top:4px">/fs help opens this again.</div>'
+DONE_LINE = f'<div style="font-size:12px;color:{U["muted"]};margin-top:4px">/fs tour opens this again.</div>'
 
 
 def setup_page(top, connect, page_no, total, boxes=True):

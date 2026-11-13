@@ -370,7 +370,7 @@ def board_onboarding_5_done():
     top = path_row(build_name(hol[1], 'leveling'), locale('panelOnPlan') % (15, 15),
                    locale('tourNextPoint') % (25, next_talent('paladin', 'paladin-holy', 'leveling', 15)))
     return board('<b>Last page, a character already set up</b> · level 24, in a guild (page 5 of 5), the companion '
-                 'has run; "/fs help opens this again." now sits in the footer\'s empty left',
+                 'has run; "' + locale('tourAgain') + '" now sits in the footer\'s empty left',
                  setup_page(top, connect_rows(seen='2 hours ago'), 5, 5, boxes=False))
 
 

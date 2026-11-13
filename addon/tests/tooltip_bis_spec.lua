@@ -144,9 +144,10 @@ describe("Tooltip's slot hovers", function()
 			Tooltip.data = DATA
 			local tooltip, calls = recordingTooltip()
 			Tooltip.onTooltip(tooltip, "item:111:link")
-			-- The worn item is the band's pick: "Best in slot", gold (case 18). The next rung's
+			-- The worn item is the band's pick: "Best for 20 to 29", gold (case 18). The next rung's
 			-- pick has no name yet, so no At line; nothing else without Shift.
-			assert.are.same({ { kind = "line", text = L.tooltipYourBis } }, calls)
+			assert.are.same({ { kind = "line", text = require("ItemTooltip").bestText(20, 30) } }, calls)
+			assert.are.equal("Best for 20 to 29", calls[1].text)
 		end)
 
 		-- Round-2 ruling 1, adopted: a bag item gets the slot's next pick too.

@@ -840,6 +840,49 @@ function ItemTooltip.fitNext(upgrade, measure, room)
 	end, upgrade.name, fitter(measure, room), 1) }
 end
 
+--- A band in the player's words: its levels up to the band before `nextBand` ("40 to 49"; a band
+--- the nightly skipped is spanned), or "level 60" at the top (no `nextBand`). Pure.
+function ItemTooltip.bandWord(band, nextBand)
+	if nextBand == nil then
+		return string.format(L.tooltipBandCap, band)
+	end
+	return string.format(L.tooltipBandSpan, band, nextBand - 1)
+end
+
+--- The gold line on the band's own pick (spec 2.2 cases 8 and 18): "Best for 40 to 49", "Best at
+--- 60" in the top band. Pure.
+function ItemTooltip.bestText(band, nextBand)
+	if nextBand == nil then
+		return string.format(L.tooltipBestAtCap, band)
+	end
+	return string.format(L.tooltipBestFor, ItemTooltip.bandWord(band, nextBand))
+end
+
+--- The white line on a worn item the band's pick does not beat (case 19), the pick named: "Better
+--- than the 40 to 49 pick: <pick>" when the pick loses to it, "As good as the 40 to 49 pick:
+--- <pick>" when the pick gains nothing or under the floor, or is unscored. `name` may carry its
+--- colour. Pure.
+function ItemTooltip.holdText(band, nextBand, name, gain)
+	local format = type(gain) == "number" and gain < 0 and L.tooltipBeatsPick or L.tooltipMatchesPick
+	return string.format(format, ItemTooltip.bandWord(band, nextBand), name)
+end
+
+--- The first band after `band` whose pick for `slot` is not `itemId`: the band the Best and At
+--- lines turn on (a pick that holds for two bands running is "Best for 30 to 49", and the At line
+--- names the band that changes it), or nil when no later band does.
+function ItemTooltip.bandAfter(data, spec, faction, slot, band, itemId)
+	local specBis = spec ~= nil and type(data) == "table" and type(data.bis) == "table" and data.bis[spec] or nil
+	local candidate = ItemTooltip.nextBand(specBis, band)
+	while candidate ~= nil do
+		local pick = Gear.pick(spec, candidate, faction, slot, data)
+		if pick == nil or pick.item_id ~= itemId then
+			return candidate
+		end
+		candidate = ItemTooltip.nextBand(specBis, candidate)
+	end
+	return nil
+end
+
 --- "At level 30: <name>" (spec 2.2 cases 18 to 20), the name in its quality colour: the next
 --- rung's pick under a worn item. Its source and gain wait under Shift.
 function ItemTooltip.atText(at, name)
@@ -1220,6 +1263,16 @@ function ItemTooltip.section(ctx)
 	local aimed = Progress.targetFor(data, ctx.spec, currentBand, ctx.faction, slots, slot,
 		item.itemId, equipped, isMissing)
 	local pick, isPick, pickWorn, unshowable = aimed.pick, aimed.isPick, aimed.worn, aimed.unshowable
+	--- The slot of the item's own whose band pick is `itemId` (a ring's second finger), else `slot`.
+	local function pickSlotOf(itemId)
+		for _, candidate in ipairs(slots) do
+			local found = Gear.pick(ctx.spec, currentBand, ctx.faction, candidate, data)
+			if found ~= nil and found.item_id == itemId then
+				return candidate
+			end
+		end
+		return slot
+	end
 
 	-- The pick's own line: its gain over what is worn, from the floor up (`nextLine`), or why
 	-- what is worn holds (`holds`, with `holdGain` the pick's gain under the floor).
@@ -1351,18 +1404,44 @@ function ItemTooltip.section(ctx)
 				reasons[#reasons + 1] = nextLine.breakdown
 			end
 		elseif holds then
-			-- Case 18: worn and the pick; case 19: the pick gains under the floor.
+			-- Case 18: worn and the pick; case 19: the pick gains under the floor. Both name the band
+			-- the pick holds for, then the band whose pick changes (owner, 2026-11-13).
+			local pickId = pick.item_id
+			local after = ItemTooltip.bandAfter(data, ctx.spec, ctx.faction, pickSlotOf(pickId), currentBand, pickId)
+			local name = (not isPick and not pickWorn) and pickName(pickId) or nil
 			if isPick then
-				verdict = { kind = "bis", text = L.tooltipYourBis, color = "clientGold" }
-			else
+				verdict = { kind = "bis", text = ItemTooltip.bestText(currentBand, after), color = "clientGold" }
+			elseif name == nil then
+				-- The pick is worn in the item's other slot, or its name has not come yet.
 				verdict = { kind = "hold", text = noUpgradeText, color = "tooltipBody" }
+			else
+				local hex = qualityHex(pickId)
+				local function build(shown)
+					return ItemTooltip.holdText(currentBand, after, colored(shown, hex), holdGain)
+				end
+				verdict = { kind = "hold", itemId = pickId, text = build(name), color = "tooltipBody",
+					fit = { name = name, build = build } }
+				-- Shift: the pick's own figure, then where it comes from.
 				if holdGain ~= nil and holdGain ~= 0 then
 					reasons[#reasons + 1] = { kind = "figure", text = ItemTooltip.figure(holdGain, unit), color = "muted" }
 				end
+				local boe = isBoe(pickId)
+				local source = ItemTooltip.sourceLine(pick, boe)
+				if source ~= nil then
+					reasons[#reasons + 1] = { kind = "source", pick = pick, boe = boe, text = source, color = "muted",
+						detail = true }
+				end
 			end
-			support = nextBand ~= nil and atLineFor(nextBand, false) or nil
+			support = after ~= nil and atLineFor(after, false) or nil
 			for _, line in ipairs(atDetail(support)) do
-				reasons[#reasons + 1] = line
+				-- Two crafted picks from one profession: the source is said once.
+				local said = false
+				for _, earlier in ipairs(reasons) do
+					said = said or (earlier.kind == line.kind and earlier.text == line.text)
+				end
+				if not said then
+					reasons[#reasons + 1] = line
+				end
 			end
 		elseif pick == nil and next(pending) == nil then
 			-- Case 21: the band names no pick for the slot.
@@ -1372,12 +1451,15 @@ function ItemTooltip.section(ctx)
 		end
 	elseif verdict ~= nil and verdict.kind ~= "refusal" and verdict.kind ~= "planned" then
 		if isPick then
-			-- Case 8: the band's pick, gold; an upgrade keeps its figure and says so under it.
-			local until_ = nextBand ~= nil and string.format(L.tooltipYourBisUntil, nextBand) or L.tooltipYourBis
+			-- Case 8: the band's pick, gold ("Best for 40 to 49"); an upgrade keeps its figure and says
+			-- so under it.
+			local after = ItemTooltip.bandAfter(data, ctx.spec, ctx.faction, pickSlotOf(pick.item_id), currentBand,
+				pick.item_id)
+			local best = { kind = "bis", text = ItemTooltip.bestText(currentBand, after), color = "clientGold" }
 			if verdict.upgrade then
-				support = { kind = "bis", text = until_, color = "clientGold" }
+				support = best
 			else
-				verdict = { kind = "bis", text = L.tooltipYourBis, color = "clientGold" }
+				verdict = best
 			end
 		elseif verdict.upgrade and #caps > 0 then
 			-- A cap the item's upgrade leans on changes the answer: it takes the support line.

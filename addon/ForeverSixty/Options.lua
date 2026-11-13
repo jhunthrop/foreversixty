@@ -194,8 +194,8 @@ function Options.handle(input)
 		return Options.buildCommand(rest)
 	elseif command == "record" then
 		return Recorder.command(rest)
-	elseif command == "welcome" then
-		-- The tour again (testers' alias of /fs help's tour).
+	elseif command == "tour" or command == "welcome" then
+		-- The tour again, from page 1 (/fs welcome is the testers' older name for it).
 		Onboarding.open(1)
 		return {}
 	elseif command == "help" then

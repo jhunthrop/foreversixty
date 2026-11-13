@@ -65,11 +65,31 @@ describe("Onboarding, the pure model", function()
 		assert.is_nil(never.seen)
 	end)
 
-	it("is due once per account, and never under Tooltips only", function()
+	-- Owner 2026-11-13: deleting the addon folder keeps SavedVariables, so a reinstall never saw the
+	-- tour again. The stamp is the tour's version now: a changed tour shows once more to everyone.
+	it("is due until this tour's version is ended on the account, and never under Tooltips only", function()
+		assert.are.equal(2, Onboarding.TOUR_VERSION)
+		-- A first install, and a reinstall that wiped SavedVariables.
 		assert.is_true(Onboarding.due(nil, false))
 		assert.is_true(Onboarding.due({}, false))
-		assert.is_false(Onboarding.due({ welcomedAt = 1 }, false))
+		-- A reinstall that kept SavedVariables from the first tour, or an account that saw it: once more.
+		assert.is_true(Onboarding.due({ welcomedAt = 1 }, false))
+		assert.is_true(Onboarding.due({ welcomedAt = 1, tourSeen = 1 }, false))
+		assert.is_false(Onboarding.due({ welcomedAt = 1, tourSeen = Onboarding.TOUR_VERSION }, false))
 		assert.is_false(Onboarding.due({}, true))
+	end)
+
+	it("stamps the account with this tour's version and keeps the first welcome's time", function()
+		_G.ForeverSixtyDB = { welcomedAt = 1793000000 }
+		Onboarding.stamp()
+		assert.are.equal(Onboarding.TOUR_VERSION, _G.ForeverSixtyDB.tourSeen)
+		assert.are.equal(1793000000, _G.ForeverSixtyDB.welcomedAt)
+		assert.is_false(Onboarding.due(_G.ForeverSixtyDB, false))
+		_G.ForeverSixtyDB = nil
+		Onboarding.stamp()
+		assert.is_number(_G.ForeverSixtyDB.welcomedAt)
+		assert.are.equal(Onboarding.TOUR_VERSION, _G.ForeverSixtyDB.tourSeen)
+		_G.ForeverSixtyDB = nil
 	end)
 
 	it("keeps the app QR small and labelled Join the app beta until the apps ship", function()
@@ -212,7 +232,28 @@ describe("Onboarding, the frame", function()
 		Onboarding.open(1)
 		Onboarding.finish()
 		assert.is_number(_G.ForeverSixtyDB.welcomedAt)
+		assert.are.equal(Onboarding.TOUR_VERSION, _G.ForeverSixtyDB.tourSeen)
 		assert.is_false(Onboarding.frame:IsShown())
+	end)
+
+	it("shows once on a reinstall that kept the old tour's stamp, and once on one that wiped it", function()
+		for _, kept in ipairs({ { welcomedAt = 1793000000 }, {} }) do
+			start(false)
+			_G.ForeverSixtyDB = kept
+			Onboarding.register()
+			local SiteStatus = require("SiteStatus")
+			SiteStatus.welcoming = nil
+			-- The login's welcome asks the tour's own rule, not the old stamp.
+			assert.is_true(SiteStatus.welcomeDue())
+			SiteStatus.openTour()
+			assert.is_true(Onboarding.frame:IsShown())
+			Onboarding.finish()
+			assert.are.equal(Onboarding.TOUR_VERSION, _G.ForeverSixtyDB.tourSeen)
+			assert.is_false(SiteStatus.welcomeDue())
+			SiteStatus.openTour()
+			assert.is_false(Onboarding.frame:IsShown())
+			mock.uninstall()
+		end
 	end)
 
 	it("walks Next to the last page and Next past it ends the tour", function()

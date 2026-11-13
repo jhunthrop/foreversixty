@@ -215,10 +215,11 @@ function SettingsPage.lineText(entry)
 	return entry.label .. " " .. Theme.inlineColor(entry.tone, entry.value)
 end
 
---- How many commands the page lists before "/fs help: all the commands".
-SettingsPage.COMMANDS_SHOWN = 4
+--- How many commands the page lists before "/fs help: all the commands": the first five, so the
+--- tour's own command is on the page (owner, 2026-11-13: the tour must be findable from the options).
+SettingsPage.COMMANDS_SHOWN = 5
 
---- The commands the page lists: the first four and the line that sends the rest to /fs help (the
+--- The commands the page lists: the first five and the line that sends the rest to /fs help (the
 --- whole list is /fs help's, L.settingsCommands), so the page never ends in a half-cut row.
 function SettingsPage.commandLines()
 	local lines = {}

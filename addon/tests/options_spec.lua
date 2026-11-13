@@ -297,6 +297,19 @@ describe("Options", function()
 		end)
 	end)
 
+	it("opens the tour again on /fs tour, and still on the testers' /fs welcome", function()
+		local Onboarding = require("Onboarding")
+		local opened = {}
+		Onboarding.open = function(page)
+			opened[#opened + 1] = page
+			return true
+		end
+		assert.are.same({}, Options.handle("tour"))
+		assert.are.same({}, Options.handle("welcome"))
+		assert.are.same({ 1, 1 }, opened)
+		assert.are.equal("/fs tour: see the tour again", require("Locale").settingsCommands[5])
+	end)
+
 	it("has dropped the window's tab subcommands", function()
 		for _, command in ipairs({ "export", "follow FSB1:1.60.1.69893:paladin:111:", "gear", "settings" }) do
 			assert.are.same(Options.helpLines(), Options.handle(command), command)

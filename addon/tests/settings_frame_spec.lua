@@ -419,8 +419,8 @@ describe("SettingsPage, the canvas", function()
 		show()
 		assert.are.same(color("gold"), { table.unpack(mock.lastCall(SettingsPage.commandsHeading, "SetTextColor")) })
 		assert.are.equal(Theme.SIZES.border, mock.lastCall(SettingsPage.divider, "SetHeight")[1])
-		-- A.2: four commands and the line for the rest, so the list ends on a whole row.
-		assert.are.equal(5, #SettingsPage.commandLabels)
+		-- A.2: five commands (the tour's among them) and the line for the rest, so the list ends on a whole row.
+		assert.are.equal(6, #SettingsPage.commandLabels)
 		assert.are.equal(#SettingsPage.commandLines(), #SettingsPage.commandLabels)
 		assert.are.equal(SettingsPage.commandText(L.settingsCommandsMore),
 			SettingsPage.commandLabels[#SettingsPage.commandLabels]:GetText())

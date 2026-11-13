@@ -827,10 +827,12 @@ describe("SlotMarks", function()
 	-- Fix round 3 (hunter-9/10).
 	describe("fix round 3", function()
 		-- 1: the corner means a next target for THIS band, never a later band's At line.
-		it("draws no corner on a slot whose hover says No upgrade until with an At line for a later band", function()
+		it("draws no corner on a slot whose hover names the band's pick it holds against, with a later band's At line",
+			function()
 			start({ chest = BAG_CHEST }, {})
 			local lines = ItemTooltip.sectionFor(BAG_CHEST, ItemTooltip.baseContext(DATA)).lines
-			assert.are.equal(string.format(L.tooltipNoUpgradeUntil, 30), lines[1].text)
+			assert.are.equal("hold", lines[1].kind)
+			assert.is_truthy(lines[1].text:find("the 20 to 29 pick: ", 1, true), lines[1].text)
 			assert.are.equal("at", lines[2].kind)
 			local chest = slotButton("CharacterChestSlot")
 			SlotMarks.drawPaperDoll()
@@ -1004,7 +1006,8 @@ describe("SlotMarks", function()
 			for index, line in ipairs(lines) do
 				texts[index] = line.text
 			end
-			assert.are.equal(L.tooltipYourBis, texts[1])
+			local after = ItemTooltip.bandAfter(Data, base.spec, base.faction, "hands", 20, GLOVES_ID)
+			assert.are.equal(ItemTooltip.bestText(20, after), texts[1])
 			assert.are.equal("at", lines[2].kind)
 			assert.are.equal("support", lines[2].role)
 			assert.is_truthy(texts[2]:find(NEXT_HANDS_NAME, 1, true))

@@ -635,29 +635,31 @@ describe("ItemTooltip.section", function()
 	end)
 
 	-- Case 8: the band's pick, an upgrade: its gain, then gold under it.
-	it("says Your best in slot until the next rung, in gold, under the band's pick", function()
+	it("says Best for the band, in gold, under the band's pick", function()
 		local lines = ItemTooltip.section(ctx({ item = { itemId = 100, link = "item:100",
 			equipLocation = "INVTYPE_CHEST", itemClass = 4, itemSubClass = 3, stats = { strength = 20 } } }))
-		assert.are.same({ upLine(16), string.format(L.tooltipYourBisUntil, 30) }, texts(lines))
+		assert.are.same({ upLine(16), ItemTooltip.bestText(20, 30) }, texts(lines))
+		assert.are.equal("Best for 20 to 29", texts(lines)[2])
 		assert.are.equal("clientGold", lines[2].color)
 		assert.are.equal("ffd100", Theme.HEX.clientGold)
 		assert.are.same({ "breakdown", "alternatives", "attribution" }, shiftKinds(lines))
 		assert.are.equal("Quest Chest", find(lines, "alternatives").entries[1].name)
 	end)
 
-	it("says Your best in slot alone, in gold, for the band's pick that gains under the floor", function()
+	it("says Best for the band alone, in gold, for the band's pick that gains under the floor", function()
 		local lines = ItemTooltip.section(ctx({ item = { itemId = 100, link = "item:100",
 			equipLocation = "INVTYPE_CHEST", itemClass = 4, itemSubClass = 3, stats = { strength = 4.5 } } }))
-		assert.are.same({ L.tooltipYourBis }, texts(lines))
+		assert.are.same({ ItemTooltip.bestText(20, 30) }, texts(lines))
 		assert.are.equal("clientGold", lines[1].color)
 		-- Its size waits under Shift with the breakdown.
 		assert.are.equal("figure", shifted(lines)[1].kind)
 	end)
 
-	it("says Your best in slot, with no until, in the top band", function()
+	it("says Best at the level, with no span, in the top band", function()
 		local lines = texts(ItemTooltip.section(ctx({ level = 35, item = { itemId = 200, link = "item:200",
 			equipLocation = "INVTYPE_CHEST", itemClass = 4, itemSubClass = 3, stats = { strength = 10 } } })))
-		assert.are.same({ upLine(6), L.tooltipYourBis }, lines)
+		assert.are.same({ upLine(6), ItemTooltip.bestText(30, nil) }, lines)
+		assert.are.equal("Best at 30", lines[2])
 	end)
 
 	-- Case 10: an upgrade the character cannot wear until a level.
@@ -703,7 +705,7 @@ describe("ItemTooltip.section", function()
 
 		-- tip2-chest.jpg: Abomination Bones against Mutant Scale Breastplate under the shipped
 		-- Arms weights: well under the 1.0 floor. Case 19 in the top band.
-		it("says No upgrade for this slot when the next pick gains under the floor: the live chest", function()
+		it("names the band's pick the worn chest is as good as, in the top band: the live chest", function()
 			local Data = require("Data")
 			local live = {
 				classes = DATA.classes,
@@ -722,30 +724,32 @@ describe("ItemTooltip.section", function()
 				item = { itemId = 51, link = bones.link, equipLocation = "INVTYPE_CHEST", itemClass = 4,
 					itemSubClass = 3, stats = bones.stats },
 			}))
-			assert.are.same({ L.tooltipNoUpgradeSlot }, texts(lines))
+			assert.are.same({ "As good as the level 20 pick: Mutant Scale Breastplate" }, texts(lines))
 			assert.are.equal("tooltipBody", lines[1].color)
-			-- The pick's small gain under Shift.
-			assert.are.equal("figure", shifted(lines)[1].kind)
+			assert.are.equal(6627, lines[1].itemId)
+			-- The pick's small gain under Shift, then its source.
+			assert.are.same({ "figure", "source" }, { shifted(lines)[1].kind, shifted(lines)[2].kind })
 			assert.is_nil(target)
 		end)
 
 		-- Case 19 below the top band.
-		it("says No upgrade until the next rung when the next pick's gain cannot be computed", function()
+		it("names the band's pick as As good as when its gain cannot be computed, then the next rung", function()
 			local lines = ItemTooltip.section(ctx({ item = WORN, statsOf = function() return nil end }))
-			assert.are.same({ string.format(L.tooltipNoUpgradeUntil, 30), AT_30 }, texts(lines))
+			assert.are.same({ ItemTooltip.holdText(20, 30, "Defias Overseer Chest", nil), AT_30 }, texts(lines))
+			assert.are.equal("As good as the 20 to 29 pick: Defias Overseer Chest", texts(lines)[1])
 			assert.are.equal("at", lines[2].kind)
 			assert.are.equal("muted", lines[2].color)
-			assert.are.same({ AT_30_SOURCE, ATTRIBUTION }, shiftTexts(lines))
+			assert.are.same({ NEXT_SOURCE, AT_30_SOURCE, ATTRIBUTION }, shiftTexts(lines))
 		end)
 
 		-- Case 18.
-		it("says Your best in slot, gold, then the next rung's pick when it is the band's pick", function()
+		it("says Best for the band, gold, then the next rung's pick when it is the band's pick", function()
 			local lines, target = ItemTooltip.section(ctx({
 				equipped = { chest = { itemId = 100, link = "item:100:worn", stats = { strength = 20 } } },
 				item = { itemId = 100, link = "item:100:worn", equipLocation = "INVTYPE_CHEST", itemClass = 4,
 					itemSubClass = 3, stats = { strength = 20 } },
 			}))
-			assert.are.same({ L.tooltipYourBis, AT_30 }, texts(lines))
+			assert.are.same({ ItemTooltip.bestText(20, 30), AT_30 }, texts(lines))
 			assert.are.equal("clientGold", lines[1].color)
 			assert.are.equal("muted", lines[2].color)
 			assert.are.same({ AT_30_SOURCE, ATTRIBUTION }, shiftTexts(lines))
@@ -793,16 +797,16 @@ describe("ItemTooltip.section", function()
 			assert.is_nil(find(sectionOf(nil), "at").gain)
 		end)
 
-		it("says No upgrade for this slot alone in the top band", function()
+		it("names the top band's pick alone, by its level, with no At line", function()
 			local lines = texts(ItemTooltip.section(ctx({ level = 35, item = worn,
 				statsOf = function() return nil end })))
-			assert.are.same({ L.tooltipNoUpgradeSlot }, lines)
+			assert.are.same({ "As good as the level 30 pick: Herod's Chest" }, lines)
 		end)
 
 		it("leaves the At line out when the next rung's pick cannot be shown", function()
 			local lines = texts(ItemTooltip.section(ctx({ item = worn, statsOf = function() return nil end,
 				isMissing = function(id) return id == 200 end })))
-			assert.are.same({ string.format(L.tooltipNoUpgradeUntil, 30) }, lines)
+			assert.are.same({ ItemTooltip.holdText(20, 30, "Defias Overseer Chest", nil) }, lines)
 		end)
 
 		it("says No upgrade until the next rung when the band's pick and its alternatives cannot be shown", function()
@@ -1153,9 +1157,9 @@ describe("ItemTooltip.section", function()
 			assert.are.equal(501, target.itemId)
 		end)
 
-		it("says No upgrade until the next rung when that alternative gains under the floor", function()
+		it("names that alternative as the band's pick the worn weapon is as good as", function()
 			local lines = texts(ItemTooltip.section(worn2H({ statsOf = function() return { strength = 20 } end })))
-			assert.are.same({ string.format(L.tooltipNoUpgradeUntil, 30) }, lines)
+			assert.are.same({ ItemTooltip.holdText(20, 30, "Living Root", 0) }, lines)
 		end)
 
 		it("learns an item is missing from the client's failed answer", function()
@@ -1234,12 +1238,13 @@ describe("ItemTooltip.section", function()
 		it("names its At line from the data with no gain while the weapon's stats are pending", function()
 			local worn = { itemId = 600, link = "item:600", equipLoc = "INVTYPE_2HWEAPON", stats = { weapon_dps = 30 } }
 			local lines, _, pending = ItemTooltip.section(cold(worn))
-			assert.are.same({ L.tooltipYourBis, string.format(L.tooltipAtBandName, 30, "Herod's Axe") }, texts(lines))
+			assert.are.same({ ItemTooltip.bestText(20, 30), string.format(L.tooltipAtBandName, 30, "Herod's Axe") },
+				texts(lines))
 			assert.is_nil(find(lines, "at").gain)
 			assert.is_true(pending[610])
 		end)
 
-		it("waits for a cold armour pick instead of saying No upgrade until N", function()
+		it("waits for a cold armour pick instead of naming it as good as what is worn", function()
 			local armour = { classes = DATA.classes, weights = DATA.weights, dpsPerPoint = DATA.dpsPerPoint,
 				bis = DATA.bis, bisNames = { [100] = "Defias Overseer Chest", [200] = "Herod's Chest" } }
 			local worn = { itemId = 50, link = WORN_LINK, equipLoc = "INVTYPE_CHEST", stats = { strength = 4 } }
@@ -1252,7 +1257,8 @@ describe("ItemTooltip.section", function()
 			}))
 			assert.are.same({}, texts(lines))
 			assert.is_true(pending[100])
-			-- Cached with no stats at all (a statless item), it is a known non-gain: what is worn holds.
+			-- Cached with no stats at all (a statless item), it is a known non-gain: what is worn holds,
+			-- and the line names the pick without claiming either is better.
 			local cached = ItemTooltip.section(ctx({
 				data = armour, equipped = { chest = worn },
 				nameOf = function(id) return armour.bisNames[id] end, statsOf = function() return nil end,
@@ -1260,7 +1266,7 @@ describe("ItemTooltip.section", function()
 				item = { itemId = 50, link = WORN_LINK, equipLocation = "INVTYPE_CHEST", itemClass = 4,
 					itemSubClass = 3, stats = { strength = 4 } },
 			}))
-			assert.are.equal(string.format(L.tooltipNoUpgradeUntil, 30), texts(cached)[1])
+			assert.are.equal("As good as the 20 to 29 pick: Defias Overseer Chest", texts(cached)[1])
 		end)
 
 		it("names the next rung's pick from the data with no figure when the data has no DPS for it", function()
@@ -1271,7 +1277,8 @@ describe("ItemTooltip.section", function()
 			end
 			data.bisDps = {}
 			local lines = ItemTooltip.section(cold(worn, { data = data }))
-			assert.are.same({ L.tooltipYourBis, string.format(L.tooltipAtBandName, 30, "Herod's Axe") }, texts(lines))
+			assert.are.same({ ItemTooltip.bestText(20, 30), string.format(L.tooltipAtBandName, 30, "Herod's Axe") },
+				texts(lines))
 		end)
 	end)
 
@@ -1486,11 +1493,11 @@ describe("ItemTooltip.section", function()
 			end
 		end)
 
-		it("says Your best in slot for the worn pick, and a Next line for a pick it trails", function()
+		it("says Best for the band for the worn pick, and a Next line for a pick it trails", function()
 			local withPick = setmetatable({ bis = { ["warrior-arms"] = { [20] = { alliance = {
 				main_hand = "71|V|Sword Vendor" } }, [30] = { alliance = { main_hand = "500|V|Later Vendor" } } } } },
 				{ __index = NO_WEAPON })
-			assert.are.equal(L.tooltipYourBis, texts((ItemTooltip.section(wornSword({ data = withPick }))))[1])
+			assert.are.equal(ItemTooltip.bestText(20, 30), texts((ItemTooltip.section(wornSword({ data = withPick }))))[1])
 			local trailing = setmetatable({ bis = { ["warrior-arms"] = { [20] = { alliance = {
 				main_hand = "501|D|Wailing Caverns: Verdan the Everliving" } } } } }, { __index = NO_WEAPON })
 			assert.are.equal("next", ItemTooltip.section(wornSword({ data = trailing }))[1].kind)
@@ -2269,8 +2276,15 @@ describe("the At line's source and wording", function()
 	it("pins the wording of a worn item's verdicts and the At line", function()
 		assert.are.equal("No upgrade until level 30", string.format(L.tooltipNoUpgradeUntil, 30))
 		assert.are.equal("No upgrade for this slot", L.tooltipNoUpgradeSlot)
-		assert.are.equal("Best in slot", L.tooltipYourBis)
-		assert.are.equal("Best in slot until level 30", string.format(L.tooltipYourBisUntil, 30))
+		-- Owner 2026-11-13: the band in the player's words on the pick, the pick named on what holds.
+		assert.are.equal("Best for 40 to 49", ItemTooltip.bestText(40, 50))
+		assert.are.equal("Best at 60", ItemTooltip.bestText(60, nil))
+		assert.are.equal("Better than the 40 to 49 pick: Avenger's Armor",
+			ItemTooltip.holdText(40, 50, "Avenger's Armor", -0.3))
+		assert.are.equal("As good as the level 60 pick: Avenger's Armor",
+			ItemTooltip.holdText(60, nil, "Avenger's Armor", 0.4))
+		assert.is_nil(L.tooltipYourBis)
+		assert.is_nil(L.tooltipYourBisUntil)
 		assert.are.equal("At level 30: Avenger's Armor", string.format(L.tooltipAtBandName, 30, "Avenger's Armor"))
 		assert.is_nil(L.tooltipBestUntil)
 		assert.is_nil(L.tooltipBestForNow)
@@ -2630,7 +2644,7 @@ describe("the hook's width contract and enchant wiring", function()
 			assertFitted(rows)
 		end)
 
-		it("fits Your best in slot and the At line, the cap waiting under Shift", function()
+		it("fits Best for the band and the At line, the cap waiting under Shift", function()
 			local current = Gear.currentWeights(DATA6, "warrior-arms", { messages = { { type = "weights",
 				spec = "warrior-arms", weights = { { stat = "strength", weight = 2 } }, caps = { "hit" },
 				dps_per_point = 0.5 } } }, KEY)
@@ -2638,7 +2652,7 @@ describe("the hook's width contract and enchant wiring", function()
 			local item = { itemId = 100, link = "item:100:w", equipLocation = "INVTYPE_CHEST", itemClass = 4,
 				itemSubClass = 3, stats = { strength = 20, hit = 1 } }
 			local rows = hover(item, { chest = worn }, current)
-			assert.are.equal(L.tooltipYourBis, ItemTooltip.stripEscapes(rows[2].left))
+			assert.are.equal(ItemTooltip.bestText(20, 30), ItemTooltip.stripEscapes(rows[2].left))
 			assert.is_truthy(ItemTooltip.stripEscapes(rows[3].left):find("^At level 30"))
 			assert.are.equal(3, #rows)
 			assertFitted(rows)

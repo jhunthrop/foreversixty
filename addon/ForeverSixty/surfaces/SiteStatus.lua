@@ -254,11 +254,16 @@ function SiteStatus.loginLine(data, facts)
 	return nil
 end
 
---- Whether this client has not been welcomed yet: ForeverSixtyDB.welcomedAt, one stamp for the
---- account, is not set; and not already waiting to say it this session.
+--- Whether the welcome (the tour) is due at this entering of the world: the tour's own rule when
+--- it is wired (SiteStatus.tourDue, set by Onboarding.register: this tour version not ended on
+--- the account), else ForeverSixtyDB.welcomedAt, one stamp for the account, not set; and not
+--- already waiting to say it this session.
 function SiteStatus.welcomeDue()
 	if SiteStatus.welcoming then
 		return false
+	end
+	if SiteStatus.tourDue ~= nil then
+		return SiteStatus.tourDue() == true
 	end
 	return type(ForeverSixtyDB) ~= "table" or ForeverSixtyDB.welcomedAt == nil
 end
