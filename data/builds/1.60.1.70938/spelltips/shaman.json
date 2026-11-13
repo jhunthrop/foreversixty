@@ -2307,9 +2307,9 @@
       "cast_time_ms": 0,
       "channeled": false,
       "passive": false,
-      "cooldown_ms": 6000,
+      "cooldown_ms": 8000,
       "range_yd": 5.0,
-      "description": "Instantly strike for 150% weapon damage and increase the damage you deal to the target with your next Lightning Bolt, Chain Lightning, or Earth Shock spell by 20% for 12 sec.",
+      "description": "Instantly strike for 100% weapon damage and increase the damage you deal to the target with your next Lightning Bolt, Chain Lightning, or Earth Shock spell by 20% for 12 sec.",
       "icon": "ability_shaman_stormstrike"
     },
     "20608": {
