@@ -1,0 +1,2285 @@
+remote-test: 4a4462391af4a76d73fbf7dede7189b86f9ecc5c -> forever-ci on 192.168.1.182 (run 20261113030512-4a4462391-79089, in sim): bash ../design/reviews/2026-11-13-sim-accuracy/rogues-60/run.sh all
+remote-test: engine pinned to 5515ae0ef
+=== rogue-assassination raid 60
+2026/11/13 03:08:49 Running 5000 iterations on 16 concurrent sims.
+rogue-assassination  DPS 917.65 +/- 0.64
+out of mana: 0.0 s of 180 s
+consumes: [main_hand_imbue:instant_poison off_hand_imbue:deadly_poison ground_scorpok_assay conjured_rogue_thistle_tea food_poached_sunscale_salmon major_frenzy_potion off_hand_stone:dense_sharpening_stone flask_of_natural_aggression elixir_of_the_mongoose juju_power juju_might main_hand_stone:elemental_sharpening_stone]
+buffs: [arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| OtherActionAttack#1 | 167.3 | 18.2 | 127.60 | 102.13 | 295 | 35.3 | 15.5 | 4.5 | 39.9 | 42.8 |
+| Mutilate (1241586) | 126.5 | 13.8 | 0.00 | 40.96 | 556 | 51.4 | 0.0 | 4.5 | 0.0 | 0.0 |
+| Eviscerate (11300)#5 | 114.7 | 12.5 | 11.78 | 11.25 | 1835 | 41.5 | 0.0 | 4.5 | 0.0 | 0.0 |
+| Eviscerate (11300)#4 | 109.4 | 11.9 | 13.61 | 13.00 | 1514 | 42.7 | 0.0 | 4.5 | 0.0 | 0.0 |
+| OtherActionAttack#2 | 89.8 | 9.8 | 121.14 | 97.14 | 166 | 35.5 | 15.3 | 4.5 | 39.9 | 22.9 |
+| Mutilate (1241590) | 82.0 | 8.9 | 0.00 | 40.97 | 360 | 52.6 | 0.0 | 4.5 | 0.0 | 0.0 |
+| Deadly Poison IV (11356)#100 | 80.8 | 8.8 | 0.00 | 57.62 | 252 | 30.4 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Instant Poison VI (11340) | 59.3 | 6.5 | 0.00 | 60.68 | 176 | 30.0 | 5.4 | 0.0 | 0.0 | 0.0 |
+| OtherActionAttack#3 | 54.7 | 6.0 | 37.03 | 29.88 | 329 | 36.2 | 14.9 | 4.4 | 40.0 | 13.8 |
+| Garrote (11290) | 9.7 | 1.1 | 1.00 | 9.00 | 195 | 47.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Shank (1329549) | 9.2 | 1.0 | 18.19 | 18.19 | 91 | 40.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Gloves of Holy Might (1325229) | 8.9 | 1.0 | 0.00 | 9.91 | 161 | 39.3 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Lightning (18980) | 4.3 | 0.5 | 0.00 | 31.82 | 24 | 31.3 | 5.2 | 0.0 | 0.0 | 0.0 |
+| Elune's Light (1259799) | 0.0 | 0.0 | 1.48 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Cold Blood (14177) | 0.0 | 0.0 | 1.41 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Stealth (1787) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Mutilate (1241584) | 0.0 | 0.0 | 42.89 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 7676 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Slice and Dice (6774)#1 | 0.0 | 0.0 | 3.63 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Slice and Dice (6774)#2 | 0.0 | 0.0 | 0.97 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 250943 | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Slice and Dice (6774)#5 | 0.0 | 0.0 | 0.40 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Slice and Dice (6774)#4 | 0.0 | 0.0 | 0.44 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 13965 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Slice and Dice (6774)#3 | 0.0 | 0.0 | 3.73 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Blessing of Might (19838) | 99.9 | 2.00 |
+| Revitalize (23863) | 99.9 | 1.00 |
+| Thrash (21919) | 99.9 | 1.00 |
+| Strength of Earth Totem (10442) | 99.9 | 1.00 |
+| Heart of the Lion (409583) | 99.9 | 1.00 |
+| Lightning (18979) | 99.9 | 1.00 |
+| Battle Shout (11551) | 99.9 | 1.00 |
+| Blood Splatter (1329256) | 99.9 | 1.00 |
+| Trueshot Aura (20906) | 99.9 | 1.00 |
+| Slice and Dice (6774) | 91.3 | 9.18 |
+| Venom (1310703) | 59.6 | 18.19 |
+| Holy Strength (20007)#1 | 36.3 | 5.61 |
+| item 250943 | 33.1 | 2.00 |
+| Holy Strength (20007)#2 | 29.6 | 4.38 |
+| Elune's Light (1259799) | 11.5 | 1.48 |
+| item 13965 | 11.1 | 1.00 |
+| Felstriker (16551) | 8.9 | 5.63 |
+| Windfury Totem (10610) | 4.8 | 33.81 |
+| Cold Blood (14177) | 0.9 | 1.41 |
+| Stealth (1787) | 0.0 | 1.00 |
+| Poised (1328826) | 0.0 | 1.00 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionEnergyRegen | ResourceTypeEnergy | 1826.5 | 1772.1 |
+| OtherActionRefund | ResourceTypeEnergy | 4.0 | 4.0 |
+| Revitalize (23864) | ResourceTypeEnergy | 403.2 | 396.4 |
+| spell (14161) | ResourceTypeComboPoints | 20.1 | 20.1 |
+| Relentless Strikes (14179) | ResourceTypeEnergy | 644.5 | 641.2 |
+| spell (14195) | ResourceTypeComboPoints | 32.2 | 32.2 |
+| item 7676 | ResourceTypeEnergy | 100.0 | 94.8 |
+| Eviscerate (11300) | ResourceTypeEnergy | -507.8 | -507.8 |
+| Eviscerate (11300) | ResourceTypeComboPoints | -108.3 | -108.3 |
+| Garrote (11290) | ResourceTypeEnergy | -30.0 | -30.0 |
+| Garrote (11290) | ResourceTypeComboPoints | 1.0 | 1.0 |
+| Slice and Dice (6774) | ResourceTypeEnergy | -229.5 | -229.5 |
+| Slice and Dice (6774) | ResourceTypeComboPoints | -20.5 | -20.5 |
+| Mutilate (1241584) | ResourceTypeEnergy | -2573.1 | -2573.1 |
+| Mutilate (1241584) | ResourceTypeComboPoints | 85.6 | 78.0 |
+| Shank (1329549) | ResourceTypeEnergy | 363.8 | 359.4 |
+=== rogue-assassination bare 60
+2026/11/13 03:08:50 All 16 sims finished successfully.
+2026/11/13 03:08:50 Running 5000 iterations on 16 concurrent sims.
+rogue-assassination  DPS 344.31 +/- 0.24
+out of mana: 0.0 s of 180 s
+consumes: [main_hand_imbue:instant_poison off_hand_imbue:deadly_poison]
+buffs: []
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| OtherActionAttack#1 | 53.8 | 15.6 | 135.14 | 100.99 | 96 | 20.9 | 18.7 | 6.5 | 40.0 | 17.1 |
+| Deadly Poison IV (11356)#100 | 53.0 | 15.4 | 0.00 | 58.11 | 164 | 21.4 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Instant Poison VI (11340) | 46.2 | 13.4 | 0.00 | 59.83 | 139 | 20.6 | 8.4 | 0.0 | 0.0 | 0.0 |
+| Mutilate (1241586) | 42.4 | 12.3 | 0.00 | 33.52 | 228 | 34.8 | 1.0 | 6.4 | 0.0 | 0.0 |
+| Eviscerate (11300)#5 | 42.4 | 12.3 | 9.48 | 8.79 | 867 | 27.3 | 0.9 | 6.3 | 0.0 | 0.0 |
+| Eviscerate (11300)#4 | 31.2 | 9.1 | 8.47 | 7.87 | 713 | 27.6 | 1.0 | 6.1 | 0.0 | 0.0 |
+| Mutilate (1241590) | 29.5 | 8.6 | 0.00 | 33.52 | 158 | 36.5 | 0.9 | 6.5 | 0.0 | 0.0 |
+| OtherActionAttack#2 | 26.2 | 7.6 | 128.48 | 96.09 | 49 | 21.1 | 18.7 | 6.5 | 40.0 | 8.3 |
+| Gloves of Holy Might (1325229) | 6.0 | 1.7 | 0.00 | 8.17 | 131 | 24.7 | 0.9 | 0.0 | 0.0 | 0.0 |
+| Garrote (11290) | 5.1 | 1.5 | 1.00 | 5.95 | 153 | 35.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Lightning (18980) | 3.1 | 0.9 | 0.00 | 26.09 | 21 | 22.1 | 8.3 | 0.0 | 0.0 | 0.0 |
+| Shank (1329549) | 2.8 | 0.8 | 18.23 | 18.23 | 28 | 24.1 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Lightning Bolt (23592) | 1.3 | 0.4 | 0.00 | 5.00 | 47 | 21.7 | 8.4 | 0.0 | 0.0 | 0.0 |
+| OtherActionAttack#3 | 1.1 | 0.3 | 2.73 | 2.05 | 98 | 22.4 | 18.3 | 6.7 | 39.5 | 0.3 |
+| Slice and Dice (6774)#5 | 0.0 | 0.0 | 1.63 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Mutilate (1241584) | 0.0 | 0.0 | 36.21 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Slice and Dice (6774)#3 | 0.0 | 0.0 | 2.67 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 13965 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Stealth (1787) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Cold Blood (14177) | 0.0 | 0.0 | 1.40 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Slice and Dice (6774)#1 | 0.0 | 0.0 | 2.68 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Slice and Dice (6774)#4 | 0.0 | 0.0 | 1.14 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Elune's Light (1259799) | 0.0 | 0.0 | 1.48 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Slice and Dice (6774)#2 | 0.0 | 0.0 | 1.21 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Lightning (18979) | 99.9 | 1.00 |
+| Revitalize (23863) | 99.9 | 1.00 |
+| Slice and Dice (6774) | 93.6 | 9.34 |
+| Venom (1310703) | 59.8 | 18.23 |
+| Elune's Light (1259799) | 11.5 | 1.48 |
+| item 13965 | 11.1 | 1.00 |
+| Felstriker (16551) | 7.0 | 4.35 |
+| Cold Blood (14177) | 1.7 | 1.40 |
+| Stealth (1787) | 0.0 | 1.00 |
+| Poised (1328826) | 0.0 | 1.00 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionEnergyRegen | ResourceTypeEnergy | 1826.8 | 1791.9 |
+| OtherActionRefund | ResourceTypeEnergy | 9.3 | 9.3 |
+| Revitalize (23864) | ResourceTypeEnergy | 340.1 | 336.0 |
+| spell (14161) | ResourceTypeComboPoints | 15.5 | 15.5 |
+| Relentless Strikes (14179) | ResourceTypeEnergy | 506.6 | 506.6 |
+| spell (14195) | ResourceTypeComboPoints | 20.4 | 20.4 |
+| Eviscerate (11300) | ResourceTypeEnergy | -628.4 | -628.4 |
+| Eviscerate (11300) | ResourceTypeComboPoints | -75.4 | -75.4 |
+| Garrote (11290) | ResourceTypeEnergy | -40.0 | -40.0 |
+| Garrote (11290) | ResourceTypeComboPoints | 1.0 | 1.0 |
+| Slice and Dice (6774) | ResourceTypeEnergy | -233.4 | -233.4 |
+| Slice and Dice (6774) | ResourceTypeComboPoints | -25.8 | -25.8 |
+| Mutilate (1241584) | ResourceTypeEnergy | -2172.6 | -2172.6 |
+| Mutilate (1241584) | ResourceTypeComboPoints | 72.0 | 67.0 |
+| Shank (1329549) | ResourceTypeEnergy | 364.6 | 362.4 |
+=== rogue-assassination bare 50
+2026/11/13 03:08:51 All 16 sims finished successfully.
+2026/11/13 03:08:51 Running 5000 iterations on 16 concurrent sims.
+2026/11/13 03:08:52 All 16 sims finished successfully.
+rogue-assassination  DPS 220.60 +/- 0.12
+out of mana: 0.0 s of 180 s
+consumes: [main_hand_imbue:deadly_poison off_hand_imbue:instant_poison]
+buffs: []
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| OtherActionAttack#1 | 43.5 | 19.7 | 128.50 | 90.47 | 86 | 15.6 | 23.1 | 6.5 | 40.0 | 15.7 |
+| Deadly Poison III (11355)#100 | 40.5 | 18.3 | 0.00 | 58.25 | 125 | 11.6 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Instant Poison IV (11338) | 25.0 | 11.4 | 0.00 | 56.95 | 79 | 10.3 | 12.1 | 0.0 | 0.0 | 0.0 |
+| Eviscerate (11299)#5 | 24.5 | 11.1 | 7.74 | 6.93 | 637 | 21.4 | 4.1 | 6.4 | 0.0 | 0.0 |
+| Mutilate (1241585) | 24.2 | 11.0 | 0.00 | 28.44 | 153 | 14.0 | 4.2 | 6.4 | 0.0 | 0.0 |
+| OtherActionAttack#2 | 21.6 | 9.8 | 177.72 | 125.04 | 31 | 15.6 | 23.1 | 6.5 | 39.9 | 7.8 |
+| Mutilate (1241588) | 14.6 | 6.6 | 0.00 | 28.43 | 93 | 14.1 | 4.1 | 6.6 | 0.0 | 0.0 |
+| Eviscerate (11299)#4 | 14.1 | 6.4 | 5.50 | 4.92 | 517 | 20.3 | 4.1 | 6.5 | 0.0 | 0.0 |
+| Gloves of Holy Might (1325229) | 4.7 | 2.1 | 0.00 | 6.99 | 121 | 14.8 | 4.2 | 0.0 | 0.0 | 0.0 |
+| Garrote (11289) | 3.5 | 1.6 | 1.00 | 5.79 | 110 | 22.9 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Shadow Bolt (18138) | 2.4 | 1.1 | 0.00 | 3.47 | 124 | 10.1 | 12.1 | 0.0 | 0.0 | 0.0 |
+| Shank (1329549) | 1.8 | 0.8 | 18.27 | 18.27 | 18 | 16.1 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Slice and Dice (6774)#4 | 0.0 | 0.0 | 1.02 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Slice and Dice (6774)#5 | 0.0 | 0.0 | 1.57 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Slice and Dice (6774)#3 | 0.0 | 0.0 | 2.57 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Mutilate (1241582) | 0.0 | 0.0 | 31.83 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Slice and Dice (6774)#2 | 0.0 | 0.0 | 1.91 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Slice and Dice (6774)#1 | 0.0 | 0.0 | 2.30 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Stealth (1786) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Elune's Light (1259799) | 0.0 | 0.0 | 1.48 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Cold Blood (14177) | 0.0 | 0.0 | 1.38 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Chthonic Power (1249110) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Molten Fury (1249113) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Slice and Dice (6774) | 93.7 | 9.38 |
+| Venom (1310703) | 59.9 | 18.26 |
+| Elune's Light (1259799) | 11.5 | 1.48 |
+| Molten Fury (1249113) | 8.3 | 1.00 |
+| Chthonic Power (1249110) | 8.3 | 1.00 |
+| Cold Blood (14177) | 2.2 | 1.38 |
+| Stealth (1787) | 0.0 | 1.00 |
+| Poised (1328826) | 0.0 | 1.00 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionEnergyRegen | ResourceTypeEnergy | 1827.1 | 1794.9 |
+| OtherActionRefund | ResourceTypeEnergy | 18.7 | 18.7 |
+| spell (14161) | ResourceTypeComboPoints | 12.7 | 12.7 |
+| Relentless Strikes (14179) | ResourceTypeEnergy | 400.1 | 400.1 |
+| spell (14195) | ResourceTypeComboPoints | 8.3 | 8.3 |
+| Eviscerate (11299) | ResourceTypeEnergy | -463.3 | -463.3 |
+| Eviscerate (11299) | ResourceTypeComboPoints | -54.3 | -54.3 |
+| Garrote (11289) | ResourceTypeEnergy | -40.0 | -40.0 |
+| Garrote (11289) | ResourceTypeComboPoints | 1.0 | 1.0 |
+| Slice and Dice (6774) | ResourceTypeEnergy | -234.5 | -234.5 |
+| Slice and Dice (6774) | ResourceTypeComboPoints | -25.8 | -25.8 |
+| Mutilate (1241582) | ResourceTypeEnergy | -1909.9 | -1909.9 |
+| Mutilate (1241582) | ResourceTypeComboPoints | 62.9 | 60.9 |
+| Shank (1329549) | ResourceTypeEnergy | 365.3 | 364.6 |
+=== rogue-assassination bare 50 at 55
+2026/11/13 03:08:52 Running 5000 iterations on 16 concurrent sims.
+2026/11/13 03:08:53 All 16 sims finished successfully.
+rogue-assassination  DPS 250.28 +/- 0.14
+out of mana: 0.0 s of 180 s
+consumes: [main_hand_imbue:deadly_poison off_hand_imbue:instant_poison]
+buffs: []
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Deadly Poison IV (11356)#100 | 49.8 | 19.9 | 0.00 | 58.24 | 154 | 11.6 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionAttack#1 | 44.3 | 17.7 | 128.47 | 90.57 | 88 | 15.1 | 23.0 | 6.5 | 40.0 | 16.1 |
+| Instant Poison V (11339) | 34.1 | 13.6 | 0.00 | 57.11 | 108 | 10.2 | 12.1 | 0.0 | 0.0 | 0.0 |
+| Mutilate (1241585) | 28.0 | 11.2 | 0.00 | 28.23 | 179 | 27.2 | 4.1 | 6.4 | 0.0 | 0.0 |
+| Eviscerate (11299)#5 | 24.9 | 9.9 | 7.91 | 7.07 | 633 | 20.2 | 4.1 | 6.6 | 0.0 | 0.0 |
+| OtherActionAttack#2 | 22.0 | 8.8 | 177.68 | 125.10 | 32 | 15.2 | 23.1 | 6.5 | 40.0 | 8.0 |
+| Eviscerate (11299)#4 | 17.0 | 6.8 | 6.64 | 5.94 | 513 | 19.0 | 4.0 | 6.5 | 0.0 | 0.0 |
+| Mutilate (1241588) | 16.8 | 6.7 | 0.00 | 28.18 | 108 | 27.1 | 4.0 | 6.6 | 0.0 | 0.0 |
+| Gloves of Holy Might (1325229) | 4.7 | 1.9 | 0.00 | 7.01 | 121 | 14.5 | 4.2 | 0.0 | 0.0 | 0.0 |
+| Garrote (11290) | 4.2 | 1.7 | 1.00 | 5.79 | 132 | 22.2 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Shadow Bolt (18138) | 2.4 | 1.0 | 0.00 | 3.53 | 125 | 10.3 | 11.8 | 0.0 | 0.0 | 0.0 |
+| Shank (1329549) | 1.8 | 0.7 | 18.27 | 18.27 | 18 | 15.6 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Mutilate (1241582) | 0.0 | 0.0 | 31.53 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Slice and Dice (6774)#5 | 0.0 | 0.0 | 1.71 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Slice and Dice (6774)#3 | 0.0 | 0.0 | 2.58 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Molten Fury (1249113) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Elune's Light (1259799) | 0.0 | 0.0 | 1.48 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Slice and Dice (6774)#2 | 0.0 | 0.0 | 1.42 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Slice and Dice (6774)#1 | 0.0 | 0.0 | 2.45 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Cold Blood (14177) | 0.0 | 0.0 | 1.39 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Stealth (1786) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Chthonic Power (1249110) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Slice and Dice (6774)#4 | 0.0 | 0.0 | 1.11 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Slice and Dice (6774) | 93.6 | 9.26 |
+| Venom (1310703) | 59.9 | 18.27 |
+| Elune's Light (1259799) | 11.5 | 1.48 |
+| Molten Fury (1249113) | 8.3 | 1.00 |
+| Chthonic Power (1249110) | 8.3 | 1.00 |
+| Cold Blood (14177) | 2.0 | 1.39 |
+| Stealth (1787) | 0.0 | 1.00 |
+| Poised (1328826) | 0.0 | 1.00 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionEnergyRegen | ResourceTypeEnergy | 1827.0 | 1794.8 |
+| OtherActionRefund | ResourceTypeEnergy | 18.0 | 18.0 |
+| spell (14161) | ResourceTypeComboPoints | 13.4 | 13.4 |
+| Relentless Strikes (14179) | ResourceTypeEnergy | 425.5 | 425.5 |
+| spell (14195) | ResourceTypeComboPoints | 14.8 | 14.8 |
+| Eviscerate (11299) | ResourceTypeEnergy | -509.2 | -509.2 |
+| Eviscerate (11299) | ResourceTypeComboPoints | -59.1 | -59.1 |
+| Garrote (11290) | ResourceTypeEnergy | -40.0 | -40.0 |
+| Garrote (11290) | ResourceTypeComboPoints | 1.0 | 1.0 |
+| Slice and Dice (6774) | ResourceTypeEnergy | -231.6 | -231.6 |
+| Slice and Dice (6774) | ResourceTypeComboPoints | -26.0 | -26.0 |
+| Mutilate (1241582) | ResourceTypeEnergy | -1891.9 | -1891.9 |
+| Mutilate (1241582) | ResourceTypeComboPoints | 62.4 | 58.8 |
+| Shank (1329549) | ResourceTypeEnergy | 365.3 | 364.6 |
+=== rogue-combat raid 60
+2026/11/13 03:08:53 Running 5000 iterations on 16 concurrent sims.
+2026/11/13 03:08:54 All 16 sims finished successfully.
+rogue-combat  DPS 902.21 +/- 0.53
+out of mana: 0.0 s of 180 s
+consumes: [main_hand_imbue:deadly_poison off_hand_imbue:instant_poison ground_scorpok_assay conjured_rogue_thistle_tea food_poached_sunscale_salmon major_frenzy_potion off_hand_stone:dense_sharpening_stone flask_of_natural_aggression elixir_of_the_mongoose juju_power juju_might main_hand_stone:elemental_sharpening_stone]
+buffs: [arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Backstab (11281) | 300.6 | 33.3 | 46.63 | 44.54 | 1215 | 65.8 | 0.0 | 4.5 | 0.0 | 0.0 |
+| OtherActionAttack#1 | 179.3 | 19.9 | 132.83 | 106.20 | 304 | 37.3 | 15.6 | 4.5 | 40.1 | 45.3 |
+| OtherActionAttack#2 | 149.8 | 16.6 | 181.53 | 145.47 | 185 | 37.6 | 15.4 | 4.5 | 40.0 | 37.5 |
+| Eviscerate (11300)#4 | 79.2 | 8.8 | 9.51 | 9.08 | 1570 | 40.6 | 0.0 | 4.6 | 0.0 | 0.0 |
+| Deadly Poison IV (11356)#100 | 55.2 | 6.1 | 0.00 | 57.13 | 174 | 27.2 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionAttack#3 | 50.0 | 5.5 | 32.62 | 26.33 | 342 | 38.2 | 14.9 | 4.4 | 40.1 | 12.4 |
+| Eviscerate (11300)#5 | 41.2 | 4.6 | 4.05 | 3.87 | 1918 | 40.7 | 0.0 | 4.5 | 0.0 | 0.0 |
+| Instant Poison VI (11340) | 18.7 | 2.1 | 0.00 | 27.62 | 122 | 27.7 | 5.2 | 0.0 | 0.0 | 0.0 |
+| Shank (1329549) | 12.5 | 1.4 | 22.35 | 22.35 | 100 | 40.9 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Garrote (11290) | 7.8 | 0.9 | 1.00 | 6.00 | 233 | 46.1 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Lightning (18980) | 4.2 | 0.5 | 0.00 | 31.88 | 24 | 28.2 | 5.2 | 0.0 | 0.0 | 0.0 |
+| Firebolt (18833) | 2.1 | 0.2 | 0.00 | 2.99 | 124 | 27.4 | 5.1 | 0.0 | 0.0 | 0.0 |
+| Slice and Dice (6774)#1 | 0.0 | 0.0 | 5.08 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Slice and Dice (6774)#3 | 0.0 | 0.0 | 1.98 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 7676 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 13965 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Eureka! (1259812) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Stealth (1787) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Slice and Dice (6774)#2 | 0.0 | 0.0 | 3.05 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Molten Fury (1249113) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 250943 | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Blade Flurry (13877) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Adrenaline Rush (13750) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Battle Shout (11551) | 99.9 | 1.00 |
+| Lightning (18979) | 99.9 | 1.00 |
+| Strength of Earth Totem (10442) | 99.9 | 1.00 |
+| Blessing of Might (19838) | 99.9 | 2.00 |
+| Thrash (21919) | 99.9 | 1.00 |
+| Trueshot Aura (20906) | 99.9 | 1.00 |
+| Heart of the Lion (409583) | 99.9 | 1.00 |
+| Revitalize (23863) | 99.9 | 1.00 |
+| Slice and Dice (6774) | 88.5 | 10.11 |
+| Holy Strength (20007)#1 | 35.1 | 5.39 |
+| item 250943 | 33.1 | 2.00 |
+| Holy Strength (20007)#2 | 22.5 | 3.17 |
+| Blade Flurry (13877) | 16.7 | 2.00 |
+| item 13965 | 11.1 | 1.00 |
+| Eureka! (1259812) | 8.9 | 2.00 |
+| Felstriker (16551) | 8.6 | 5.42 |
+| Molten Fury (1249113) | 8.3 | 1.00 |
+| Adrenaline Rush (13750) | 8.3 | 1.00 |
+| Windfury Totem (10610) | 3.3 | 32.62 |
+| Stealth (1787) | 0.0 | 1.00 |
+| Poised (1328826) | 0.0 | 1.00 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionEnergyRegen | ResourceTypeEnergy | 1978.2 | 1930.4 |
+| OtherActionRefund | ResourceTypeEnergy | 99.4 | 99.4 |
+| Revitalize (23864) | ResourceTypeEnergy | 405.4 | 393.8 |
+| spell (14161) | ResourceTypeComboPoints | 9.3 | 9.3 |
+| Puncturing Wounds (1224716) | ResourceTypeComboPoints | 20.1 | 20.1 |
+| Blade Flurry (13877) | ResourceTypeEnergy | -50.0 | -50.0 |
+| item 7676 | ResourceTypeEnergy | 100.0 | 94.1 |
+| Backstab (11281) | ResourceTypeEnergy | -2769.2 | -2769.2 |
+| Backstab (11281) | ResourceTypeComboPoints | 44.5 | 44.5 |
+| Eviscerate (11300) | ResourceTypeEnergy | -268.9 | -268.9 |
+| Eviscerate (11300) | ResourceTypeComboPoints | -55.6 | -55.6 |
+| Garrote (11290) | ResourceTypeEnergy | -30.0 | -30.0 |
+| Garrote (11290) | ResourceTypeComboPoints | 1.0 | 1.0 |
+| Slice and Dice (6774) | ResourceTypeEnergy | -252.8 | -252.8 |
+| Slice and Dice (6774) | ResourceTypeComboPoints | -17.1 | -17.1 |
+| Shank (1329549) | ResourceTypeEnergy | 782.1 | 781.4 |
+=== rogue-combat bare 60
+2026/11/13 03:08:54 Running 5000 iterations on 16 concurrent sims.
+rogue-combat  DPS 313.77 +/- 0.21
+out of mana: 0.0 s of 180 s
+consumes: [main_hand_imbue:deadly_poison off_hand_imbue:instant_poison]
+buffs: []
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Backstab (11281) | 89.7 | 28.6 | 42.65 | 39.91 | 404 | 52.6 | 1.9 | 4.5 | 0.0 | 0.0 |
+| OtherActionAttack#1 | 57.9 | 18.5 | 137.73 | 104.37 | 100 | 24.9 | 19.8 | 4.5 | 39.9 | 17.3 |
+| OtherActionAttack#2 | 43.9 | 14.0 | 181.16 | 137.87 | 57 | 25.2 | 19.4 | 4.5 | 40.0 | 13.1 |
+| Eviscerate (11300)#4 | 36.1 | 11.5 | 8.61 | 8.08 | 804 | 27.1 | 1.8 | 4.4 | 0.0 | 0.0 |
+| Deadly Poison IV (11356)#100 | 33.1 | 10.6 | 0.00 | 55.36 | 108 | 20.5 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Eviscerate (11300)#5 | 18.8 | 6.0 | 3.67 | 3.44 | 985 | 27.7 | 1.8 | 4.5 | 0.0 | 0.0 |
+| Instant Poison VI (11340) | 13.7 | 4.4 | 0.00 | 25.07 | 98 | 21.0 | 9.1 | 0.0 | 0.0 | 0.0 |
+| Gloves of Holy Might (1325229) | 5.5 | 1.7 | 0.00 | 7.28 | 136 | 28.4 | 1.8 | 0.0 | 0.0 | 0.0 |
+| Garrote (11290) | 4.8 | 1.5 | 1.00 | 5.91 | 146 | 33.8 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Shank (1329549) | 3.8 | 1.2 | 21.32 | 21.32 | 32 | 27.6 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Lightning (18980) | 3.1 | 1.0 | 0.00 | 26.94 | 21 | 21.5 | 9.0 | 0.0 | 0.0 | 0.0 |
+| Firebolt (18833) | 1.7 | 0.5 | 0.00 | 2.71 | 110 | 20.4 | 9.3 | 0.0 | 0.0 | 0.0 |
+| OtherActionAttack#3 | 1.2 | 0.4 | 2.89 | 2.21 | 101 | 26.1 | 18.8 | 4.5 | 40.4 | 0.4 |
+| Stealth (1787) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Slice and Dice (6774)#3 | 0.0 | 0.0 | 2.96 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Blade Flurry (13877) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Adrenaline Rush (13750) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Slice and Dice (6774)#1 | 0.0 | 0.0 | 6.35 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 13965 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Eureka! (1259812) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Slice and Dice (6774)#2 | 0.0 | 0.0 | 3.12 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Lightning (18979) | 99.9 | 1.00 |
+| Revitalize (23863) | 99.9 | 1.00 |
+| Slice and Dice (6774) | 87.7 | 12.43 |
+| Blade Flurry (13877) | 16.7 | 2.00 |
+| item 13965 | 11.1 | 1.00 |
+| Eureka! (1259812) | 8.9 | 2.00 |
+| Adrenaline Rush (13750) | 8.3 | 1.00 |
+| Felstriker (16551) | 7.2 | 4.51 |
+| Stealth (1787) | 0.0 | 1.00 |
+| Poised (1328826) | 0.0 | 1.00 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionEnergyRegen | ResourceTypeEnergy | 1978.7 | 1941.8 |
+| OtherActionRefund | ResourceTypeEnergy | 130.6 | 130.6 |
+| Revitalize (23864) | ResourceTypeEnergy | 355.4 | 348.3 |
+| spell (14161) | ResourceTypeComboPoints | 14.4 | 14.4 |
+| Puncturing Wounds (1224716) | ResourceTypeComboPoints | 17.9 | 17.9 |
+| Blade Flurry (13877) | ResourceTypeEnergy | -50.0 | -50.0 |
+| Backstab (11281) | ResourceTypeEnergy | -2530.8 | -2530.8 |
+| Backstab (11281) | ResourceTypeComboPoints | 39.9 | 39.9 |
+| Eviscerate (11300) | ResourceTypeEnergy | -243.3 | -243.3 |
+| Eviscerate (11300) | ResourceTypeComboPoints | -49.5 | -49.5 |
+| Garrote (11290) | ResourceTypeEnergy | -40.0 | -40.0 |
+| Garrote (11290) | ResourceTypeComboPoints | 1.0 | 1.0 |
+| Slice and Dice (6774) | ResourceTypeEnergy | -310.7 | -310.7 |
+| Slice and Dice (6774) | ResourceTypeComboPoints | -21.5 | -21.5 |
+| Shank (1329549) | ResourceTypeEnergy | 682.2 | 681.9 |
+=== rogue-combat bare 50
+2026/11/13 03:08:55 All 16 sims finished successfully.
+2026/11/13 03:08:55 Running 5000 iterations on 16 concurrent sims.
+2026/11/13 03:08:56 All 16 sims finished successfully.
+rogue-combat  DPS 217.93 +/- 0.12
+out of mana: 0.0 s of 180 s
+consumes: [main_hand_imbue:deadly_poison off_hand_imbue:instant_poison]
+buffs: []
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Backstab (11279) | 66.6 | 30.5 | 41.78 | 39.04 | 307 | 42.6 | 2.1 | 4.5 | 0.0 | 0.0 |
+| OtherActionAttack#1 | 37.5 | 17.2 | 103.54 | 77.23 | 87 | 15.4 | 20.9 | 4.5 | 40.0 | 12.8 |
+| Eviscerate (11299)#4 | 28.0 | 12.9 | 9.69 | 9.08 | 556 | 14.5 | 1.9 | 4.4 | 0.0 | 0.0 |
+| OtherActionAttack#2 | 27.9 | 12.8 | 143.18 | 106.63 | 47 | 15.4 | 21.0 | 4.5 | 40.0 | 9.6 |
+| Deadly Poison III (11355)#100 | 22.3 | 10.2 | 0.00 | 53.14 | 75 | 6.6 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Eviscerate (11299)#5 | 14.7 | 6.7 | 4.17 | 3.90 | 678 | 14.5 | 2.1 | 4.3 | 0.0 | 0.0 |
+| Instant Poison IV (11338) | 5.8 | 2.7 | 0.00 | 19.14 | 55 | 5.9 | 10.1 | 0.0 | 0.0 | 0.0 |
+| Gloves of Holy Might (1325229) | 4.1 | 1.9 | 0.00 | 6.06 | 121 | 14.9 | 1.9 | 0.0 | 0.0 | 0.0 |
+| Garrote (11289) | 3.4 | 1.6 | 1.00 | 5.91 | 103 | 15.3 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Shank (1329549) | 3.2 | 1.5 | 21.43 | 21.43 | 27 | 15.4 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Shadow Bolt (18138) | 2.4 | 1.1 | 0.00 | 3.56 | 121 | 5.9 | 9.5 | 0.0 | 0.0 | 0.0 |
+| Breath of Fire (12278) | 1.8 | 0.8 | 0.00 | 4.51 | 73 | 5.8 | 9.9 | 0.0 | 0.0 | 0.0 |
+| Adrenaline Rush (13750) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Molten Fury (1249113) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Breath of Fire (12257) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Stealth (1786) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Blade Flurry (13877) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Eureka! (1259812) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Blade Flurry (13877) | 16.2 | 2.00 |
+| Eureka! (1259812) | 8.9 | 2.00 |
+| Molten Fury (1249113) | 8.3 | 1.00 |
+| Adrenaline Rush (13750) | 8.3 | 1.00 |
+| Stealth (1787) | 0.0 | 1.00 |
+| Poised (1328826) | 0.0 | 1.00 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionEnergyRegen | ResourceTypeEnergy | 1980.7 | 1950.2 |
+| OtherActionRefund | ResourceTypeEnergy | 130.4 | 130.4 |
+| Puncturing Wounds (1224716) | ResourceTypeComboPoints | 17.6 | 17.6 |
+| Blade Flurry (13877) | ResourceTypeEnergy | -50.0 | -50.0 |
+| Backstab (11279) | ResourceTypeEnergy | -2475.5 | -2475.5 |
+| Backstab (11279) | ResourceTypeComboPoints | 39.0 | 39.0 |
+| Eviscerate (11299) | ResourceTypeEnergy | -273.9 | -273.9 |
+| Eviscerate (11299) | ResourceTypeComboPoints | -55.8 | -55.8 |
+| Garrote (11289) | ResourceTypeEnergy | -40.0 | -40.0 |
+| Garrote (11289) | ResourceTypeComboPoints | 1.0 | 1.0 |
+| Shank (1329549) | ResourceTypeEnergy | 685.7 | 685.7 |
+=== rogue-combat bare 50 at 55
+2026/11/13 03:08:56 Running 5000 iterations on 16 concurrent sims.
+2026/11/13 03:08:57 All 16 sims finished successfully.
+rogue-combat  DPS 242.81 +/- 0.14
+out of mana: 0.0 s of 180 s
+consumes: [main_hand_imbue:deadly_poison off_hand_imbue:instant_poison]
+buffs: []
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Backstab (11280) | 73.9 | 30.4 | 41.33 | 38.67 | 344 | 44.9 | 2.0 | 4.4 | 0.0 | 0.0 |
+| OtherActionAttack#1 | 39.5 | 16.3 | 103.54 | 77.08 | 92 | 17.9 | 21.0 | 4.5 | 40.0 | 13.1 |
+| Eviscerate (11299)#4 | 30.6 | 12.6 | 10.34 | 9.67 | 570 | 16.8 | 2.0 | 4.5 | 0.0 | 0.0 |
+| OtherActionAttack#2 | 29.5 | 12.1 | 143.16 | 106.72 | 50 | 17.9 | 21.0 | 4.5 | 40.2 | 9.8 |
+| Deadly Poison IV (11356)#100 | 27.7 | 11.4 | 0.00 | 53.16 | 94 | 9.5 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Eviscerate (11299)#5 | 17.1 | 7.0 | 4.72 | 4.42 | 697 | 17.0 | 2.0 | 4.5 | 0.0 | 0.0 |
+| Instant Poison V (11339) | 8.0 | 3.3 | 0.00 | 19.21 | 75 | 8.6 | 10.0 | 0.0 | 0.0 | 0.0 |
+| Gloves of Holy Might (1325229) | 4.2 | 1.7 | 0.00 | 6.12 | 124 | 17.3 | 1.9 | 0.0 | 0.0 | 0.0 |
+| Garrote (11290) | 4.2 | 1.7 | 1.00 | 5.91 | 128 | 18.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Shank (1329549) | 3.3 | 1.4 | 21.43 | 21.43 | 28 | 17.9 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Shadow Bolt (18138) | 2.4 | 1.0 | 0.00 | 3.53 | 123 | 8.7 | 9.7 | 0.0 | 0.0 | 0.0 |
+| Breath of Fire (12278) | 1.8 | 0.8 | 0.00 | 4.51 | 74 | 8.6 | 9.9 | 0.0 | 0.0 | 0.0 |
+| Stealth (1786) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Eureka! (1259812) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Adrenaline Rush (13750) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Blade Flurry (13877) | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Breath of Fire (12257) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Molten Fury (1249113) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Blade Flurry (13877) | 16.2 | 2.00 |
+| Eureka! (1259812) | 8.9 | 2.00 |
+| Molten Fury (1249113) | 8.3 | 1.00 |
+| Adrenaline Rush (13750) | 8.3 | 1.00 |
+| Stealth (1787) | 0.0 | 1.00 |
+| Poised (1328826) | 0.0 | 1.00 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionEnergyRegen | ResourceTypeEnergy | 1980.7 | 1950.3 |
+| OtherActionRefund | ResourceTypeEnergy | 126.6 | 126.6 |
+| spell (14161) | ResourceTypeComboPoints | 5.6 | 5.6 |
+| Puncturing Wounds (1224716) | ResourceTypeComboPoints | 17.4 | 17.4 |
+| Blade Flurry (13877) | ResourceTypeEnergy | -50.0 | -50.0 |
+| Backstab (11280) | ResourceTypeEnergy | -2448.7 | -2448.7 |
+| Backstab (11280) | ResourceTypeComboPoints | 38.7 | 38.7 |
+| Eviscerate (11299) | ResourceTypeEnergy | -297.8 | -297.8 |
+| Eviscerate (11299) | ResourceTypeComboPoints | -60.8 | -60.8 |
+| Garrote (11290) | ResourceTypeEnergy | -40.0 | -40.0 |
+| Garrote (11290) | ResourceTypeComboPoints | 1.0 | 1.0 |
+| Shank (1329549) | ResourceTypeEnergy | 685.7 | 685.7 |
+=== rogue-subtlety raid 60
+2026/11/13 03:08:57 Running 5000 iterations on 16 concurrent sims.
+2026/11/13 03:08:58 All 16 sims finished successfully.
+rogue-subtlety  DPS 890.81 +/- 0.50
+out of mana: 0.0 s of 180 s
+consumes: [main_hand_imbue:deadly_poison off_hand_imbue:instant_poison ground_scorpok_assay conjured_rogue_thistle_tea food_poached_sunscale_salmon major_frenzy_potion off_hand_stone:dense_sharpening_stone flask_of_natural_aggression elixir_of_the_mongoose juju_power juju_might main_hand_stone:elemental_sharpening_stone]
+buffs: [arcane_brilliance gift_of_the_wild power_word_fortitude divine_spirit blessing_of_might blessing_of_wisdom battle_shout trueshot_aura heart_of_the_lion leader_of_the_pack moonkin_aura strength_of_earth_totem windfury_totem mana_spring_totem:improved curse_of_elements sunder_armor faerie_fire judgement_of_wisdom judgement_of_the_crusader judgement_of_light hunters_mark curse_of_recklessness]
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Death Mark (1325758)#10 | 181.5 | 20.4 | 0.00 | 12.56 | 2601 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionAttack#1 | 162.4 | 18.2 | 125.51 | 97.97 | 298 | 34.0 | 15.4 | 6.5 | 39.9 | 43.0 |
+| Hemorrhage (16511) | 120.8 | 13.6 | 47.16 | 44.12 | 493 | 36.3 | 0.0 | 6.4 | 0.0 | 0.0 |
+| OtherActionAttack#2 | 91.3 | 10.3 | 173.45 | 135.61 | 121 | 34.1 | 15.3 | 6.5 | 40.0 | 24.2 |
+| Garrote (11290) | 76.6 | 8.6 | 9.06 | 53.45 | 258 | 38.6 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Rupture (11275)#5 | 66.3 | 7.4 | 5.76 | 56.28 | 212 | 39.2 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Deadly Poison IV (11356)#100 | 55.7 | 6.2 | 0.00 | 57.41 | 174 | 28.4 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionAttack#3 | 48.8 | 5.5 | 33.42 | 26.22 | 335 | 34.6 | 15.1 | 6.5 | 40.0 | 12.8 |
+| Ghostly Strike (14278) | 31.1 | 3.5 | 9.74 | 9.12 | 613 | 36.7 | 0.0 | 6.4 | 0.0 | 0.0 |
+| Rupture (11275)#4 | 24.9 | 2.8 | 2.60 | 22.33 | 201 | 38.2 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Instant Poison VI (11340) | 17.4 | 2.0 | 0.00 | 25.69 | 122 | 28.5 | 5.3 | 0.0 | 0.0 | 0.0 |
+| Shank (1329549) | 6.9 | 0.8 | 18.56 | 18.56 | 67 | 39.1 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Lightning (18980) | 4.2 | 0.5 | 0.00 | 31.32 | 24 | 29.1 | 5.3 | 0.0 | 0.0 | 0.0 |
+| Firebolt (18833) | 1.9 | 0.2 | 0.00 | 2.77 | 125 | 28.4 | 5.5 | 0.0 | 0.0 | 0.0 |
+| item 250943 | 0.0 | 0.0 | 2.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Molten Fury (1249113) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Slice and Dice (6774)#4 | 0.0 | 0.0 | 1.16 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Death Mark (1325758)#4 | 0.0 | 0.0 | 5.38 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Preparation (14185) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 7676 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Elune's Light (1259799) | 0.0 | 0.0 | 1.48 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Slice and Dice (6774)#5 | 0.0 | 0.0 | 2.03 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Slice and Dice (6774)#3 | 0.0 | 0.0 | 4.24 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Death Mark (1325758)#5 | 0.0 | 0.0 | 7.58 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Stealth (1787) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Premeditation (14183) | 0.0 | 0.0 | 3.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 13965 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Trueshot Aura (20906) | 99.9 | 1.00 |
+| Thrash (21919) | 99.9 | 1.00 |
+| Heart of the Lion (409583) | 99.9 | 1.00 |
+| Battle Shout (11551) | 99.9 | 1.00 |
+| Lightning (18979) | 99.9 | 1.00 |
+| Revitalize (23863) | 99.9 | 1.00 |
+| Blood Splatter (1329256) | 99.9 | 1.00 |
+| Strength of Earth Totem (10442) | 99.9 | 1.00 |
+| Blessing of Might (19838) | 99.9 | 2.00 |
+| Slice and Dice (6774) | 83.6 | 7.43 |
+| Ghostly Strike (14278) | 36.3 | 9.74 |
+| Holy Strength (20007)#1 | 35.8 | 5.50 |
+| item 250943 | 33.1 | 2.00 |
+| Premeditation (14183) | 25.0 | 3.00 |
+| Holy Strength (20007)#2 | 20.9 | 2.93 |
+| Ghostly Strike (1329326) | 13.7 | 9.12 |
+| Elune's Light (1259799) | 11.5 | 1.48 |
+| item 13965 | 11.1 | 1.00 |
+| Felstriker (16551) | 8.7 | 5.49 |
+| Molten Fury (1249113) | 8.3 | 1.00 |
+| Windfury Totem (10610) | 4.0 | 33.42 |
+| Stealth (1787) | 0.0 | 1.00 |
+| Poised (1328826) | 0.0 | 1.00 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionEnergyRegen | ResourceTypeEnergy | 1826.8 | 1773.1 |
+| OtherActionRefund | ResourceTypeEnergy | 92.8 | 92.8 |
+| Revitalize (23864) | ResourceTypeEnergy | 396.3 | 385.9 |
+| spell (14161) | ResourceTypeComboPoints | 16.9 | 16.9 |
+| spell (13980) | ResourceTypeComboPoints | 9.1 | 7.8 |
+| Premeditation (14183) | ResourceTypeComboPoints | 6.0 | 6.0 |
+| Ghostly Strike (14278) | ResourceTypeEnergy | -389.7 | -389.7 |
+| Ghostly Strike (14278) | ResourceTypeComboPoints | 9.1 | 9.1 |
+| item 7676 | ResourceTypeEnergy | 100.0 | 90.0 |
+| Garrote (11290) | ResourceTypeEnergy | -261.9 | -261.9 |
+| Garrote (11290) | ResourceTypeComboPoints | 9.1 | 9.1 |
+| Hemorrhage (16511) | ResourceTypeEnergy | -1414.8 | -1414.8 |
+| Hemorrhage (16511) | ResourceTypeComboPoints | 44.1 | 44.1 |
+| Rupture (11275) | ResourceTypeEnergy | -209.0 | -209.0 |
+| Rupture (11275) | ResourceTypeComboPoints | -36.6 | -36.6 |
+| Slice and Dice (6774) | ResourceTypeEnergy | -185.7 | -185.7 |
+| Slice and Dice (6774) | ResourceTypeComboPoints | -27.5 | -27.5 |
+| Shank (1329549) | ResourceTypeEnergy | 371.2 | 365.4 |
+| Boot Knife (1329286) | ResourceTypeComboPoints | 37.1 | 32.9 |
+| Death Mark (1325758) | ResourceTypeEnergy | -324.0 | -324.0 |
+| Death Mark (1325758) | ResourceTypeComboPoints | -59.4 | -59.4 |
+=== rogue-subtlety bare 60
+2026/11/13 03:08:58 Running 5000 iterations on 16 concurrent sims.
+2026/11/13 03:08:59 All 16 sims finished successfully.
+rogue-subtlety  DPS 407.19 +/- 0.27
+out of mana: 0.0 s of 180 s
+consumes: [main_hand_imbue:deadly_poison off_hand_imbue:instant_poison]
+buffs: []
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Death Mark (1325758)#10 | 105.0 | 25.8 | 0.00 | 12.00 | 1576 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionAttack#1 | 55.8 | 13.7 | 132.13 | 97.81 | 103 | 21.1 | 19.5 | 6.5 | 40.1 | 17.9 |
+| Garrote (11290) | 54.4 | 13.4 | 8.89 | 52.17 | 188 | 24.6 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Rupture (11275)#5 | 40.8 | 10.0 | 5.42 | 51.70 | 142 | 25.2 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Hemorrhage (16511) | 39.4 | 9.7 | 45.18 | 41.38 | 171 | 22.0 | 1.9 | 6.5 | 0.0 | 0.0 |
+| Deadly Poison IV (11356)#100 | 33.9 | 8.3 | 0.00 | 55.90 | 109 | 20.7 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionAttack#2 | 28.5 | 7.0 | 172.62 | 127.82 | 40 | 21.4 | 19.5 | 6.5 | 40.0 | 9.1 |
+| Rupture (11275)#4 | 18.6 | 4.6 | 2.99 | 25.33 | 132 | 23.7 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Instant Poison VI (11340) | 12.7 | 3.1 | 0.00 | 23.23 | 99 | 21.2 | 9.1 | 0.0 | 0.0 | 0.0 |
+| Ghostly Strike (14278) | 10.6 | 2.6 | 9.71 | 8.90 | 215 | 22.7 | 2.0 | 6.4 | 0.0 | 0.0 |
+| Lightning (18980) | 3.1 | 0.8 | 0.00 | 26.67 | 21 | 21.7 | 9.1 | 0.0 | 0.0 | 0.0 |
+| Shank (1329549) | 2.3 | 0.6 | 18.59 | 18.59 | 23 | 24.7 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Firebolt (18833) | 1.5 | 0.4 | 0.00 | 2.52 | 111 | 21.3 | 8.7 | 0.0 | 0.0 | 0.0 |
+| Molten Fury (1249113) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Preparation (14185) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Slice and Dice (6774)#5 | 0.0 | 0.0 | 1.76 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Slice and Dice (6774)#3 | 0.0 | 0.0 | 4.52 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Elune's Light (1259799) | 0.0 | 0.0 | 1.48 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Death Mark (1325758)#4 | 0.0 | 0.0 | 5.22 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| item 13965 | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Premeditation (14183) | 0.0 | 0.0 | 3.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Stealth (1787) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Slice and Dice (6774)#4 | 0.0 | 0.0 | 1.03 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Death Mark (1325758)#5 | 0.0 | 0.0 | 7.17 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Lightning (18979) | 99.9 | 1.00 |
+| Blood Splatter (1329256) | 99.9 | 1.00 |
+| Revitalize (23863) | 99.9 | 1.00 |
+| Slice and Dice (6774) | 81.6 | 7.32 |
+| Ghostly Strike (14278) | 36.2 | 9.71 |
+| Premeditation (14183) | 25.0 | 3.00 |
+| Ghostly Strike (1329326) | 13.9 | 8.90 |
+| Elune's Light (1259799) | 11.5 | 1.48 |
+| item 13965 | 11.1 | 1.00 |
+| Molten Fury (1249113) | 8.3 | 1.00 |
+| Felstriker (16551) | 7.5 | 4.68 |
+| Stealth (1787) | 0.0 | 1.00 |
+| Poised (1328826) | 0.0 | 1.00 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionEnergyRegen | ResourceTypeEnergy | 1826.8 | 1785.7 |
+| OtherActionRefund | ResourceTypeEnergy | 121.3 | 121.3 |
+| Revitalize (23864) | ResourceTypeEnergy | 353.7 | 349.0 |
+| spell (14161) | ResourceTypeComboPoints | 16.4 | 16.4 |
+| spell (13980) | ResourceTypeComboPoints | 8.7 | 7.6 |
+| Premeditation (14183) | ResourceTypeComboPoints | 6.0 | 6.0 |
+| Ghostly Strike (14278) | ResourceTypeEnergy | -388.5 | -388.5 |
+| Ghostly Strike (14278) | ResourceTypeComboPoints | 8.9 | 8.9 |
+| Garrote (11290) | ResourceTypeEnergy | -256.6 | -256.6 |
+| Garrote (11290) | ResourceTypeComboPoints | 8.7 | 8.7 |
+| Hemorrhage (16511) | ResourceTypeEnergy | -1355.4 | -1355.4 |
+| Hemorrhage (16511) | ResourceTypeComboPoints | 41.4 | 41.4 |
+| Rupture (11275) | ResourceTypeEnergy | -210.2 | -210.2 |
+| Rupture (11275) | ResourceTypeComboPoints | -35.8 | -35.8 |
+| Slice and Dice (6774) | ResourceTypeEnergy | -183.0 | -183.0 |
+| Slice and Dice (6774) | ResourceTypeComboPoints | -26.5 | -26.5 |
+| Shank (1329549) | ResourceTypeEnergy | 371.7 | 369.1 |
+| Boot Knife (1329286) | ResourceTypeComboPoints | 37.2 | 32.3 |
+| Death Mark (1325758) | ResourceTypeEnergy | -309.7 | -309.7 |
+| Death Mark (1325758) | ResourceTypeComboPoints | -56.7 | -56.7 |
+=== rogue-subtlety bare 50
+rogue-subtlety  DPS 236.62 +/- 0.14
+out of mana: 0.0 s of 180 s
+consumes: [main_hand_imbue:deadly_poison off_hand_imbue:instant_poison]
+buffs: []
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| OtherActionAttack#1 | 42.0 | 17.8 | 119.65 | 84.28 | 90 | 14.3 | 23.1 | 6.5 | 40.0 | 15.4 |
+| Death Mark (1325756)#10 | 40.3 | 17.0 | 0.00 | 8.86 | 819 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Garrote (11289) | 34.0 | 14.4 | 8.59 | 43.42 | 141 | 14.5 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Deadly Poison III (11355)#100 | 23.3 | 9.9 | 0.00 | 53.69 | 78 | 10.5 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Hemorrhage (16511) | 22.7 | 9.6 | 31.73 | 28.36 | 144 | 12.7 | 4.1 | 6.5 | 0.0 | 0.0 |
+| OtherActionAttack#2 | 20.8 | 8.8 | 165.49 | 116.48 | 32 | 14.2 | 23.1 | 6.5 | 40.1 | 7.7 |
+| Rupture (11273)#5 | 20.0 | 8.5 | 6.63 | 45.28 | 80 | 14.6 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Rupture (11273)#4 | 9.5 | 4.0 | 3.85 | 22.99 | 74 | 13.6 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Ghostly Strike (14278) | 8.7 | 3.7 | 9.59 | 8.58 | 182 | 13.8 | 4.1 | 6.4 | 0.0 | 0.0 |
+| Instant Poison IV (11338) | 6.4 | 2.7 | 0.00 | 20.54 | 56 | 9.3 | 12.1 | 0.0 | 0.0 | 0.0 |
+| Gloves of Holy Might (1325229) | 4.3 | 1.8 | 0.00 | 6.38 | 121 | 13.8 | 4.0 | 0.0 | 0.0 | 0.0 |
+| Shadow Bolt (18138) | 2.5 | 1.1 | 0.00 | 3.66 | 124 | 9.5 | 12.3 | 0.0 | 0.0 | 0.0 |
+| Shank (1329549) | 1.9 | 0.8 | 18.67 | 18.67 | 18 | 14.4 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Slice and Dice (6774)#3 | 0.0 | 0.0 | 4.80 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Chthonic Power (1249110) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Preparation (14185) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Death Mark (1325756)#4 | 0.0 | 0.0 | 3.81 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Stealth (1786) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Slice and Dice (6774)#5 | 0.0 | 0.0 | 0.77 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Molten Fury (1249113) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Death Mark (1325756)#5 | 0.0 | 0.0 | 5.33 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Elune's Light (1259799) | 0.0 | 0.0 | 1.48 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Slice and Dice (6774)#4 | 0.0 | 0.0 | 0.37 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Premeditation (14183) | 0.0 | 0.0 | 3.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Slice and Dice (6774) | 64.4 | 5.94 |
+| Ghostly Strike (14278) | 35.8 | 9.59 |
+| Premeditation (14183) | 25.1 | 3.00 |
+| Ghostly Strike (1329326) | 15.6 | 8.58 |
+| Elune's Light (1259799) | 11.5 | 1.48 |
+| Molten Fury (1249113) | 8.3 | 1.00 |
+| Chthonic Power (1249110) | 8.3 | 1.00 |
+| Stealth (1787) | 0.0 | 1.00 |
+| Poised (1328826) | 0.0 | 1.00 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionEnergyRegen | ResourceTypeEnergy | 1827.1 | 1794.1 |
+| OtherActionRefund | ResourceTypeEnergy | 134.4 | 134.4 |
+| spell (14161) | ResourceTypeComboPoints | 14.7 | 14.7 |
+| spell (13980) | ResourceTypeComboPoints | 8.2 | 7.3 |
+| Premeditation (14183) | ResourceTypeComboPoints | 6.0 | 6.0 |
+| Ghostly Strike (14278) | ResourceTypeEnergy | -383.6 | -383.6 |
+| Ghostly Strike (14278) | ResourceTypeComboPoints | 8.6 | 8.6 |
+| Garrote (11289) | ResourceTypeEnergy | -247.6 | -247.6 |
+| Garrote (11289) | ResourceTypeComboPoints | 8.2 | 8.2 |
+| Hemorrhage (16511) | ResourceTypeEnergy | -1110.4 | -1110.4 |
+| Hemorrhage (16511) | ResourceTypeComboPoints | 28.4 | 28.4 |
+| Rupture (11273) | ResourceTypeEnergy | -262.1 | -262.1 |
+| Rupture (11273) | ResourceTypeComboPoints | -43.5 | -43.5 |
+| Slice and Dice (6774) | ResourceTypeEnergy | -148.6 | -148.6 |
+| Slice and Dice (6774) | ResourceTypeComboPoints | -19.8 | -19.8 |
+| Shank (1329549) | ResourceTypeEnergy | 373.3 | 372.2 |
+| Boot Knife (1329286) | ResourceTypeComboPoints | 37.3 | 34.0 |
+| Death Mark (1325756) | ResourceTypeEnergy | -228.4 | -228.4 |
+| Death Mark (1325756) | ResourceTypeComboPoints | -41.9 | -41.9 |
+=== rogue-subtlety bare 50 at 55
+2026/11/13 03:08:59 Running 5000 iterations on 16 concurrent sims.
+2026/11/13 03:09:00 All 16 sims finished successfully.
+2026/11/13 03:09:00 Running 5000 iterations on 16 concurrent sims.
+2026/11/13 03:09:01 All 16 sims finished successfully.
+rogue-subtlety  DPS 299.46 +/- 0.17
+out of mana: 0.0 s of 180 s
+consumes: [main_hand_imbue:deadly_poison off_hand_imbue:instant_poison]
+buffs: []
+
+| Action | DPS | Share % | Casts/iter | Hits/iter | Avg hit | Crit % | Miss % | Dodge % | Glance % | Glance DPS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Death Mark (1325756)#10 | 66.1 | 22.1 | 0.00 | 10.23 | 1162 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Garrote (11290) | 48.6 | 16.2 | 8.56 | 51.58 | 170 | 13.8 | 0.0 | 0.0 | 0.0 | 0.0 |
+| OtherActionAttack#1 | 43.4 | 14.5 | 121.66 | 85.66 | 91 | 13.8 | 23.1 | 6.5 | 40.0 | 16.1 |
+| Rupture (11274)#5 | 30.4 | 10.1 | 5.85 | 54.30 | 101 | 13.9 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Deadly Poison IV (11356)#100 | 28.6 | 9.5 | 0.00 | 53.68 | 96 | 10.5 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Hemorrhage (16511) | 23.6 | 7.9 | 32.03 | 28.64 | 148 | 12.2 | 4.1 | 6.4 | 0.0 | 0.0 |
+| OtherActionAttack#2 | 21.6 | 7.2 | 168.27 | 118.60 | 33 | 13.8 | 23.0 | 6.5 | 40.1 | 8.0 |
+| Rupture (11274)#4 | 10.4 | 3.5 | 2.43 | 20.03 | 94 | 13.5 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Ghostly Strike (14278) | 8.9 | 3.0 | 9.56 | 8.56 | 188 | 13.3 | 4.2 | 6.3 | 0.0 | 0.0 |
+| Instant Poison V (11339) | 8.8 | 3.0 | 0.00 | 20.99 | 76 | 9.3 | 12.2 | 0.0 | 0.0 | 0.0 |
+| Gloves of Holy Might (1325229) | 4.3 | 1.4 | 0.00 | 6.46 | 120 | 13.3 | 4.0 | 0.0 | 0.0 | 0.0 |
+| Shadow Bolt (18138) | 2.5 | 0.8 | 0.00 | 3.65 | 124 | 9.5 | 12.3 | 0.0 | 0.0 | 0.0 |
+| Shank (1329549) | 1.9 | 0.6 | 18.66 | 18.66 | 19 | 13.8 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Death Mark (1325756)#5 | 0.0 | 0.0 | 5.81 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Stealth (1786) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Death Mark (1325756)#4 | 0.0 | 0.0 | 4.73 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Preparation (14185) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Slice and Dice (6774)#5 | 0.0 | 0.0 | 1.19 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Slice and Dice (6774)#4 | 0.0 | 0.0 | 0.83 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Elune's Light (1259799) | 0.0 | 0.0 | 1.48 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Molten Fury (1249113) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Chthonic Power (1249110) | 0.0 | 0.0 | 1.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Premeditation (14183) | 0.0 | 0.0 | 3.00 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| Slice and Dice (6774)#3 | 0.0 | 0.0 | 4.40 | 0.00 | 0 | 0.0 | 0.0 | 0.0 | 0.0 | 0.0 |
+
+| Aura | Uptime % | Procs/iter |
+|---|---|---|
+| Blood Splatter (1329256) | 99.9 | 1.00 |
+| Slice and Dice (6774) | 71.1 | 6.43 |
+| Ghostly Strike (14278) | 35.7 | 9.56 |
+| Premeditation (14183) | 25.1 | 3.00 |
+| Ghostly Strike (1329326) | 15.4 | 8.56 |
+| Elune's Light (1259799) | 11.5 | 1.48 |
+| Chthonic Power (1249110) | 8.3 | 1.00 |
+| Molten Fury (1249113) | 8.3 | 1.00 |
+| Stealth (1787) | 0.0 | 1.00 |
+| Poised (1328826) | 0.0 | 1.00 |
+
+| Resource | Type | Gain/iter | Actual/iter |
+|---|---|---|---|
+| OtherActionEnergyRegen | ResourceTypeEnergy | 1827.1 | 1794.1 |
+| OtherActionRefund | ResourceTypeEnergy | 135.1 | 135.1 |
+| spell (14161) | ResourceTypeComboPoints | 14.6 | 14.6 |
+| spell (13980) | ResourceTypeComboPoints | 8.2 | 7.2 |
+| Premeditation (14183) | ResourceTypeComboPoints | 6.0 | 6.0 |
+| Ghostly Strike (14278) | ResourceTypeEnergy | -382.6 | -382.6 |
+| Ghostly Strike (14278) | ResourceTypeComboPoints | 8.6 | 8.6 |
+| Garrote (11290) | ResourceTypeEnergy | -246.7 | -246.7 |
+| Garrote (11290) | ResourceTypeComboPoints | 8.2 | 8.2 |
+| Hemorrhage (16511) | ResourceTypeEnergy | -1120.9 | -1120.9 |
+| Hemorrhage (16511) | ResourceTypeComboPoints | 28.6 | 28.6 |
+| Rupture (11274) | ResourceTypeEnergy | -207.2 | -207.2 |
+| Rupture (11274) | ResourceTypeComboPoints | -34.8 | -34.8 |
+| Slice and Dice (6774) | ResourceTypeEnergy | -160.6 | -160.6 |
+| Slice and Dice (6774) | ResourceTypeComboPoints | -22.5 | -22.5 |
+| Shank (1329549) | ResourceTypeEnergy | 373.3 | 372.2 |
+| Boot Knife (1329286) | ResourceTypeComboPoints | 37.3 | 34.2 |
+| Death Mark (1325756) | ResourceTypeEnergy | -263.4 | -263.4 |
+| Death Mark (1325756) | ResourceTypeComboPoints | -48.0 | -48.0 |
+2026/11/13 03:09:11 Running 800 iterations on 16 concurrent sims.
+2026/11/13 03:09:11 All 16 sims finished successfully.
+2026/11/13 03:09:11 rotation-search: rogue-assassination: wrote /tmp/tmp.xYTRQ9wuk5/rogue-assassination-raid.md in 12s
+2026/11/13 03:09:21 Running 800 iterations on 16 concurrent sims.
+2026/11/13 03:09:21 All 16 sims finished successfully.
+2026/11/13 03:09:21 rotation-search: rogue-combat: wrote /tmp/tmp.xYTRQ9wuk5/rogue-combat-raid.md in 10s
+2026/11/13 03:09:30 Running 800 iterations on 16 concurrent sims.
+2026/11/13 03:09:30 All 16 sims finished successfully.
+2026/11/13 03:09:30 rotation-search: rogue-subtlety: wrote /tmp/tmp.xYTRQ9wuk5/rogue-subtlety-raid.md in 11s
+=== rogue-assassination-raid.md
+# Rotation search: Assassination, level 60
+
+Generated by `sim/cmd/rotation-search` against client 1.60.1.70790. Gear and talents: the committed level-60 alliance raid-preset BiS band's gear and the guide's own FS1 build, both held fixed - only the rotation varies. Seed 7 (the same for every sim). Run time 12s.
+
+Baseline (the curated rotation): **869.6 ± 1.6 DPS** (800 iterations).
+
+**Caveat:** this sims one solo character with no raid around it. A group utility totem, aura, or buff (Windfury Totem, Strength of Earth) can measure as a pure DPS loss here purely because this character is the only one who would benefit from the GCD spent refreshing it - the real payoff is the melee group standing in it, which a solo sim cannot see. Treat any finding that drops a group buff/totem line as a hint to verify by hand, not a rotation change to paste blind.
+
+## Action probe (step 2: is the rotation right for the talents?)
+
+Each row is one sim at the confirm iteration count against the baseline. A **removal** row sims the rotation with that action taken out; a positive delta means the action helps (removing it costs DPS) - a negative delta beyond error means the action hurts and is a wrong line. An **insertion** row sims the rotation with that learned-but-uncast spell added at the top with a default condition; a positive delta beyond error means it is a missing line.
+
+| Kind | Action / spell | Delta DPS | ± | Verdict |
+|---|---|---|---|---|
+| remove | #1 ((autocastOtherCooldowns)) | +34.4 | 2.2 | helps |
+| remove | #2 (Shank (rank 2)) | +128.3 | 2.2 | helps |
+| remove | #3 (Slice and Dice (rank 2)) | +30.7 | 2.2 | helps |
+| remove | #4 (spell 14177) | +1.3 | 2.2 | no effect |
+| remove | #5 (Eviscerate (rank 8)) | +219.2 | 1.8 | helps |
+| remove | #6 (Mutilate (rank 3)) | +528.9 | 1.8 | helps |
+| remove | #7 (Backstab (rank 8)) | +0.0 | 2.2 | no effect |
+| remove | #8 (Sinister Strike (rank 8)) | -1.0 | 2.2 | no effect |
+| insert | Ambush | +0.0 | 2.2 | no effect |
+| insert | Death Mark | +0.0 | 2.2 | no effect |
+| insert | Gouge | -70.8 | 2.2 | hurts |
+| insert | Hemorrhage | +0.0 | 2.2 | no effect |
+| insert | Kick | -66.6 | 2.2 | hurts |
+| insert | Rupture | -16.3 | 2.2 | hurts |
+| insert | Test Stab R50 | +0.0 | 2.2 | no effect |
+| insert | Test Strike R50 | +0.0 | 2.2 | no effect |
+
+No wrong lines and no missing lines beyond the combined error.
+
+**Verdict: the curated rotation is already the best found.** Best variant +0.0 DPS (±2.2 combined), within error.
+
+## Search: accepted mutations (step 3)
+
+No mutation beat the incumbent beyond the combined error at the screening iteration count; the baseline rotation is the search's own best.
+
+## Finisher casts
+
+Casts per iteration, read from the sim's cast metrics at the confirm iteration count.
+
+| Ability | Baseline | Winner |
+|---|---|---|
+| Rupture | 0.00 | 0.00 |
+| Eviscerate | 25.23 | 25.23 |
+| Slice and Dice | 9.18 | 9.18 |
+| Cold Blood | 1.42 | 1.42 |
+| Venom | 0.00 | 0.00 |
+
+## Rotation, baseline vs winner
+
+| # | Baseline | Winner |
+|---|---|---|
+| 1 | (autocastOtherCooldowns) -- no condition | (autocastOtherCooldowns) -- no condition |
+| 2 | Shank (rank 2) -- no condition | Shank (rank 2) -- no condition |
+| 3 | Slice and Dice (rank 2) -- condition: ((currentLevel >= 17) and ((currentComboPoints >= 1) and (not (Slice and Dice (rank 2) aura is active)) and (remainingTime >= 6))) or ((currentLevel < 17) and (not (Slice and Dice (rank 2) aura is active)) and (currentComboPoints == 4)) | Slice and Dice (rank 2) -- condition: ((currentLevel >= 17) and ((currentComboPoints >= 1) and (not (Slice and Dice (rank 2) aura is active)) and (remainingTime >= 6))) or ((currentLevel < 17) and (not (Slice and Dice (rank 2) aura is active)) and (currentComboPoints == 4)) |
+| 4 | spell 14177 -- condition: currentComboPoints >= 4 | spell 14177 -- condition: currentComboPoints >= 4 |
+| 5 | Eviscerate (rank 8) -- condition: ((currentLevel >= 17) and (currentComboPoints >= 4)) or (currentComboPoints >= 5) | Eviscerate (rank 8) -- condition: ((currentLevel >= 17) and (currentComboPoints >= 4)) or (currentComboPoints >= 5) |
+| 6 | Mutilate (rank 3) -- no condition | Mutilate (rank 3) -- no condition |
+| 7 | Backstab (rank 8) -- condition: not (spellIsKnown) | Backstab (rank 8) -- condition: not (spellIsKnown) |
+| 8 | Sinister Strike (rank 8) -- condition: (not (spellIsKnown)) and (not (spellCanCast)) and (currentEnergy >= 60) | Sinister Strike (rank 8) -- condition: (not (spellIsKnown)) and (not (spellCanCast)) and (currentEnergy >= 60) |
+
+## Winning rotation, engine APL JSON
+
+Paste this into `data/curated/apl/rogue-assassination.json`'s `rotation` field (never edited directly by this tool):
+
+```json
+{
+    "type": "TypeAPL",
+    "prepullActions": [
+        {
+            "action": {
+                "castSpell": {
+                    "spellId": {
+                        "rank": 4,
+                        "spellId": 1787
+                    }
+                }
+            },
+            "doAtValue": {
+                "const": {
+                    "val": "-3s"
+                }
+            }
+        },
+        {
+            "action": {
+                "castSpell": {
+                    "spellId": {
+                        "rank": 6,
+                        "spellId": 11290
+                    }
+                }
+            },
+            "doAtValue": {
+                "const": {
+                    "val": "0s"
+                }
+            }
+        }
+    ],
+    "priorityList": [
+        {
+            "action": {
+                "autocastOtherCooldowns": {}
+            }
+        },
+        {
+            "notes": "Shank on cooldown: it cannot miss, pays back more energy than it costs and, with Venom, adds 30% to your poison damage on top of Vile Poisons and makes them land more often for 6 seconds.",
+            "action": {
+                "castSpell": {
+                    "spellId": {
+                        "rank": 2,
+                        "spellId": 1329549
+                    }
+                }
+            }
+        },
+        {
+            "notes": "From 17, Slice and Dice the moment it falls off, at however many combo points you have, as long as 6 seconds of the fight are left. The attack speed is worth more than the points you would hold back for it, and a fresh one does not wait for the old one to run out. Below 17, with only Backstab's one point a strike, put four points into it once it has dropped and save five for Eviscerate.",
+            "action": {
+                "castSpell": {
+                    "spellId": {
+                        "rank": 2,
+                        "spellId": 6774
+                    }
+                },
+                "condition": {
+                    "or": {
+                        "vals": [
+                            {
+                                "and": {
+                                    "vals": [
+                                        {
+                                            "cmp": {
+                                                "lhs": {
+                                                    "currentLevel": {}
+                                                },
+                                                "op": "OpGe",
+                                                "rhs": {
+                                                    "const": {
+                                                        "val": "17"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "and": {
+                                                "vals": [
+                                                    {
+                                                        "cmp": {
+                                                            "lhs": {
+                                                                "currentComboPoints": {}
+                                                            },
+                                                            "op": "OpGe",
+                                                            "rhs": {
+                                                                "const": {
+                                                                    "val": "1"
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    {
+                                                        "not": {
+                                                            "val": {
+                                                                "auraIsActive": {
+                                                                    "auraId": {
+                                                                        "rank": 2,
+                                                                        "spellId": 6774
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    {
+                                                        "cmp": {
+                                                            "lhs": {
+                                                                "remainingTime": {}
+                                                            },
+                                                            "op": "OpGe",
+                                                            "rhs": {
+                                                                "const": {
+                                                                    "val": "6"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "and": {
+                                    "vals": [
+                                        {
+                                            "cmp": {
+                                                "lhs": {
+                                                    "currentLevel": {}
+                                                },
+                                                "op": "OpLt",
+                                                "rhs": {
+                                                    "const": {
+                                                        "val": "17"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "not": {
+                                                "val": {
+                                                    "auraIsActive": {
+                                                        "auraId": {
+                                                            "rank": 2,
+                                                            "spellId": 6774
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "cmp": {
+                                                "lhs": {
+                                                    "currentComboPoints": {}
+                                                },
+                                                "op": "OpEq",
+                                                "rhs": {
+                                                    "const": {
+                                                        "val": "4"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "notes": "Cold Blood at four or more combo points, right before the Eviscerate. It is off the global cooldown and costs nothing, so it waits for the finisher.",
+            "action": {
+                "castSpell": {
+                    "spellId": {
+                        "spellId": 14177
+                    }
+                },
+                "condition": {
+                    "cmp": {
+                        "lhs": {
+                            "currentComboPoints": {}
+                        },
+                        "op": "OpGe",
+                        "rhs": {
+                            "const": {
+                                "val": "4"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "notes": "Eviscerate at four or more combo points. From 40 Mutilate gives two points a cast, and from 45 a Seal Fate crit makes it three, so waiting for exactly five wastes a Mutilate. Below 17 wait for five: Backstab gives one point a strike, and a five-point Eviscerate does far more for its energy.",
+            "action": {
+                "castSpell": {
+                    "spellId": {
+                        "rank": 8,
+                        "spellId": 11300
+                    }
+                },
+                "condition": {
+                    "or": {
+                        "vals": [
+                            {
+                                "and": {
+                                    "vals": [
+                                        {
+                                            "cmp": {
+                                                "lhs": {
+                                                    "currentLevel": {}
+                                                },
+                                                "op": "OpGe",
+                                                "rhs": {
+                                                    "const": {
+                                                        "val": "17"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "cmp": {
+                                                "lhs": {
+                                                    "currentComboPoints": {}
+                                                },
+                                                "op": "OpGe",
+                                                "rhs": {
+                                                    "const": {
+                                                        "val": "4"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "cmp": {
+                                    "lhs": {
+                                        "currentComboPoints": {}
+                                    },
+                                    "op": "OpGe",
+                                    "rhs": {
+                                        "const": {
+                                            "val": "5"
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "notes": "Mutilate is the builder: both daggers strike, two combo points a cast, harder against a poisoned target.",
+            "action": {
+                "castSpell": {
+                    "spellId": {
+                        "rank": 3,
+                        "spellId": 1241584
+                    }
+                }
+            }
+        },
+        {
+            "notes": "Backstab from behind with a dagger in your main hand is the builder until Mutilate: it hits far harder than Sinister Strike.",
+            "action": {
+                "castSpell": {
+                    "spellId": {
+                        "rank": 8,
+                        "spellId": 11281
+                    }
+                },
+                "condition": {
+                    "not": {
+                        "val": {
+                            "spellIsKnown": {
+                                "spellId": {
+                                    "rank": 3,
+                                    "spellId": 1241584
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "notes": "Sinister Strike before Mutilate only when Backstab cannot be cast, because your main hand is not a dagger or the target is facing you. With a dagger it waits for 60 energy or more, so it never takes the energy Backstab needs.",
+            "action": {
+                "castSpell": {
+                    "spellId": {
+                        "rank": 8,
+                        "spellId": 11294
+                    }
+                },
+                "condition": {
+                    "and": {
+                        "vals": [
+                            {
+                                "not": {
+                                    "val": {
+                                        "spellIsKnown": {
+                                            "spellId": {
+                                                "rank": 3,
+                                                "spellId": 1241584
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            {
+                                "not": {
+                                    "val": {
+                                        "spellCanCast": {
+                                            "spellId": {
+                                                "rank": 8,
+                                                "spellId": 11281
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            {
+                                "cmp": {
+                                    "lhs": {
+                                        "currentEnergy": {}
+                                    },
+                                    "op": "OpGe",
+                                    "rhs": {
+                                        "const": {
+                                            "val": "60"
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    ]
+}
+```
+=== rogue-combat-raid.md
+# Rotation search: Combat, level 60
+
+Generated by `sim/cmd/rotation-search` against client 1.60.1.70790. Gear and talents: the committed level-60 alliance raid-preset BiS band's gear and the guide's own FS1 build, both held fixed - only the rotation varies. Seed 7 (the same for every sim). Run time 10s.
+
+Baseline (the curated rotation): **851.3 ± 1.2 DPS** (800 iterations).
+
+**Caveat:** this sims one solo character with no raid around it. A group utility totem, aura, or buff (Windfury Totem, Strength of Earth) can measure as a pure DPS loss here purely because this character is the only one who would benefit from the GCD spent refreshing it - the real payoff is the melee group standing in it, which a solo sim cannot see. Treat any finding that drops a group buff/totem line as a hint to verify by hand, not a rotation change to paste blind.
+
+## Action probe (step 2: is the rotation right for the talents?)
+
+Each row is one sim at the confirm iteration count against the baseline. A **removal** row sims the rotation with that action taken out; a positive delta means the action helps (removing it costs DPS) - a negative delta beyond error means the action hurts and is a wrong line. An **insertion** row sims the rotation with that learned-but-uncast spell added at the top with a default condition; a positive delta beyond error means it is a missing line.
+
+| Kind | Action / spell | Delta DPS | ± | Verdict |
+|---|---|---|---|---|
+| remove | #1 ((autocastOtherCooldowns)) | +42.8 | 1.7 | helps |
+| remove | #2 (Shank (rank 2)) | +124.4 | 1.7 | helps |
+| remove | #3 (Eviscerate (rank 8)) | +71.6 | 1.6 | helps |
+| remove | #4 (Slice and Dice (rank 2)) | +30.6 | 1.7 | helps |
+| remove | #5 (Backstab (rank 8)) | +508.5 | 1.4 | helps |
+| remove | #6 (spell 13750) | -1.0 | 1.7 | no effect |
+| remove | #7 (Sinister Strike (rank 8)) | -0.2 | 1.7 | no effect |
+| insert | Ambush | +0.0 | 1.7 | no effect |
+| insert | Death Mark | +0.0 | 1.7 | no effect |
+| insert | Gouge | -63.8 | 1.7 | hurts |
+| insert | Hemorrhage | +0.0 | 1.7 | no effect |
+| insert | Kick | -48.4 | 1.6 | hurts |
+| insert | Rupture | -54.4 | 1.7 | hurts |
+| insert | Test Stab R50 | +0.0 | 1.7 | no effect |
+| insert | Test Strike R50 | +0.0 | 1.7 | no effect |
+
+No wrong lines and no missing lines beyond the combined error.
+
+**Verdict: the curated rotation is already the best found.** Best variant +0.0 DPS (±1.7 combined), within error.
+
+## Search: accepted mutations (step 3)
+
+No mutation beat the incumbent beyond the combined error at the screening iteration count; the baseline rotation is the search's own best.
+
+## Finisher casts
+
+Casts per iteration, read from the sim's cast metrics at the confirm iteration count.
+
+| Ability | Baseline | Winner |
+|---|---|---|
+| Rupture | 0.00 | 0.00 |
+| Eviscerate | 13.51 | 13.51 |
+| Slice and Dice | 10.16 | 10.16 |
+
+## Rotation, baseline vs winner
+
+| # | Baseline | Winner |
+|---|---|---|
+| 1 | (autocastOtherCooldowns) -- no condition | (autocastOtherCooldowns) -- no condition |
+| 2 | Shank (rank 2) -- condition: currentEnergy < 80 | Shank (rank 2) -- condition: currentEnergy < 80 |
+| 3 | Eviscerate (rank 8) -- condition: ((currentLevel >= 30) and (currentComboPoints >= 4)) or (currentComboPoints >= 5) | Eviscerate (rank 8) -- condition: ((currentLevel >= 30) and (currentComboPoints >= 4)) or (currentComboPoints >= 5) |
+| 4 | Slice and Dice (rank 2) -- condition: (currentLevel >= 60) and (((currentComboPoints >= 1) and (not (Slice and Dice (rank 2) aura is active)) and (remainingTime >= 6)) or ((currentComboPoints >= 5) and (Slice and Dice (rank 2) aura remaining time < 1) and (remainingTime > 9))) | Slice and Dice (rank 2) -- condition: (currentLevel >= 60) and (((currentComboPoints >= 1) and (not (Slice and Dice (rank 2) aura is active)) and (remainingTime >= 6)) or ((currentComboPoints >= 5) and (Slice and Dice (rank 2) aura remaining time < 1) and (remainingTime > 9))) |
+| 5 | Backstab (rank 8) -- no condition | Backstab (rank 8) -- no condition |
+| 6 | spell 13750 -- no condition | spell 13750 -- no condition |
+| 7 | Sinister Strike (rank 8) -- condition: (not (spellCanCast)) and (currentEnergy >= 60) | Sinister Strike (rank 8) -- condition: (not (spellCanCast)) and (currentEnergy >= 60) |
+
+## Winning rotation, engine APL JSON
+
+Paste this into `data/curated/apl/rogue-combat.json`'s `rotation` field (never edited directly by this tool):
+
+```json
+{
+    "type": "TypeAPL",
+    "prepullActions": [
+        {
+            "action": {
+                "castSpell": {
+                    "spellId": {
+                        "rank": 4,
+                        "spellId": 1787
+                    }
+                }
+            },
+            "doAtValue": {
+                "const": {
+                    "val": "-3s"
+                }
+            }
+        },
+        {
+            "action": {
+                "castSpell": {
+                    "spellId": {
+                        "rank": 6,
+                        "spellId": 11290
+                    }
+                }
+            },
+            "doAtValue": {
+                "const": {
+                    "val": "0s"
+                }
+            }
+        }
+    ],
+    "priorityList": [
+        {
+            "action": {
+                "autocastOtherCooldowns": {}
+            }
+        },
+        {
+            "notes": "Shank on cooldown while you are under 80 energy: an off-hand stab that cannot miss and pays back more energy than it costs, every 10 seconds, and every 8 with five points of Flash of Steel. Near the cap the energy it returns would be wasted, so spend first.",
+            "action": {
+                "castSpell": {
+                    "spellId": {
+                        "rank": 2,
+                        "spellId": 1329549
+                    }
+                },
+                "condition": {
+                    "cmp": {
+                        "lhs": {
+                            "currentEnergy": {}
+                        },
+                        "op": "OpLt",
+                        "rhs": {
+                            "const": {
+                                "val": "80"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "notes": "Eviscerate at four combo points from 30, at five before that.",
+            "action": {
+                "castSpell": {
+                    "spellId": {
+                        "rank": 8,
+                        "spellId": 11300
+                    }
+                },
+                "condition": {
+                    "or": {
+                        "vals": [
+                            {
+                                "and": {
+                                    "vals": [
+                                        {
+                                            "cmp": {
+                                                "lhs": {
+                                                    "currentLevel": {}
+                                                },
+                                                "op": "OpGe",
+                                                "rhs": {
+                                                    "const": {
+                                                        "val": "30"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "cmp": {
+                                                "lhs": {
+                                                    "currentComboPoints": {}
+                                                },
+                                                "op": "OpGe",
+                                                "rhs": {
+                                                    "const": {
+                                                        "val": "4"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "cmp": {
+                                    "lhs": {
+                                        "currentComboPoints": {}
+                                    },
+                                    "op": "OpGe",
+                                    "rhs": {
+                                        "const": {
+                                            "val": "5"
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "notes": "At 60, Slice and Dice whenever it drops, at any combo points, as long as 6 seconds of the fight are left. Do not refresh it early. While you level, leave it off a single target and put your points into Eviscerate: your white swings miss too often for the attack speed to pay back the energy and the points.",
+            "action": {
+                "castSpell": {
+                    "spellId": {
+                        "rank": 2,
+                        "spellId": 6774
+                    }
+                },
+                "condition": {
+                    "and": {
+                        "vals": [
+                            {
+                                "cmp": {
+                                    "lhs": {
+                                        "currentLevel": {}
+                                    },
+                                    "op": "OpGe",
+                                    "rhs": {
+                                        "const": {
+                                            "val": "60"
+                                        }
+                                    }
+                                }
+                            },
+                            {
+                                "or": {
+                                    "vals": [
+                                        {
+                                            "and": {
+                                                "vals": [
+                                                    {
+                                                        "cmp": {
+                                                            "lhs": {
+                                                                "currentComboPoints": {}
+                                                            },
+                                                            "op": "OpGe",
+                                                            "rhs": {
+                                                                "const": {
+                                                                    "val": "1"
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    {
+                                                        "not": {
+                                                            "val": {
+                                                                "auraIsActive": {
+                                                                    "auraId": {
+                                                                        "rank": 2,
+                                                                        "spellId": 6774
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    {
+                                                        "cmp": {
+                                                            "lhs": {
+                                                                "remainingTime": {}
+                                                            },
+                                                            "op": "OpGe",
+                                                            "rhs": {
+                                                                "const": {
+                                                                    "val": "6"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        {
+                                            "and": {
+                                                "vals": [
+                                                    {
+                                                        "cmp": {
+                                                            "lhs": {
+                                                                "currentComboPoints": {}
+                                                            },
+                                                            "op": "OpGe",
+                                                            "rhs": {
+                                                                "const": {
+                                                                    "val": "5"
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    {
+                                                        "cmp": {
+                                                            "lhs": {
+                                                                "auraRemainingTime": {
+                                                                    "auraId": {
+                                                                        "rank": 2,
+                                                                        "spellId": 6774
+                                                                    }
+                                                                }
+                                                            },
+                                                            "op": "OpLt",
+                                                            "rhs": {
+                                                                "const": {
+                                                                    "val": "1"
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    {
+                                                        "cmp": {
+                                                            "lhs": {
+                                                                "remainingTime": {}
+                                                            },
+                                                            "op": "OpGt",
+                                                            "rhs": {
+                                                                "const": {
+                                                                    "val": "9"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "notes": "Backstab from behind with a dagger in the main hand: once you have Puncturing Wounds it crits more often and can give a second combo point, and in the raid build Lethality from 54 and Opportunity from 56 land on it too.",
+            "action": {
+                "castSpell": {
+                    "spellId": {
+                        "rank": 8,
+                        "spellId": 11281
+                    }
+                }
+            }
+        },
+        {
+            "notes": "Adrenaline Rush on cooldown, with your damage racial if your race has one, a trinket and a potion.",
+            "action": {
+                "castSpell": {
+                    "spellId": {
+                        "spellId": 13750
+                    }
+                }
+            }
+        },
+        {
+            "notes": "Sinister Strike only when Backstab cannot be cast, because your main hand is not a dagger or the target is facing you.",
+            "action": {
+                "castSpell": {
+                    "spellId": {
+                        "rank": 8,
+                        "spellId": 11294
+                    }
+                },
+                "condition": {
+                    "and": {
+                        "vals": [
+                            {
+                                "not": {
+                                    "val": {
+                                        "spellCanCast": {
+                                            "spellId": {
+                                                "rank": 8,
+                                                "spellId": 11281
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            {
+                                "cmp": {
+                                    "lhs": {
+                                        "currentEnergy": {}
+                                    },
+                                    "op": "OpGe",
+                                    "rhs": {
+                                        "const": {
+                                            "val": "60"
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    ]
+}
+```
+=== rogue-subtlety-raid.md
+# Rotation search: Subtlety, level 60
+
+Generated by `sim/cmd/rotation-search` against client 1.60.1.70790. Gear and talents: the committed level-60 alliance raid-preset BiS band's gear and the guide's own FS1 build, both held fixed - only the rotation varies. Seed 7 (the same for every sim). Run time 11s.
+
+Baseline (the curated rotation): **841.1 ± 1.2 DPS** (800 iterations).
+
+**Caveat:** this sims one solo character with no raid around it. A group utility totem, aura, or buff (Windfury Totem, Strength of Earth) can measure as a pure DPS loss here purely because this character is the only one who would benefit from the GCD spent refreshing it - the real payoff is the melee group standing in it, which a solo sim cannot see. Treat any finding that drops a group buff/totem line as a hint to verify by hand, not a rotation change to paste blind.
+
+## Action probe (step 2: is the rotation right for the talents?)
+
+Each row is one sim at the confirm iteration count against the baseline. A **removal** row sims the rotation with that action taken out; a positive delta means the action helps (removing it costs DPS) - a negative delta beyond error means the action hurts and is a wrong line. An **insertion** row sims the rotation with that learned-but-uncast spell added at the top with a default condition; a positive delta beyond error means it is a missing line.
+
+| Kind | Action / spell | Delta DPS | ± | Verdict |
+|---|---|---|---|---|
+| remove | #1 ((autocastOtherCooldowns)) | +44.1 | 1.6 | helps |
+| remove | #10 (Backstab (rank 8)) | +0.0 | 1.6 | no effect |
+| remove | #11 (Sinister Strike (rank 8)) | +0.0 | 1.6 | no effect |
+| remove | #2 (Shank (rank 2)) | +128.6 | 1.6 | helps |
+| remove | #3 (spell 14278) | +94.1 | 1.6 | helps |
+| remove | #4 (Garrote (rank 6)) | +81.4 | 1.6 | helps |
+| remove | #5 (Rupture (rank 6)) | +560.6 | 1.3 | helps |
+| remove | #6 (Death Mark (rank 4)) | +235.8 | 1.4 | helps |
+| remove | #7 (Eviscerate (rank 8)) | -1.3 | 1.7 | no effect |
+| remove | #8 (Slice and Dice (rank 2)) | +26.9 | 1.5 | helps |
+| remove | #9 (Hemorrhage) | +277.3 | 1.5 | helps |
+| insert | Ambush | -10.2 | 1.7 | hurts |
+| insert | Gouge | -78.4 | 1.8 | hurts |
+| insert | Kick | -54.0 | 1.6 | hurts |
+| insert | Test Stab R50 | +0.0 | 1.6 | no effect |
+| insert | Test Strike R50 | +0.0 | 1.6 | no effect |
+
+No wrong lines and no missing lines beyond the combined error.
+
+**Verdict: the curated rotation is already the best found.** Best variant +0.0 DPS (±1.6 combined), within error.
+
+## Search: accepted mutations (step 3)
+
+No mutation beat the incumbent beyond the combined error at the screening iteration count; the baseline rotation is the search's own best.
+
+## Finisher casts
+
+Casts per iteration, read from the sim's cast metrics at the confirm iteration count.
+
+| Ability | Baseline | Winner |
+|---|---|---|
+| Rupture | 8.35 | 8.35 |
+| Eviscerate | 0.00 | 0.00 |
+| Slice and Dice | 7.41 | 7.41 |
+
+**NOT ADOPTABLE: the winner never casts Eviscerate.** Its DPS gain comes from dropping a finisher, so it is not a rotation to paste.
+
+## Rotation, baseline vs winner
+
+| # | Baseline | Winner |
+|---|---|---|
+| 1 | (autocastOtherCooldowns) -- no condition | (autocastOtherCooldowns) -- no condition |
+| 2 | Shank (rank 2) -- condition: (currentComboPoints <= 3) or (currentEnergy < 50) | Shank (rank 2) -- condition: (currentComboPoints <= 3) or (currentEnergy < 50) |
+| 3 | spell 14278 -- condition: currentComboPoints <= 4 | spell 14278 -- condition: currentComboPoints <= 4 |
+| 4 | Garrote (rank 6) -- condition: currentComboPoints <= 4 | Garrote (rank 6) -- condition: currentComboPoints <= 4 |
+| 5 | Rupture (rank 6) -- condition: (currentComboPoints >= 4) and (not (Rupture (rank 6) dot is active)) | Rupture (rank 6) -- condition: (currentComboPoints >= 4) and (not (Rupture (rank 6) dot is active)) |
+| 6 | Death Mark (rank 4) -- condition: (currentComboPoints >= 4) and (Rupture (rank 6) dot is active) | Death Mark (rank 4) -- condition: (currentComboPoints >= 4) and (Rupture (rank 6) dot is active) |
+| 7 | Eviscerate (rank 8) -- condition: ((currentComboPoints >= 3) and ((Rupture (rank 6) dot is active) or ((not (spellIsKnown)) and (Slice and Dice (rank 2) aura is active)))) and (not (spellIsKnown)) | Eviscerate (rank 8) -- condition: ((currentComboPoints >= 3) and ((Rupture (rank 6) dot is active) or ((not (spellIsKnown)) and (Slice and Dice (rank 2) aura is active)))) and (not (spellIsKnown)) |
+| 8 | Slice and Dice (rank 2) -- condition: ((currentComboPoints >= 3) and ((not (Slice and Dice (rank 2) aura is active)) or (Slice and Dice (rank 2) aura remaining time < 3))) and ((Rupture (rank 6) dot is active) or (not (spellIsKnown))) | Slice and Dice (rank 2) -- condition: ((currentComboPoints >= 3) and ((not (Slice and Dice (rank 2) aura is active)) or (Slice and Dice (rank 2) aura remaining time < 3))) and ((Rupture (rank 6) dot is active) or (not (spellIsKnown))) |
+| 9 | Hemorrhage -- condition: ((spellIsKnown) and ((not (spellIsKnown)) or (spellTimeToReady > 1s) or (currentEnergy >= 75))) and (not (spell 1329326 aura is active)) and (currentComboPoints <= 4) | Hemorrhage -- condition: ((spellIsKnown) and ((not (spellIsKnown)) or (spellTimeToReady > 1s) or (currentEnergy >= 75))) and (not (spell 1329326 aura is active)) and (currentComboPoints <= 4) |
+| 10 | Backstab (rank 8) -- condition: not (spellIsKnown) | Backstab (rank 8) -- condition: not (spellIsKnown) |
+| 11 | Sinister Strike (rank 8) -- condition: (not (spellIsKnown)) and (not (spellCanCast)) and (currentEnergy >= 60) | Sinister Strike (rank 8) -- condition: (not (spellIsKnown)) and (not (spellCanCast)) and (currentEnergy >= 60) |
+
+## Winning rotation, engine APL JSON
+
+Paste this into `data/curated/apl/rogue-subtlety.json`'s `rotation` field (never edited directly by this tool):
+
+```json
+{
+    "type": "TypeAPL",
+    "prepullActions": [
+        {
+            "action": {
+                "castSpell": {
+                    "spellId": {
+                        "rank": 4,
+                        "spellId": 1787
+                    }
+                }
+            },
+            "doAtValue": {
+                "const": {
+                    "val": "-3s"
+                }
+            }
+        },
+        {
+            "action": {
+                "castSpell": {
+                    "spellId": {
+                        "spellId": 14183
+                    }
+                }
+            },
+            "doAtValue": {
+                "const": {
+                    "val": "-2s"
+                }
+            }
+        },
+        {
+            "action": {
+                "castSpell": {
+                    "spellId": {
+                        "rank": 6,
+                        "spellId": 11290
+                    }
+                }
+            },
+            "doAtValue": {
+                "const": {
+                    "val": "0s"
+                }
+            }
+        }
+    ],
+    "priorityList": [
+        {
+            "action": {
+                "autocastOtherCooldowns": {}
+            }
+        },
+        {
+            "notes": "Shank on cooldown at three combo points or fewer, or under 50 energy: an off-hand stab that cannot miss and pays back more energy than it costs. Boot Knife, from 35, gives it a chance to add two combo points, on every Shank at 5/5 by 39, so at four or five with 50 energy or more you finish first and Shank right after; short on energy, the energy is worth more than a spilled point.",
+            "action": {
+                "castSpell": {
+                    "spellId": {
+                        "rank": 2,
+                        "spellId": 1329549
+                    }
+                },
+                "condition": {
+                    "or": {
+                        "vals": [
+                            {
+                                "cmp": {
+                                    "lhs": {
+                                        "currentComboPoints": {}
+                                    },
+                                    "op": "OpLe",
+                                    "rhs": {
+                                        "const": {
+                                            "val": "3"
+                                        }
+                                    }
+                                }
+                            },
+                            {
+                                "cmp": {
+                                    "lhs": {
+                                        "currentEnergy": {}
+                                    },
+                                    "op": "OpLt",
+                                    "rhs": {
+                                        "const": {
+                                            "val": "50"
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "notes": "Ghostly Strike on cooldown at four combo points or fewer: with a dagger in the main hand it hits harder than Sinister Strike for no more energy, and from 30 harder than Hemorrhage with any weapon for a little more (40 against Hemorrhage's 35, or 30 once Efficient Strikes is full at 57), and gives a combo point.",
+            "action": {
+                "castSpell": {
+                    "spellId": {
+                        "spellId": 14278
+                    }
+                },
+                "condition": {
+                    "cmp": {
+                        "lhs": {
+                            "currentComboPoints": {}
+                        },
+                        "op": "OpLe",
+                        "rhs": {
+                            "const": {
+                                "val": "4"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "notes": "Garrote after every Ghostly Strike, at four combo points or fewer and ahead of Rupture at exactly four, even when the old one is still ticking: Ghostly Strike lets it in without Stealth, and a fresh Garrote is a bleed that Opportunity feeds, and Hemorrhage and Death Mark too once you have them.",
+            "action": {
+                "castSpell": {
+                    "spellId": {
+                        "rank": 6,
+                        "spellId": 11290
+                    }
+                },
+                "condition": {
+                    "cmp": {
+                        "lhs": {
+                            "currentComboPoints": {}
+                        },
+                        "op": "OpLe",
+                        "rhs": {
+                            "const": {
+                                "val": "4"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "notes": "Rupture at four or more combo points whenever it is not ticking, so it goes up right after the opener: it is the main finisher, and Serrated Blades from 21 and Hemorrhage's debuff from 30 make it hit harder still.",
+            "action": {
+                "castSpell": {
+                    "spellId": {
+                        "rank": 6,
+                        "spellId": 11275
+                    }
+                },
+                "condition": {
+                    "and": {
+                        "vals": [
+                            {
+                                "cmp": {
+                                    "lhs": {
+                                        "currentComboPoints": {}
+                                    },
+                                    "op": "OpGe",
+                                    "rhs": {
+                                        "const": {
+                                            "val": "4"
+                                        }
+                                    }
+                                }
+                            },
+                            {
+                                "not": {
+                                    "val": {
+                                        "dotIsActive": {
+                                            "spellId": {
+                                                "rank": 6,
+                                                "spellId": 11275
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "notes": "Death Mark at four or more combo points while Rupture is ticking, and between marks the points Rupture and Slice and Dice do not need wait for the next one: for 6 seconds it stores a share of everything you hit the target for, Rupture and Garrote at twice the rate, then deals it back at once. It comes back every 10 seconds, so a mark now beats a bigger one a few seconds later, and an Eviscerate in between costs more than it deals.",
+            "action": {
+                "castSpell": {
+                    "spellId": {
+                        "rank": 4,
+                        "spellId": 1325758
+                    }
+                },
+                "condition": {
+                    "and": {
+                        "vals": [
+                            {
+                                "cmp": {
+                                    "lhs": {
+                                        "currentComboPoints": {}
+                                    },
+                                    "op": "OpGe",
+                                    "rhs": {
+                                        "const": {
+                                            "val": "4"
+                                        }
+                                    }
+                                }
+                            },
+                            {
+                                "dotIsActive": {
+                                    "spellId": {
+                                        "rank": 6,
+                                        "spellId": 11275
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "notes": "Eviscerate at three or more combo points while Rupture is ticking, or before Rupture trains at 20 while Slice and Dice is up, and only before you have Death Mark: from 40, those points go into Death Mark instead.",
+            "action": {
+                "castSpell": {
+                    "spellId": {
+                        "rank": 8,
+                        "spellId": 11300
+                    }
+                },
+                "condition": {
+                    "and": {
+                        "vals": [
+                            {
+                                "and": {
+                                    "vals": [
+                                        {
+                                            "cmp": {
+                                                "lhs": {
+                                                    "currentComboPoints": {}
+                                                },
+                                                "op": "OpGe",
+                                                "rhs": {
+                                                    "const": {
+                                                        "val": "3"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "or": {
+                                                "vals": [
+                                                    {
+                                                        "dotIsActive": {
+                                                            "spellId": {
+                                                                "rank": 6,
+                                                                "spellId": 11275
+                                                            }
+                                                        }
+                                                    },
+                                                    {
+                                                        "and": {
+                                                            "vals": [
+                                                                {
+                                                                    "not": {
+                                                                        "val": {
+                                                                            "spellIsKnown": {
+                                                                                "spellId": {
+                                                                                    "rank": 6,
+                                                                                    "spellId": 11275
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                },
+                                                                {
+                                                                    "auraIsActive": {
+                                                                        "auraId": {
+                                                                            "rank": 2,
+                                                                            "spellId": 6774
+                                                                        }
+                                                                    }
+                                                                }
+                                                            ]
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "not": {
+                                    "val": {
+                                        "spellIsKnown": {
+                                            "spellId": {
+                                                "rank": 4,
+                                                "spellId": 1325758
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "notes": "Slice and Dice at three or more combo points while Rupture is ticking, or at any time before Rupture trains at 20, when it is down or has under 3 seconds left.",
+            "action": {
+                "castSpell": {
+                    "spellId": {
+                        "rank": 2,
+                        "spellId": 6774
+                    }
+                },
+                "condition": {
+                    "and": {
+                        "vals": [
+                            {
+                                "and": {
+                                    "vals": [
+                                        {
+                                            "cmp": {
+                                                "lhs": {
+                                                    "currentComboPoints": {}
+                                                },
+                                                "op": "OpGe",
+                                                "rhs": {
+                                                    "const": {
+                                                        "val": "3"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "or": {
+                                                "vals": [
+                                                    {
+                                                        "not": {
+                                                            "val": {
+                                                                "auraIsActive": {
+                                                                    "auraId": {
+                                                                        "rank": 2,
+                                                                        "spellId": 6774
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    {
+                                                        "cmp": {
+                                                            "lhs": {
+                                                                "auraRemainingTime": {
+                                                                    "auraId": {
+                                                                        "rank": 2,
+                                                                        "spellId": 6774
+                                                                    }
+                                                                }
+                                                            },
+                                                            "op": "OpLt",
+                                                            "rhs": {
+                                                                "const": {
+                                                                    "val": "3"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "or": {
+                                    "vals": [
+                                        {
+                                            "dotIsActive": {
+                                                "spellId": {
+                                                    "rank": 6,
+                                                    "spellId": 11275
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "not": {
+                                                "val": {
+                                                    "spellIsKnown": {
+                                                        "spellId": {
+                                                            "rank": 6,
+                                                            "spellId": 11275
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "notes": "Hemorrhage at four combo points or fewer, your builder for every global nothing above takes. At five the extra point is wasted, so save the energy for the finisher. It keeps Hemorrhage's debuff up: one combo point a cast, and the debuff makes your Rupture and Garrote hit 15% harder. Hold it for a moment when Ghostly Strike is under a second from ready, unless you are at 75 energy or more, and hold it after a Ghostly Strike until the Garrote is in.",
+            "action": {
+                "castSpell": {
+                    "spellId": {
+                        "spellId": 16511
+                    }
+                },
+                "condition": {
+                    "and": {
+                        "vals": [
+                            {
+                                "and": {
+                                    "vals": [
+                                        {
+                                            "spellIsKnown": {
+                                                "spellId": {
+                                                    "spellId": 16511
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "or": {
+                                                "vals": [
+                                                    {
+                                                        "not": {
+                                                            "val": {
+                                                                "spellIsKnown": {
+                                                                    "spellId": {
+                                                                        "spellId": 14278
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    {
+                                                        "cmp": {
+                                                            "lhs": {
+                                                                "spellTimeToReady": {
+                                                                    "spellId": {
+                                                                        "spellId": 14278
+                                                                    }
+                                                                }
+                                                            },
+                                                            "op": "OpGt",
+                                                            "rhs": {
+                                                                "const": {
+                                                                    "val": "1s"
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    {
+                                                        "cmp": {
+                                                            "lhs": {
+                                                                "currentEnergy": {}
+                                                            },
+                                                            "op": "OpGe",
+                                                            "rhs": {
+                                                                "const": {
+                                                                    "val": "75"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                "not": {
+                                    "val": {
+                                        "auraIsActive": {
+                                            "auraId": {
+                                                "spellId": 1329326
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            {
+                                "cmp": {
+                                    "lhs": {
+                                        "currentComboPoints": {}
+                                    },
+                                    "op": "OpLe",
+                                    "rhs": {
+                                        "const": {
+                                            "val": "4"
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "notes": "Backstab from behind with a dagger in your main hand is the builder until Hemorrhage: it hits far harder than Sinister Strike, and every point of Opportunity, from 13, adds 4% to it.",
+            "action": {
+                "castSpell": {
+                    "spellId": {
+                        "rank": 8,
+                        "spellId": 11281
+                    }
+                },
+                "condition": {
+                    "not": {
+                        "val": {
+                            "spellIsKnown": {
+                                "spellId": {
+                                    "spellId": 16511
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "notes": "Sinister Strike before Hemorrhage only when Backstab cannot be cast, because your main hand is not a dagger or the target is facing you. With a dagger it waits for 60 energy or more, so it never takes the energy Backstab needs.",
+            "action": {
+                "castSpell": {
+                    "spellId": {
+                        "rank": 8,
+                        "spellId": 11294
+                    }
+                },
+                "condition": {
+                    "and": {
+                        "vals": [
+                            {
+                                "not": {
+                                    "val": {
+                                        "spellIsKnown": {
+                                            "spellId": {
+                                                "spellId": 16511
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            {
+                                "not": {
+                                    "val": {
+                                        "spellCanCast": {
+                                            "spellId": {
+                                                "rank": 8,
+                                                "spellId": 11281
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            {
+                                "cmp": {
+                                    "lhs": {
+                                        "currentEnergy": {}
+                                    },
+                                    "op": "OpGe",
+                                    "rhs": {
+                                        "const": {
+                                            "val": "60"
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    ]
+}
+```
+remote-test: exit 0 in 42s (4a4462391af4a76d73fbf7dede7189b86f9ecc5c)
