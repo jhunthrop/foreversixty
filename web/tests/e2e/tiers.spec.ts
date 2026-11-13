@@ -107,7 +107,7 @@ test('the title band names the fight, and the bars are the accent from 90% of th
 }) => {
   await page.goto('/tiers');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Tier list at 60');
-  await expect(page.getByTestId('tier-page')).toContainText('Best in slot, raid buffs · level 63 · 3 min');
+  await expect(page.getByTestId('tier-page')).toContainText('Best in slot, raid buffs · vs a level 63 boss · 3 min');
   await expect(activePanel(page).getByTestId('rank-group-letter').first()).toHaveAttribute(
     'title',
     'Within 5% of #1',
@@ -129,22 +129,46 @@ test('the title band names the fight, and the bars are the accent from 90% of th
   expect(last.width).toBeLessThan(50);
 });
 
-test('tank list sorts on damage taken, not effective health, and the best of each column is green', async ({
+test('tank list sorts on damage taken, shows maximum health, and the best of each column is green', async ({
   page,
 }) => {
   await page.goto('/tiers/tank');
   const expected = expectedRows('tank', 'alliance');
   const dtps = expected.map((row) => row.band.metrics!.dtps);
   expect(dtps).toEqual([...dtps].sort((a, b) => a - b));
-  const leader = activePanel(page).locator('[data-testid^="tier-row-"]').first();
-  // The top spec reads "best" in the gap column (h-audit round 2; tier-copy.ts leaderGap).
-  await expect(leader.getByTestId('rank-gap')).toHaveText('best');
+  const rows = activePanel(page).locator('[data-testid^="tier-row-"]');
+  const leader = rows.first();
+  // The least-hit tank reads "lowest"; every other row its extra damage taken, whole percent.
+  await expect(leader.getByTestId('rank-gap')).toHaveText('lowest');
   await expect(leader.getByTestId('tier-number')).toHaveCSS('color', 'rgb(127, 212, 138)');
-  const bestHealth = Math.max(...expected.map((row) => row.band.metrics!.effective_health));
-  const bestRow = expected.findIndex((row) => row.band.metrics!.effective_health === bestHealth);
-  await expect(
-    activePanel(page).locator('[data-testid^="tier-row-"]').nth(bestRow).getByTestId('tier-effective-health'),
-  ).toHaveCSS('color', 'rgb(127, 212, 138)');
+  await expect(rows.nth(1).getByTestId('rank-gap')).toHaveText(/^\+\d+% taken$/);
+  const healths = expected.map((row) => row.band.metrics!.health);
+  if (healths.some((health) => health === undefined)) {
+    // A file ranked before health was published: no half-filled column, never effective health.
+    await expect(activePanel(page).getByTestId('tier-health')).toHaveCount(0);
+    await expect(activePanel(page).locator('.ui-rank-heads')).not.toContainText('Health');
+    return;
+  }
+  const bestHealth = Math.max(...(healths as number[]));
+  await expect(rows.nth(healths.indexOf(bestHealth)).getByTestId('tier-health')).toHaveCSS(
+    'color',
+    'rgb(127, 212, 138)',
+  );
+});
+
+test('tank bars are the least damage taken over the row\'s own, from zero', async ({ page }) => {
+  await page.goto('/tiers/tank');
+  const expected = expectedRows('tank', 'alliance');
+  const rows = activePanel(page).locator('[data-testid^="tier-row-"]');
+  const width = (index: number): Promise<number> =>
+    rows
+      .nth(index)
+      .locator('.ui-meter > i')
+      .evaluate((node) => parseFloat((node as HTMLElement).style.width));
+  const least = expected[0]!.band.metrics!.dtps;
+  const last = expected.length - 1;
+  expect(await width(0)).toBeCloseTo(100, 0);
+  expect(await width(last)).toBeCloseTo((100 * least) / expected[last]!.band.metrics!.dtps, 0);
 });
 
 test('tank figures are whole numbers and every column head is one short line beside the rail', async ({
@@ -153,9 +177,8 @@ test('tank figures are whole numbers and every column head is one short line bes
   await page.goto('/tiers/tank');
   const leader = expectedRows('tank', 'alliance')[0]!;
   const row = activePanel(page).locator('[data-testid^="tier-row-"]').first();
-  await expect(row.getByTestId('tier-effective-health')).toHaveText(
-    wholeNumber(leader.band.metrics!.effective_health),
-  );
+  const health = leader.band.metrics!.health;
+  if (health !== undefined) await expect(row.getByTestId('tier-health')).toHaveText(wholeNumber(health));
   await expect(row.getByTestId('tier-threat')).toHaveText(wholeNumber(leader.band.metrics!.tps));
   for (const width of [1280, 1440, 1760, 2000]) {
     await page.setViewportSize({ width, height: 900 });
@@ -455,10 +478,12 @@ test.describe('phone', () => {
     });
   }
 
-  test('tank rows keep effective health and threat on their own line, labelled', async ({ page }) => {
+  test('tank rows keep health, threat and vs #1 on their own line, labelled', async ({ page }) => {
     await page.goto('/tiers/tank');
-    const first = activePanel(page).locator('[data-testid^="tier-row-"]').first();
-    await expect(first).toContainText('Effective health');
-    await expect(first).toContainText('Threat');
+    const rows = activePanel(page).locator('[data-testid^="tier-row-"]');
+    await expect(rows.first()).not.toContainText('Effective health');
+    await expect(rows.first()).toContainText('Threat');
+    await expect(rows.nth(1).getByTestId('tier-gap-phone')).toBeVisible();
+    await expect(rows.nth(1).getByTestId('tier-gap-phone')).toContainText(/\+\d+% taken/);
   });
 });

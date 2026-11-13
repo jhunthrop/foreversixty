@@ -98,16 +98,43 @@ describe('gap to the top and bar length', () => {
     expect(rows[1]!.fraction).toBeCloseTo(300 / 345, 10);
   });
 
-  it('marks the best of the effective health and threat columns independently of the sort', () => {
+  it('marks the best of the health and threat columns independently of the sort', () => {
     const rows = rankRole(
       [
-        tankInput('a', 'a', 'A', { dtps: 300, effective_health: 100, tps: 900 }),
-        tankInput('b', 'b', 'B', { dtps: 345, effective_health: 200, tps: 500 }),
+        tankInput('a', 'a', 'A', { dtps: 300, effective_health: 100, tps: 900, health: 7400 }),
+        tankInput('b', 'b', 'B', { dtps: 345, effective_health: 200, tps: 500, health: 9100 }),
       ],
       'tank',
     );
-    expect(rows.map((r) => r.isBestEffectiveHealth)).toEqual([false, true]);
+    expect(rows.map((r) => r.health)).toEqual([7400, 9100]);
+    expect(rows.map((r) => r.isBestHealth)).toEqual([false, true]);
     expect(rows.map((r) => r.isBestThreat)).toEqual([true, false]);
+  });
+
+  it('shows maximum health, never effective health, and none until every band publishes it', () => {
+    const rows = rankRole(
+      [
+        tankInput('a', 'a', 'A', { dtps: 300, effective_health: 47000, tps: 900, health: 7400 }),
+        tankInput('b', 'b', 'B', { dtps: 345, effective_health: 38000, tps: 500 }),
+      ],
+      'tank',
+    );
+    expect(rows.map((r) => r.health)).toEqual([undefined, undefined]);
+    expect(rows.map((r) => r.isBestHealth)).toEqual([undefined, undefined]);
+  });
+
+  it('ties tanks within the margin on a shared rank', () => {
+    const rows = rankRole(
+      [
+        tankInput('w', 'w', 'W', { dtps: 230, effective_health: 1, tps: 1 }),
+        tankInput('d', 'd', 'D', { dtps: 351.2, effective_health: 1, tps: 1 }),
+        tankInput('p', 'p', 'P', { dtps: 351.9, effective_health: 1, tps: 1 }),
+      ],
+      'tank',
+    );
+    expect(rows.map((r) => r.rank)).toEqual([1, 2, 2]);
+    expect(rows.map((r) => r.tie)).toEqual([null, 'below', 'above']);
+    expect(rows[2]!.tiedWith.map((m) => m.classSlug)).toEqual(['d']);
   });
 });
 
@@ -409,7 +436,7 @@ describe('tie partners on the live 70790 numbers', () => {
     expect(beastMastery.tiedWith[0]!.tier).toBe('A');
   });
 
-  it("names a healer's neighbours the error cannot order it against, and no tank partner", () => {
+  it("names a healer's neighbours the error cannot order it against, and a tank's within the margin", () => {
     const healers = rankRole(
       [
         healerInput('d', 'r', 'Restoration', 1000, 10, [{ scale: 0.8, hps: 1000, hps_error: 10 }]),
@@ -425,7 +452,7 @@ describe('tie partners on the live 70790 numbers', () => {
       ],
       'tank',
     );
-    expect(tanks.map((r) => r.tiedWith)).toEqual([[], []]);
+    expect(tanks.map((r) => r.tiedWith.map((m) => m.classSlug))).toEqual([['b'], ['a']]);
   });
 });
 

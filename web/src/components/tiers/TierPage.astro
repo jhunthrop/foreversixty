@@ -71,11 +71,16 @@ const stampTitle =
   data.build === null
     ? undefined
     : `Ranked on build ${data.build}, engine ${data.engineVersion ?? ''}`.trim();
-const heads: RankHead[] = tiersCopy.heads[role].map((label, index, all) => ({
+// A tank list shows Health only when every band publishes it (no half-filled column).
+const tankHealth = isTank && TIER_FACTION_ORDER.every((f) => data.lists[f].tank.every((r) => r.health !== undefined));
+const headLabels: readonly string[] =
+  isTank && !tankHealth ? tiersCopy.tankHeadsWithoutHealth : tiersCopy.heads[role];
+const heads: RankHead[] = headLabels.map((label, index, all) => ({
   label,
   // The figures and the gap: every head after the bar but the empty link column's.
   align: index > 3 && index < all.length - 1 ? 'end' : 'start',
 }));
+const figureCount = isTank ? (tankHealth ? 3 : 2) : 1;
 const metaLine = tiersCopy.metaLine({ role, healSeconds: data.healSeconds });
 ---
 
@@ -149,7 +154,7 @@ const metaLine = tiersCopy.metaLine({ role, healSeconds: data.healSeconds });
               ) : (
                 <RankList
                   heads={heads}
-                  figures={isTank ? 3 : 1}
+                  figures={figureCount}
                   figureWidth={isTank ? 96 : 88}
                   grouped={roleHasTiers(role)}
                   compact

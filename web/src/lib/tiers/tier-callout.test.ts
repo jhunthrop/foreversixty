@@ -55,7 +55,7 @@ describe('tierSpecViews', () => {
     expect(views['warrior/protection']).toMatchObject({
       title: 'Protection Warrior is 2nd of 2 Tank specs.',
       standing: '#2 · 345 taken / s',
-      detail: '15.0% more taken than Protection Paladin',
+      detail: 'Takes 15% more damage a second than Protection Paladin',
       rolePath: '/tiers/tank',
     });
   });

@@ -81,7 +81,7 @@ export function tankInput(
   classSlug: string,
   specSlug: string,
   name: string,
-  metrics: { dtps: number; effective_health: number; tps: number },
+  metrics: { dtps: number; effective_health: number; tps: number; health?: number },
 ): TierInput {
   const entry = catalogEntry(classSlug, specSlug, name, 'tank');
   return {

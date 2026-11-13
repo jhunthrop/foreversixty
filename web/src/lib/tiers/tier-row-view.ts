@@ -27,11 +27,14 @@ export interface TierRankRowProps {
 /** The bar starts at 90% of the lowest spec, so the field's spread shows (directions spec, Tier list). */
 const BAR_FLOOR = 0.9;
 
-/** Each row's bar on its list: 0 at 90% of the lowest spec's share, 1 at the top. */
+/** Each row's bar on its list. A DPS or healer bar runs from 90% of the lowest spec's share to
+ *  the top; a tank bar is the least damage taken over the row's own, from zero, so a third more
+ *  damage taken reads as a bar a third shorter (three rows have no spread to stretch). */
 export function barFraction(
-  row: Pick<TierRow, 'fraction'>,
+  row: Pick<TierRow, 'fraction' | 'role'>,
   rows: readonly Pick<TierRow, 'fraction'>[],
 ): number {
+  if (row.role === 'tank') return row.fraction;
   const floor = Math.min(...rows.map((r) => r.fraction)) * BAR_FLOOR;
   return (row.fraction - floor) / (1 - floor);
 }
@@ -44,8 +47,8 @@ function bestOf(on: boolean | undefined, title: string): Pick<RankFigure, 'best'
   return on === true ? { best: true, bestTitle: title } : {};
 }
 
-/** The sorted figure, then on a tank its effective health and threat, each green where best. The
- *  column heads carry the units. */
+/** The sorted figure, then on a tank its maximum health (once the band publishes it) and threat,
+ *  each green where best, and the phone's vs #1. The column heads carry the units. */
 export function tierFigures(row: TierRow, count: number): RankFigure[] {
   const title = tiersCopy.bestTitle(count, row.role);
   const value = formatMetric(row.role, row.metric);
@@ -56,22 +59,29 @@ export function tierFigures(row: TierRow, count: number): RankFigure[] {
     ...bestOf(row.role === 'tank' && isLeader(row), title),
     ...simLinkOf(row, value),
   };
-  if (row.role !== 'tank' || row.effectiveHealth === undefined || row.threat === undefined)
-    return [sorted, phoneGap(row)];
+  if (row.role !== 'tank' || row.threat === undefined) return [sorted, phoneGap(row)];
+  const health: RankFigure[] =
+    row.health === undefined
+      ? []
+      : [
+          {
+            value: formatMetric(row.role, row.health),
+            label: tiersCopy.figureLabels.health,
+            title: tiersCopy.healthTitle,
+            testid: 'tier-health',
+            ...bestOf(row.isBestHealth, title),
+          },
+        ];
   return [
     sorted,
-    {
-      value: formatMetric(row.role, row.effectiveHealth),
-      label: tiersCopy.figureLabels.effectiveHealth,
-      testid: 'tier-effective-health',
-      ...bestOf(row.isBestEffectiveHealth, title),
-    },
+    ...health,
     {
       value: formatMetric(row.role, row.threat),
       label: tiersCopy.figureLabels.threat,
       testid: 'tier-threat',
       ...bestOf(row.isBestThreat, title),
     },
+    phoneGap(row),
   ];
 }
 
@@ -98,9 +108,16 @@ function phoneGap(row: TierRow): RankFigure {
   };
 }
 
-/** "−7.3%" behind the top spec; the top spec itself reads "best". */
+/** "−7.3%" behind the top spec, "+53% taken" on a tank; the top spec itself reads "best", the
+ *  least-hit tank "lowest". */
 function gapOf(row: TierRow): string {
-  return isLeader(row) ? tiersCopy.leaderGap : gapText(row);
+  if (!isLeader(row)) return gapText(row);
+  return row.role === 'tank' ? tiersCopy.tankLeaderGap : tiersCopy.leaderGap;
+}
+
+/** The leader, for a tank gap's title. */
+function leaderOf(rows: readonly TierRow[]): TierRow | undefined {
+  return rows.find(isLeader);
 }
 
 export function rankRowProps(row: TierRow, rows: readonly TierRow[]): TierRankRowProps {
@@ -118,6 +135,7 @@ export function rankRowProps(row: TierRow, rows: readonly TierRow[]): TierRankRo
       text: gapOf(row),
       label: tiersCopy.gapLabel[row.role],
       leader: isLeader(row),
+      ...gapTitleOf(row, rows),
     },
     key: specViewKey(row.classSlug, row.specSlug),
     nameTestid: 'tier-spec-link',
@@ -126,10 +144,17 @@ export function rankRowProps(row: TierRow, rows: readonly TierRow[]): TierRankRo
   };
 }
 
+/** A tank's gap in words on hover; a tank's visible "+53% taken" stands alone on touch. */
+function gapTitleOf(row: TierRow, rows: readonly TierRow[]): Pick<RankGap, 'title'> {
+  const leader = leaderOf(rows);
+  if (row.role !== 'tank' || leader === undefined || isLeader(row)) return {};
+  return { title: tiersCopy.tankGapTitle(row.gapPercent, specFullName(leader)) };
+}
+
 /** The line under the name: a tied healer's partner (so a shared rank explains itself), and the
  *  less-certain stat weights, joined when a row has both. */
 function noteOf(row: TierRow): Pick<TierRankRowProps, 'note'> {
-  const tie = tiersCopy.healerTie(row);
+  const tie = tiersCopy.rowTie(row);
   const notes: { text: string; title: string }[] = [
     ...(tie === null ? [] : [tie]),
     ...(row.lowConfidence ? [{ text: tiersCopy.lowConfidence, title: tiersCopy.lowConfidenceTitle }] : []),

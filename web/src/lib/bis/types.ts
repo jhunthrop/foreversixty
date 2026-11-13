@@ -350,8 +350,11 @@ export interface TankMetrics {
   chance_of_death: number;
   /** Threat per second. */
   tps: number;
-  /** Hit points against the boss profile. */
+  /** Hit points against the boss profile: `health` times the boss's raw damage over `dtps`. */
   effective_health: number;
+  /** The character's maximum health with the gear and buffs. Absent on a file ranked before
+   *  the ranker published it. */
+  health?: number;
   /** The tank's own damage per second (what `set_dps` carries on a tank band). */
   dps: number;
 }

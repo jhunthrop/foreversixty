@@ -45,6 +45,8 @@ export interface RankGap {
   /** The column's name for assistive tech ("Gap to the top"). */
   label: string;
   leader?: boolean;
+  /** The gap in words, on hover ("Takes 53% more damage a second than Protection Warrior"). */
+  title?: string;
 }
 
 /** A short line under the bar or the name, with the reason in its title ("≈ tie with Arms"). */

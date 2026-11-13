@@ -48,11 +48,10 @@ function detailFor(row: TierRow, top: TierRow): string {
   if (!row.ranked) return 'Ranks appear once the next ranking publishes the measured error.';
   if (row.role === 'healer' && row.tie !== null) return 'Tied';
   if (row.rank === 1) return row.role === 'tank' ? 'Takes the least damage.' : 'Level with the top spec.';
-  const figure = row.gapPercent.toFixed(1);
   const gap =
     row.role === 'tank'
-      ? `${figure}% more taken than ${specFullName(top)}`
-      : `${figure}% behind ${specFullName(top)}`;
+      ? tiersCopy.tankGapTitle(row.gapPercent, specFullName(top))
+      : `${row.gapPercent.toFixed(1)}% behind ${specFullName(top)}`;
   return row.tier === null ? gap : `Tier ${row.tier} · ${gap}`;
 }
 
@@ -62,14 +61,14 @@ function placeTitle(row: TierRow, fullName: string, count: number): string {
   if (!row.ranked) {
     return `${fullName} is on the ${role} list; ranks appear once the next ranking publishes the measured error.`;
   }
-  const tied = row.role === 'healer' && row.tie !== null ? 'tied ' : '';
+  const tied = tiersCopy.sharesRank(row) ? 'tied ' : '';
   return `${fullName} is ${tied}${ordinal(row.rank)} of ${count} ${role} specs.`;
 }
 
 function standingOf(row: TierRow): string {
   const figure = `${formatMetric(row.role, row.metric)} ${tiersCopy.units[row.role]}`;
   if (!row.ranked) return figure;
-  const place = row.role === 'healer' && row.tie !== null ? `=${row.rank}` : `#${row.rank}`;
+  const place = tiersCopy.sharesRank(row) ? `=${row.rank}` : `#${row.rank}`;
   const tier = row.tier === null ? [] : [tiersCopy.tierLabel(row.tier)];
   return [...tier, place, figure].join(' · ');
 }

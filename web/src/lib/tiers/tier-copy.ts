@@ -185,7 +185,7 @@ function tankColumns(ctx: NoteContext): ReadColumn[] {
       label: 'What the number is',
       body: [
         {
-          text: "Sorted by damage taken per second, lower is better: it is the sim's outcome against the boss, where effective health is only the hit-point pool going in. The best of each column is green.",
+          text: 'Taken / s is the damage the tank takes a second from the boss, lower is better, and the list is sorted by it. Health is maximum health with this gear and raid buffs. Threat / s is threat a second while tanking. vs #1 is how much more damage a second than the top spec, and the bar is the top spec’s damage taken as a share of this spec’s. Specs within 1% of each other share a rank. The best of each column is green: lowest taken, highest health, highest threat.',
         },
       ],
     },
@@ -246,8 +246,8 @@ function metaLine(ctx: Pick<NoteContext, 'role' | 'healSeconds'>): string {
     ctx.role === 'healer'
       ? [fightLength(requireContext(ctx.healSeconds, 'the heal profile duration', ctx.role))]
       : ctx.role === 'tank'
-        ? [`level ${TANK_BOSS_LEVEL}`]
-        : [`level ${TANK_BOSS_LEVEL}`, fightLength(DPS_FIGHT_SECONDS)];
+        ? [`vs a level ${TANK_BOSS_LEVEL} boss`]
+        : [`vs a level ${TANK_BOSS_LEVEL} boss`, fightLength(DPS_FIGHT_SECONDS)];
   return [RANKED_ON, ...fight].join(' · ');
 }
 
@@ -260,17 +260,27 @@ function tierBand(letter: TierLetter): string {
   return to === undefined ? `${from}% or more behind #1` : `${from} to ${to}% behind #1`;
 }
 
-/** A tied healer's partners in full ("≈ tie with Restoration Shaman"), so a shared rank reads as
- *  the sim's answer and not a slip; `null` on any other row. */
-function healerTie(row: Pick<TierRow, 'role' | 'tiedWith'>): { text: string; title: string } | null {
-  if (row.role !== 'healer' || row.tiedWith.length === 0) return null;
+/** Whether a row shares its rank with a tied neighbour: healers within error, tanks within the
+ *  margin. DPS ties keep their own ranks and letters. */
+function sharesRank(row: Pick<TierRow, 'role' | 'tie'>): boolean {
+  return row.role !== 'dps' && row.tie !== null;
+}
+
+const SHARED_RANK_REASON: Record<Exclude<BisRole, 'dps'>, (joined: string) => string> = {
+  healer: (joined) =>
+    `The sim cannot order this healer and ${joined}: the order changes with the heal profile’s tuning, or the gap is within the measured error`,
+  tank: (joined) =>
+    `This tank and ${joined} take damage within 1% of each other: too close for the sim to order`,
+};
+
+/** A shared rank's partners in full ("≈ tie with Restoration Shaman"), so the rank reads as the
+ *  sim's answer and not a slip; `null` on a DPS row or an untied one. */
+function rowTie(row: Pick<TierRow, 'role' | 'tiedWith'>): { text: string; title: string } | null {
+  if (row.role === 'dps' || row.tiedWith.length === 0) return null;
   const names = row.tiedWith.map(specFullName);
   const joined =
     names.length === 1 ? names[0]! : `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`;
-  return {
-    text: `≈ tie with ${joined}`,
-    title: `The sim cannot order this healer and ${joined}: the order changes with the heal profile’s tuning, or the gap is within the measured error`,
-  };
+  return { text: `≈ tie with ${joined}`, title: SHARED_RANK_REASON[row.role](joined) };
 }
 
 export const tiersCopy = {
@@ -287,21 +297,22 @@ export const tiersCopy = {
   lowConfidence: 'Stat weights less certain',
   lowConfidenceTitle:
     "This spec's stat weights did not settle cleanly, so its gear pick and number are less firm.",
-  /** The rank column: a tied healer's shared rank reads "=2"; every other row its plain rank. */
+  /** The rank column: a shared rank (tied healer or tank) reads "=2"; every other row its own. */
   rankLabel: (row: Pick<TierRow, 'rank' | 'role' | 'tie' | 'ranked'>): string => {
     if (!row.ranked) return '';
-    return row.role === 'healer' && row.tie !== null ? `=${row.rank}` : String(row.rank);
+    return sharesRank(row) ? `=${row.rank}` : String(row.rank);
   },
   /** A DPS row's figure opens the ranking sim behind it (the words of /bis's "Open in the sim"). */
   simLinkTitle: (spec: string): string => `Open in the sim: ${spec}`,
   simLinkLabel: (spec: string, value: string): string => `${value} DPS, open ${spec} in the sim`,
+  sharesRank,
   topGap: 'Top',
   leastGap: 'Least',
   bestTitle: (count: number, role: BisRole): string =>
     `Best of the ${count} ${ROLE_LABELS[role].toLowerCase()}s`,
   tierLabel: (letter: TierLetter): string => `Tier ${letter}`,
   tierBand,
-  healerTie,
+  rowTie,
   listLabel: (role: BisRole, faction: Faction): string =>
     `${ROLE_LABELS[role]} tier list, ${FACTION_LABELS[faction]}`,
   emptyRole: (role: BisRole): string => `No ${ROLE_LABELS[role]} specs are simmed yet.`,
@@ -311,7 +322,7 @@ export const tiersCopy = {
     dps: 'DPS',
     healer: 'HPS',
     tank: 'taken / s',
-    effectiveHealth: 'HP',
+    health: 'HP',
     threat: 'threat / s',
   },
   /** What assistive tech hears before each figure, and the phone label of a tank's extras. */
@@ -319,13 +330,15 @@ export const tiersCopy = {
     dps: 'Damage per second',
     healer: 'Healing per second',
     tank: 'Damage taken per second',
-    effectiveHealth: 'Effective health',
+    health: 'Health',
     threat: 'Threat',
   },
+  /** The Health figure's hover: it is the pool, not a figure made of the damage taken. */
+  healthTitle: 'Maximum health with this gear and raid buffs',
   gapLabel: {
     dps: 'Gap to the top',
     healer: 'Gap to the top',
-    tank: 'More taken than the least',
+    tank: 'More damage taken than #1',
   } as const satisfies Record<BisRole, string>,
   /** The column heads: rank, crest, spec, bar, the figures (each head names its unit), the gap
    *  and the empty link column. */
@@ -334,8 +347,14 @@ export const tiersCopy = {
     healer: ['#', '', 'Spec', '', 'HPS', 'vs #1', ''],
     tank: ['#', '', 'Spec', '', 'Taken / s', 'Health', 'Threat / s', 'vs #1', ''],
   } as const satisfies Record<BisRole, readonly string[]>,
-  /** The vs #1 cell on the top spec's own row. */
+  /** The tank heads of a list whose bands do not all publish health: no half-filled column. */
+  tankHeadsWithoutHealth: ['#', '', 'Spec', '', 'Taken / s', 'Threat / s', 'vs #1', ''] as const,
+  /** The vs #1 cell on the top spec's own row; a tank list's top takes the least damage. */
   leaderGap: 'best',
+  tankLeaderGap: 'lowest',
+  /** A tank's vs #1 in words, on hover. */
+  tankGapTitle: (gapPercent: number, leaderName: string): string =>
+    `Takes ${Math.round(gapPercent)}% more damage a second than ${leaderName}`,
   /** The spec panel beside the list (directions mock g-tiers). */
   card: {
     heading: 'Your spec',
@@ -367,5 +386,6 @@ export function gapText(row: Pick<TierRow, 'rank' | 'role' | 'gapPercent' | 'ran
   // A healer tied for the top shares rank 1 but still has a gap; only the leader reads Top.
   if (row.rank === 1 && row.gapPercent === 0)
     return row.role === 'tank' ? tiersCopy.leastGap : tiersCopy.topGap;
-  return row.role === 'tank' ? `+${figure}%` : `−${figure}%`;
+  // A tank's gap is whole percent: a tenth of a percent of damage taken is inside the sim's noise.
+  return row.role === 'tank' ? `+${Math.round(row.gapPercent)}% taken` : `−${figure}%`;
 }

@@ -53,8 +53,7 @@ export interface TierRow {
   gapPercent: number;
   /** 0..1 bar length: value over top (tank: best over value). */
   fraction: number;
-  /** The neighbour(s) within the tie margin (a healer: within error), or `null`. Always
-   *  `null` on a tank list. */
+  /** The neighbour(s) within the tie margin (a healer: within error), or `null`. */
   tie: TierTie | null;
   /** The specs this row ties with, best first: on a DPS list every spec within the tie margin
    *  of this one (no chain carries a mark past the margin); on a healer list the neighbours the
@@ -67,10 +66,10 @@ export interface TierRow {
   talents: string;
   /** The ranking sim behind the number (`TierInput.simHref`); absent on tank and healer rows. */
   simHref?: string;
-  /** Tank only. */
-  effectiveHealth?: number;
+  /** Tank only. `health` is the maximum health, absent on a band ranked before it was published. */
+  health?: number;
   threat?: number;
-  isBestEffectiveHealth?: boolean;
+  isBestHealth?: boolean;
   isBestThreat?: boolean;
 }
 
@@ -214,10 +213,7 @@ export function healerOrderMeasured(inputs: readonly TierInput[]): boolean {
  *  the chain carries on, so no two healers are ever ordered by a gap the error cannot tell. */
 function healerTiesAndRanks(sorted: readonly Scored[]): { ties: (TierTie | null)[]; ranks: number[] } {
   const tiedAbove = sorted.map((scored, index) => index > 0 && healerTiedWith(sorted[index - 1]!, scored));
-  const ranks = sorted.reduce<number[]>(
-    (acc, _scored, index) => [...acc, tiedAbove[index] ? acc[index - 1]! : index + 1],
-    [],
-  );
+  const ranks = sharedRanks(tiedAbove);
   const ties = tiedAbove.map((above, index): TierTie | null => {
     const below = tiedAbove[index + 1] === true;
     if (above && below) return 'both';
@@ -227,8 +223,17 @@ function healerTiesAndRanks(sorted: readonly Scored[]): { ties: (TierTie | null)
   return { ties, ranks };
 }
 
-/** The tie marks and ranks of one sorted role: healers by error, DPS by the fixed margin,
- *  tanks unmarked; only healers share a rank. */
+/** Ranks where a row tied with the one above shares that row's rank, down the chain. */
+function sharedRanks(tiedAbove: readonly boolean[]): number[] {
+  return tiedAbove.reduce<number[]>(
+    (acc, tied, index) => [...acc, tied ? acc[index - 1]! : index + 1],
+    [],
+  );
+}
+
+/** The tie marks and ranks of one sorted role: healers by error, DPS and tanks by the fixed
+ *  margin. Healers and tanks within it share a rank (a short list has no letter to carry the
+ *  tie); DPS rows keep their own. */
 function tiesAndRanks(
   sorted: readonly Scored[],
   role: BisRole,
@@ -236,13 +241,15 @@ function tiesAndRanks(
 ): { ties: (TierTie | null)[]; ranks: number[] } {
   if (!ranked) return { ties: sorted.map(() => null), ranks: sorted.map((_scored, index) => index + 1) };
   if (role === 'healer') return healerTiesAndRanks(sorted);
-  return {
-    ties: tieMarks(
-      sorted.map((scored) => scored.metric),
-      role !== 'tank',
-    ),
-    ranks: sorted.map((_scored, index) => index + 1),
-  };
+  const ties = tieMarks(
+    sorted.map((scored) => scored.metric),
+    true,
+  );
+  const ranks =
+    role === 'tank'
+      ? sharedRanks(ties.map((tie) => tie === 'above' || tie === 'both'))
+      : sorted.map((_scored, index) => index + 1);
+  return { ties, ranks };
 }
 
 function bestOf(values: readonly number[]): number {
@@ -281,9 +288,9 @@ export function rankRole(inputs: readonly TierInput[], role: BisRole): TierRow[]
     const indexes = role === 'healer' ? neighbourMates(tie, index) : marginMates(sortedMetrics, index);
     return indexes.map(mateOf);
   };
-  const bestEffectiveHealth = tank
-    ? bestOf(sorted.map((s) => tankMetricsOf(s.input.band).effective_health))
-    : 0;
+  const healths = tank ? sorted.map((s) => tankMetricsOf(s.input.band).health) : [];
+  // Health is compared only when every band publishes it: a column half filled ranks nothing.
+  const bestHealth = healths.every((h) => h !== undefined) ? bestOf(healths as number[]) : undefined;
   const bestThreat = tank ? bestOf(sorted.map((s) => tankMetricsOf(s.input.band).tps)) : 0;
   return sorted.map(({ input, metric }, index): TierRow => {
     const { entry, band } = input;
@@ -311,9 +318,10 @@ export function rankRole(inputs: readonly TierInput[], role: BisRole): TierRow[]
     const metrics = tankMetricsOf(band);
     return {
       ...row,
-      effectiveHealth: metrics.effective_health,
+      ...(bestHealth === undefined || metrics.health === undefined
+        ? {}
+        : { health: metrics.health, isBestHealth: metrics.health === bestHealth }),
       threat: metrics.tps,
-      isBestEffectiveHealth: metrics.effective_health === bestEffectiveHealth,
       isBestThreat: metrics.tps === bestThreat,
     };
   });

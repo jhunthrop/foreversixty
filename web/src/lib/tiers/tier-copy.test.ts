@@ -101,8 +101,8 @@ describe('readColumns', () => {
 describe('the title band', () => {
   it('names the gear, then the fight: the target level and its length', () => {
     expect(tiersCopy.title).toBe('Tier list at 60');
-    expect(tiersCopy.metaLine({ role: 'dps' })).toBe('Best in slot, raid buffs · level 63 · 3 min');
-    expect(tiersCopy.metaLine({ role: 'tank' })).toBe('Best in slot, raid buffs · level 63');
+    expect(tiersCopy.metaLine({ role: 'dps' })).toBe('Best in slot, raid buffs · vs a level 63 boss · 3 min');
+    expect(tiersCopy.metaLine({ role: 'tank' })).toBe('Best in slot, raid buffs · vs a level 63 boss');
     expect(tiersCopy.metaLine({ role: 'healer', healSeconds: 300 })).toBe('Best in slot, raid buffs · 5 min');
     expect(tiersCopy.metaLine({ role: 'healer', healSeconds: 90 })).toBe('Best in slot, raid buffs · 90 s');
   });
@@ -117,13 +117,15 @@ describe('the title band', () => {
     expect(tiersCopy.tierBand('D')).toBe('30% or more behind #1');
   });
 
-  it("names a tied healer's partners in full, and nothing on another role", () => {
+  it("names a tied healer's or tank's partners in full, and nothing on a DPS row", () => {
     const mate = { classSlug: 'shaman', specSlug: 'restoration', name: 'Restoration', tier: null };
-    expect(tiersCopy.healerTie({ role: 'healer', tiedWith: [mate] })).toMatchObject({
+    const bear = { classSlug: 'druid', specSlug: 'feral-bear', name: 'Feral (Bear)', tier: null };
+    expect(tiersCopy.rowTie({ role: 'tank', tiedWith: [bear] })?.title).toMatch(/within 1% of each other/);
+    expect(tiersCopy.rowTie({ role: 'healer', tiedWith: [mate] })).toMatchObject({
       text: '≈ tie with Restoration Shaman',
     });
-    expect(tiersCopy.healerTie({ role: 'healer', tiedWith: [] })).toBeNull();
-    expect(tiersCopy.healerTie({ role: 'dps', tiedWith: [mate] })).toBeNull();
+    expect(tiersCopy.rowTie({ role: 'healer', tiedWith: [] })).toBeNull();
+    expect(tiersCopy.rowTie({ role: 'dps', tiedWith: [mate] })).toBeNull();
   });
 
   it('names each role tab for the list it opens', () => {
@@ -161,7 +163,8 @@ describe('gapText', () => {
     expect(gapText({ rank: 1, role: 'dps', gapPercent: 0, ranked: true })).toBe(tiersCopy.topGap);
     expect(gapText({ rank: 1, role: 'tank', gapPercent: 0, ranked: true })).toBe(tiersCopy.leastGap);
     expect(gapText({ rank: 2, role: 'dps', gapPercent: 4.84, ranked: true })).toBe('−4.8%');
-    expect(gapText({ rank: 2, role: 'tank', gapPercent: 15.23, ranked: true })).toBe('+15.2%');
+    expect(gapText({ rank: 2, role: 'tank', gapPercent: 15.23, ranked: true })).toBe('+15% taken');
+    expect(gapText({ rank: 2, role: 'tank', gapPercent: 52.9, ranked: true })).toBe('+53% taken');
   });
 });
 

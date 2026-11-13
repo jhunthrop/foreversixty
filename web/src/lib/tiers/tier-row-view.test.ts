@@ -14,8 +14,8 @@ const dps = rankRole(
 );
 const tanks = rankRole(
   [
-    tankInput('warrior', 'protection', 'Protection', { dtps: 245, effective_health: 40000, tps: 1633 }),
-    tankInput('paladin', 'protection', 'Protection', { dtps: 300, effective_health: 49794, tps: 1200 }),
+    tankInput('warrior', 'protection', 'Protection', { dtps: 245, effective_health: 40000, tps: 1633, health: 7484 }),
+    tankInput('paladin', 'protection', 'Protection', { dtps: 300, effective_health: 49794, tps: 1200, health: 9171 }),
   ],
   'tank',
 );
@@ -56,9 +56,9 @@ describe('rankRowProps', () => {
     expect(rankRowProps(tanks[0]!, tanks).figures[0]!.href).toBeUndefined();
   });
 
-  it("reads the leader's gap as best: the column reads against it", () => {
+  it("reads the leader's gap as best, a tank list's as lowest: the column reads against it", () => {
     expect(rankRowProps(dps[0]!, dps).gap).toMatchObject({ text: 'best', leader: true });
-    expect(rankRowProps(tanks[0]!, tanks).gap).toMatchObject({ text: 'best', leader: true });
+    expect(rankRowProps(tanks[0]!, tanks).gap).toMatchObject({ text: 'lowest', leader: true });
   });
 
   it("marks a tank's best of each column, with the reason in a title", () => {
@@ -66,12 +66,31 @@ describe('rankRowProps', () => {
     expect(warrior!.name).toBe('Protection Warrior');
     expect(warrior!.figures.map((f) => [f.value, f.best === true])).toEqual([
       ['245', true],
-      ['40,000', false],
+      ['7,484', false],
       ['1,633', true],
+      ['lowest', false],
     ]);
     expect(warrior!.figures[0]!.bestTitle).toBe('Best of the 2 tanks');
-    expect(paladin!.figures[1]).toMatchObject({ value: '49,794', best: true });
-    expect(paladin!.gap.text).toBe('+22.4%');
+    // Health is the maximum health, never effective health (which folds in the damage taken).
+    expect(paladin!.figures[1]).toMatchObject({ value: '9,171', label: 'Health', best: true });
+    expect(paladin!.gap).toMatchObject({
+      text: '+22% taken',
+      title: 'Takes 22% more damage a second than Protection Warrior',
+    });
+    // The phone keeps the vs #1 under the figures.
+    expect(paladin!.figures[3]).toMatchObject({ value: '+22% taken', phoneOnly: true });
+  });
+
+  it('leaves Health out of a tank row until the band publishes it', () => {
+    const old = rankRole(
+      [tankInput('warrior', 'protection', 'Protection', { dtps: 245, effective_health: 40000, tps: 1633 })],
+      'tank',
+    );
+    expect(rankRowProps(old[0]!, old).figures.map((f) => f.testid)).toEqual([
+      'tier-number',
+      'tier-threat',
+      'tier-gap-phone',
+    ]);
   });
 });
 
@@ -97,8 +116,17 @@ describe('a tied healer', () => {
 });
 
 describe('barFraction', () => {
+  it("sizes a tank's bar to the least damage taken over its own, from zero", () => {
+    expect(rankRowProps(tanks[1]!, tanks).fraction).toBeCloseTo(245 / 300, 10);
+    expect(rankRowProps(tanks[0]!, tanks).fraction).toBe(1);
+  });
+
   it('starts the bar at 90% of the lowest spec and fills it at the top', () => {
-    const rows = [{ fraction: 1 }, { fraction: 0.9 }, { fraction: 0.8 }];
+    const rows = [
+      { fraction: 1, role: 'dps' as const },
+      { fraction: 0.9, role: 'dps' as const },
+      { fraction: 0.8, role: 'dps' as const },
+    ];
     expect(barFraction(rows[0]!, rows)).toBe(1);
     expect(barFraction(rows[2]!, rows)).toBeCloseTo((0.8 - 0.72) / 0.28);
     expect(barFraction(rows[1]!, rows)).toBeGreaterThan(barFraction(rows[2]!, rows));

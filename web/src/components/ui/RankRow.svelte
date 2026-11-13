@@ -130,7 +130,7 @@
   <span class="ui-rr-extra"
     >{#each figures.slice(1) as item (item.label)}{@render figure(item, false)}{/each}</span
   >
-  <span class="ui-rr-gap" data-leader={gap.leader ? 'true' : undefined}
+  <span class="ui-rr-gap" data-leader={gap.leader ? 'true' : undefined} title={gap.title}
     ><span class="sr-only">{`${gap.label}: `}</span><span data-testid="rank-gap">{gap.text}</span></span
   >
   {#if links.length > 0}
