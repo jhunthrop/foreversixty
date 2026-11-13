@@ -871,6 +871,7 @@ function Panel.ensure()
 		Panel.close()
 	end)
 	close:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -2, -2)
+	Panel.closeButton = close
 	local content = CreateFrame("Frame", nil, frame)
 	content:SetPoint("TOPLEFT", frame, "TOPLEFT", Panel.PAD, -Panel.H.head)
 	content:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -Panel.PAD, Panel.H.foot)

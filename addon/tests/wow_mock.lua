@@ -474,6 +474,22 @@ function mock.install(state)
 		function frame:GetHeight()
 			return self.height or 0
 		end
+		--- The frame level, as the client keeps it: one above the parent's unless set. Real, not
+		--- the recorder, so a spec can assert what sits over what (the close X over the title band).
+		function frame:GetFrameLevel()
+			if self.frameLevel ~= nil then
+				return self.frameLevel
+			end
+			local holder = self.parent
+			if type(holder) == "table" and type(holder.GetFrameLevel) == "function" then
+				return (holder:GetFrameLevel() or 0) + 1
+			end
+			return 1
+		end
+		function frame:SetFrameLevel(level)
+			record(self, "SetFrameLevel", level)
+			self.frameLevel = level
+		end
 		--- A real parent change (L5.2 fix round 1: the group panel moves its own frames to the
 		--- Social window that is drawn), so IsVisible walks the new chain. Fix round 2: the old
 		--- parent lets the frame go (its Show and Hide no longer reach it), and a move that changes

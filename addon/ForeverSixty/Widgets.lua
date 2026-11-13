@@ -204,12 +204,22 @@ function Widgets.textButton(parent, text, onClick)
 	return button
 end
 
+--- How many frame levels the close X sits above its parent: over a sibling title band (one level
+--- up, mouse-enabled for the drag) and the band's own children (two up), so the X is never under
+--- the drag handle it shares its corner with. Seen in game 2026-11-12: the panel's X did nothing,
+--- the band took the click.
+Widgets.CLOSE_BUTTON_RAISE = 5
+
 --- The X in the title bar: a body-coloured x in a 1 px hairline box, so it reads as a button at rest;
 --- the strong white on a hover ground under the cursor (Theme.CONTROL_STATES.close), inset while pressed.
+--- Always above its parent's other children (Widgets.CLOSE_BUTTON_RAISE).
 function Widgets.closeButton(parent, onClick)
 	local states = Theme.CONTROL_STATES.close
 	local button = Theme.createFrame("Button", nil, parent)
 	button:SetSize(Theme.SIZES.closeButton, Theme.SIZES.closeButton)
+	if type(parent.GetFrameLevel) == "function" and type(button.SetFrameLevel) == "function" then
+		button:SetFrameLevel((parent:GetFrameLevel() or 0) + Widgets.CLOSE_BUTTON_RAISE)
+	end
 	local ground = Theme.texture(button, "BACKGROUND", states.hoverGround)
 	ground:SetAllPoints(button)
 	ground:Hide()

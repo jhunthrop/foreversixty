@@ -506,6 +506,23 @@ describe("Widgets", function()
 			assert.are.equal(1, closed)
 		end)
 
+		it("puts the X above the title band whose corner it shares, so the drag handle never takes its click", function()
+			start()
+			local frame = Widgets.umberFrame(_G.UIParent, 340, 200, nil)
+			local band = Widgets.titleBand(frame)
+			local close = Widgets.clientCloseButton(frame, function() end)
+			close:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -2, -2)
+			-- The band spans the frame's top at the X's own height: the two overlap on screen.
+			local cache = {}
+			local bandRect, closeRect = helper.resolveRect(band, cache), helper.resolveRect(close, cache)
+			assert.is_true(closeRect[1] >= bandRect[1] and closeRect[1] + closeRect[3] <= bandRect[1] + bandRect[3])
+			assert.is_true(closeRect[2] <= bandRect[2] and closeRect[2] - closeRect[4] >= bandRect[2] - bandRect[4])
+			-- Both are the frame's children, one level above it; the X is raised past the band.
+			assert.are.equal(frame:GetFrameLevel() + 1, band:GetFrameLevel())
+			assert.are.equal(frame:GetFrameLevel() + Widgets.CLOSE_BUTTON_RAISE, close:GetFrameLevel())
+			assert.is_true(close:GetFrameLevel() > band:GetFrameLevel() + 1)
+		end)
+
 		it("draws a frame as the site's plate: the raised ground in one hairline", function()
 			start()
 			local frame = Widgets.umberFrame(_G.UIParent, 340, 200, nil)
