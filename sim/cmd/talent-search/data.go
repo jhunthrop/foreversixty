@@ -73,6 +73,9 @@ type bisBand struct {
 	Slots   []struct {
 		Slot   string `json:"slot"`
 		ItemID int    `json:"item_id"`
+		// EnchantID is the permanent enchant the ranker measured the set
+		// wearing (leveling-bis enchants.go; 0 on a bare band).
+		EnchantID int `json:"enchant_id"`
 	} `json:"slots"`
 }
 
@@ -98,11 +101,13 @@ func loadBISBand(buildDir, spec string, level int, faction, preset string) (bisB
 	return bisBand{}, fmt.Errorf("%s has no level-%d %s %s band", path, level, faction, preset)
 }
 
+// gear is the band's items with their published enchants: a search wears
+// what the ranker measured, as spec-breakdown does.
 func (b bisBand) gear() []api.GearSlot {
 	var out []api.GearSlot
 	for _, s := range b.Slots {
 		if s.ItemID != 0 {
-			out = append(out, api.GearSlot{Slot: s.Slot, ItemID: s.ItemID})
+			out = append(out, api.GearSlot{Slot: s.Slot, ItemID: s.ItemID, Enchant: s.EnchantID})
 		}
 	}
 	return out
