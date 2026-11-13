@@ -25,6 +25,37 @@ test('back from a failed Battle.net sign-in: row 1 failed, said once as an alert
   expect(new URL(page.url()).search).toBe('');
 });
 
+/** Screenshots of a state at the desktop width and the owner's ~2000 px, for the persona reviews. */
+async function shoot(page: import('@playwright/test').Page, name: string): Promise<void> {
+  for (const width of [1440, 2000]) {
+    await page.setViewportSize({ width, height: 1100 });
+    await page.screenshot({ path: `test-results/import-states/${name}-${width}.png`, fullPage: true });
+  }
+}
+
+test('an import that left characters out: row 1 done, the missing count under the signed-in line', async ({
+  page,
+  isMobile,
+}) => {
+  await openSetupState(page, 'partial');
+  await expect(plate(page).getByRole('img', { name: 'Step 1: Done' })).toBeVisible();
+  await expect(page.getByTestId('setup-steps-step-1')).toContainText(addonCopy.setupImportMissing(2));
+  await expect(plate(page).getByRole('alert')).toHaveCount(0);
+  await expect(page.getByTestId('setup-action-refresh')).toHaveCount(0);
+  if (!isMobile) await shoot(page, 'partial');
+});
+
+test('an import that keyed nothing: the failed line leads the no-character lines, Refresh primary', async ({
+  page,
+  isMobile,
+}) => {
+  await openSetupState(page, 'import-failed');
+  await expect(page.getByTestId('setup-steps-step-1')).toContainText(addonCopy.setupImportFailed);
+  await expect(page.getByTestId('setup-steps-step-1')).toContainText(characterListCopy.emptyLead);
+  await expect(page.getByTestId('setup-action-refresh')).toBeVisible();
+  if (!isMobile) await shoot(page, 'import-failed');
+});
+
 test('an account read that fails is an error with Try again, never "signed out" (B1)', async ({ page }) => {
   await openSetupState(page, 'error');
   await expect(plate(page).getByRole('alert')).toHaveText(yourReportsPageCopy.sessionFailed);

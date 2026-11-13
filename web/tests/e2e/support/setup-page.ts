@@ -28,6 +28,8 @@ export type SetupPageState =
   | 'loading'
   | 'none'
   | 'importing'
+  | 'partial'
+  | 'import-failed'
   | 'failed'
   | 'bnet'
   | 'addon'
@@ -48,6 +50,8 @@ export const SETUP_STATES: readonly SetupPageState[] = [
   'loading',
   'none',
   'importing',
+  'partial',
+  'import-failed',
   'failed',
   'bnet',
   'addon',
@@ -153,6 +157,13 @@ function accountOf(state: SetupPageState): unknown {
         ...fixture<FixtureMe>('home/me-new.json'),
         bnet_import: { state: 'running', at: '2026-11-06T09:59:30Z' },
       };
+    case 'import-failed':
+      return {
+        ...fixture<FixtureMe>('home/me-new.json'),
+        bnet_import: { state: 'failed', at: '2026-11-06T09:00:00Z' },
+      };
+    case 'partial':
+      return { ...meBnet(), bnet_import: { state: 'partial', at: '2026-11-06T09:00:00Z', unresolved: 2 } };
     case 'bnet':
     case 'companion':
     case 'installed':
