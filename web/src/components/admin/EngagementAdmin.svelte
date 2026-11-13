@@ -23,9 +23,9 @@
   import Skeleton from '../ui/Skeleton.svelte';
 
   /** Each Grid: capped so the figures stay near their labels on a wide screen, scrolled sideways
-   *  inside its panel on a phone rather than widening the page (inline-size containment keeps the
-   *  table's own width from pushing the panel and the page wider). */
-  const GRID_BOX = 'w-full max-w-[760px] overflow-x-auto [contain:inline-size]';
+   *  inside its panel on a phone rather than widening the page. Positioned, so the Grid's sr-only
+   *  cell labels (absolute) stay inside the scroller instead of stretching the page. */
+  const GRID_BOX = 'relative w-full max-w-[760px] overflow-x-auto';
 
   type Phase = 'loading' | 'signed-out' | 'not-owner' | 'failed' | 'ready';
 
