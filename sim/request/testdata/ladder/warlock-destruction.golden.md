@@ -100,7 +100,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 00000000000000000-0000000000000000000-0010000000000000 | main_hand:284287 ranged:286750 | 13.4 | 5 | other:mana_gain=35.9, spell:1454=35.9, spell:695=29.3, spell:172=14.4, spell:707=13.7 | {SpellID: 412758}, {SpellID: 603} |
+| 10 | 00000000000000000-0000000000000000000-0010000000000000 | main_hand:284287 ranged:263430 | 13.4 | 5 | other:mana_gain=35.9, spell:1454=35.9, spell:695=29.3, spell:172=14.4, spell:707=13.7 | {SpellID: 412758}, {SpellID: 603} |
 | 20 | 00000000000000000-0000000000000000000-0050230100000000 | main_hand:2567 ranged:5243 | 38.2 | 7 | spell:695=35.7, other:mana_gain=32.1, spell:1455=32.1, spell:1094=13.5, spell:6222=12.2 | {SpellID: 412758}, {SpellID: 603} |
 | 30 | 00000000000000000-0000000000000000000-1050235103001000 | main_hand:249392 ranged:5213 | 61.5 | 7 | other:mana_gain=32.8, spell:1456=32.8, spell:1088=25.1, spell:2941=13.3, spell:6223=10.7 | {SpellID: 1293817}, {SpellID: 412758}, {SpellID: 426316, Tag: 1}, {SpellID: 603} |
 | 38 | 00000000000000000-0000000000000000000-1050235103101340 | main_hand:873 ranged:10766 | 105.6 | 9 | other:mana_gain=32.6, spell:11687=32.6, spell:7641=16.3, spell:2941=14.9, spell:1293818=13.8 | {SpellID: 412758}, {SpellID: 603} |
