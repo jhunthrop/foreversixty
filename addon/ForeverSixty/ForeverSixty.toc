@@ -43,6 +43,7 @@ surfaces\Chip.lua
 surfaces\TalentMarks.lua
 surfaces\SlotMarks.lua
 surfaces\RewardMarks.lua
+surfaces\BuildsPane.lua
 surfaces\BuildDialog.lua
 surfaces\SiteStatus.lua
 surfaces\Settings.lua

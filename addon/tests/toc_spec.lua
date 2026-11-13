@@ -32,7 +32,7 @@ describe("the TOC", function()
 		-- The quest reward, roll and dungeon marks (L4.2): read the tooltip's own verdict.
 		"surfaces/RewardMarks.lua",
 		-- The build dialog (L3.4): built on its first open; Options opens it.
-		"surfaces/BuildDialog.lua",
+		"surfaces/BuildsPane.lua", "surfaces/BuildDialog.lua",
 		-- The site-status lines (X.3): /fs diag, the login line and the chip read the inbox and the clock.
 		"surfaces/SiteStatus.lua",
 		-- The Settings page (L3.5): registered at login; Options opens it.

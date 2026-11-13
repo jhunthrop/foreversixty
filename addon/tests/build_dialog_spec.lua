@@ -211,15 +211,17 @@ describe("BuildDialog, a good paste is never applied until Use", function()
 		assert.are.equal(0, #calls)
 	end)
 
-	it("says who pushed a pushed build, in place of 'from the site'", function()
+	it("says who pushed a pushed build, else the day it came, on the muted line (2026-11-13)", function()
 		local rows = BuildDialog.inboxRows({ { id = "x", name = "BM raid", code = ARMS, from = "Boss" },
 			{ id = "y", name = "Site build", code = ARMS .. "" } }, {}, DATA)
-		-- A.2: the sender is the title line's stamp now, the day beside it for a build from the site.
 		assert.are.equal("pushed by Boss", rows[1].stamp)
-		assert.are.equal("from the site", rows[2].stamp)
+		assert.are.equal("pushed by Boss", rows[1].target)
+		assert.is_nil(rows[2].stamp)
+		assert.are.equal("", rows[2].target)
 		assert.are.equal("pushed by Boss", string.format(L.dialogFromPush, "Boss"))
 		local dated = BuildDialog.inboxRows({ { id = "y", name = "Site build", code = ARMS } }, {}, DATA, nil, "22 Oct")
-		assert.are.equal("from the site, 22 Oct", dated[1].stamp)
+		assert.are.equal("22 Oct", dated[1].stamp)
+		assert.are.equal("22 Oct", dated[1].target)
 		-- A push carries no day of its own.
 		local pushed = BuildDialog.inboxRows({ { id = "x", name = "BM", code = ARMS, from = "Boss" } }, {}, DATA, nil,
 			"22 Oct")
@@ -619,10 +621,11 @@ describe("BuildDialog, paste mode's model", function()
 		end
 	end)
 
-	it("says 'build' in the plan line for a default build, never leveling or raid (X.5)", function()
+	it("names a default build's kind in the plan line, 'Arms leveling build' (2026-11-13)", function()
 		local plan = ordered("DDI", "Arms leveling")
 		plan.default, plan.kind = true, "leveling"
-		assert.are.equal("Following: Arms build \194\183 Warrior \194\183 3 points", BuildDialog.followingLine(plan, DATA))
+		assert.are.equal("Following: Arms leveling build \194\183 Warrior \194\183 3 points",
+			BuildDialog.followingLine(plan, DATA))
 		plan.name, plan.default = "Arms raid", false
 		assert.are.equal("Following: Arms raid \194\183 Warrior \194\183 3 points", BuildDialog.followingLine(plan, DATA))
 	end)
@@ -1043,7 +1046,7 @@ describe("BuildDialog, builds from the site", function()
 		local rows = BuildDialog.inboxRows(builds, { c = true, [code(5, 0)] = true }, DATA)
 		assert.are.equal(2, #rows)
 		assert.are.same({ id = "a", name = "Arms raid", code = MINE, classToken = "WARRIOR",
-			detail = "Warrior · Arms 31 / Fury 20", target = "", stamp = "from the site", points = "51 points" },
+			detail = "Warrior · Arms 31 / Fury 20", target = "", points = "51 points" },
 			rows[1])
 		local fury = Follow.buildName(DATA, build(OTHER))
 		assert.are.equal(fury, rows[2].name)
@@ -1058,19 +1061,19 @@ describe("BuildDialog, builds from the site", function()
 			{ id = "c", name = "Pushed", code = code(6, 0), from = "Boss", character = "us/Classic Beta PvP/Bow Jackzon" },
 		}, {}, DATA, player)
 		assert.are.equal("For Bow Jackzon \194\183 Classic Beta PvP", rows[1].target)
-		assert.are.equal("from the site", rows[1].stamp)
+		assert.is_nil(rows[1].stamp)
 		-- The title the site sent is the name, verbatim.
 		assert.are.equal("20 to 29 \226\128\148 Beast Mastery", rows[1].name)
 		-- A build addressed to no one is not "for" anyone in particular.
 		assert.are.equal("", rows[2].target)
-		assert.are.equal("For Bow Jackzon \194\183 Classic Beta PvP", rows[3].target)
+		assert.are.equal("For Bow Jackzon \194\183 Classic Beta PvP \194\183 pushed by Boss", rows[3].target)
 		assert.are.equal("pushed by Boss", rows[3].stamp)
 		assert.are.equal("Warrior \194\183 Arms 31 / Fury 20", rows[1].detail)
 	end)
 
-	it("lays a row out three lines tall, never under the class icon's height (X.5)", function()
+	it("lays a row out three lines tall, never under the crest's height (X.5)", function()
 		local S = require("Theme").SIZES
-		assert.are.equal(S.dialogClassIcon, BuildDialog.rowHeight(8))
+		assert.are.equal(BuildDialog.SITE_CREST, BuildDialog.rowHeight(5))
 		assert.are.equal(14 * 3 + S.gap, BuildDialog.rowHeight(14))
 	end)
 
@@ -1298,18 +1301,17 @@ describe("BuildDialog, the gear row's source and the build's title (A.2)", funct
 		end
 	end)
 
-	it("puts the sender and the day beside the size on a site build's title, cutting only the name", function()
+	it("puts the size beside a site build's title, cutting only the name", function()
 		local measure = function(text)
 			return utf8.len(text) * 5
 		end
-		assert.are.equal("Beast Mastery build \194\183 from the site, 22 Oct \194\183 15 points",
-			BuildDialog.siteTitle("Beast Mastery build", "from the site, 22 Oct", "15 points"))
-		local cutTitle = BuildDialog.siteTitle("A very long build name the site sent for this character",
-			"from the site, 22 Oct", "15 points", measure, 300)
-		assert.is_true(measure(cutTitle) <= 300, cutTitle)
-		assert.is_truthy(cutTitle:find("from the site, 22 Oct \194\183 15 points$"), cutTitle)
+		assert.are.equal("Beast Mastery build \194\183 15 points", BuildDialog.siteTitle("Beast Mastery build", "15 points"))
+		local cutTitle = BuildDialog.siteTitle("A very long build name the site sent for this character with a tail",
+			"15 points", measure, 200)
+		assert.is_true(measure(cutTitle) <= 200, cutTitle)
+		assert.is_truthy(cutTitle:find("\194\183 15 points$"), cutTitle)
 		-- A pipe in a site-sent name is doubled, whole.
-		assert.is_truthy(BuildDialog.siteTitle("A|B", "from the site", "3 points"):find("A||B", 1, true))
+		assert.is_truthy(BuildDialog.siteTitle("A|B", "3 points"):find("A||B", 1, true))
 	end)
 
 	it("reads the day the inbox was written on the player's own calendar", function()

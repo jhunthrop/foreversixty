@@ -785,16 +785,20 @@ Theme.CONTROL_STATES = {
 Theme.PRESSED_LABEL_DROP = 1
 
 --- The pressed state for any button: `onPress` and `onRelease` paint its ground, and its
---- label drops a pixel from wherever it sits now and comes back on mouse-up.
+--- label drops a pixel from wherever it sits now and comes back on mouse-up. The held rest point
+--- lives on the control (`foreverSixtyResting`), so a caller that re-anchors the label (a pooled
+--- button given a new role, Widgets.resetButtonLabel) drops it and no release can move it back.
 function Theme.pressable(control, label, onPress, onRelease)
-	local resting
 	control:SetScript("OnMouseDown", function(self)
 		if type(self.IsEnabled) == "function" and not self:IsEnabled() then
 			return
 		end
-		if label ~= nil and type(label.GetPoint) == "function" then
-			resting = { label:GetPoint() }
+		-- A second press before the release (another mouse button) keeps the first rest point, so
+		-- the label never ratchets down a pixel a press.
+		if label ~= nil and type(label.GetPoint) == "function" and self.foreverSixtyResting == nil then
+			local resting = { label:GetPoint() }
 			if resting[1] ~= nil then
+				self.foreverSixtyResting = resting
 				label:ClearAllPoints()
 				label:SetPoint(resting[1], resting[2], resting[3], resting[4] or 0,
 					(resting[5] or 0) - Theme.PRESSED_LABEL_DROP)
@@ -802,15 +806,17 @@ function Theme.pressable(control, label, onPress, onRelease)
 		end
 		onPress(self)
 	end)
-	local function settle()
-		if resting ~= nil and resting[1] ~= nil then
+	local function settle(self)
+		local resting = self.foreverSixtyResting
+		self.foreverSixtyResting = nil
+		if resting ~= nil then
 			label:ClearAllPoints()
 			label:SetPoint(resting[1], resting[2], resting[3], resting[4] or 0, resting[5] or 0)
 		end
-		resting = nil
+		return resting ~= nil
 	end
 	control:SetScript("OnMouseUp", function(self)
-		settle()
+		settle(self)
 		if type(self.IsEnabled) == "function" and not self:IsEnabled() then
 			-- Turned off while held (combat, say): back to rest, never to hover.
 			onRelease(self, false)
@@ -822,8 +828,7 @@ function Theme.pressable(control, label, onPress, onRelease)
 	-- Hidden while held: the label and the ground go back to rest.
 	local hidden = control:GetScript("OnHide")
 	control:SetScript("OnHide", function(self, ...)
-		if resting ~= nil then
-			settle()
+		if settle(self) then
 			onRelease(self, false)
 		end
 		if hidden ~= nil then

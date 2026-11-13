@@ -200,6 +200,9 @@ local L = {
 	-- Controller ruling 2: neither code format carries a build name, so a
 	-- pasted code is named after its class.
 	followBuildName = "%s build",
+	-- A default build names its kind (2026-11-13): "Beast Mastery leveling build", "Arms raid build".
+	followKindBuildName = "%s %s build",
+	followKindWord = { leveling = "leveling", raid = "raid" },
 	-- Between the two trees an unnamed build is named after: "Arms / Fury build".
 	followSplitSeparator = " / ",
 	-- One row of the order: tier, then the talent's name.
@@ -934,8 +937,15 @@ L.dialogEnterPreview = "Enter to preview"
 -- ("Paladin leveling builds"; the spec question, L.pathAsk, while the points do not name a tree),
 -- the gold mark on the followed row, the heading over the site rows and the paste box, the Enter
 -- hint while the cursor sits on an own row, and the row's line when its default does not load.
-L.dialogOwnLeveling = "%s leveling builds"
-L.dialogOwnRaid = "%s raid builds"
+-- The Builds tab's own builds (2026-11-13 spec 1.4): "Hunter builds", "Level 42" before the panel's
+-- "27 of 33 points"; each row's label says what the build is for (a player levels with the first).
+L.dialogOwnBuilds = "%s builds"
+L.dialogLevelPoints = "Level %d"
+L.dialogKindLeveling = "Leveling build"
+L.dialogKindRaid = "Raid build"
+L.dialogKindBoth = "Leveling and raid build"
+L.dialogFollow = "Follow"
+L.dialogClickFollow = "Click to follow"
 L.dialogFollowingMark = "Following"
 L.dialogSiteHeading = "From the site"
 L.dialogEnterFollow = "Enter to follow"
@@ -993,14 +1003,10 @@ L.dialogNowFollowingNext = "Now following %s. Take %s."
 -- A.2: with no point to spend now, the level the next one arrives at, and the plan's talent for it.
 L.dialogNowFollowingLater = "Now following %s. Next point at level %d."
 L.dialogNowFollowingLaterTalent = "Now following %s. Next point at level %d: %s."
--- A build the site sent is a row of three lines (X.5): its name, "Hunter · Beast Mastery 11 · 11 points",
--- and a muted "For Bow Jackzon · Classic Beta PvP · from the site" (the name shortens to fit).
+-- A build the site sent is a row of three lines (X.5): its name and its points, "Hunter · Beast Mastery
+-- 11", and a muted "For Bow Jackzon · Classic Beta PvP · 22 Oct" (the day it arrived, so two builds of
+-- one name tell apart; the rows sit under "From the site", so no line says it again).
 L.dialogForCharacter = "For %s"
-L.dialogFromSite = "from the site"
--- The day a build arrived: "from the site, 22 Oct" (the whole line reads "Beast Mastery build ·
--- from the site, 22 Oct · 15 points", so two builds of one name tell apart).
-L.dialogFromSiteOn = "from the site, %s"
-L.dialogFromPushOn = "pushed by %s, %s"
 -- A build an officer pushed to the guild or group (L3.7 item 44; "%s" the officer), and the
 -- one chat line when it arrives.
 L.dialogFromPush = "pushed by %s"

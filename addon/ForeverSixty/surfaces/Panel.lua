@@ -67,7 +67,7 @@ Codec.MESSAGE_TYPES[Panel.SIGNUP_KIND] = true
 --- Nominal heights the budget is counted in (the frame measures its own lines when it draws):
 --- `head` is the title band and the body's top padding, `foot` the body's bottom padding.
 Panel.H = { head = Theme.SIZES.titleBand + 12, foot = 14, heading = 22, rule = 9, line = 14, row = 34,
-	rotationName = 15, rotationClause = 13, rotationGap = 5, button = 22, gap = 6 }
+	rotationName = 15, rotationClause = 13, rotationGap = 5, button = 22, gap = 6, talentRow = 38 }
 --- A rotation row's condition sits under the spell's name and wraps to a second line past this
 --- many characters (a 60-character panel line never runs past two); the budget counts it so.
 Panel.CLAUSE_WRAP_CHARS = 44
@@ -75,6 +75,12 @@ Panel.CLAUSE_MAX_LINES = 2
 --- The body's side padding, and the gap between two buttons side by side.
 Panel.PAD = 14
 Panel.BUTTON_GAP = 6
+--- How far the Talents row's build name sits below the top of the buttons beside it, so the two
+--- share a centre line (a 20 px button, a 14 px line).
+Panel.NAME_DROP = 3
+--- The Talents row's room between its full-width first line and the buttons under it (its row is
+--- H.talentRow: a 14 px line, this gap, a 20 px button).
+Panel.TALENT_BUTTON_GAP = 4
 --- The secure cover over the Talents button (TalentClick), and how far above the button it sits.
 Panel.TALENTS_COVER_NAME = "ForeverSixtyPanelTalents"
 Panel.TALENTS_COVER_RAISE = 5
@@ -303,13 +309,10 @@ function Panel.talents(input)
 	region.icon = input.pointIcon
 	region.name = input.pointName or L.panelNextTalentUnnamed
 	if (input.unspent or 0) > 0 then
-		region.title = region.name
 		region.spend = string.format(L.panelSpendNow, input.unspent)
-	elseif type(progress.nextLevel) == "number" then
-		region.title = string.format(L.panelTalentAt, progress.nextLevel, region.name)
-	else
-		region.title = region.name
 	end
+	-- The one shape of the next point (Follow.nextPointLine), as the Builds tab's followed row shows it.
+	region.title = Follow.nextPointLine(region.name, input.unspent, progress.nextLevel)
 	region.buildName = input.buildName
 	return region
 end
@@ -394,7 +397,7 @@ function Panel.regionHeight(region)
 	elseif region.kind == "upgrades" then
 		height = height + H.row * #region.rows + (region.rest and H.line or 0)
 	elseif region.kind == "talents" then
-		height = height + (region.finished and 0 or H.row)
+		height = height + (region.finished and 0 or H.talentRow)
 	elseif region.kind == "path" then
 		height = height + H.row * #region.specs + H.line * 2
 	elseif region.kind == "rotation" then
@@ -610,7 +613,7 @@ function Panel.inputs(data)
 		clock = clock, tonight = tonight, accepts = accepts,
 		lastRaid = newestMessage("last_raid"),
 		targets = upgradeTargets(base),
-		build = build, buildName = build ~= nil and Follow.buildName(data, build) or nil,
+		build = build, buildName = build ~= nil and Follow.panelBuildName(data, build, level) or nil,
 		progress = Progress.build(build, stagedRanks, level),
 		unspent = Progress.unspentPoints(level, ranks),
 		offPlanTalents = PanelTab.offPlanTalents(build, stagedRanks, data),
@@ -762,7 +765,9 @@ local function button(content, label, onClick, selected)
 			end
 		end)
 	end)
-	made:SetText(label)
+	-- A pooled button is another role's button from the last draw: its label is put back on its own
+	-- centre, shown and recoloured on every draw, so no earlier press or role can leave it blank.
+	Widgets.resetButtonLabel(made, label)
 	made.foreverSixtyAction = onClick
 	Widgets.fitButton(made)
 	Widgets.setEnabled(made, true)
@@ -1123,25 +1128,23 @@ local function drawTalents(content, region, y, width)
 	end
 	local mark = icon(content, region.icon, 28)
 	mark:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -y)
-	-- Its own click opens the window only on a client without the micro button; elsewhere the
-	-- secure cover over it takes the click (Panel.syncTalentButton).
-	local open = button(content, L.panelTalentsButton, TalentClick.open)
-	Panel.talentsButton = open
-	open:SetPoint("TOPRIGHT", content, "TOPRIGHT", 0, -y - 4)
-	local change = button(content, L.panelChange, Panel.change)
-	change:SetPoint("RIGHT", open, "LEFT", -Panel.BUTTON_GAP, 0)
-	local textWidth = width - ROW_TEXT - open:GetWidth() - change:GetWidth() - Panel.BUTTON_GAP - 8
+	-- Line 1, the full width (spec 2026-11-13 section 2): the talent and the points waiting, the
+	-- words a player must read whole, never beside the buttons.
 	local title = text(content, region.title, "ink", "normal")
 	title:SetPoint("TOPLEFT", content, "TOPLEFT", ROW_TEXT, -y)
-	title:SetWidth(textWidth)
-	local sub = region.buildName or ""
-	if region.spend ~= nil then
-		sub = (sub ~= "" and sub .. L.exportTreeSeparator or "") .. Theme.inlineColor("clientGold", region.spend)
-	end
-	local line = text(content, sub, "umberMuted")
-	line:SetPoint("TOPLEFT", content, "TOPLEFT", ROW_TEXT, -y - Panel.H.line - 2)
-	line:SetWidth(textWidth)
-	return y + Panel.H.row + Panel.H.gap
+	title:SetWidth(width - ROW_TEXT)
+	-- Line 2: the buttons at the right, the build's name in the room left of them (a long name is
+	-- cut, which loses nothing a player needs). Talents' own click opens the window only on a client
+	-- without the micro button; elsewhere the secure cover over it takes the click.
+	local open = button(content, L.panelTalentsButton, TalentClick.open)
+	Panel.talentsButton = open
+	open:SetPoint("TOPRIGHT", content, "TOPRIGHT", 0, -y - Panel.H.line - Panel.TALENT_BUTTON_GAP)
+	local change = button(content, L.panelChange, Panel.change)
+	change:SetPoint("RIGHT", open, "LEFT", -Panel.BUTTON_GAP, 0)
+	local line = text(content, region.buildName or "", "umberMuted")
+	line:SetPoint("TOPLEFT", content, "TOPLEFT", ROW_TEXT, -y - Panel.H.line - Panel.TALENT_BUTTON_GAP - Panel.NAME_DROP)
+	line:SetWidth(width - ROW_TEXT - open:GetWidth() - change:GetWidth() - Panel.BUTTON_GAP * 2)
+	return y + Panel.H.talentRow + Panel.H.gap
 end
 
 local function drawPath(content, region, y, width)

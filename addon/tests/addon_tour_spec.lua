@@ -157,57 +157,112 @@ describe("the tour steps aside for the Builds dialog (spec 6.1)", function()
 	end)
 end)
 
-describe("the Builds dialog's own builds (spec 6.4), the pure model", function()
-	local BuildDialog
+describe("the Builds dialog's own builds (2026-11-13 spec 1), the pure model", function()
+	local BuildsPane, BuildDialog
 
 	before_each(function()
 		helper.load("Export")
 		helper.load("Follow")
+		BuildsPane = helper.load("BuildsPane")
 		BuildDialog = helper.load("BuildDialog")
 	end)
 
-	it("lists one row per spec with a build, in tree order, named and split as the player reads them", function()
-		local rows = BuildDialog.ownRows(DATA, "warrior", 13, nil)
-		assert.are.equal(2, #rows)
-		assert.are.equal("warrior-arms", rows[1].spec)
-		assert.are.equal("Arms build", rows[1].name)
-		assert.are.equal("Arms 3", rows[1].detail)
-		assert.are.equal("leveling", rows[1].kind)
-		assert.are.equal("Fury build", rows[2].name)
-		assert.is_false(rows[1].following)
+	it("lists every spec's level 60 build and raid build, in tree order, labelled for what each is for",
+		function()
+		local blocks = BuildsPane.blocks(DATA, "warrior", 13, nil)
+		assert.are.equal(2, #blocks)
+		assert.are.equal("warrior-arms", blocks[1].spec)
+		assert.are.equal("Arms", blocks[1].name)
+		local arms = blocks[1].rows
+		assert.are.equal(2, #arms)
+		assert.are.equal(L.dialogKindLeveling, arms[1].label)
+		assert.are.equal("Leveling build", L.dialogKindLeveling)
+		assert.are.equal("Arms 3", arms[1].detail)
+		assert.are.equal(L.dialogKindRaid, arms[2].label)
+		assert.are.equal("Arms 1 / Fury 1", arms[2].detail)
+		assert.is_false(arms[1].following)
+		-- The level's own kind is followed as the level says; the other is chosen outright.
+		assert.is_nil(arms[1].choose)
+		assert.are.equal("raid", arms[2].choose)
+		assert.are.equal(4, #BuildsPane.flatten(blocks))
 	end)
 
-	it("marks the row whose points the followed build spends, and lists raid builds at 60", function()
+	it("shows one row for a spec whose two builds spend the same points", function()
+		local data = { classes = DATA.classes, defaultBuilds = { ["warrior-fury"] = {
+			leveling = { name = "Fury leveling", order = { { 2, 1, 3 } }, why = "Cruelty first." },
+			raid = { name = "Fury raid", order = { { 2, 1, 3 } }, why = "Cruelty first." },
+		} } }
+		local rows = BuildsPane.blocks(data, "warrior", 60, nil)[1].rows
+		assert.are.equal(1, #rows)
+		assert.are.equal("both", rows[1].kind)
+		assert.are.equal(L.dialogKindBoth, rows[1].label)
+		assert.are.equal("Cruelty first.", rows[1].why)
+		assert.is_nil(rows[1].choose)
+	end)
+
+	it("marks the row the followed build spends, with the next point under it", function()
 		local followed = { classSlug = "warrior", order = { { tab = 2, tier = 1, column = 3 },
 			{ tab = 2, tier = 1, column = 3 } } }
-		local rows = BuildDialog.ownRows(DATA, "warrior", 13, followed)
+		local rows = BuildsPane.flatten(BuildsPane.blocks(DATA, "warrior", 13, followed, {}))
 		assert.is_false(rows[1].following)
-		assert.is_true(rows[2].following)
-		local raid = BuildDialog.ownRows(DATA, "warrior", 60, nil)
-		assert.are.equal("raid", raid[1].kind)
-		assert.are.equal("Arms 1 / Fury 1", raid[1].detail)
+		assert.is_true(rows[3].following)
+		assert.are.equal("Cruelty · " .. require("Theme").inlineColor("clientGold", string.format(L.panelSpendNow, 4)),
+			rows[3].next)
+		assert.is_nil(rows[1].next)
+		assert.are.equal(3, BuildsPane.rowLines(rows[3]))
 	end)
 
-	it("heads the list with the class's builds, or with the question and the split while the points name no tree",
-		function()
-		assert.are.equal("Warrior leveling builds", BuildDialog.ownHeading("Warrior", 13, nil))
-		assert.are.equal("Warrior raid builds", BuildDialog.ownHeading("Warrior", 60, nil))
-		assert.are.equal("Are you Arms or Fury?", BuildDialog.ownHeading("Warrior", 13, "Are you Arms or Fury?"))
+	it("reads the why and the spec icon from the data, and goes without either when the data has none", function()
+		local data = { classes = DATA.classes, specIcons = { ["warrior-arms"] = "ability_warrior_savageblow" },
+			defaultBuilds = { ["warrior-arms"] = { leveling = { name = "Arms leveling", order = { { 1, 1, 1 } },
+				why = "Deep Wounds carries the leveling." } } } }
+		local block = BuildsPane.blocks(data, "warrior", 20, nil)[1]
+		assert.are.equal("Interface\\Icons\\ability_warrior_savageblow", block.icon)
+		assert.are.equal("Deep Wounds carries the leveling.", block.rows[1].why)
+		local bare = BuildsPane.blocks(DATA, "warrior", 20, nil)[1]
+		assert.is_nil(bare.icon)
+		assert.is_nil(bare.rows[1].why)
+		assert.are.equal(2, BuildsPane.rowLines(bare.rows[1]))
+	end)
+
+	it("heads the list with the class's builds and the level, or with the question and the split", function()
+		assert.are.equal("Warrior builds", BuildsPane.heading("Warrior", nil))
+		assert.are.equal("Level 13", BuildsPane.note(13, nil, {}))
+		local followed = { classSlug = "warrior", order = { { tab = 1, tier = 1, column = 1 },
+			{ tab = 1, tier = 1, column = 1 }, { tab = 1, tier = 1, column = 2 } } }
+		assert.are.equal("Level 13 · 0 of 3 points", BuildsPane.note(13, followed, {}))
+		assert.are.equal("Are you Arms or Fury?", BuildsPane.heading("Warrior", "Are you Arms or Fury?"))
+		assert.is_nil(BuildsPane.note(13, nil, {}, "Are you Arms or Fury?"))
 		local Theme = require("Theme")
 		assert.are.equal("Are you Arms or Fury? · " .. Theme.inlineColor("muted", "1 Arms · 1 Fury"),
-			BuildDialog.ownHeading("Warrior", 13, "Are you Arms or Fury?", "1 Arms · 1 Fury"))
+			BuildsPane.heading("Warrior", "Are you Arms or Fury?", "1 Arms · 1 Fury"))
 	end)
 
-	it("names the talent the character would take next on each build, from the real ranks", function()
-		local rows = BuildDialog.ownRows(DATA, "warrior", 13, nil, { [1] = { ["1:1"] = 1 } })
-		assert.are.equal("Improved Heroic Strike", rows[1].next)
-		assert.are.equal("Cruelty", rows[2].next)
-		assert.is_nil(BuildDialog.ownRows(DATA, "warrior", 13, nil)[1].next)
+	it("counts the points off plan in the note, in the warning colour, as the panel does", function()
+		local followed = { classSlug = "warrior", order = { { tab = 1, tier = 1, column = 1 },
+			{ tab = 1, tier = 1, column = 1 }, { tab = 1, tier = 1, column = 2 } } }
+		local ranks = { [2] = { ["1:3"] = 2 } }
+		local note = BuildsPane.note(13, followed, ranks)
+		assert.is_truthy(note:find(require("Theme").inlineColor("warning", string.format(L.panelOffPlanCount, 2)),
+			1, true), note)
 	end)
 
-	it("shows two site rows beside up to three own rows and one beside four", function()
-		assert.are.equal(2, BuildDialog.siteRowLimit(3))
-		assert.are.equal(1, BuildDialog.siteRowLimit(4))
+	it("titles the row tooltip with the label, then the split, the whole why, and Click to follow", function()
+		local Theme = require("Theme")
+		local row = { label = L.dialogKindRaid, detail = "Arms 1 / Fury 1", why = "Mortal Strike carries it.",
+			following = false }
+		local lines = BuildsPane.tooltipLines(row)
+		assert.are.equal(Theme.inlineColor("strong", L.dialogKindRaid), lines[1])
+		assert.are.equal(Theme.inlineColor("muted", "Arms 1 / Fury 1"), lines[2])
+		assert.are.same({ text = Theme.inlineColor("body", "Mortal Strike carries it."), wrap = true }, lines[3])
+		assert.are.equal(Theme.inlineColor("muted", L.dialogClickFollow), lines[4])
+		row.following = true
+		assert.are.equal(3, #BuildsPane.tooltipLines(row))
+	end)
+
+	it("shows two site rows beside up to four own rows and one beside five", function()
+		assert.are.equal(2, BuildDialog.siteRowLimit(4))
+		assert.are.equal(1, BuildDialog.siteRowLimit(5))
 	end)
 
 	it("walks the cursor over the own rows then the site rows, starting on the first site row or nowhere", function()
@@ -221,7 +276,7 @@ describe("the Builds dialog's own builds (spec 6.4), the pure model", function()
 	end)
 end)
 
-describe("the Builds dialog's own builds (spec 6.4), the frame", function()
+describe("the Builds dialog's own builds (2026-11-13 spec 1), the frame", function()
 	local BuildDialog, Follow, Chip, state, said
 
 	before_each(function()
@@ -240,6 +295,7 @@ describe("the Builds dialog's own builds (spec 6.4), the frame", function()
 		Chip = helper.load("Chip")
 		Chip.data = DATA
 		helper.load("ItemTooltip")
+		helper.load("BuildsPane")
 		BuildDialog = helper.load("BuildDialog")
 		BuildDialog.data = DATA
 		said = {}
@@ -253,60 +309,94 @@ describe("the Builds dialog's own builds (spec 6.4), the frame", function()
 		mock.uninstall()
 	end)
 
-	it("opens on the question, the own rows, Custom build and the companion line, the cursor on nothing", function()
+	it("opens on the question, every spec's two builds with Follow and From the site, no explainer or hint",
+		function()
 		assert.is_true(BuildDialog.open("paste"))
 		mock.runTimers(state)
-		local paste = BuildDialog.paste
-		-- The question with the points split muted after it (round 2).
+		local paste, pane = BuildDialog.paste, BuildDialog.paste.builds
 		assert.are.equal("Are you Arms or Fury? · " .. require("Theme").inlineColor("muted", "1 Arms · 1 Fury"),
-			paste.heading:GetText())
-		assert.is_true(paste.heading:IsShown())
+			pane.heading:GetText())
+		assert.is_true(pane.heading:IsShown())
+		assert.is_true(pane.crest:IsShown())
+		assert.is_true(pane.ring:IsShown())
+		assert.is_false(pane.note:IsShown())
 		assert.is_true(paste.custom:IsShown())
 		assert.are.equal(L.dialogSiteHeading, paste.custom:GetText())
-		assert.are.equal("From the site", L.dialogSiteHeading)
-		assert.are.equal("Arms build", paste.own[1].name:GetText())
-		assert.is_true(paste.own[1].frame:IsShown())
-		assert.is_true(paste.own[2].frame:IsShown())
-		assert.is_false(paste.own[3].frame:IsShown())
-		-- Nothing followed: each row's right says the talent the character would take next, muted.
-		assert.are.equal("Improved Heroic Strike next", paste.own[1].mark:GetText())
-		assert.are.equal("Cruelty next", paste.own[2].mark:GetText())
-		assert.is_false(paste.own[1].edge:IsShown())
+		assert.are.equal(L.dialogKindLeveling, pane.rows[1].label:GetText())
+		assert.are.equal(L.dialogKindRaid, pane.rows[2].label:GetText())
+		for index = 1, 4 do
+			assert.is_true(pane.rows[index].frame:IsShown(), index)
+			assert.is_true(pane.rows[index].follow:IsShown(), index)
+			assert.is_false(pane.rows[index].mark:IsShown(), index)
+		end
+		assert.is_false(pane.rows[5].frame:IsShown())
+		assert.is_true(pane.specs[1].name:IsShown())
+		assert.is_true(pane.specs[2].name:IsShown())
+		assert.is_false(pane.rows[1].edge:IsShown())
 		assert.are.equal(0, BuildDialog.cursor)
 		assert.is_false(BuildDialog.enterHint:IsShown())
-		assert.is_true(paste.companion:IsShown())
+		assert.is_false(paste.companion:IsShown())
+		assert.is_false(BuildDialog.tabHint:IsShown())
 	end)
 
-	it("follows an own build on one tap, remembers the answer, says so and closes; the tour's path shows it",
-		function()
+	it("follows an own build on one tap, remembers the answer, says so and closes", function()
 		BuildDialog.open("paste")
 		mock.runTimers(state)
-		local build = BuildDialog.followOwn(BuildDialog.paste.own[2].entry)
+		local build = BuildDialog.followOwn(BuildDialog.paste.builds.rows[3].entry)
 		assert.is_not_nil(build)
-		assert.are.equal("Fury build", Follow.buildName(DATA, Follow.build))
+		assert.are.equal("Fury leveling build", Follow.buildName(DATA, Follow.build))
 		assert.is_true(Follow.build.default)
 		assert.are.same({ spec = "warrior-fury" }, Chip.chosenPath())
 		assert.is_false(BuildDialog.frame:IsShown())
-		assert.is_truthy(said[1]:find("Fury build", 1, true), said[1])
-		-- Opened again: Fury is marked Following, the heading is still the question (the points are 1/1).
+		assert.is_truthy(said[1]:find("Fury leveling build", 1, true), said[1])
+		-- Opened again: Fury's level 60 build reads Following with its next point; the others offer Follow.
 		BuildDialog.open("paste")
 		mock.runTimers(state)
-		assert.are.equal(L.dialogFollowingMark, BuildDialog.paste.own[2].mark:GetText())
-		assert.are.equal("Improved Heroic Strike next", BuildDialog.paste.own[1].mark:GetText())
+		local rows = BuildDialog.paste.builds.rows
+		assert.is_true(rows[3].mark:IsShown())
+		assert.is_false(rows[3].follow:IsShown())
+		assert.is_truthy(rows[3].lines[2]:GetText():find("Cruelty", 1, true))
+		assert.is_true(rows[1].follow:IsShown())
 		assert.is_false(BuildDialog.paste.following:IsShown())
 		-- Enter on an own row follows it; the hint says so.
 		BuildDialog.setCursor(1)
 		assert.are.equal(L.dialogEnterFollow, BuildDialog.enterHint:GetText())
+		assert.is_true(rows[1].edge:IsShown())
 		BuildDialog.previewCursor()
-		assert.are.equal("Arms build", Follow.buildName(DATA, Follow.build))
+		assert.are.equal("Arms leveling build", Follow.buildName(DATA, Follow.build))
+	end)
+
+	it("follows the raid build below 60 and remembers the kind for the next login", function()
+		BuildDialog.open("paste")
+		mock.runTimers(state)
+		BuildDialog.followOwn(BuildDialog.paste.builds.rows[2].entry)
+		assert.are.equal("raid", Follow.build.kind)
+		assert.are.equal("Arms raid build", Follow.buildName(DATA, Follow.build))
+		assert.are.same({ spec = "warrior-arms", kind = "raid" }, Chip.chosenPath())
+	end)
+
+	it("lays the followed row on gold with a gold edge, and drops a playstyle that does not fit whole", function()
+		Follow.ensureDefault(DATA, { spec = "warrior-arms", classSlug = "warrior", ranks = {}, level = 13 })
+		state.stringWidth = function(text)
+			return #text * 8
+		end
+		BuildDialog.open("paste")
+		mock.runTimers(state)
+		local pane = BuildDialog.paste.builds
+		assert.is_true(pane.rows[1].followed:IsShown())
+		assert.is_true(pane.rows[1].followedEdge:IsShown())
+		assert.is_false(pane.rows[2].followed:IsShown())
+		-- "Two-handers, Sweeping Strikes and Mortal Strike" after "Arms" runs past the room at 8 px a letter.
+		assert.is_false(pane.specs[1].playstyle:IsShown())
+		assert.is_true(pane.specs[2].playstyle:IsShown())
 	end)
 
 	it("only closes on the row already followed", function()
 		Follow.ensureDefault(DATA, { spec = "warrior-arms", classSlug = "warrior", ranks = {}, level = 13 })
 		BuildDialog.open("paste")
 		mock.runTimers(state)
-		assert.is_true(BuildDialog.paste.own[1].mark:IsShown())
-		BuildDialog.followOwn(BuildDialog.paste.own[1].entry)
+		assert.is_true(BuildDialog.paste.builds.rows[1].mark:IsShown())
+		BuildDialog.followOwn(BuildDialog.paste.builds.rows[1].entry)
 		assert.is_false(BuildDialog.frame:IsShown())
 		assert.are.same({}, said)
 	end)
@@ -341,9 +431,9 @@ describe("Follow.chooseDefault (spec 6.4)", function()
 		Follow.restore(DATA)
 		assert.are.equal("Mine", Follow.build.name)
 		local build = Follow.chooseDefault(DATA, "warrior-fury", 13)
-		assert.are.equal("Fury build", build.name)
+		assert.are.equal("Fury leveling build", build.name)
 		assert.are.equal("warrior-fury", build.spec)
-		assert.are.equal("Fury build", _G.ForeverSixtyDB.follows[key].slots.raid.name)
+		assert.are.equal("Fury leveling build", _G.ForeverSixtyDB.follows[key].slots.raid.name)
 		assert.are_not.equal("FSB1:1.60.1.70291:warrior:111:", _G.ForeverSixtyDB.follows[key].slots.raid.code)
 		assert.is_nil(Follow.noBuildReason)
 	end)

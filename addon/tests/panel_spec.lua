@@ -201,10 +201,12 @@ describe("Panel, the pure model", function()
 			assert.are.equal("2 of 3 points · |cfff0736b3 points off plan|r", Panel.talentsNote(region))
 		end)
 
-		it("says Spend N now with points waiting", function()
+		it("says Spend N now with points waiting, after the talent on the title line", function()
 			local region = Panel.talents({ build = BUILD, level = 24, unspent = 2, pointName = "X",
 				progress = { matched = 0, total = 3, offPlan = 0, point = {} } })
 			assert.are.equal(string.format(L.panelSpendNow, 2), region.spend)
+			assert.are.equal("X" .. L.exportTreeSeparator .. "|cff" .. require("Theme").HEX.clientGold
+				.. string.format(L.panelSpendNow, 2) .. "|r", region.title)
 		end)
 
 		it("is absent for a finished build on plan; the heading and off-plan note alone off plan", function()
@@ -488,6 +490,72 @@ describe("Panel, the frame", function()
 		local point = buttons.Change.points[#buttons.Change.points]
 		assert.are.same({ "RIGHT", buttons.Talents, "LEFT", -Panel.BUTTON_GAP, 0 }, point)
 		assert.is_falsy(text:find("1 of 5", 1, true))
+	end)
+
+	--- The talent row's parts after a draw: the title (line 1), the build name (line 2), the buttons.
+	local function talentRow(level, unspent)
+		Panel.draw(Panel.model({ who = "Bow Jackzon", fact = "Level 42 Hunter", classToken = "HUNTER", level = level,
+			targets = {}, build = { classSlug = "hunter", order = { {}, {}, {} } }, unspent = unspent,
+			buildName = "Beast Mastery build", pointName = "Intimidation",
+			progress = { matched = 2, total = 3, offPlan = 0, nextLevel = level + 1, point = {} } }))
+		local _, buttons = drawn(Panel.frame)
+		local found = {}
+		local function walk(node)
+			for _, region in ipairs(node.regions or {}) do
+				if region.kind == "FontString" and region.shown and type(region.text) == "string" then
+					found[region.text] = region
+				end
+			end
+			for _, child in ipairs(node.children or {}) do
+				walk(child)
+			end
+		end
+		walk(Panel.frame)
+		return found, buttons
+	end
+
+	it("puts the talent and Spend N now on the full-width line, the build name beside the buttons (2026-11-13)",
+		function()
+			local found, buttons = talentRow(42, 5)
+			local title = found["Intimidation" .. L.exportTreeSeparator .. "|cff" .. require("Theme").HEX.clientGold
+				.. string.format(L.panelSpendNow, 5) .. "|r"]
+			assert.is_not_nil(title)
+			local width = Panel.WIDTH - 2 * Panel.PAD
+			assert.are.equal(width - 36, title.width)
+			local name = found["Beast Mastery build"]
+			assert.is_not_nil(name)
+			assert.are.equal(width - 36 - buttons.Talents.width - buttons.Change.width - 2 * Panel.BUTTON_GAP,
+				name.width)
+			-- The buttons sit on line 2, never beside the title.
+			local open = buttons.Talents.points[#buttons.Talents.points]
+			assert.are.equal("TOPRIGHT", open[1])
+			assert.is_true(open[5] < title.points[#title.points][5])
+		end)
+
+	it("never leaves a pooled button blank: a press held across a redraw that hands it a new role", function()
+		local _, buttons = talentRow(42, 5)
+		local change = buttons.Change
+		-- The press drops the label; the release never comes before the panel draws again.
+		change.scripts.OnMouseDown(change)
+		local label = change.foreverSixtyLabel
+		label:ClearAllPoints()
+		label:SetPoint("TOPLEFT", Panel.frame, "TOPLEFT", -400, 400)
+		label:Hide()
+		label:SetText("")
+		local _, again = talentRow(43, 0)
+		for _, made in pairs(again) do
+			local own = made.foreverSixtyLabel
+			assert.is_true(own.shown)
+			assert.are_not.equal("", own.text)
+			assert.are.same({ "CENTER", made, "CENTER", 0, 0 }, own.points[#own.points])
+			assert.is_nil(made.foreverSixtyResting)
+		end
+		assert.is_not_nil(again.Change)
+		assert.is_not_nil(again.Talents)
+		-- The late release puts nothing back over the redrawn label.
+		again.Change.scripts.OnMouseUp(again.Change)
+		local own = again.Change.foreverSixtyLabel
+		assert.are.same({ "CENTER", again.Change, "CENTER", 0, 0 }, own.points[#own.points])
 	end)
 
 	it("never opens in combat, and closes when combat starts", function()

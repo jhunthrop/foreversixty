@@ -14,6 +14,7 @@ local Codec = ns.Codec or require("Codec")
 local Talents = ns.Talents or require("Talents")
 local Export = ns.Export or require("Export")
 local Compat = ns.Compat or require("Compat")
+local Theme = ns.Theme or require("Theme")
 
 local Follow = {}
 
@@ -328,15 +329,24 @@ function Follow.specSplit(data, classSlug, ranks)
 	return #parts > 0 and table.concat(parts, L.exportTreeSeparator) or nil
 end
 
+--- The kind of default build to follow: `kind` when the player chose one ("leveling" or "raid":
+--- a level 42 may follow the raid build), else the level's own, the raid build from RAID_LEVEL. Pure.
+function Follow.defaultKind(level, kind)
+	if kind == "leveling" or kind == "raid" then
+		return kind
+	end
+	return (level or 0) >= Follow.RAID_LEVEL and "raid" or "leveling"
+end
+
 --- The talent the character would take next on `spec`'s default build for its level (the
 --- leveling build under RAID_LEVEL, the raid build at it), by name: the first point in that order
 --- the character has not taken (Progress.build over the real ranks). The tiles, the panel's Pick
 --- rows and the Builds dialog's own rows show it (spec 6.2 and 6.4, round 2). nil without a default
---- or once every point of it is taken.
-function Follow.defaultNext(data, spec, ranks, level)
+--- or once every point of it is taken; the talent's cell (Talents.cellOf) second.
+function Follow.defaultNext(data, spec, ranks, level, kind)
 	local builds = type(data) == "table" and type(data.defaultBuilds) == "table" and data.defaultBuilds[spec] or nil
 	level = level or Compat.playerLevel()
-	local kind = (level or 0) >= Follow.RAID_LEVEL and "raid" or "leveling"
+	kind = Follow.defaultKind(level, kind)
 	local default = type(builds) == "table" and builds[kind] or nil
 	local classSlug = type(spec) == "string" and spec:match("^([^-]+)") or nil
 	if type(default) ~= "table" or type(default.order) ~= "table" or classSlug == nil then
@@ -351,7 +361,23 @@ function Follow.defaultNext(data, spec, ranks, level)
 	local progress = Progress.build({ classSlug = classSlug, order = order }, ranks or Talents.readRanks(data), level)
 	local point = type(progress) == "table" and progress.point or nil
 	local cell = point ~= nil and Talents.cellOf(data, classSlug, point.tab, point.tier, point.column) or nil
-	return type(cell) == "table" and cell.name or nil
+	if type(cell) ~= "table" then
+		return nil
+	end
+	return cell.name, cell
+end
+
+--- The next point in the one shape every surface shows it (the panel's Talents row, the Builds tab's
+--- followed row): "Intimidation · Spend 1 now" with the spend in the client gold while points wait,
+--- else "Level 43: Intimidation"; the name alone when no level is known. Pure.
+function Follow.nextPointLine(name, unspent, atLevel)
+	if (unspent or 0) > 0 then
+		return name .. L.exportTreeSeparator .. Theme.inlineColor("clientGold", string.format(L.panelSpendNow, unspent))
+	end
+	if type(atLevel) == "number" then
+		return string.format(L.panelTalentAt, atLevel, name)
+	end
+	return name
 end
 
 --- A character with no build saved in any slot follows the data's default for its spec
@@ -359,7 +385,7 @@ end
 --- Gear.specOf's, which is the tree with the most points (a tie, or none spent, the first tree;
 --- a tree split into cat and bear, the one the points fit). The build is marked
 --- `default = true` and named from the data, and nothing is saved: it is worked out again at
---- each login, so a data update replaces it. `character` ({ classSlug, ranks, level, spec })
+--- each login, so a data update replaces it. `character` ({ classSlug, ranks, level, spec, kind })
 --- is read from the client for any field it leaves out. `spec`, when given, is the spec the
 --- player chose on the chip's "pick a path" card (spec section 5.1) and wins over the points;
 --- it must be one of this class's specs with a default. The build, or nil when there is
@@ -397,7 +423,7 @@ function Follow.ensureDefault(data, character)
 		return nil
 	end
 	local builds = data.defaultBuilds[spec] or nil
-	local kind = (level or 0) >= Follow.RAID_LEVEL and "raid" or "leveling"
+	local kind = Follow.defaultKind(level, character.kind)
 	local default = type(builds) == "table" and builds[kind] or nil
 	if type(default) ~= "table" then
 		Follow.noBuildReason = string.format(L.diagBuildNoSpec, Follow.specName(spec))
@@ -427,14 +453,14 @@ end
 --- replaces it). With a saved build in any slot, which ensureDefault leaves alone, the default's
 --- own code is loaded into the active slot (Follow.load), named as the player reads it, so the
 --- choice survives the next login. The build, or nil with the reason in Follow.noBuildReason.
-function Follow.chooseDefault(data, spec, level)
+function Follow.chooseDefault(data, spec, level, kind)
 	local classSlug = type(spec) == "string" and spec:match("^([^-]+)") or nil
 	if not hasSavedBuild() then
-		return Follow.ensureDefault(data, { spec = spec, level = level, classSlug = classSlug })
+		return Follow.ensureDefault(data, { spec = spec, level = level, classSlug = classSlug, kind = kind })
 	end
 	local builds = type(data) == "table" and type(data.defaultBuilds) == "table" and data.defaultBuilds[spec] or nil
 	level = level or Compat.playerLevel()
-	local kind = (level or 0) >= Follow.RAID_LEVEL and "raid" or "leveling"
+	kind = Follow.defaultKind(level, kind)
 	local default = type(builds) == "table" and builds[kind] or nil
 	if classSlug == nil or type(default) ~= "table" then
 		Follow.noBuildReason = string.format(L.diagBuildNoSpec, Follow.specName(spec))
@@ -450,6 +476,19 @@ function Follow.chooseDefault(data, spec, level)
 	build.spec, build.kind = spec, kind
 	Follow.noBuildReason = nil
 	return build
+end
+
+--- The panel's Talents row's short name (2026-11-13): a default build of the level's own kind is
+--- named for its spec alone ("Beast Mastery build"), the row's room beside its buttons being short;
+--- the other kind still says so ("Beast Mastery raid build" at 42). Every other build, and every
+--- other surface, reads Follow.buildName.
+function Follow.panelBuildName(data, build, level)
+	local stem = build.default and type(build.kind) == "string" and type(build.name) == "string"
+		and build.name:match("^(.-) " .. build.kind .. "$") or nil
+	if stem ~= nil and stem ~= "" and build.kind == Follow.defaultKind(level) then
+		return string.format(L.followBuildName, stem)
+	end
+	return Follow.buildName(data, build)
 end
 
 --- A slot id's display name ("raid" -> L.slotRaid), the one lookup rule
@@ -686,12 +725,13 @@ local builtNames = setmetatable({}, { __mode = "k" })
 --- surface that names a build reads this, so none can disagree.
 function Follow.buildName(data, build)
 	if type(build.name) == "string" and build.name ~= "" then
-		-- One noun (X.5): the data's own default is "Beast Mastery leveling" / "Arms raid", and the
-		-- player reads "Beast Mastery build", the word every other build carries.
+		-- The data's own default is "Beast Mastery leveling" / "Arms raid": the player reads "Beast
+		-- Mastery leveling build", the noun every other build carries, with its kind.
 		local stem = build.default and type(build.kind) == "string"
 			and build.name:match("^(.-) " .. build.kind .. "$") or nil
 		if stem ~= nil and stem ~= "" then
-			return string.format(L.followBuildName, stem)
+			-- A default names its kind, so the player always reads which one is followed (2026-11-13).
+			return string.format(L.followKindBuildName, stem, L.followKindWord[build.kind] or build.kind)
 		end
 		return build.name
 	end

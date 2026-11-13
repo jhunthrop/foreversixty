@@ -1193,6 +1193,20 @@ function Widgets.setSelected(button, selected)
 	return button.foreverSixtySelected
 end
 
+--- A client button's label made whole for `text`: on its own button's centre, shown, white, and
+--- any held press forgotten (Theme.pressable). A pooled button (the panel's) runs it on every draw,
+--- so a role it had before (a press held across a redraw, a hidden label) can never carry over.
+function Widgets.resetButtonLabel(button, text)
+	local label = button.foreverSixtyLabel
+	button.foreverSixtyResting = nil
+	label:ClearAllPoints()
+	label:SetPoint("CENTER", button, "CENTER", 0, 0)
+	label:SetText(text or "")
+	label:SetTextColor(Theme.rgb(Theme.HEX[Theme.CONTROL_STATES.siteButton.label]))
+	label:Show()
+	return button
+end
+
 --- A client button sized to its label: `padding` (14 by default) past the text, never under `least`
 --- (36 by default).
 function Widgets.fitButton(button, least, padding)

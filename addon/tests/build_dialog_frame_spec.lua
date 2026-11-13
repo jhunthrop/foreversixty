@@ -420,6 +420,19 @@ describe("BuildDialog, round 4 frame checks", function()
 		assert.are.equal(rest[5] or 0, mock.lastCall(label, "SetPoint")[5])
 	end)
 
+	it("drops a label one pixel however many presses come before the release (2026-11-13)", function()
+		local button = require("Widgets").clientButton(_G.UIParent, "Change", function() end)
+		local label = button.foreverSixtyLabel
+		local rest = mock.lastCall(label, "SetPoint")
+		button:GetScript("OnMouseDown")(button)
+		button:GetScript("OnMouseDown")(button)
+		assert.are.equal((rest[5] or 0) - Theme.PRESSED_LABEL_DROP, mock.lastCall(label, "SetPoint")[5])
+		button:GetScript("OnMouseUp")(button)
+		button:GetScript("OnMouseUp")(button)
+		assert.are.equal(rest[5] or 0, mock.lastCall(label, "SetPoint")[5])
+		assert.is_nil(button.foreverSixtyResting)
+	end)
+
 	it("puts a control disabled or hidden while held back at rest, ground and label (fix 4, 9; fix 5, 18)", function()
 		local button = require("Widgets").button(_G.UIParent, "Equip", function() end)
 		local label = button.foreverSixtyLabel
@@ -893,7 +906,7 @@ describe("BuildDialog, round 6 frame checks", function()
 			return utf8.len(region:GetText() or "") * 5
 		end
 		BuildDialog.drawPaste()
-		local inner = 388 - Theme.SIZES.dialogClassIcon - Theme.SIZES.gap * 2
+		local inner = 388 - BuildDialog.SITE_CREST - Theme.SIZES.gap * 2
 		assert.is_true(utf8.len(row.name:GetText()) * 5 <= inner, row.name:GetText())
 		assert.is_truthy(row.name:GetText():find(L.ellipsis, 1, true))
 	end)
@@ -1090,8 +1103,8 @@ describe("BuildDialog, X.5 builds from the site", function()
 		local paste = open()
 		local row = paste.rows[1]
 		assert.is_true(row.frame:IsShown())
-		-- A.2: the title line carries the sender and the size; the muted lines the spec and the character.
-		assert.are.equal("20 to 29 \226\128\148 Arms \194\183 from the site \194\183 3 points", row.name:GetText())
+		-- The title line carries the size; the muted lines the spec, the character and the day or the sender.
+		assert.are.equal("20 to 29 \226\128\148 Arms \194\183 3 points", row.name:GetText())
 		assert.are.equal("Warrior \194\183 Arms 3", row.detail:GetText())
 		assert.is_nil(row.detail:GetText():find("|", 1, true))
 		assert.are.equal("For Bob \194\183 Ashbringer", row.target:GetText())
@@ -1172,7 +1185,7 @@ describe("BuildDialog, X.5 builds from the site", function()
 		assert.are.equal(BuildDialog.rows[1].id, BuildDialog.verdict.inboxId)
 		assert.is_true(paste.preview.frame:IsShown())
 		assert.is_false(paste.rows[1].frame:IsShown())
-		assert.are.equal("20 to 29 \226\128\148 Arms \194\183 from the site \194\183 3 points", paste.preview.name:GetText())
+		assert.are.equal("20 to 29 \226\128\148 Arms \194\183 3 points", paste.preview.name:GetText())
 		assert.are.equal("For Bob \194\183 Ashbringer", paste.preview.target:GetText())
 		assert.is_true(paste.preview.target:IsShown())
 		assert.is_true(paste.use:IsShown())
@@ -1186,8 +1199,8 @@ describe("BuildDialog, X.5 builds from the site", function()
 	it("moves the highlight with the arrow keys and on hover, and previews the one it is on (X.5)", function()
 		inbox(sent("First", THREE), sent("Second", OTHER))
 		local paste = open()
-		assert.are.equal("Second \194\183 from the site \194\183 3 points", paste.rows[1].name:GetText())
-		assert.are.equal("First \194\183 from the site \194\183 3 points", paste.rows[2].name:GetText())
+		assert.are.equal("Second \194\183 3 points", paste.rows[1].name:GetText())
+		assert.are.equal("First \194\183 3 points", paste.rows[2].name:GetText())
 		paste.box:GetScript("OnArrowPressed")(paste.box, "DOWN")
 		assert.is_false(paste.rows[1].edge:IsShown())
 		assert.is_true(paste.rows[2].edge:IsShown())
@@ -1199,25 +1212,26 @@ describe("BuildDialog, X.5 builds from the site", function()
 		assert.is_true(paste.rows[2].edge:IsShown())
 		assert.is_false(paste.rows[1].edge:IsShown())
 		paste.box:GetScript("OnEnterPressed")(paste.box)
-		assert.are.equal("First \194\183 from the site \194\183 3 points", paste.preview.name:GetText())
+		assert.are.equal("First \194\183 3 points", paste.preview.name:GetText())
 	end)
 
 	it("previews a clicked row", function()
 		inbox(sent("First", THREE), sent("Second", OTHER))
 		local paste = open()
 		paste.rows[2].frame:GetScript("OnClick")(paste.rows[2].frame)
-		assert.are.equal("First \194\183 from the site \194\183 3 points", paste.preview.name:GetText())
+		assert.are.equal("First \194\183 3 points", paste.preview.name:GetText())
 	end)
 
-	it("names the day the site's build arrived, on its row and in its preview (A.2)", function()
+	it("names the day the site's build arrived under its row and its preview, never 'from the site'", function()
 		-- 22 Oct 2026, 03:50 UTC: the companion wrote the inbox then.
 		_G.ForeverSixtyInbox = { format = 2, generated_at = "2026-10-22T12:00:00Z",
 			messages = { sent("Beast Mastery build", THREE) } }
 		local paste = open()
-		assert.are.equal("Beast Mastery build \194\183 from the site, 22 Oct \194\183 3 points", paste.rows[1].name:GetText())
+		assert.are.equal("Beast Mastery build \194\183 3 points", paste.rows[1].name:GetText())
+		assert.are.equal("For Bob \194\183 Ashbringer \194\183 22 Oct", paste.rows[1].target:GetText())
 		paste.rows[1].frame:GetScript("OnClick")(paste.rows[1].frame)
-		assert.are.equal("Beast Mastery build \194\183 from the site, 22 Oct \194\183 3 points",
-			paste.preview.name:GetText())
+		assert.are.equal("Beast Mastery build \194\183 3 points", paste.preview.name:GetText())
+		assert.are.equal("For Bob \194\183 Ashbringer \194\183 22 Oct", paste.preview.target:GetText())
 	end)
 
 	it("says it holds nothing back for a build that differs from the plan, and Use works (X.5)", function()

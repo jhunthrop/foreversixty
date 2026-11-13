@@ -828,10 +828,15 @@ local function chosenPath(classSlug)
 end
 
 --- What Follow.ensureDefault takes at login for a character that picked a
---- path: { spec = slug }, or nil to let the points decide.
+--- path: { spec = slug, kind }, or nil to let the points decide (kind nil: the level decides).
 function Chip.chosenPath()
 	local slug = chosenPath(Talents.playerClassSlug())
-	return slug ~= nil and { spec = slug } or nil
+	if slug == nil then
+		return nil
+	end
+	local mine = characterPrefs(false)
+	local kind = mine ~= nil and mine.pathKind or nil
+	return { spec = slug, kind = (kind == "leveling" or kind == "raid") and kind or nil }
 end
 
 --- The level the chip is hidden until for this character (math.huge for
@@ -1975,11 +1980,12 @@ end
 --- The player's answer to the spec question: follow the default build for `slug`
 --- (Follow.chooseDefault, over a saved build too), remember the choice for this character, and
 --- close the card.
-function Chip.choosePath(slug)
-	local build = Follow.chooseDefault(Chip.data or ns.Data, slug)
+function Chip.choosePath(slug, kind)
+	local build = Follow.chooseDefault(Chip.data or ns.Data, slug, nil, kind)
 	local mine = characterPrefs(true)
 	if mine ~= nil then
-		mine.pathChosen = slug
+		-- The kind only when the player picked one (the Builds dialog's rows); else the level decides.
+		mine.pathChosen, mine.pathKind = slug, kind
 	end
 	Chip.closePath()
 	if Chip.afterChoice ~= nil then

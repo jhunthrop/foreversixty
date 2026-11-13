@@ -61,15 +61,26 @@ describe("Follow.ensureDefault", function()
 		assert.are.equal(build, Follow.build)
 	end)
 
-	-- X.5: one noun. The data names its defaults "Arms leveling" and "Arms raid"; every surface that names
-	-- the build says "Arms build", the word a build from the site and any other carries.
-	it("names a default build with the one noun, 'build', whatever the data calls its kind", function()
+	-- X.5: one noun, and since 2026-11-13 its kind. The data names its defaults "Arms leveling" and "Arms
+	-- raid"; every surface that names the build says "Arms leveling build" or "Arms raid build".
+	it("names a default of the level's own kind for its spec alone on the panel, the other kind in full", function()
 		local leveling = Follow.ensureDefault(DATA, { classSlug = "warrior", ranks = ARMS, level = 12 })
-		assert.are.equal("Arms leveling", leveling.name)
-		assert.are.equal("Arms build", Follow.buildName(DATA, leveling))
+		assert.are.equal("Arms build", Follow.panelBuildName(DATA, leveling, 12))
+		assert.are.equal("Arms leveling build", Follow.panelBuildName(DATA, leveling, 60))
 		Follow.build = nil
 		local raid = Follow.ensureDefault(DATA, { classSlug = "warrior", ranks = ARMS, level = 60 })
-		assert.are.equal("Arms build", Follow.buildName(DATA, raid))
+		assert.are.equal("Arms build", Follow.panelBuildName(DATA, raid, 60))
+		assert.are.equal("Arms raid build", Follow.panelBuildName(DATA, raid, 42))
+		assert.are.equal("Mine", Follow.panelBuildName(DATA, { name = "Mine", classSlug = "warrior", order = {} }, 42))
+	end)
+
+	it("names a default build with the noun 'build' and its kind", function()
+		local leveling = Follow.ensureDefault(DATA, { classSlug = "warrior", ranks = ARMS, level = 12 })
+		assert.are.equal("Arms leveling", leveling.name)
+		assert.are.equal("Arms leveling build", Follow.buildName(DATA, leveling))
+		Follow.build = nil
+		local raid = Follow.ensureDefault(DATA, { classSlug = "warrior", ranks = ARMS, level = 60 })
+		assert.are.equal("Arms raid build", Follow.buildName(DATA, raid))
 		-- A build with a name of its own that merely ends in a kind word keeps it.
 		local named = require("Codec").loadBuild("FSB1:1.60.1.70291:warrior:111:", DATA)
 		named.name = "Arms leveling"
