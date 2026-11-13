@@ -2,13 +2,13 @@
 
 Lane brief: `design/reviews/sim-accuracy/brief.md`. Site from origin/main a544d507a, fork from master 5603877e4 (the pin). Client on the site: 1.60.1.70938 with the corrected hotfix layer (273623f0f), which carries Blizzard's 10 November Enhancement changes as push 113722's rows. Scope: Enhancement shaman, bare 20 to 60 and raid 60: the engine against the data now that the data states the hotfix, the logs recorded after the changes went live (12 Nov 10:45 PST, 18:45 UTC), the imbue and totem choice, the rotation, the raid and leveling builds, and the owner's question "do Enhancement shamans not use Flame Shock?".
 
-**Totals: 0 engine bugs. The engine's 10 November values were already the server's; the hand rows the data now carries are retired (Stormstrike's cooldown and cost read the generated constants, the conformance "server hotfix" verdict is gone because Stormstrike's 8 s is now a plain client match, and Stormstrike's 100%, the 20% stack, the five stacks, the 30 s and Mental Dexterity's top rank are checked against the client rows). Two card and build changes adopted under the adoption rule: Flame Shock after Stormstrike while it is off the target and mana is above 30% (bare 30 to 60 +0.7 to +1.8%, raid 60 +0.6 to +0.8%), and the raid build's Mindfulness 3 into Reverberation 5 and Ancestral Knowledge 4 (+1.2 to +1.6% at raid 60 on the new card). Raid 60 Alliance 873.4 to 890.0 (+1.9%), Horde 857.4 to 871.9 (+1.7%); bare 60 Alliance 336.6 to 341.9 (+1.6%), Horde 334.3 to 339.6 (+1.6%). Engine pin 5603877e4 to f17711960.**
+**Totals: 0 engine bugs. The engine's 10 November values were already the server's; the hand rows the data now carries are retired (Stormstrike's cooldown and cost read the generated constants, the conformance "server hotfix" verdict is gone because Stormstrike's 8 s is now a plain client match, and Stormstrike's 100%, the 20% stack, the five stacks, the 30 s and Mental Dexterity's top rank are checked against the client rows). Two card and build changes adopted under the adoption rule: Flame Shock after Stormstrike while it is off the target and mana is above 30% (bare 20 to 60 +0.7 to +2.3%, raid 60 +0.6 to +0.8%), and the raid build's Mindfulness 3 into Reverberation 5 and Ancestral Knowledge 4 (+1.2 to +1.6% at raid 60 on the new card). Raid 60 Alliance 873.4 to 890.0 (+1.9%), Horde 857.4 to 871.9 (+1.7%); bare 60 Alliance 336.6 to 341.9 (+1.6%), Horde 334.3 to 339.6 (+1.6%). Engine pin 5603877e4 to f17711960.**
 
 ## Method
 
 1. **Engine against the data.** The fork's shaman files against `data/builds/1.60.1.70938/spellconst/shaman.json` and the push rows in `raw/wago-push/values.json` (push 113722). Fork tests on the box (`-tags with_db`).
 2. **Logs** (`enhancement-70938/logs/`): foreverlogs.gg 2855 to 2857 (2854 ends before the deploy) and our own reports through the Cloud SQL proxy, read only; private reports in aggregate. Only fights that start after 18:45 UTC on 12 November.
-3. **Sims** on the Windows box, 10,000 iterations, one at a time, nice 15, GOMAXPROCS 5: `base.sh` (the published entries), `jobs.sh` (imbues at every band, the four searches), `jobs2.sh` and `jobs3.sh` (the Flame Shock positions and gates, the raid build), `jobs4.sh` (the owner's three shock cards). Outputs beside each script.
+3. **Sims** on the Windows box, 10,000 iterations, one at a time, nice 15, GOMAXPROCS 5: `base.sh` (the published entries), `jobs.sh` (imbues at every band, the four searches), `jobs2.sh` and `jobs3.sh` (the Flame Shock positions and gates, the raid build), `jobs4.sh` (the owner's three shock cards). Outputs beside each script; `base-before.txt` and `base-after.txt` are the published entries before and after (the after run wears the published raid build, which the re-rank replaces).
 
 ## Engine against the data: the hand rows
 
@@ -78,13 +78,13 @@ On the new card, Mindfulness 3 into Reverberation 5 and Ancestral Knowledge 4 (`
 
 | entry | before (5603877e4, old card and raid build) | after (f17711960, new card, new raid build) |
 |---|---|---|
-| raid 60 Alliance | 873.4 ± 0.7 | 890.0 ± 0.7 (+1.9%) |
-| raid 60 Horde | 857.4 ± 0.7 | 871.9 ± 0.7 (+1.7%) |
+| raid 60 Alliance | 873.4 ± 0.7 | 890.0 ± 0.7 (+1.9%; 877.9 on the published raid build until the re-rank) |
+| raid 60 Horde | 857.4 ± 0.7 | 871.9 ± 0.7 (+1.7%; 858.0 on the published raid build) |
 | bare 60 Alliance / Horde | 336.6 / 334.3 | 341.9 / 339.6 (+1.6%) |
 | bare 50 | 217.9 / 217.2 | 220.5 / 220.3 (+1.2 / +1.4%) |
 | bare 40 | 144.5 / 144.3 | 146.1 / 145.9 (+1.1%) |
 | bare 30 | 85.1 / 84.5 | 85.7 / 85.4 (+0.7 / +1.1%) |
-| bare 20 | 38.3 / 38.5 | not re-measured: the line casts the band's own Flame Shock rank, and band 20 runs Flametongue Weapon; see MR108 |
+| bare 20 | 38.3 / 38.5 | 39.1 / 39.4 (+2.1 / +2.3%) |
 
 Tier list: on raid 60 Enhancement moves from 873.4 to about 890 Alliance, between Destruction (888.0) and Rogue Combat (902.3) on the engine-70938 table; it stays below Fury, the hunters and the cat.
 
