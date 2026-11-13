@@ -19,6 +19,7 @@ STAGE = re.compile(r"^\s*- run: uv run python -m pipeline ([a-z-]+)", re.MULTILI
 
 #: (producer, consumer): the consumer reads a file the producer writes.
 READS_AFTER = [
+    ("normalize", "gametables"),  # gametables.py refreshes normalize's manifest.json
     ("gametables", "loot"),  # loot/client_enchants.py: load_rating_factors
     ("gametables", "simdb"),  # simdb/__init__.py: load_rating_factors
     ("simconst", "icons"),

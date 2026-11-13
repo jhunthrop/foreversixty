@@ -294,12 +294,6 @@ jobs:
       # takes the talent trees from it when raw/wowhead-talents.json exists, and falls
       # back to the trait tables when it does not.
       - run: uv run python -m pipeline fetch-wowhead-talents --build "$BUILD"
-      # The client's GameTables, straight off CASC: they read nothing but the build
-      # string. loot's client enchants and simdb both read the rating factors from
-      # gametables/combatratings.txt, so this runs before either (the fifth 70291
-      # fetch failed at simdb; every 70888 fetch from 10 Nov failed at loot).
-      # tests/test_fetch_order.py holds the order.
-      - run: uv run python -m pipeline gametables --build "$BUILD"
       - name: Restore the icon cache
         uses: actions/cache@v4
         with:
@@ -346,6 +340,12 @@ jobs:
       # Re-run the offline normalize so manifest.json also covers the icons and tree art
       # the steps above just wrote.
       - run: uv run python -m pipeline normalize --build "$BUILD" --engine ../.engine $SHRINK
+      # The client's GameTables, straight off CASC. They refresh the manifest normalize
+      # writes, so they come after it; loot's client enchants and simdb both read the
+      # rating factors from gametables/combatratings.txt, so they come before either
+      # (the fifth 70291 fetch failed at simdb; every 70888 fetch from 10 Nov failed at
+      # loot). tests/test_fetch_order.py holds the order.
+      - run: uv run python -m pipeline gametables --build "$BUILD"
       # The fetched build's copy of the curated stat weights, and the addon's
       # data. Without these a new build lands with neither file. They read only
       # classes.json, talents/ and curated/, so they run straight after
