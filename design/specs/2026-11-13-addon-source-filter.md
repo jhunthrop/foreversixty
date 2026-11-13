@@ -45,7 +45,7 @@ Regions, top to bottom:
 1. Title row: `Sources` in the panel heading style, a close X at the right.
 2. Eight rows, 22 px high, the Settings checkbox at the left, the kind's label, the count right-aligned in muted tabular figures. Order and labels as in section 2. The count is gear slots with an option from that source at the character's band, independent of what is on.
 3. A text button `Default` at the left of the foot, shown only when a choice is saved; muted, hover gold. It clears the saved choice.
-4. Foot line, muted: `Counts are gear slots with an option from that source.`
+4. No foot line (review round 1: the counts read as slots without one). Each row's hover lists the best item that kind gives each slot, `Chest: Blackened Defias Armor`, one muted line per slot in character pane order (`Sources.kindItems`).
 
 Row states: default, hover (row background lifts one step, tooltip below), focus-visible (1 px gold ring on the row), active (checkbox pressed), disabled (a kind with a count of 0 is still toggleable, its count reads `0` muted; nothing else disables). At the leveling default the Reputation row is unchecked and its hover tooltip reads `Standings up to Friendly still count.`
 
@@ -60,7 +60,7 @@ Loading: none, the counts ship with the data. Error: if the data has no counts f
 Decision: eight toggles under a heading, not one row that opens the flyout. The Settings canvas has no panel to anchor a flyout to, and a row that opens a floating window from a page is a second control to learn. The group reuses the page's switch row style (label, hint under it) and is generated from the same kind list as the flyout, so the two cannot drift.
 
 - Heading `Gear sources`, in the page's existing group heading style, placed after the tooltip switches. At its right, the `Default` text button, same rule as the flyout.
-- One hint line under the heading, muted: `Upgrades are picked from the sources you leave on.`
+- No hint line (review round 1).
 - Eight switch rows, labels as section 2, no per-row hint, counts at the right as in the flyout.
 - A change here updates the open panel at once, and the reverse.
 
@@ -72,9 +72,9 @@ Plain hover: no new line. The `Next` line and the muted source line name the ite
 
 Behind Shift, one muted line, shown only when the slot's pick differs from the pick with every source on, placed directly under the source line:
 
-`L.tipSetAside = "Best with all sources: %s, %s DPS more"`
+`L.tipSetAside = "All sources: %s %s"` (the second `%s` is `+0.3 DPS`, the Next line's format; review round 1)
 
-First `%s` the item name in its quality colour, second the gap to one decimal, priced in game from the two items' stats as every other gain in the addon (Data.lua does not carry the sim's `dps_delta`); with no price, `Best with all sources: %s` alone. For example `Best with all sources: Hawkeye's Cloak, 0.3 DPS more`. The line never shows at `All sources`, and never when the unfiltered pick is the same item.
+First `%s` the item name in its quality colour, second the gap to one decimal, priced in game from the two items' stats as every other gain in the addon (Data.lua does not carry the sim's `dps_delta`); with no price, `All sources: %s` alone. For example `All sources: Hawkeye's Cloak +0.3 DPS`. The line never shows at `All sources`, and never when the unfiltered pick is the same item.
 
 On an item that is itself the unfiltered best but is not in the chosen sources (a world drop in a bag), the verdict is unchanged and the Shift line is not shown.
 
@@ -113,11 +113,9 @@ Detail stays `<slot> · <source>`. Add nothing for a re-picked slot: the gap is 
 | `sourcesOffTip` | `Off: %s` |
 | `sourcesOffLevelingTip` | `Off: Reputation above Friendly` |
 | `sourcesRepTip` | `Standings up to Friendly still count.` |
-| `sourcesFlyoutFoot` | `Counts are gear slots with an option from that source.` |
 | `sourcesKindDungeon` ... `sourcesKindPvp` | `Dungeon`, `Raid`, `World / BoE`, `Quest`, `Crafted`, `Reputation`, `Vendor`, `PvP` |
 | `sourcesSettingsHeading` | `Gear sources` |
-| `sourcesSettingsHint` | `Upgrades are picked from the sources you leave on.` |
-| `tipSetAside` | `Best with all sources: %s, %s DPS more` |
+| `tipSetAside` | `All sources: %s %s` (`tipSetAsideDps` `+%.1f %s`, `tipSetAsideScore` `+%d score`) |
 | `tipNoSlotFromSources` | `No %s from these sources at this level` |
 | `panelNoUpgradesFromSources` | `No upgrades from these sources` |
 
@@ -146,6 +144,6 @@ Acceptance: each board at 1x, with the panel at its real width, and the flyout b
 
 ## 12. Data (generator, 2026-11-13)
 
-Data.lua carries the filter's facts per pick after its alternatives, one empty field, then one packed tail (`pipeline.addonlua._bis_tail`): a head `*!RhVh,19513` (two-hander mark, the pick's own kinds with the standing each asks, the ids its pair mate must not hold) and the best item of every other kind in rank order, `Dh!26686,12,1234+5678` (kind letter, standing letter, two-hander mark, id, an index into `bisSources`, the not-with ids on a pair's second slot only). The sim's `dps_delta` is not carried. addon-data.json does not mirror the tail. Measured 2026-11-13 on build 1.60.1.70790: Data.lua 1,290,915 to 1,541,776 bytes; Lua 5.1 heap 3,260 to 3,670 KB of the 4,096 KB ceiling.
+Data.lua carries the filter's facts per pick after its alternatives, one empty field, then one packed tail (`pipeline.addonlua._bis_tail`): a head `*!RhVh,19513` (two-hander mark, the pick's own kinds with the standing each asks, the ids its pair mate must not hold) and the best item of every other kind in rank order, `Dh!26686,12,1234+5678` (kind letter, standing letter, two-hander mark, id, an index into `bisSources`, the not-with ids on a pair's second slot only). The sim's `dps_delta` is not carried. addon-data.json does not mirror the tail. Measured 2026-11-13 on build 1.60.1.70790: Data.lua 1,301,655 to 1,552,516 bytes; Lua 5.1 heap 3,273 to 3,683 KB of the 4,096 KB ceiling (before dropping dps_delta the tail cost 3,913 KB).
 
 Not in this pass: the Builds dialog's gear rows (owned by the Builds lane) and closing the flyout when the tour opens (owned by the tour lane) still show and behave as before.

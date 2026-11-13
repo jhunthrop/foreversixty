@@ -2229,7 +2229,9 @@ describe("the worn-item invariant over the real Arms band 20", function()
 			local band = Data.bis["warrior-arms"][20][faction]
 			local current = Gear.currentWeights(Data, "warrior-arms", nil, KEY, 20)
 			for slot, packed in pairs(band) do
-				local pick = Gear.decodePick(packed)
+				-- The slot's pick as the tooltip names it: the band's default sources re-pick a reputation
+				-- item above Friendly (Sources.lua), so the pick waited on is the re-picked one.
+				local pick = Gear.pick("warrior-arms", 20, faction, slot, Data) or Gear.decodePick(packed)
 				assert.is_string(Data.bisNames[pick.item_id], slot)
 				local class = CLASS[slot] or { 4, 3 }
 				local wornLink = "item:999" .. #slot .. ":0"

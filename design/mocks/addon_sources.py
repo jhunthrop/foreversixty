@@ -15,8 +15,14 @@ Sources, so nothing is invented:
   first slot's item through not_with, then next).
 - Counts: slots of the band whose pick kinds, by_kind keys or alternatives' kinds include the kind
   (doll-view.ts sourceCounts).
-- The set-aside gap is the entry's own dps_delta from the bis file. The Upgrades rows' gains are
-  illustrative layout figures (the build reads Progress.pickGain against what is worn).
+- Every DPS figure (Upgrades rows, Next lines, the Shift set-aside gap) is priced the way the addon prices it
+  in game: the two items' stats from items/hunter.json times the band's dps_per_point (the bis file's
+  `weights`). The worn item a gain is counted against is named per slot by worn_for(): the best item for the
+  slot by that pricing that a hunter of the band's character wears (quality up to uncommon, a required level
+  ten under the character's, cloth, leather or no armour below 40) that the upgrade beats by 0.3 DPS or
+  more. Weapons (main hand, ranged) are left off
+  the Upgrades rows: their own DPS is outside the stat weights, so the stat pricing would understate them.
+- Drop chances: the published pick's own `chance`; a re-picked by_kind item carries none.
 """
 import sys
 
@@ -94,7 +100,8 @@ def resolve(rows, on, rep_cap=False):
         blocked = mate_id is not None and mate_id in (row.get('not_with') or [])
         if row.get('item_id') and not blocked and any(k in allowed for k in pick_kinds(row)):
             out[slot] = {'item_id': row['item_id'], 'source': row.get('source', ''), 'kind': row['source_kind'],
-                         'delta': 0, 'standing': row.get('standing'), 'repicked': False}
+                         'delta': 0, 'standing': row.get('standing'), 'repicked': False,
+                         'chance': row.get('chance')}
             continue
         best = None
         for kind in KINDS:
@@ -152,12 +159,48 @@ def source_text(pick):
     return place if word is None or word.lower() == place.lower() else f'{place} · {word}'
 
 
+def detail_text(slot, pick):
+    chance = pick.get('chance')
+    pct = f' · {max(1, round(chance * 100))}%' if chance else ''
+    return f'{SLOT_WORD[slot]} · {source_text(pick)}{pct}'
+
+
+ITEM_SLOT = {'finger1': 'finger', 'finger2': 'finger', 'trinket1': 'trinket', 'trinket2': 'trinket'}
+
+
+def dpp(band_row):
+    return {w['stat']: w['dps_per_point'] for w in band_row['weights']}
+
+
+def score(item_id, weights):
+    return sum(v * weights.get(k, 0) for k, v in ITEMS[item_id]['stats'].items())
+
+
+def worn_for(slot, band_row, level, below):
+    """The named worn item a gain is counted against: the best-priced item for the slot at quality up to
+    uncommon and a required level ten under `level` (cloth, leather or no armour below 40) that `below`
+    (the item shown as the upgrade) still beats by at least 0.3 DPS."""
+    weights = dpp(band_row)
+    armour = (None, 'cloth', 'leather') if level < 40 else (None, 'cloth', 'leather', 'mail')
+    pool = [i for i in ITEMS.values() if i.get('slot') == ITEM_SLOT.get(slot, slot) and i['quality'] <= 2
+            and 1 <= (i.get('required_level') or 0) <= level - 10 and i.get('armor_type') in armour and i['stats']
+            and score(i['id'], weights) <= score(below, weights) - 0.3]
+    return max(pool, key=lambda i: (score(i['id'], weights), -i['id']))['id'] if pool else None
+
+
+def gain(item_id, worn_id, band_row):
+    weights = dpp(band_row)
+    return round(score(item_id, weights) - score(worn_id, weights), 1)
+
+
 def iname(item_id):
     it = ITEMS[item_id]
     return f'<span style="color:{QUALITY[it["quality"]]}">{it["name"]}</span>'
 
 
 CSS = f'''<style>
+.tt, .tt .t {{ font-family: Site, sans-serif; }}
+.srow .n.zero {{ color: {MUTED}; }}
 .foot {{ height: 18px; display: flex; align-items: center; gap: 0; font-size: 12px; color: {MUTED};
   font-family: Site, sans-serif; margin-top: 2px; white-space: nowrap; }}
 .foot .chg {{ color: {GOLD}; cursor: pointer; }}
@@ -228,18 +271,42 @@ def upgrades(rows, state, rest=None, **hover):
     return body + foot(state, **hover)
 
 
+WEAPONS = ('main_hand', 'off_hand', 'ranged')
+
+
+def priced_rows(band_row, level, picks, slots):
+    """(gain, slot, pick) for `slots`, each priced against worn_for's item, best gain first, gains above 0."""
+    priced = []
+    for slot in slots:
+        pick = picks.get(slot)
+        if not pick or slot in WEAPONS:
+            continue
+        worn = worn_for(slot, band_row, level, pick['item_id'])
+        figure = gain(pick['item_id'], worn, band_row) if worn else 0
+        if figure > 0:
+            priced.append((figure, slot, pick))
+    priced.sort(key=lambda row: -row[0])
+    return priced
+
+
+def as_rows(priced):
+    return [upgrade_row(p['item_id'], f'{g:.1f}', detail_text(s, p)) for g, s, p in priced]
+
+
+def rows_for(band_row, level, picks, slots, limit=3):
+    return as_rows(priced_rows(band_row, level, picks, slots)[:limit])
+
+
 def leveling_rows(on, rep_cap=True, limit=3):
-    """Up to `limit` Upgrades rows under a choice (gains illustrative): the re-picked slots first, then the
-    ranged slot's pick when it still stands (band 20 re-picks two slots under the leveling default)."""
+    """Up to `limit` Upgrades rows under a choice: the re-picked slots first, then the kept world drops
+    (band 20 re-picks two armour slots under the leveling default)."""
     picks = resolve(B20['slots'], on, rep_cap)
-    slots = [s for s, p in picks.items() if p and p['repicked']]
-    if len(slots) < limit and picks.get('ranged') and 'ranged' not in slots:
-        slots.append('ranged')
-    rows = []
-    for slot, gain in zip(slots[:limit], ['2.4', '1.6', '0.9']):
-        pick = picks[slot]
-        rows.append(upgrade_row(pick['item_id'], gain, f'{SLOT_WORD[slot]} · {source_text(pick)}'))
-    return rows
+    repicked = [s for s, p in picks.items() if p and p['repicked'] and s not in WEAPONS]
+    priced = priced_rows(B20, 24, picks, repicked)[:limit]
+    kept = [s for s, p in picks.items() if p and not p['repicked'] and p['kind'] == 'world_drop']
+    priced += priced_rows(B20, 24, picks, kept)[:limit - len(priced)]
+    # The panel lists the rows by gain (Gear.upgrades' order).
+    return as_rows(sorted(priced, key=lambda row: -row[0]))
 
 
 def bow_panel(sections, width=340):
@@ -256,29 +323,29 @@ def board_panel_leveling():
 
 def board_panel_all():
     picks = resolve(B60['slots'], KINDS)
-    order = [s for s in ('head', 'chest', 'legs') if picks.get(s)]
-    rows = [upgrade_row(picks[s]['item_id'], g, f'{SLOT_WORD[s]} · {source_text(picks[s])}')
-            for s, g in zip(order, ['6.8', '4.1', '2.7'])]
+    rows = rows_for(B60, 60, picks, list(picks))
     p = ux.panel('Bow Jackzon', 'Level 60 Hunter · Employed Millennials', [upgrades(rows, 'All sources')],
                  score=ux.score_fact(4210, 'Epic'))
     return page(CSS + '<p class="cap"><b>Level 60</b> · every kind on by default: the line still shows, '
-                f'so the switch is findable</p><div style="padding:8px 0 0 8px">{p}</div>')
+                'so the switch is findable; a finished build on plan shows no Talents region</p>'
+                f'<div style="padding:8px 0 0 8px">{p}</div>')
 
 
 def board_panel_empty():
     p = bow_panel([upgrades([], 'No sources', rest='No upgrades from these sources'), talents()])
     return page(CSS + '<p class="cap"><b>No sources</b> · every kind turned off: the Upgrades region says so '
-                f'where the rows were</p><div style="padding:8px 0 0 8px">{p}</div>')
+                'where the rows were; "2 h ago" is the sim\'s age, which still holds</p>'
+                f'<div style="padding:8px 0 0 8px">{p}</div>')
 
 
 def flyout(on, saved, focus=None, hover=None, rep_tip=False):
     tally = counts(B20['slots'])
     rows = ''.join(
         f'<div class="srow{" focus" if k == focus else ""}{" hover" if k == hover else ""}">{box(k in on)}'
-        f'<span class="n">{LABEL[k]}</span><span class="c">{tally[k]}</span></div>' for k in KINDS)
+        f'<span class="n{" zero" if tally[k] == 0 else ""}">{LABEL[k]}</span><span class="c">{tally[k]}</span></div>'
+        for k in KINDS)
     default = '<div class="df">Default</div>' if saved else ''
-    return (f'<div class="hd"><span class="t">Sources</span><span class="xx">×</span></div>{rows}{default}'
-            '<div class="ft">Counts are gear slots with an option from that source.</div>')
+    return f'<div class="hd"><span class="t">Sources</span><span class="xx">×</span></div>{rows}{default}'
 
 
 def with_flyout(panel_html, fly_html, left, screen_w=None, extra='', extra_w=0, height=600):
@@ -326,7 +393,8 @@ def board_state_tooltip():
 def board_settings():
     tally = counts(B20['slots'])
     on = ['dungeon', 'world', 'quest', 'crafted', 'vendor', 'pvp']
-    rows = ''.join(f'<div class="sw">{box(k in on)}<span>{LABEL[k]}</span><span class="c">{tally[k]}</span></div>'
+    rows = ''.join(f'<div class="sw">{box(k in on)}<span style="{"color:" + MUTED if tally[k] == 0 else ""}">'
+                   f'{LABEL[k]}</span><span class="c">{tally[k]}</span></div>'
                    for k in KINDS)
     prior = ''.join(f'<div class="sw dim">{box(True)}<div><div>{label}</div><div class="h">{hint}</div></div></div>'
                     for label, hint in [('Item tooltips', 'Our lines under the client\'s on every item.'),
@@ -334,41 +402,100 @@ def board_settings():
     page_html = (f'<div class="set"><div class="title">Forever Sixty</div>{prior}'
                  f'<div style="height:14px"></div><div class="gh"><span>Gear sources</span>'
                  f'<span style="color:{MUTED};font-size:12px">Default</span></div><div class="rl"></div>'
-                 f'<div class="hint">Upgrades are picked from the sources you leave on.</div>{rows}</div>')
+                 f'{rows}</div>')
     return page(CSS + '<p class="cap"><b>Settings</b> · the Gear sources group after the tooltip switches '
                 '(dimmed here); a saved choice, 6 of 8 sources, shows Default</p>' + page_html)
 
 
-def bag_tooltip(item_id, slot_line, stats):
+STAT_WORD = {'agility': 'Agility', 'stamina': 'Stamina', 'strength': 'Strength', 'intellect': 'Intellect',
+             'spirit': 'Spirit'}
+
+
+def worn_tooltip(item_id, slot_word):
+    """The client's own lines for a worn item: name, Soulbound, slot, armour, base stats, level."""
     it = ITEMS[item_id]
-    return ([f'<div class="t" style="color:{QUALITY[it["quality"]]}">{it["name"]}</div>', l('Soulbound'),
-             l(slot_line)] + [l(s) for s in stats] + [l(f'Requires Level {it.get("required_level", 1)}')])
+    lines = [f'<div class="t" style="color:{QUALITY[it["quality"]]}">{it["name"]}</div>', l('Soulbound'),
+             l(slot_word, (it.get('armor_type') or '').capitalize() or None)]
+    if it.get('armor'):
+        lines.append(l(f'{it["armor"]} Armor'))
+    lines += [l(f'+{v} {STAT_WORD[k]}') for k, v in it['stats'].items() if k in STAT_WORD]
+    if it.get('required_level'):
+        lines.append(l(f'Requires Level {it["required_level"]}'))
+    return lines
+
+
+def next_line(item_id, figure):
+    return l(f'Next upgrade: {iname(item_id)} <span style="color:{C["green"]}">+{figure:.1f} DPS</span>')
 
 
 def board_set_aside():
     picks = resolve(B20['slots'], LEVELING_DEFAULT, rep_cap=True)
     neck = picks['neck']
-    best = next(s for s in B20['slots'] if s['slot'] == 'neck')
-    gap = abs(neck['delta'])
-    lines = bag_tooltip(281265, 'Neck', ['+3 Spirit']) + [
-             l(f'Next upgrade: {iname(neck["item_id"])} <span style="color:{C["green"]}">+2.4 DPS</span>'),
-             l(source_text(neck), color=C['grey']),
-             l(f'Best with all sources: {iname(best["item_id"])}, {gap:.1f} DPS more', color=C['grey']),
-             l('Forever Sixty · Beast Mastery estimate', color='#8a8a8a')]
-    return page(CSS + '<p class="cap"><b>Shift held</b> · the worn neck under the leveling default: the set-aside '
-                'line names the Honored pick and its gap (dps_delta from the bis file)</p>'
+    best = next(row for row in B20['slots'] if row['slot'] == 'neck')['item_id']
+    worn = worn_for('neck', B20, 24, neck['item_id'])
+    gap = gain(best, neck['item_id'], B20)
+    lines = worn_tooltip(worn, 'Neck') + [
+        next_line(neck['item_id'], gain(neck['item_id'], worn, B20)),
+        l(detail_text('neck', neck).split(' · ', 1)[1], color=C['grey']),
+        l(f'All sources: {iname(best)} +{gap:.1f} DPS', color=C['grey']),
+        l('Forever Sixty · Beast Mastery estimate', color='#8a8a8a')]
+    return page(CSS + '<p class="cap" style="max-width:640px;line-height:18px"><b>Shift held</b> · the worn neck under '
+                'the leveling default: Next upgrade is the re-picked quest neck; the Shift line names the Honored Sentinel\'s Medallion '
+                'set aside and the gap, priced from the two items\' stats with the band\'s weights</p>'
                 f'<div style="padding-top:6px">{tooltip(lines, width=380)}</div>')
 
 
 def board_rep_standing():
     picks = resolve(B20['slots'], KINDS)
     ring = picks['finger2']
-    lines = [f'<div class="t" style="color:{QUALITY[2]}">Volcanic Rock Ring</div>', l('Binds when equipped'),
-             l('Finger'), l('+1 Stamina'), l('+3 Intellect'), l('Requires Level 16'),
-             l(f'Next upgrade: {iname(ring["item_id"])} <span style="color:{C["green"]}">+1.6 DPS</span>'),
-             l(source_text(ring), color=C['grey'])]
-    return page(CSS + '<p class="cap"><b>Reputation source</b> · all sources on: the pick\'s source line ends with '
-                'the standing it asks</p>' f'<div style="padding-top:6px">{tooltip(lines, width=380)}</div>')
+    worn = worn_for('finger2', B20, 24, ring['item_id'])
+    lines = worn_tooltip(worn, 'Finger') + [
+        next_line(ring['item_id'], gain(ring['item_id'], worn, B20)),
+        l(source_text(ring), color=C['grey'])]
+    return page(CSS + '<p class="cap"><b>Reputation source</b> · Reputation on (all sources): hovering a worn ring, '
+                'the muted line under Next upgrade is that upgrade\'s source, its faction and the standing it asks</p>'
+                f'<div style="padding-top:6px">{tooltip(lines, width=380)}</div>')
+
+
+PANE_ORDER = ['head', 'neck', 'shoulder', 'back', 'chest', 'wrist', 'hands', 'waist', 'legs', 'feet',
+              'finger1', 'finger2', 'trinket1', 'trinket2', 'main_hand', 'off_hand', 'ranged']
+
+
+def kind_best(row, kind):
+    """The best item `kind` gives a slot: the pick where it is that kind's, else the kind's by_kind entry,
+    else an alternative of that kind."""
+    if kind in pick_kinds(row):
+        return row['item_id']
+    entry = (row.get('by_kind') or {}).get(kind)
+    if entry:
+        return entry['item_id']
+    return next((a['item_id'] for a in row.get('alternatives', []) if FILTER_KIND.get(a['source_kind']) == kind), None)
+
+
+def board_row_hover():
+    rows = {row['slot']: row for row in B20['slots'] if 'item_id' in row}
+    lines = [f'<div class="t" style="color:#fff">World / BoE</div>']
+    for slot in PANE_ORDER:
+        best = kind_best(rows[slot], 'world') if slot in rows else None
+        line = l(f'{SLOT_WORD[slot]}: {iname(best)}', color=C['grey']) if best else None
+        if line and line not in lines:  # both rings naming the same unique ring read once
+            lines.append(line)
+    p = bow_panel([upgrades(leveling_rows(LEVELING_DEFAULT), 'No rep above Friendly'), talents()])
+    extra = f'<div style="position:absolute;left:{342 + 4 + 232 + 6}px;top:{12 + 28 + 2 * 22 - 4}px">{tooltip(lines)}</div>'
+    body = with_flyout(p, flyout(LEVELING_DEFAULT, saved=False, hover='world'), left=False, extra=extra,
+                       extra_w=300, height=392)
+    return page(CSS + '<p class="cap"><b>Row hover</b> · World / BoE: the best item that kind gives each slot at '
+                'band 20, in character pane order</p>' + body)
+
+
+def board_no_world():
+    on = [k for k in LEVELING_DEFAULT if k != 'world']
+    picks = resolve(B20['slots'], on, rep_cap=True)
+    away = [s for s, p in picks.items() if p and p['repicked']]
+    p = bow_panel([upgrades(rows_for(B20, 24, picks, away), words(on, 24)), talents()])
+    return page(CSS + '<p class="cap"><b>No world drops</b> · level 24, World / BoE turned off on top of the leveling '
+                'default: the world drop slots re-pick from crafts and vendors, the Honored neck re-picked to a quest neck</p>'
+                f'<div style="padding:8px 0 0 8px">{p}</div>')
 
 
 BOARDS = {
@@ -381,6 +508,8 @@ BOARDS = {
     'settings-gear-sources': board_settings,
     'tooltip-set-aside-shift': board_set_aside,
     'tooltip-rep-standing': board_rep_standing,
+    'flyout-sources-row-hover': board_row_hover,
+    'panel-sources-no-world': board_no_world,
 }
 
 
