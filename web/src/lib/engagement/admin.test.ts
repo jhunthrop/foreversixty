@@ -43,7 +43,7 @@ const REPORT: EngagementReport = {
 describe("the owner's activity page", () => {
   it('shows a figure from before the live record as a floor', () => {
     expect(floorLabel(1240, false)).toBe('1,240');
-    expect(floorLabel(9, true)).toBe('≥ 9');
+    expect(floorLabel(9, true)).toBe('≥\u00a09');
     expect(floorLabel(0, true)).toBe('0');
   });
 
@@ -56,14 +56,21 @@ describe("the owner's activity page", () => {
       cells: ['12', '3', '9', '10', '4', '1'].map((text) => ({ tone: 'none', text })),
     });
     expect(rows[1].sub).toBeUndefined();
-    expect(rows[1].cells[0].text).toBe('≥ 9');
+    expect(rows[1].cells[0].text).toBe('≥\u00a09');
   });
 
   it('names the weeks by their Monday and marks this one as running', () => {
     const rows = weekRows(REPORT.weeks);
     expect(rows[0].label).toBe('Week of 9 Nov');
     expect(rows[0].sub).toBe(copy.thisWeek);
-    expect(rows[1].cells.map((c) => c.text)).toEqual(['≥ 52', '≥ 30', '≥ 22', '≥ 44', '≥ 20', '0']);
+    expect(rows[1].cells.map((c) => c.text)).toEqual([
+      '≥\u00a052',
+      '≥\u00a030',
+      '≥\u00a022',
+      '≥\u00a044',
+      '≥\u00a020',
+      '0',
+    ]);
   });
 
   it('lays retention out newest signup week first, a share of the joined per later week', () => {
@@ -71,7 +78,7 @@ describe("the owner's activity page", () => {
     expect(rows.map((r) => r.label)).toEqual(['9 Nov', '2 Nov', '26 Oct']);
     expect(rows[2].sub).toBe('20 joined');
     expect(rows[2].cells).toHaveLength(copy.cohortColumns.length);
-    expect(rows[2].cells[0]).toEqual({ tone: 'none', text: '≥ 45%', label: '9 of 20, ≥ 45%' });
+    expect(rows[2].cells[0]).toEqual({ tone: 'none', text: '≥\u00a045%', label: '9 of 20, ≥\u00a045%' });
     expect(rows[2].cells[2].text).toBe('');
     expect(rows[0].cells.every((c) => c.text === '')).toBe(true);
   });
@@ -80,11 +87,11 @@ describe("the owner's activity page", () => {
     expect(headlineFigures(REPORT)).toEqual([
       [
         { value: '12', label: 'active today' },
-        { value: '≥ 40', label: 'active this week' },
+        { value: '≥\u00a040', label: 'active this week' },
       ],
       [
-        { value: '≥ 11', label: 'new this week' },
-        { value: '≥ 29', label: 'returning this week' },
+        { value: '≥\u00a011', label: 'new this week' },
+        { value: '≥\u00a029', label: 'returning this week' },
       ],
       [{ value: '40%', label: 'of last week back' }],
     ]);

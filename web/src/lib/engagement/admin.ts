@@ -31,7 +31,7 @@ export const adminActivityCopy = {
   cohortsCaption: 'Share of each signup week active in each later week',
   periodColumns: ['Active', 'New', 'Returning', 'Site', 'Addon', 'App'],
   cohortHeader: 'Signed up',
-  cohortColumns: Array.from({ length: COHORT_WEEKS }, (_, k) => `+${k + 1} wk`),
+  cohortColumns: Array.from({ length: COHORT_WEEKS }, (_, k) => `+${k + 1}\u00a0wk`),
   weekOf: (start: string): string => `Week of ${utcDayMonth(start)}`,
   joined: (n: number): string => `${countLabel(n)} joined`,
   thisWeek: 'this week so far',
@@ -54,10 +54,12 @@ export const adminActivityCopy = {
 } as const;
 
 const NOTHING = '';
+/** The floor mark, held to its figure by a no-break space so a narrow column never splits them. */
+const FLOOR = '≥\u00a0';
 
 /** A count, as a floor when partial. */
 export function floorLabel(value: number, partial: boolean): string {
-  return partial && value > 0 ? `≥ ${countLabel(value)}` : countLabel(value);
+  return partial && value > 0 ? `${FLOOR}${countLabel(value)}` : countLabel(value);
 }
 
 function periodCells(p: EngagementPeriod): GridCell[] {
@@ -90,7 +92,7 @@ export function dayRows(days: readonly EngagementPeriod[]): GridRowModel[] {
 function cohortCell(week: CohortWeek | undefined, joined: number): GridCell {
   if (week === undefined || joined === 0) return { tone: 'none', text: NOTHING };
   const share = shareOf(week.active, joined);
-  const text = week.partial && week.active > 0 ? `≥ ${share}` : share;
+  const text = week.partial && week.active > 0 ? `${FLOOR}${share}` : share;
   return { tone: 'none', text, label: `${week.active} of ${joined}, ${text}` };
 }
 

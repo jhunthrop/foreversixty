@@ -49,7 +49,7 @@ test('the owner reads this week, the weeks, retention by signup week and the day
   await expect(cohorts.first()).toContainText('9 Nov');
   await expect(cohorts.last()).toContainText('21 Sep');
   await expect(cohorts.last()).toContainText('10 joined');
-  await expect(page.getByTestId('activity-days-grid-row').nth(2)).toContainText('≥ 26');
+  await expect(page.getByTestId('activity-days-grid-row').nth(2)).toContainText('≥\u00a026');
 });
 
 test('anyone else sees one line and never the figures', async ({ page }) => {
