@@ -133,6 +133,14 @@ test('the title band names the fight, and the bars are the accent from 90% of th
   expect(last.width).toBeLessThan(50);
 });
 
+test('only the healer list says under its title what HPS does not count', async ({ page }) => {
+  await page.goto('/tiers/healer');
+  // The sentence itself is tier-copy.test.ts's; here it is the one lead on the page, on this list only.
+  await expect(page.locator('.ui-page-header-lead')).toContainText('Power Infusion');
+  await page.goto('/tiers');
+  await expect(page.locator('.ui-page-header-lead')).toHaveCount(0);
+});
+
 test('tank list sorts on damage taken, shows maximum health, and the best of each column is green', async ({
   page,
 }) => {

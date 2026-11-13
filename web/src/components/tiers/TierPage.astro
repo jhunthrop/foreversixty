@@ -112,7 +112,7 @@ const metaLine = tiersCopy.metaLine({ role, healSeconds: data.healSeconds });
   </script>
   <main id="main" tabindex="-1" class="tier-page" data-testid="tier-page" data-role={role}>
     <Page layout="split" railFirst splitFrom={1280} testid="tier-body">
-      <PageHeader slot="header" title={tiersCopy.title} tone="strong">
+      <PageHeader slot="header" title={tiersCopy.title} lead={tiersCopy.lead(role)} tone="strong">
         <span slot="meta">
           {metaLine}
           {data.updated !== null && (

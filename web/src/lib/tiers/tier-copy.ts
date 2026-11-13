@@ -147,6 +147,17 @@ function healerOrderNote(measured: boolean): string {
   return '≈ tie means the sim cannot order the pair: their order changes with the heal profile’s tuning, or their gap is within the measured error. Tied healers share a rank: =2, =2, then 4.';
 }
 
+/** What a healer's HPS cannot show, under the healer list's title and in its notes: a shield's
+ *  worth before the hit and the buffs a healer gives others (design/reviews/2026-11-13-sim-accuracy/
+ *  healer-mana.md). It names no figure, so it holds whatever the nightly ranking publishes. */
+const HEALER_LEAD =
+  'HPS is effective healing, overheal left out. A shield counts for what it soaks, not for the death it stopped by being up before the big hit, and buffs on others, like Power Infusion, are not counted.';
+
+/** The sentence under a list's title: the healer list's only. */
+function lead(role: BisRole): string | undefined {
+  return role === 'healer' ? HEALER_LEAD : undefined;
+}
+
 function healerColumns(ctx: NoteContext): ReadColumn[] {
   const seconds = requireContext(ctx.healSeconds, 'the heal profile duration', ctx.role);
   return [
@@ -162,7 +173,7 @@ function healerColumns(ctx: NoteContext): ReadColumn[] {
       label: 'What it leaves out',
       body: [
         {
-          text: 'Mana and raid utility are not ranked here. No level-60 log is behind this order yet: it rests on the sim’s heal model until launch logs exist.',
+          text: `${HEALER_LEAD} No level-60 log is behind this order yet: it rests on the sim’s heal model until launch logs exist.`,
         },
         ...freshSixty(),
       ],
@@ -291,6 +302,7 @@ export const tiersCopy = {
   metaDescription: (role: BisRole): string =>
     `Where every ${ROLE_NOUNS[role]} spec stands at level 60 in WoW Forever, ranked by the Forever Sixty sim with the gap to the top.`,
   metaLine,
+  lead,
   controlsLabel: 'Tier list choices',
   roleGroupLabel: 'Role',
   factionGroupLabel: 'Faction',

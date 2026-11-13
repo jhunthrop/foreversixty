@@ -13,6 +13,8 @@ import { ordinal } from '../format/number';
 
 const flat = (column: ReadColumn): string => column.body.map((segment) => segment.text).join('');
 const CTX = { faction: 'horde', presetLabel: 'Raid-ready, Phase 1' } as const;
+const HEALER_LEAD =
+  'HPS is effective healing, overheal left out. A shield counts for what it soaks, not for the death it stopped by being up before the big hit, and buffs on others, like Power Infusion, are not counted.';
 describe('ordinal', () => {
   it.each([
     [1, '1st'],
@@ -105,6 +107,18 @@ describe('the title band', () => {
     expect(tiersCopy.metaLine({ role: 'tank' })).toBe('Best in slot, raid buffs · vs a level 63 boss');
     expect(tiersCopy.metaLine({ role: 'healer', healSeconds: 300 })).toBe('Best in slot, raid buffs · 5 min');
     expect(tiersCopy.metaLine({ role: 'healer', healSeconds: 90 })).toBe('Best in slot, raid buffs · 90 s');
+  });
+
+  it('says under the healer title what HPS does not count, and says it on no other list', () => {
+    expect(tiersCopy.lead('healer')).toBe(HEALER_LEAD);
+    expect(tiersCopy.lead('dps')).toBeUndefined();
+    expect(tiersCopy.lead('tank')).toBeUndefined();
+    expect(HEALER_LEAD).not.toMatch(/[—–]/);
+  });
+
+  it('the healer notes say the same thing the healer title does', () => {
+    const leavesOut = readColumns({ ...CTX, role: 'healer', healSeconds: 300 })[1]!;
+    expect(flat(leavesOut)).toContain(HEALER_LEAD);
   });
 
   it('fails fast when the healer fight length is missing', () => {
