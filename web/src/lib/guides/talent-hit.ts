@@ -11,7 +11,8 @@
 // - 'spell': "...chance to hit with all spells by 6%" (the mage's Precision) is in a caster's
 //   baseline only.
 // - 'school': "...chance to hit with Shadow spells by 5%" (Shadow Focus) is in the school
-//   figure (`BisSpellHitToCap.school`) only.
+//   figure (`BisSpellHitToCap.school`) when one is published, else in the baseline (every
+//   spell the rotation casts carries it).
 // - 'expertise': "Reduces the chance for your attacks to be Dodged or Parried by 2%" (Weapon
 //   Expertise) is in the expertise baseline.
 // A talent that adds hit to some abilities only (Furious Precision's off hand, Survival

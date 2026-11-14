@@ -33,6 +33,11 @@ describe('guideHitCapLine', () => {
     expect(line?.text).toBe('Hit cap: 16% · 5% from Shadow Focus on Shadow spells, 11% still to find');
   });
 
+  it('counts a school talent in the baseline when every spell cast carries it: Shadow, no school figure', () => {
+    const line = guideHitCapLine({ kind: 'spell', baseline: 9, spell: 7 }, [SHADOW_FOCUS]);
+    expect(line?.text).toBe('Hit cap: 16% · 4% hit from BiS gear and buffs, 5% from Shadow Focus, 7% still to find');
+  });
+
   it('says "talents" for a school bonus its talents do not account for', () => {
     const line = guideHitCapLine({
       kind: 'spell',

@@ -44,6 +44,10 @@ const EXPERTISE_ALL_SOURCES = 'gear and talents';
 /** The talent scopes each baseline counts (talent-hit.ts). */
 const MELEE_BASELINE: readonly TalentHitScope[] = ['hit'];
 const SPELL_BASELINE: readonly TalentHitScope[] = ['hit', 'spell'];
+/** A caster with no school figure: the engine reads only the spells the rotation casts, so a
+ *  school talent is then on every one of them (Shadow Focus for a Shadow priest) and in the
+ *  baseline. */
+const SPELL_BASELINE_ONE_SCHOOL: readonly TalentHitScope[] = [...SPELL_BASELINE, 'school'];
 const EXPERTISE_BASELINE: readonly TalentHitScope[] = ['expertise'];
 
 /** Float noise in the published figures (8.9 + 0.1 is 8.999...). */
@@ -136,7 +140,7 @@ function spellHitLine(hitToCap: BisSpellHitToCap, talents: readonly TalentHit[])
   const sources = [
     ...baselineParts(
       hitToCap.baseline,
-      inScope(talents, SPELL_BASELINE),
+      inScope(talents, school === undefined ? SPELL_BASELINE_ONE_SCHOOL : SPELL_BASELINE),
       'hit',
       HIT_GEAR_SOURCES,
       HIT_ALL_SOURCES,
