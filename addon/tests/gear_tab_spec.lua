@@ -54,6 +54,9 @@ local STATS = { [10] = { strength = 20 }, [11] = { strength = 15 }, [12] = { str
 	[14] = { strength = 8 }, [15] = { strength = 26 }, [16] = { strength = 6 }, [17] = { strength = 5 },
 	[18] = { strength = 9 }, [19] = { strength = 24 } }
 
+--- The plan's leg enchant (EnchantPlan's record shape).
+local LEG_KIT = { id = 1843, name = "Heavy Armor Kit", itemId = 4265, requiredLevel = 0, stats = { armor = 24 } }
+
 local function worn(itemId, equipLoc, strength)
 	return { itemId = itemId, link = "item:" .. itemId, equipLoc = equipLoc, stats = { strength = strength } }
 end
@@ -70,7 +73,7 @@ local function input(overrides)
 			main_hand = worn(105, "INVTYPE_WEAPON", 20), off_hand = worn(106, "INVTYPE_SHIELD", 3),
 			finger1 = worn(107, "INVTYPE_FINGER", 1),
 		},
-		bagIds = { [12] = true }, noEnchant = { legs = true },
+		bagIds = { [12] = true }, enchants = { legs = { plan = LEG_KIT, missing = true } },
 		isMissing = function()
 			return false
 		end,
@@ -203,14 +206,14 @@ describe("the Gear tab's model (GearTab)", function()
 		local doll = GearTab.doll(input(), 30)
 		local upgrades = GearTab.upgrades(doll)
 		assert.are.same({ "main_hand", "feet", "finger1", "off_hand" }, slots(upgrades.rest))
-		assert.are.equal("No enchant: Legs", GearTab.unenchantedLine(doll))
-		assert.is_nil(GearTab.unenchantedLine(GearTab.doll(input({ noEnchant = {} }), 30)))
+		assert.are.same({ { slot = "legs", plan = LEG_KIT, missing = true } }, GearTab.enchantRows(doll))
+		assert.are.same({}, GearTab.enchantRows(GearTab.doll(input({ enchants = {} }), 30)))
 	end)
 
 	it("counts the header's best in slot and the enchants missing", function()
 		local doll = GearTab.doll(input(), 30)
 		assert.are.same({ "1 of 9 best in slot", L.gearEnchantMissing }, GearTab.figures(doll))
-		local none = GearTab.doll(input({ noEnchant = {} }), 30)
+		local none = GearTab.doll(input({ enchants = {} }), 30)
 		assert.are.same({ "1 of 9 best in slot" }, GearTab.figures(none))
 	end)
 
@@ -397,6 +400,71 @@ describe("the Gear tab in the window", function()
 		-- The legs' quest pick is gone from the doll at once.
 		assert.is_falsy(GearTabView.view.cells.legs.status:GetText():find("DPS", 1, true))
 		assert.is_true(GearTabView.view.sources.default:IsShown())
+	end)
+
+	it("names the plan's enchant under the doll, with its icon and the client's tooltip", function()
+		local GearEnchants = require("GearEnchants")
+		local boots = { id = 911, name = "Enchant Boots - Minor Speed", spellId = 13890, requiredLevel = 0,
+			icon = "spell_nature_swiftness", stats = {} }
+		GearTab.read = function()
+			return input({ enchants = { legs = { plan = LEG_KIT, missing = true },
+				feet = { plan = boots, missing = false, worn = "+3 Agility" } } })
+		end
+		Hub.open("gear")
+		local rows = GearTabView.view.enchants.rows
+		assert.is_truthy(rows[1].text:GetText():find("No enchant: Heavy Armor Kit", 1, true))
+		assert.is_truthy(rows[1].text:GetText():find("Legs", 1, true))
+		assert.is_truthy(rows[2].text:GetText():find("Enchant Boots - Minor Speed beats +3 Agility", 1, true))
+		local textured
+		for _, call in ipairs(rows[2].icon.calls) do
+			textured = call.method == "SetTexture" and call[1] or textured
+		end
+		assert.are.equal("Interface\\Icons\\spell_nature_swiftness", textured)
+		assert.is_true(rows[2].frame:IsShown())
+		assert.is_false(rows[3].frame:IsShown())
+		assert.is_truthy(GearTabView.statusLine(GearTabView.doll.cells.feet, "dps"):find(L.gearWeakerEnchant, 1, true))
+		assert.are.equal(boots, rows[2].frame.plan)
+		assert.is_function(rows[1].frame:GetScript("OnEnter"))
+		assert.are.equal(GearEnchants.LAYOUT.rows, #rows)
+	end)
+
+	it("redraws the rows when a source goes off, whatever another surface's listener does", function()
+		-- 2.0.52: the tooltips moved to the new filter while the tab kept its old picks. Another
+		-- surface failing on the change no longer keeps the tab from redrawing.
+		local reported = 0
+		local report = Sources.reportError
+		Sources.reportError = function()
+			reported = reported + 1
+		end
+		Sources.listen("surfaces", function()
+			error("a surface failed")
+		end)
+		Hub.open("gear")
+		local view = GearTabView.view
+		local function listed(itemId)
+			for _, row in ipairs(view.upgrades.rows) do
+				if row.button:IsShown() and row.button.item ~= nil and row.button.item.itemId == itemId then
+					return true
+				end
+			end
+			return view.cells.legs.button.item ~= nil and view.cells.legs.button.item.itemId == itemId
+		end
+		assert.is_true(listed(13))
+		local quest = view.sources.rows[4].toggle
+		local hidden = 0
+		local hide = quest.frame.Hide
+		quest.frame.Hide = function(self)
+			hidden = hidden + 1
+			return hide(self)
+		end
+		quest.frame:GetScript("OnClick")(quest.frame)
+		Sources.reportError = report
+		assert.are.equal(1, reported)
+		assert.is_false(listed(13))
+		assert.is_falsy(view.cells.legs.status:GetText():find("DPS", 1, true))
+		-- The switch clicked stays shown under the cursor through the redraw.
+		assert.are.equal(0, hidden)
+		assert.is_true(quest.frame:IsShown())
 	end)
 
 	it("shows Conditions where the band has a Raid-ready list, opens on it and switches the list", function()

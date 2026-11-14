@@ -30,9 +30,30 @@ CSS = f'''
 .me .st > * {{ position: absolute; top: {(G['partRow'] - G['line']) // 2}px; white-space: nowrap; }}
 .me .st .trk {{ top: {(G['partRow'] - G['track']) // 2}px !important; }}
 .me .st .ic16 {{ top: {(G['partRow'] - G['gainIcon']) // 2}px; line-height: 0; }}
-.me .ench {{ height: {G['gainRow']}px; display: flex; align-items: center; gap: {G['reasonGap']}px; white-space: nowrap; }}
+.me .ench {{ height: 18px; display: flex; align-items: center; gap: 6px; white-space: nowrap; width: 288px; }}
+.me .ench .et {{ min-width: 0; overflow: hidden; text-overflow: ellipsis; }}
 .me .site {{ color: {ADDON['muted']}; width: 388px; }}
 '''
+
+
+SLOTS = {'head': 'Head', 'neck': 'Neck', 'shoulder': 'Shoulder', 'back': 'Back', 'chest': 'Chest', 'wrist': 'Wrist',
+         'hands': 'Hands', 'waist': 'Waist', 'legs': 'Legs', 'feet': 'Feet', 'finger1': 'Finger', 'finger2': 'Finger',
+         'trinket1': 'Trinket', 'trinket2': 'Trinket', 'main_hand': 'Main hand', 'off_hand': 'Off hand',
+         'ranged': 'Ranged'}
+KIND_WORDS = {'crafted': 'Crafted', 'quest': None, 'world_drop': None, 'vendor': None, 'rep': None}
+
+
+def where(slot, s):
+    """GearTab.fullWhere's words: the slot, then the source as the tooltip says it (ItemTooltip.sourceParts)."""
+    source, kind, chance = s.get('source') or '', s.get('source_kind'), s.get('chance')
+    if kind in ('dungeon', 'raid') and ': ' in source:
+        place, boss = source.split(': ', 1)
+        text = f'{place} · {boss}' + (f' · {round(chance * 100)}% drop' if chance else '')
+    elif kind == 'crafted':
+        text = f'Crafted · {source}'
+    else:
+        text = source + (f' · {round(chance * 100)}% drop' if chance else '')
+    return f'{SLOTS[slot]} · {text}'
 
 
 def band_rows(band, faction='alliance'):
@@ -42,29 +63,40 @@ def band_rows(band, faction='alliance'):
     for s in spec['slots']:
         alts = s.get('alternatives') or []
         if s.get('item_id') and alts:
-            rows.append({'itemId': s['item_id'], 'gain': -alts[-1]['dps_delta']})
+            rows.append({'itemId': s['item_id'], 'gain': -alts[-1]['dps_delta'], 'where': where(s['slot'], s)})
     return rows
+
+
+ENCHANT_ICON = 'spell_holy_greaterheal'
+
+
+def enchant(slot, name):
+    return {'slot': slot, 'missing': True, 'plan': {'id': 1, 'name': name, 'icon': ENCHANT_ICON}}
 
 
 def gear20():
     rows = sorted(band_rows(20), key=lambda r: -r['gain'])[:6]
-    return {'band': 20, 'best': 8, 'scored': 14, 'missing': 2, 'slots': 'Chest, Wrist',
-            'upgrades': [{'itemId': r['itemId'], 'gain': f'+{r["gain"]:.1f} DPS'} for r in rows]}
+    return {'band': 20, 'best': 8, 'scored': 14,
+            'enchants': [enchant('chest', 'Enchant Chest - Minor Stats'), enchant('wrist', 'Enchant Bracer - Minor Agility')],
+            'upgrades': [{'itemId': r['itemId'], 'gain': f'+{r["gain"]:.1f} DPS', 'where': r['where']} for r in rows]}
 
 
 def gear60():
+    band = {s['slot']: s for s in hub.RAID60['slots']}
     rows = sorted((r for r in hub.slot_rows().values() if r['gain'] > 0), key=lambda r: -r['gain'])
-    return {'band': 60, 'best': 16 - len(rows), 'scored': 16, 'missing': 1, 'slots': 'Back',
-            'upgrades': [{'itemId': r['pick'], 'gain': f'+{r["gain"]:.1f} DPS'} for r in rows]}
+    return {'band': 60, 'best': 16 - len(rows), 'scored': 16,
+            'enchants': [enchant('back', 'Enchant Cloak - Greater Defense')],
+            'upgrades': [{'itemId': r['pick'], 'gain': f'+{r["gain"]:.1f} DPS', 'where': where(r['slot'], band[r['slot']])}
+                         for r in rows]}
 
 
-BUILD25 = {'name': 'Beast Mastery leveling', 'matched': 15, 'allowed': 15,
+BUILD25 = {'name': 'Beast Mastery leveling', 'matched': 16, 'allowed': 16,
            'next': {'name': 'Improved Aspect of the Monkey', 'icon': MONKEY, 'level': 26}}
 OWN25 = {'level': 25, 'maxLevel': 60, 'xp': 8140, 'xpMax': 13100, 'rested': 5240, 'build': BUILD25, 'nextBand': 30,
-         'gear': gear20()}
+         'gear': gear20(), 'professions': [{'name': 'Skinning', 'rank': 112}, {'name': 'Leatherworking', 'rank': 105}]}
 BUILDS_LEAD = {'tab': 'builds', 'label': 'Builds', 'waiting': [],
                'lead': {'icon': 'ability_hunter_beasttaming', 'line': 'Beast Mastery leveling',
-                        'sub': '15 of 15 points on plan'}}
+                        'sub': '16 of 16 points on plan'}}
 QUIET = dict(record=None, lastRaid=None, sim=None, raidName=None, syncedAgo=None, companion=False, guild=None,
              upgrades=[], pack={'available': True, 'generated': '2026-12-09', 'stale': False})
 SPEND = {'tab': 'builds', 'label': 'Builds', 'lead': BUILDS_LEAD['lead'],
@@ -89,7 +121,7 @@ def STATES():
         'l25': dict(base, level=25, own=OWN25, leads=[BUILDS_LEAD], buildName='Beast Mastery leveling'),
         'l25-point': dict(base, level=26, companion=True, syncedAgo='3 min ago', buildName='Beast Mastery leveling',
                           own=dict(OWN25, level=26, xp=410, xpMax=13700, rested=None,
-                                   build=dict(BUILD25, next=dict(BUILD25['next'], level=None, now=True))),
+                                   build=dict(BUILD25, allowed=17, next=dict(BUILD25['next'], level=None, now=True))),
                           leads=[SPEND]),
         'l5': dict(base, level=5, own={'level': 5, 'maxLevel': 60, 'xp': 1040, 'xpMax': 2800, 'rested': 700,
                                        'nextBand': 20}, spec=None, buildName=None,
@@ -99,6 +131,7 @@ def STATES():
         'l60': dict(base, level=60, companion=True, syncedAgo='14 min ago', guild='Thornwake Company',
                     buildName='Beast Mastery raid build',
                     own={'level': 60, 'maxLevel': 60, 'gear': gear60(),
+                         'professions': [{'name': 'Engineering', 'rank': 300}, {'name': 'Skinning', 'rank': 300}],
                          'build': {'name': 'Beast Mastery raid build', 'matched': 51, 'allowed': 51}},
                     leads=[me.LEADS['guild'], me.LEADS['builds']]),
     }.items()}
@@ -128,16 +161,22 @@ def standing_html(m):
 
 
 def gear_html(m):
+    """Each upgrade as a Right now row (MeFrame drawLocalGear), then GearEnchants' rows."""
     if not m:
         return ''
     out = me.section('Gear', m.get('note'))
-    out += ''.join(f'<div class="gain">{item_icon(g["itemId"], G["gainIcon"])}<span class="nm">'
-                   f'{hub.item_name(g["itemId"])}</span><span class="v ok">{esc(g["gain"])}</span></div>'
-                   for g in m['rows'])
-    if m.get('enchants'):
-        out += (f'<div class="ench"><span style="color:{ADDON["warning"]}">{esc(m["enchants"])}</span>'
-                f'<span class="m">{esc(m.get("slots") or "")}</span></div>')
-    elif m.get('empty'):
+    out += ''.join(f'<div class="now"><span class="ni">{item_icon(g["itemId"], G["nowIcon"])}</span>'
+                   f'<div class="tx" style="width:{288 - G["nowIcon"] - G["nowGap"]}px"><div style="width:'
+                   f'{288 - G["nowIcon"] - G["nowGap"] - G["gainValue"]}px">{hub.item_name(g["itemId"])}</div>'
+                   f'<div class="m">{me.wow(g.get("where") or "")}</div></div>'
+                   f'<span class="lk ok">{esc(g["gain"])}</span></div>' for g in m['rows'])
+    if m['rows']:
+        out += f'<div style="height:{4 - (G["nowRow"] - 2 * G["line"])}px"></div>'
+    for e in m.get('enchants') or []:
+        out += (f'<div class="ench">{icon(e["plan"]["icon"], 16, "box-shadow:0 0 0 1px #000")}'
+                f'<span class="et"><span style="color:{ADDON["warning"]}">No enchant: {esc(e["plan"]["name"])}</span>'
+                f'<span class="m"> · {SLOTS[e["slot"]]}</span></span></div>')
+    if m.get('empty'):
         out += f'<div class="m" style="margin-top:2px">{esc(m["empty"])}</div>'
     return out + '<div class="gap"></div>'
 
@@ -171,8 +210,6 @@ BOARDS = {
     'me-empty-l25-point': ('l25-point', 26, 'Level 26 with a point waiting, the companion running, nothing logged yet.',
                            ('Builds',), ['Me', 'Builds', 'Gear', 'Rotation']),
     'me-empty-l5': ('l5', 5, 'Level 5, no spec yet, no companion.', ('Builds',), ['Me', 'Builds']),
-    'me-empty-l5-setup': ('l5-setup', 5, 'Level 5, first open: Set up in Right now\'s place, no site line.',
-                          ('Builds',), ['Me', 'Builds']),
     'me-empty-l60': ('l60', 60, 'Level 60 fresh in a guild, the companion running, no logs yet.', ('Guild',),
                      ['Me', 'Builds', 'Gear', 'Rotation', 'Guild']),
 }

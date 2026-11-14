@@ -226,8 +226,12 @@ describe("the Me tab", function()
 	describe("with no site activity yet (2026-11-14-me-empty.md)", function()
 		local BUILD = { name = "Beast Mastery leveling", matched = 15, allowed = 16,
 			next = { name = "Improved Aspect of the Hawk", icon = "Interface\\Icons\\Spell_Nature_RavenForm", level = 26 } }
-		local GEAR = { band = 20, best = 9, scored = 16, missing = 2, slots = "Chest, Feet", upgrades = {
-			{ itemId = 867, gain = "+11.2 DPS" }, { itemId = 16675, gain = "+7.9 DPS" },
+		local CHEST = { slot = "chest", missing = true, plan = { id = 1, name = "Enchant Chest - Greater Stats" } }
+		local BRACER = { slot = "wrist", missing = true, plan = { id = 2, name = "Enchant Bracer - Strength" } }
+		local BOOTS = { slot = "feet", missing = false, worn = "+3 Agility",
+			plan = { id = 3, name = "Enchant Boots - Agility" } }
+		local GEAR = { band = 20, best = 9, scored = 16, enchants = { CHEST, BRACER, BOOTS }, upgrades = {
+			{ itemId = 867, gain = "+11.2 DPS", where = "Hands · Stratholme" }, { itemId = 16675, gain = "+7.9 DPS" },
 			{ itemId = 11815, gain = "+4.0 DPS" }, { itemId = 18404, gain = "+2.5 DPS" } } }
 
 		local function quiet(own, extra)
@@ -268,7 +272,8 @@ describe("the Me tab", function()
 			assert.are.equal("Improved Aspect of the Hawk", rows[3].value)
 			assert.are.equal("Level 26", rows[3].note)
 			assert.are.equal(BUILD.next.icon, rows[3].icon)
-			assert.are.same({ key = "unlock", label = "Next", value = "Level 30, a new gear list", muted = true }, rows[4])
+			assert.are.same({ key = "unlock", label = "Next", value = "Level 30: your next gear list", muted = true },
+				rows[4])
 		end)
 
 		it("says Now for a point waiting, in plain text (Right now owns the gold)", function()
@@ -284,35 +289,37 @@ describe("the Me tab", function()
 			assert.are.equal(3, #rows)
 			assert.is_nil(rows[1].note)
 			assert.are.same({ key = "build", label = "Build", value = "No build followed", muted = true }, rows[2])
-			assert.are.equal("Level 10, your first talent point", rows[3].value)
+			assert.are.equal("Level 10: your first talent point", rows[3].value)
 			assert.is_nil(model.gear)
 		end)
 
-		it("at 60: the level and Max level instead of the bar, nothing next, and nothing to chase", function()
+		it("at 60: no bar, the build and the professions, nothing next, and nothing to chase", function()
 			local done = { name = "Beast Mastery raid build", matched = 51, allowed = 51 }
 			local model = quiet(own({ level = 60, build = done, nextBand = NONE,
-				gear = { band = 60, best = 16, scored = 16, missing = 0, upgrades = {} } }))
-			assert.are.same({ { key = "level", label = "Level", value = "60", note = "Max level" },
-				{ key = "build", label = "Build", value = "Beast Mastery raid build", note = "51 of 51 on plan" } },
+				professions = { { name = "Engineering", rank = 300 }, { name = "Skinning", rank = 285 } },
+				gear = { band = 60, best = 16, scored = 16, upgrades = {}, enchants = {} } }))
+			assert.are.same({ { key = "build", label = "Build", value = "Beast Mastery raid build", note = "51 of 51 on plan" },
+				{ key = "professions", label = "Professions", value = "Engineering 300, Skinning 285" } },
 				model.standing.rows)
-			assert.are.same({ note = "16 of 16 best in slot", rows = {}, empty = "Nothing to chase at 60." }, model.gear)
+			assert.are.same({ note = "16 of 16 best in slot", rows = {}, enchants = {}, empty = "Nothing to chase at 60." },
+				model.gear)
 		end)
 
 		it("shows the gear tally, the three biggest upgrades and the enchants missing", function()
 			local gear = quiet(own()).gear
 			assert.are.equal("9 of 16 best in slot", gear.note)
 			assert.are.equal(3, #gear.rows)
-			assert.are.same({ itemId = 867, gain = "+11.2 DPS" }, gear.rows[1])
-			assert.are.equal("2 enchants missing", gear.enchants)
-			assert.are.equal("Chest, Feet", gear.slots)
+			assert.are.same({ itemId = 867, gain = "+11.2 DPS", where = "Hands · Stratholme" }, gear.rows[1])
+			assert.are.same({ CHEST, BRACER }, gear.enchants)
 			assert.is_nil(gear.empty)
 			assert.is_nil(quiet(own({ gear = { band = 20, best = 0, scored = 0 } })).gear)
 		end)
 
-		it("calls the site once: the app's address without the companion, the first raid with it, none in Set up",
+		it("calls the site once: the app without the companion, a raid at 60 with it, none below 60 or in Set up",
 			function()
 				assert.are.same({ line = L.meSiteApp, link = "foreversixty.gg/app" }, quiet(own()).site)
-				assert.are.same({ line = L.meSiteFirstRaid }, quiet(own(), { companion = true }).site)
+				assert.is_nil(quiet(own(), { companion = true }).site)
+				assert.are.same({ line = L.meSiteFirstRaid }, quiet(own({ level = 60 }), { companion = true }).site)
 				local setup = quiet(own(), { setup = { rows = {} } })
 				assert.is_nil(setup.site)
 				assert.is_nil(setup.lastRaid)
@@ -323,8 +330,17 @@ describe("the Me tab", function()
 			assert.are.same({}, quiet(own(), { leads = { calm } }).rightNow)
 			local waiting = { tab = "builds", label = "Builds", lead = { line = "Beast Mastery leveling" },
 				waiting = { { line = "Spend 1 point" } } }
-			assert.are.equal(1, #quiet(own(), { leads = { waiting } }).rightNow)
+			local rows = quiet(own(), { leads = { waiting } }).rightNow
+			assert.are.equal(1, #rows)
+			assert.are.equal("Spend 1 point", rows[1].line)
 			assert.are.equal(1, #MeTab.model(full({ leads = { calm } })).rightNow)
+		end)
+
+		it("offers the first sim before any run, and Sim again after one", function()
+			local first = MeTab.model(full({ sim = NONE })).sim
+			assert.are.equal("Run a sim", first.button)
+			assert.are.equal("Not simmed yet", first.date)
+			assert.are.equal("Sim again", MeTab.model(full()).sim.button)
 		end)
 
 		it("keeps the score and the raid as soon as the site brings one of them", function()
@@ -407,6 +423,7 @@ describe("the Me tab in the window", function()
 	end)
 
 	after_each(function()
+		_G.UnitXP, _G.UnitXPMax, _G.GetNumSkillLines, _G.GetSkillLineInfo = nil, nil, nil, nil
 		_G.ForeverSixtyDB = nil
 		_G.ForeverSixtyInbox = nil
 		_G.time = nil
@@ -445,6 +462,15 @@ describe("the Me tab in the window", function()
 		_G.UnitXPMax = function()
 			return 10000
 		end
+		local lines = { { "Professions", true }, { "Engineering", false, false, 155 }, { "Secondary Skills", true },
+			{ "Cooking", false, false, 90 } }
+		_G.GetNumSkillLines = function()
+			return #lines
+		end
+		_G.GetSkillLineInfo = function(index)
+			local line = lines[index]
+			return line[1], line[2], line[3], line[4]
+		end
 		state.level = 25
 		assert.are.equal("me", open(nil))
 		local parts = MeFrame.parts
@@ -458,9 +484,9 @@ describe("the Me tab in the window", function()
 		assert.are.equal("62%", parts.standing.rows[1].value:GetText())
 		assert.is_true(parts.standing.rows[1].fill:IsShown())
 		assert.are.equal(L.meNoBuild, parts.standing.rows[2].value:GetText())
+		assert.are.equal("Engineering 155", parts.standing.rows[3].value:GetText())
 		assert.are.equal(L.meSiteApp, parts.site.line:GetText())
 		assert.is_true(parts.site.link:IsShown())
-		_G.UnitXP, _G.UnitXPMax = nil, nil
 	end)
 
 	it("redraws the quiet state without hiding a control that stays (the cursor may rest on it)", function()

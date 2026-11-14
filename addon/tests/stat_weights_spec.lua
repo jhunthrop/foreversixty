@@ -130,7 +130,7 @@ describe("the Gear and Rotation tabs' weights", function()
 		local current = require("Gear").currentWeights(DATA, SPEC, nil, KEY, 60)
 		GearTab.read = function()
 			return { data = DATA, spec = SPEC, level = 60, faction = "horde", current = current, equipped = {},
-				bagIds = {}, noEnchant = {}, isMissing = function()
+				bagIds = {}, enchants = {}, isMissing = function()
 					return false
 				end, statsOf = function()
 					return nil

@@ -35,6 +35,7 @@ Score.lua
 LastRaid.lua
 Comms.lua
 Inspect.lua
+EnchantPlan.lua
 LootCouncil.lua
 surfaces\ItemTooltip.lua
 surfaces\PlayerTooltip.lua
@@ -56,6 +57,7 @@ surfaces\MeTab.lua
 surfaces\MeFrame.lua
 surfaces\StatWeights.lua
 surfaces\GearTab.lua
+surfaces\GearEnchants.lua
 surfaces\GearTabView.lua
 surfaces\SiteStatus.lua
 surfaces\Settings.lua

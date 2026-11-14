@@ -236,7 +236,8 @@ local function buildStanding(parent, width)
 	return standing
 end
 
---- Gear at the band (no site activity yet): the upgrades as Your sim's gains, the enchant row, the empty line.
+--- Gear at the band (no site activity yet): each upgrade as a Right now row (icon, name and where, the gain
+--- at the right), then the Gear tab's own enchant rows (GearEnchants), or the empty line.
 local function buildGear(parent, width)
 	local G = MeFrame.LAYOUT
 	local gear = BuildsWindow.buildSection(parent, width, { text = text }, L.meGear, nil)
@@ -244,11 +245,11 @@ local function buildGear(parent, width)
 	for index = 1, MeTab.MAX_LOCAL_GAINS do
 		local value = text(parent, "success", G.gainValue)
 		value:SetJustifyH("RIGHT")
-		gear.rows[index] = { cell = itemCell(parent, G.gainIcon),
-			name = text(parent, "body", width - G.gainIcon - G.gainGap * 2 - G.gainValue), text = value }
+		local room = width - G.nowIcon - G.nowGap - G.gainValue
+		gear.rows[index] = { cell = itemCell(parent, G.nowIcon), name = text(parent, "body", room),
+			where = text(parent, "muted", room + G.gainValue), text = value }
 	end
-	gear.enchants = text(parent, "warning")
-	gear.slots = text(parent, "muted")
+	gear.enchants = (ns.GearEnchants or require("GearEnchants")).build(parent, width, MeTab.MAX_LOCAL_ENCHANTS)
 	gear.empty = text(parent, "muted", width)
 	return gear
 end
@@ -611,7 +612,7 @@ local function drawStanding(standing, parent, model, y)
 	return model == nil and y or y + #rows * G.partRow + G.sectionGap
 end
 
---- Gear at `y`: the upgrades, then the enchant row or the empty line; the y under it.
+--- Gear at `y`: the upgrades, then the enchant rows or the empty line; the y under it.
 local function drawLocalGear(gear, parent, model, y)
 	local G, width = MeFrame.LAYOUT, Theme.SIZES.windowRight
 	local rows = model ~= nil and model.rows or {}
@@ -621,34 +622,28 @@ local function drawLocalGear(gear, parent, model, y)
 		y = heading(gear, parent, width, y, model.note)
 	end
 	for index, row in ipairs(gear.rows) do
-		local entry = rows[index]
+		local entry, top = rows[index], y + (index - 1) * G.nowRow
 		if entry == nil then
-			hideAll({ row.cell, row.name, row.text })
+			hideAll({ row.cell, row.name, row.where, row.text })
 		else
-			local top = y + (index - 1) * G.gainRow
 			paintCell(row.cell, entry.itemId)
-			place(row.cell, parent, 0, top + (G.gainRow - G.gainIcon) / 2)
+			place(row.cell, parent, 0, top + 2)
 			local name, hex = itemName(entry.itemId)
-			fit(row.name, name, width - G.gainIcon - G.gainGap * 2 - G.gainValue)
+			fit(row.name, name, width - G.nowIcon - G.nowGap - G.gainValue)
 			row.name:SetTextColor(Theme.rgb(hex))
-			place(row.name, parent, G.gainIcon + G.gainGap, top + (G.gainRow - G.line) / 2)
+			place(row.name, parent, G.nowIcon + G.nowGap, top)
+			fit(row.where, entry.where or "", width - G.nowIcon - G.nowGap)
+			place(row.where, parent, G.nowIcon + G.nowGap, top + G.line)
 			row.text:SetText(entry.gain)
-			place(row.text, parent, width - G.gainValue, top + (G.gainRow - G.line) / 2)
+			place(row.text, parent, width - G.gainValue, top)
 		end
 	end
-	y = y + #rows * G.gainRow
-	local enchants, empty = model ~= nil and model.enchants, model ~= nil and model.empty
-	Theme.setShown({ gear.enchants, gear.slots }, enchants and true or false)
-	Theme.setShown({ gear.empty }, empty and true or false)
-	if enchants then
-		gear.enchants:SetText(enchants)
-		place(gear.enchants, parent, 0, y + (G.gainRow - G.line) / 2)
-		local x = math.ceil(gear.enchants:GetStringWidth() or 0) + G.reasonGap
-		fit(gear.slots, model.slots or "", width - x)
-		place(gear.slots, parent, x, y + (G.gainRow - G.line) / 2)
-		y = y + G.gainRow
-	elseif empty then
-		gear.empty:SetText(empty)
+	y = y + #rows * G.nowRow - (#rows > 0 and G.nowRow - 2 * G.line or 0)
+	local enchants = model ~= nil and model.enchants or {}
+	y = (ns.GearEnchants or require("GearEnchants")).draw(gear.enchants, parent, enchants, y + (#enchants > 0 and 4 or 0))
+	Theme.setShown({ gear.empty }, model ~= nil and model.empty ~= nil)
+	if model ~= nil and model.empty ~= nil then
+		gear.empty:SetText(model.empty)
 		place(gear.empty, parent, 0, y + 2)
 		y = y + 2 + G.line
 	end

@@ -19,6 +19,7 @@ local Hub = ns.Hub or require("Hub")
 local BuildsWindow = ns.BuildsWindow or require("BuildsWindow")
 local GearTab = ns.GearTab or require("GearTab")
 local StatWeights = ns.StatWeights or require("StatWeights")
+local GearEnchants = ns.GearEnchants or require("GearEnchants")
 
 local GearTabView = {}
 
@@ -176,7 +177,8 @@ local function buildCell(parent, slot, mirrored)
 end
 
 --- A cell's second line: "Best in slot" muted, else the gain in green and "in your bags" in the client
---- gold, then "No enchant" in the warning colour; "Empty" for a slot with nothing worn. Pure.
+--- gold, then "No enchant" or "Weaker enchant" in the warning colour; "Empty" for a slot with nothing
+--- worn. Pure.
 function GearTabView.statusLine(cell, unit)
 	local parts = {}
 	if cell.holds then
@@ -190,8 +192,9 @@ function GearTabView.statusLine(cell, unit)
 	elseif cell.pick ~= nil and type(cell.gain) == "number" then
 		parts[#parts + 1] = Theme.inlineColor("muted", L.gearBeatsPick)
 	end
-	if cell.noEnchant and cell.worn ~= nil then
-		parts[#parts + 1] = Theme.inlineColor("warning", L.gearNoEnchant)
+	if cell.enchant ~= nil and cell.worn ~= nil then
+		parts[#parts + 1] = Theme.inlineColor("warning", cell.enchant.missing and L.gearNoEnchant
+			or L.gearWeakerEnchant)
 	end
 	if cell.worn == nil and #parts == 0 then
 		parts[#parts + 1] = Theme.inlineColor("muted", L.gearEmptySlot)
@@ -387,7 +390,7 @@ function GearTabView.build(content)
 		row.gain:SetJustifyH("RIGHT")
 		view.more.rows[index] = row
 	end
-	view.enchants = text(view.left, "warning", S.windowLeft)
+	view.enchants = GearEnchants.build(view.left, S.windowLeft)
 	view.upgrades = buildUpgrades(view.right, S.windowRight)
 	view.weights = buildWeights(view.right, S.windowRight)
 	view.sources = buildSources(view.right, S.windowRight)
@@ -445,15 +448,8 @@ local function drawDoll(view, doll, top)
 		place(view.noList, view.left, 0, y)
 		y = y + textHeight(view.noList)
 	end
-	local enchants = GearTab.unenchantedLine(doll)
-	if enchants ~= nil then
-		view.enchants:SetText(enchants)
-		place(view.enchants, view.left, 0, y + G.under)
-		y = y + G.under + textHeight(view.enchants)
-	else
-		view.enchants:Hide()
-	end
-	return y
+	local enchants = GearTab.enchantRows(doll)
+	return GearEnchants.draw(view.enchants, view.left, enchants, y + (#enchants > 0 and G.under or 0))
 end
 
 --- Ranks after Upgrades' four, one line each (icon, name and slot, gain), under the doll: the same list.
@@ -579,16 +575,17 @@ end
 
 local function drawSources(section, parent, width, y, sources)
 	local G = GearTabView.LAYOUT
-	for _, row in ipairs(section.rows) do
-		row.toggle.frame:Hide()
-	end
 	section.off:Hide()
 	section.default:Hide()
 	if sources == nil then
+		for _, row in ipairs(section.rows) do
+			row.toggle.frame:Hide()
+		end
 		section.heading:Hide()
 		section.note:Hide()
 		return y
 	end
+	-- The switches stay shown across a redraw: the one clicked is under the cursor (2.0.51's lesson).
 	-- Nothing to say at All sources; the leveling default's own words carry its off kinds.
 	y = BuildsWindow.drawSection(section, parent, width, y, not sources.state.all and sources.words or nil, fit,
 		textHeight) + G.under

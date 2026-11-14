@@ -17,7 +17,7 @@ local Rules = ns.Rules or require("Rules")
 local Gear = ns.Gear or require("Gear")
 local Progress = ns.Progress or require("Progress")
 local Sources = ns.Sources or require("Sources")
-local Inspect = ns.Inspect or require("Inspect")
+local EnchantPlan = ns.EnchantPlan or require("EnchantPlan")
 local ItemTooltip = ns.ItemTooltip or require("ItemTooltip")
 
 local GearTab = {}
@@ -52,23 +52,18 @@ local function idsOf(links)
 	return ids
 end
 
---- The enchantable slots the player wears an item in without an enchant, as a set (Inspect on the player).
-local function unenchanted()
-	local missing = {}
-	for _, slot in ipairs(Inspect.missingEnchants(Inspect.readSelf())) do
-		missing[slot] = true
-	end
-	return missing
-end
-
 --- Everything a draw reads from the client, once: the item tooltip's own context (the spec, its weights,
---- the level, the faction, what is worn), the bags' item ids and the slots missing an enchant.
+--- the level, the faction, what is worn), the bags' item ids and each worn slot's enchant verdict against
+--- the spec's plan (EnchantPlan.verdicts: none where the plan has one, or a weaker one).
 function GearTab.read(data)
 	data = data or ns.Data
 	local base = ItemTooltip.baseContext(data)
+	local equipped = base.equipped or {}
+	local weights = type(base.current) == "table" and base.current.weights or nil
 	return {
 		data = data, spec = base.spec, current = base.current, level = base.level, faction = base.faction,
-		equipped = base.equipped or {}, bagIds = idsOf(Gear.bagLinks()), noEnchant = unenchanted(),
+		equipped = equipped, bagIds = idsOf(Gear.bagLinks()),
+		enchants = EnchantPlan.verdicts(data, base.spec, base.level, equipped, weights),
 		isMissing = ItemTooltip.isMissing,
 	}
 end
@@ -242,10 +237,11 @@ local function pickOf(input, band, slot, sources, itemId)
 end
 
 --- One cell: { slot, worn = { itemId, link, name }, pick (Gear.pick's table, nil without a target),
---- gain (as the tooltip shows it), exact (unrounded), holds (you wear the pick), inBags, noEnchant }.
+--- gain (as the tooltip shows it), exact (unrounded), holds (you wear the pick), inBags, enchant (the
+--- worn item's EnchantPlan verdict, nil when it is fine) }.
 local function cellOf(input, band, slot, row, sources)
 	local worn = input.equipped[slot]
-	local cell = { slot = slot, noEnchant = input.noEnchant[slot] == true }
+	local cell = { slot = slot, enchant = worn ~= nil and (input.enchants or {})[slot] or nil }
 	if worn ~= nil then
 		cell.worn = { itemId = worn.itemId, link = worn.link, name = wornName(worn) }
 	end
@@ -294,7 +290,7 @@ function GearTab.doll(input, band)
 end
 
 --- How the doll stands: { best (cells holding the pick), scored (cells with a target), missing (cells
---- without an enchant) }. Pure.
+--- without the enchant the plan puts there) }. Pure.
 function GearTab.tally(doll)
 	local best, scored, missing = 0, 0, 0
 	for _, cell in pairs(doll.cells) do
@@ -304,7 +300,7 @@ function GearTab.tally(doll)
 			local beaten = type(cell.gain) == "number" and cell.gain > 0
 			best = best + ((cell.holds or (type(cell.gain) == "number" and not beaten)) and 1 or 0)
 		end
-		if cell.noEnchant and cell.worn ~= nil then
+		if cell.enchant ~= nil and cell.enchant.missing then
 			missing = missing + 1
 		end
 	end
@@ -441,25 +437,20 @@ function GearTab.whereLine(cell, measure, room)
 	return place ~= nil and place .. tail or nil
 end
 
---- The slots missing an enchant, in doll order, as the line under the doll says them ("Chest, Feet"), or
---- nil with none. Pure.
-function GearTab.unenchantedLine(doll)
-	local names = GearTab.unenchantedSlots(doll)
-	return names ~= nil and string.format(L.gearNoEnchantSlots, names) or nil
-end
-
---- The slots missing an enchant, in doll order, joined ("Chest, Feet"), or nil with none (the Me tab's
---- enchant row reads it too). Pure.
-function GearTab.unenchantedSlots(doll)
-	local names = {}
+--- The enchant verdicts under the doll, in doll order: { slot, plan, missing, worn } each (EnchantPlan's
+--- verdict with its slot). Pure.
+function GearTab.enchantRows(doll)
+	local rows = {}
 	for _, cells in ipairs({ doll.left, doll.right }) do
 		for _, cell in ipairs(cells) do
-			if cell.noEnchant and cell.worn ~= nil then
-				names[#names + 1] = L.gearSlotLabels[cell.slot] or cell.slot
+			local verdict = cell.enchant
+			if verdict ~= nil then
+				rows[#rows + 1] = { slot = cell.slot, plan = verdict.plan, missing = verdict.missing,
+					worn = verdict.worn }
 			end
 		end
 	end
-	return #names > 0 and table.concat(names, L.sourcesListSeparator) or nil
+	return rows
 end
 
 -- Sources ----------------------------------------------------------------------------------------

@@ -172,7 +172,7 @@ describe("the addon's windows on the pixel grid", function()
 		GearTab.read = function()
 			return { data = { bis = { ["warrior-arms"] = { [20] = { horde = { chest = "1|D|Wailing Caverns: Mutanus" } } } } },
 				spec = "warrior-arms", level = 13, faction = "horde", current = { weights = { strength = 1 } },
-				equipped = {}, bagIds = {}, noEnchant = {}, isMissing = function()
+				equipped = {}, bagIds = {}, enchants = {}, isMissing = function()
 					return false
 				end }
 		end

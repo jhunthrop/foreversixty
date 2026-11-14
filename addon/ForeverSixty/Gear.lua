@@ -96,8 +96,9 @@ end
 --- ({ left, right } each, the client's text): the "Enchanted: ..." line split
 --- on " and " and ", ", each part "+N <stat>" or "<stat> +N" with <stat> a
 --- localized stat name, "Weapon Damage +N" read as N / the weapon's speed
---- (its "Speed 3.50" right text) of weapon_dps. Answers { stats, unparsed }
---- (unparsed when some part could not be read), or nil with no enchant line.
+--- (its "Speed 3.50" right text) of weapon_dps. Answers { stats, unparsed, text }
+--- (unparsed when some part could not be read; text the line's own words), or nil with no
+--- enchant line.
 --- Pure over `rows` and `words` (Gear.enchantWords).
 function Gear.enchantOf(rows, words)
 	local pattern = patternOf(words.enchanted)
@@ -140,7 +141,7 @@ function Gear.enchantOf(rows, words)
 			end
 		end
 	end
-	return { stats = stats, unparsed = unparsed }
+	return { stats = stats, unparsed = unparsed, text = payload }
 end
 
 --- Worn enchants read so far, by item link (an enchant only changes with the
@@ -381,11 +382,13 @@ local function idList(text)
 	return ids
 end
 
---- The tail's head entry ("*!RhVh,19513"): the two-hander mark, the pick's own filter kinds each
---- with the standing it asks, then the ids its pair mate must not hold.
+--- The tail's head entry ("*!^RhVh,19513"): the two-hander mark, the PvP gate mark (its vendor and
+--- reputation kinds also need PvP: Sources.PVP_GATED), the pick's own filter kinds each with the
+--- standing it asks, then the ids its pair mate must not hold.
 local function decodeHead(entry)
 	local marks, notWith = entry:match("^%*([^,]*),?(.*)$")
-	local head = { kinds = {}, standings = {}, twoHand = marks:find("!", 1, true) ~= nil, notWith = idList(notWith) }
+	local head = { kinds = {}, standings = {}, twoHand = marks:find("!", 1, true) ~= nil,
+		pvp = marks:find("^", 1, true) ~= nil, notWith = idList(notWith) }
 	for code, standing in marks:gmatch("(%u)(%l?)") do
 		local kind = Sources.KIND_OF_CODE[code]
 		if kind ~= nil then
@@ -396,19 +399,19 @@ local function decodeHead(entry)
 	return head
 end
 
---- One by-kind entry ("Dh!26686,12,1234+5678"): the kind letter, a standing letter, the two-hander
---- mark and the id; the place's index into `places` (Data.bisSources); the ids the pair mate must
---- not hold. nil for anything else.
+--- One by-kind entry ("Vh^!26686,12,1234+5678"): the kind letter, a standing letter, the PvP gate
+--- mark, the two-hander mark and the id; the place's index into `places` (Data.bisSources); the ids
+--- the pair mate must not hold. nil for anything else.
 local function decodeEntry(entry, places)
 	local lead, place, notWith = entry:match("^([^,]*),?([^,]*),?(.*)$")
-	local code, standing, two, id = (lead or ""):match("^(%u)(%l?)(!?)(%d+)$")
+	local code, standing, pvp, two, id = (lead or ""):match("^(%u)(%l?)(%^?)(!?)(%d+)$")
 	local kind = code ~= nil and Sources.KIND_OF_CODE[code] or nil
 	if kind == nil then
 		return nil
 	end
 	local index = tonumber(place or "")
 	return { item_id = tonumber(id), kind = code, filterKind = kind, standing = Sources.STANDING_OF_CODE[standing],
-		twoHand = two == "!", source = index ~= nil and type(places) == "table" and places[index] or nil,
+		pvp = pvp == "^", twoHand = two == "!", source = index ~= nil and type(places) == "table" and places[index] or nil,
 		notWith = idList(notWith) }
 end
 
@@ -435,8 +438,8 @@ end
 --- kind and source, the pick tuple's old positional meaning.
 ---
 --- The source filter's facts (2026-11-13) follow the alternatives after one empty field: `head`
---- ({ kinds, standings, twoHand, notWith }, nil when the pick's kind letter says it all), `byKind`
---- (the best item of every other kind, rank order, each { item_id, kind, filterKind, standing,
+--- ({ kinds, standings, twoHand, pvp, notWith }, nil when the pick's kind letter says it all), `byKind`
+--- (the best item of every other kind, rank order, each { item_id, kind, filterKind, standing, pvp,
 --- twoHand, source, notWith }), `standing` (the one its own kind asks) and `twoHand`. `places` is
 --- Data.bisSources, which the entries index into. The table is shared between callers (memoised
 --- by string), so it must not be changed. nil for anything that is not a packed pick.

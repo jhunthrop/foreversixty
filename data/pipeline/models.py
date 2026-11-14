@@ -916,6 +916,9 @@ class AddonBisKindEntry(BaseModel):
     standing: str = ""
     #: A two-handed weapon (an off hand never sits beside it).
     two_hand: bool = False
+    #: A vendor or reputation entry a PvP rank or a battleground faction gates: the
+    #: addon's filter holds it to PvP as well (pipeline.addonbis.PVP_GATED_KINDS).
+    pvp_gate: bool = False
     #: The ids the pair's first slot must not hold for this entry to be usable
     #: (leveling-bis's `not_with`, its own id included for a unique item); carried
     #: only on a pair's second slot (finger2, trinket2, off_hand), the one that reads it.
@@ -962,6 +965,9 @@ class AddonBisItem(BaseModel):
     kinds: list[str] = Field(default_factory=list, exclude=True)
     standings: dict[str, str] = Field(default_factory=dict, exclude=True)
     two_hand: bool = Field(default=False, exclude=True)
+    #: Its vendor or reputation kinds also need PvP (a PvP rank's or a battleground
+    #: faction's goods; pipeline.addonbis.PVP_GATED_KINDS).
+    pvp_gate: bool = Field(default=False, exclude=True)
     not_with: list[int] = Field(default_factory=list, exclude=True)
     #: The best item of each other source kind, best rank first (`by_kind`).
     by_kind: list[AddonBisKindEntry] = Field(default_factory=list, exclude=True)
@@ -1152,6 +1158,11 @@ class AddonData(BaseModel):
     #: (one short number per entry instead of the place's text, for the idle budget).
     #: Data.lua only, like AddonBisItem.by_kind.
     bis_sources: list[str] = Field(default_factory=list, exclude=True)
+    #: Spec -> enchant plan key -> 1-based index into enchant_records: the enchant the
+    #: spec's BiS picks wear in each slot (pipeline.addonenchants). Data.lua only.
+    enchant_plans: dict[str, dict[str, int]] = Field(default_factory=dict, exclude=True)
+    #: The packed enchant records the plans index (pipeline.addonenchants). Data.lua only.
+    enchant_records: list[str] = Field(default_factory=list, exclude=True)
     #: The id of every BiS candidate pipeline.addonbis passed over because
     #: items.json marks it client_unconfirmed (one per skip). Never written
     #: to addon-data.json or Data.lua: it feeds the addon-data command's

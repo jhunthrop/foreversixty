@@ -1510,3 +1510,47 @@ def test_an_unconfirmed_by_kind_item_is_passed_over(tmp_path):
     (tmp_path / BUILD / "items").mkdir()
     pick = build_bis(tmp_path, BUILD)["druid-balance"][0].factions["alliance"]["finger2"]
     assert 1449 not in [entry.item_id for entry in pick.by_kind]
+
+
+def test_a_pvp_rank_or_battleground_faction_item_bought_or_earned_packs_the_pvp_gate(tmp_path):
+    """The owner's 2026-11-14 rule: a battleground faction's or a PvP rank's goods need PvP on
+    as well as the kind they are had from, so their vendor and rep entries carry `^`; the same
+    item as a drop does not."""
+    from pipeline.addonbis import build_bis_sources
+    from pipeline.addonlua import render_lua
+    from pipeline.models import AddonData
+
+    (tmp_path / BUILD).mkdir(parents=True)
+    (tmp_path / BUILD / "loot.json").write_text(
+        json.dumps(
+            {
+                "sources": [
+                    {"id": "rep:silverwing", "kind": "rep", "faction_id": 890, "items": [20439]},
+                    {"id": "vendor:1", "kind": "vendor", "name": "Kelm", "items": [7001]},
+                    {"id": "pvp:rank-9", "kind": "pvp", "items": [1156]},
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    row = dict(
+        _FILTERED_PICK,
+        by_kind={
+            "vendor": {"item_id": 1156, "rank": 2, "source": "Kelm"},
+            "dungeon": {"item_id": 1156, "rank": 3, "source": "The Deadmines: Gilnid"},
+            "crafted": {"item_id": 7001, "rank": 4, "source": "Kelm"},
+        },
+    )
+    _write_bis(tmp_path, BUILD, "druid-balance", [_band(20, "alliance", [row])])
+    bis = build_bis(tmp_path, BUILD)
+    pick = bis["druid-balance"][0].factions["alliance"]["finger2"]
+    assert pick.pvp_gate is True
+    assert [(e.source_kind, e.pvp_gate) for e in pick.by_kind] == [
+        ("vendor", True),
+        ("dungeon", False),
+        ("crafted", False),
+    ]
+    lua = render_lua(
+        AddonData(build="x", classes={}, weights={}, bis=bis, bis_sources=build_bis_sources(bis))
+    )
+    assert "||*^RhVh,20439;V^1156,1;D1156,2;C7001,1" in lua

@@ -23,7 +23,7 @@ describe("the TOC", function()
 		"Score.lua",
 		-- The newest last_raid message read for the window (the Rotation tab, Me's weakest boss).
 		"LastRaid.lua",
-		"Comms.lua", "Inspect.lua",
+		"Comms.lua", "Inspect.lua", "EnchantPlan.lua",
 		-- The loot council helper (L5.3): reads Comms, Gear, Progress and the inbox; the group panel shows it.
 		"LootCouncil.lua", "surfaces/ItemTooltip.lua",
 		-- The player tooltip and the chat badges (L4.4): read Score and Comms.seen.
@@ -47,7 +47,7 @@ describe("the TOC", function()
 		"surfaces/StatWeights.lua",
 		-- The Gear tab (hub spec 4.3): its model reads the tooltip's targets, the slot marks' list and the
 		-- source filter; its frames register the tab with the hub.
-		"surfaces/GearTab.lua", "surfaces/GearTabView.lua",
+		"surfaces/GearTab.lua", "surfaces/GearEnchants.lua", "surfaces/GearTabView.lua",
 		-- The site-status lines (X.3): /fs diag, the login line and the chip read the inbox and the clock.
 		"surfaces/SiteStatus.lua",
 		-- The Settings page (L3.5): registered at login; Options opens it.
