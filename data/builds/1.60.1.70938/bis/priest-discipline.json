@@ -2,7 +2,7 @@
   "spec": "priest-discipline",
   "build": "1.60.1.70938",
   "engine_version": "f9385b498",
-  "generated_at": "2026-11-14T08:07:04Z",
+  "generated_at": "2026-11-14T15:00:53Z",
   "bands": [
     {
       "spec": "priest-discipline",
@@ -1142,8 +1142,8 @@
         "main_hand: Staff of Westfall",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 18.564530262,
-      "verify_run_seconds": 82.519812528,
+      "weights_run_seconds": 23.665427494,
+      "verify_run_seconds": 106.356017772,
       "coverage": {
         "back": {
           "eligible": 104,
@@ -2386,8 +2386,8 @@
         "main_hand: Living Root",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 18.564530262,
-      "verify_run_seconds": 74.979205643,
+      "weights_run_seconds": 23.665427494,
+      "verify_run_seconds": 96.764353008,
       "coverage": {
         "back": {
           "eligible": 105,
@@ -3796,8 +3796,8 @@
         "off_hand: Orb of Souls",
         "ranged: Wand of Mana Concentration"
       ],
-      "weights_run_seconds": 19.444301081,
-      "verify_run_seconds": 106.97625457199999,
+      "weights_run_seconds": 24.768967059,
+      "verify_run_seconds": 137.94634774600001,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -5186,8 +5186,8 @@
         "off_hand: Orb of Souls",
         "ranged: Wand of Mana Concentration"
       ],
-      "weights_run_seconds": 19.444301081,
-      "verify_run_seconds": 102.445354347,
+      "weights_run_seconds": 24.768967059,
+      "verify_run_seconds": 131.88559528300001,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -6649,8 +6649,8 @@
         "off_hand: Orb of Lorica",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 30.762068621,
-      "verify_run_seconds": 192.400309973,
+      "weights_run_seconds": 39.420470397,
+      "verify_run_seconds": 251.58585025000002,
       "coverage": {
         "back": {
           "eligible": 257,
@@ -8087,8 +8087,8 @@
         "off_hand: Prophetic Cane",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 30.762068621,
-      "verify_run_seconds": 187.597022516,
+      "weights_run_seconds": 39.420470397,
+      "verify_run_seconds": 243.09346439900003,
       "coverage": {
         "back": {
           "eligible": 259,
@@ -9711,8 +9711,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Cairnstone Sliver"
       ],
-      "weights_run_seconds": 31.931825644,
-      "verify_run_seconds": 281.938738842,
+      "weights_run_seconds": 40.821638926,
+      "verify_run_seconds": 360.480917791,
       "coverage": {
         "back": {
           "eligible": 330,
@@ -11296,8 +11296,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Wand of Mana Concentration"
       ],
-      "weights_run_seconds": 31.931825644,
-      "verify_run_seconds": 273.53061944899997,
+      "weights_run_seconds": 40.821638926,
+      "verify_run_seconds": 351.143959546,
       "coverage": {
         "back": {
           "eligible": 335,
@@ -13011,8 +13011,8 @@
         "trinket2: Serenity Field",
         "ranged: Wand of Eternal Light"
       ],
-      "weights_run_seconds": 32.733277346,
-      "verify_run_seconds": 907.5193036070001,
+      "weights_run_seconds": 42.093942169,
+      "verify_run_seconds": 1174.885467624,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -14648,8 +14648,8 @@
         "trinket2: Burst of Knowledge",
         "ranged: Wand of Eternal Light"
       ],
-      "weights_run_seconds": 32.733277346,
-      "verify_run_seconds": 909.134267368,
+      "weights_run_seconds": 42.093942169,
+      "verify_run_seconds": 1171.30672545,
       "coverage": {
         "back": {
           "eligible": 472,
@@ -16419,8 +16419,8 @@
         "trinket2: Dormant Heart of the Mountain",
         "ranged: Wand of Eternal Light"
       ],
-      "weights_run_seconds": 21.957904512,
-      "verify_run_seconds": 571.0080136280001,
+      "weights_run_seconds": 28.158565933,
+      "verify_run_seconds": 730.5371875799999,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -18159,8 +18159,8 @@
         "trinket2: Serenity Field",
         "ranged: Wand of Eternal Light"
       ],
-      "weights_run_seconds": 21.957904512,
-      "verify_run_seconds": 561.074269385,
+      "weights_run_seconds": 28.158565933,
+      "verify_run_seconds": 720.273421753,
       "coverage": {
         "back": {
           "eligible": 472,
