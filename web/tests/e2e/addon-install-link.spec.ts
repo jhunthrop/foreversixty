@@ -8,13 +8,13 @@ import { openBis } from './support/bis-page';
 test('the BiS page closes Where to go with Install the addon', async ({ page }) => {
   await openBis(page, '/bis/hunter/beast-mastery');
   const link = page.getByTestId('bis-where').getByTestId('bis-install-addon');
-  await expect(link).toHaveText('Install the addon');
+  await expect(link).toHaveText('Install the addon ›');
   await expect(link).toHaveAttribute('href', '/setup');
 });
 
 test('the class guide carries Install the addon in its head', async ({ page }) => {
   await page.goto('/guides/hunter/beast-mastery');
   const link = page.getByTestId('guide-install-addon');
-  await expect(link).toHaveText('Install the addon');
+  await expect(link).toHaveText('Install the addon ›');
   await expect(link).toHaveAttribute('href', '/setup');
 });

@@ -27,7 +27,7 @@ import GuideTooltips from '../../../components/guides/GuideTooltips.svelte';
 import LaneBlock from '../../../components/ui/LaneBlock.svelte';
 import Page from '../../../components/ui/Page.svelte';
 import PageHeader from '../../../components/ui/PageHeader.svelte';
-import ActionLink from '../../../components/ui/ActionLink.svelte';
+import { LINK } from '../../../lib/ui/primitives';
 import { INSTALL_ADDON_LINK } from '../../../lib/addon/install-link';
 import Prose from '../../../components/ui/Prose.svelte';
 import ReadingPanel from '../../../components/ui/ReadingPanel.svelte';
@@ -251,8 +251,8 @@ const jsonLd = [
       <PageHeader slot="header" title={title} tone={{ classSlug: classSlug as ClassSlug }}>
         <Crest slot="crest" cls={classSlug} size={56} eager />
         <span slot="meta">{guidesCopy.headerMeta(role, formatDate(updated))}</span>
-        <ActionLink slot="actions" href={INSTALL_ADDON_LINK.href} data-testid="guide-install-addon"
-          >{INSTALL_ADDON_LINK.label}</ActionLink
+        <a slot="actions" class={LINK} href={INSTALL_ADDON_LINK.href} data-testid="guide-install-addon"
+          >{INSTALL_ADDON_LINK.label} ›</a
         >
         <GuideAnswer
           slot="answer"

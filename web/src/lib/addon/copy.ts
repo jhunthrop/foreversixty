@@ -1,4 +1,5 @@
 import { ctaCopy } from './cta-copy';
+import { INSTALL_ADDON_LINK } from './install-link';
 import { copiedThen } from '../ui/copy';
 // web/src/lib/addon/copy.ts
 // Every string this lane adds to the site: the FSB1 decoder's refusals, the share
@@ -155,7 +156,7 @@ export const addonCopy = {
   /** Under the installed line when the feed has a newer addon release; the row's Update buttons follow. */
   setupAddonBehind: (latest: string): string => `${latest} is out`,
   /** The addon step's install buttons, as one group (its accessible name). */
-  setupInstallAddon: 'Install the addon',
+  setupInstallAddon: INSTALL_ADDON_LINK.label,
   /** The same group on an installed addon behind the feed. */
   setupUpdateAddon: 'Update the addon',
   setupUpdateCurseForge: 'Update from CurseForge',

@@ -12,7 +12,6 @@
   import type { ItineraryStop, StackView } from '../../lib/bis/frame-view';
   import { bisCopy } from '../../lib/bis/copy';
   import { INSTALL_ADDON_LINK } from '../../lib/addon/install-link';
-  import ActionLink from '../ui/ActionLink.svelte';
 
   let {
     model,
@@ -110,7 +109,9 @@
 </div>
 
 {#snippet installAddon()}
-  <ActionLink href={INSTALL_ADDON_LINK.href} data-testid="bis-install-addon">{INSTALL_ADDON_LINK.label}</ActionLink>
+  <a class="bis-side-link" href={INSTALL_ADDON_LINK.href} data-testid="bis-install-addon"
+    >{INSTALL_ADDON_LINK.label} ›</a
+  >
 {/snippet}
 
 <style>
@@ -141,7 +142,7 @@
     margin-top: 10px;
   }
   .bis-side-install {
-    margin-top: 4px;
+    margin-top: 12px;
   }
   /* Jump chips to the stops below: the list under the doll names each piece. */
   .bis-stops {
