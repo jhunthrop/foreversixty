@@ -34,7 +34,7 @@ The text is in `curseforge-description.md` (Forever Sixty) and `data-addon-descr
 - [ ] **Project icon and account avatar**, on both projects and both sites: upload `icons/listing-icon-400.png`.
 - [ ] **Summary or tagline:** paste the "One line" field from each file.
 - [ ] **Description.** For CurseForge, paste `curseforge-description.html` (or `data-addon-description.html`) into the editor's HTML source view. For Wago, paste the Markdown under "## Description".
-- [ ] **Gallery.** The ten plates in `gallery/` come from the addon's mocks (`RECAPTURE.md`); follow "Uploading the gallery" in `curseforge-description.md`, deleting the old plates first.
+- [ ] **Gallery.** The eleven plates in `gallery/` come from the addon's mocks (`RECAPTURE.md`); follow "Uploading the gallery" in `curseforge-description.md`, deleting the old plates first.
 
 ## Before the store screenshots go up
 

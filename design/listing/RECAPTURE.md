@@ -22,20 +22,24 @@ docstring lists what it aligns across the lanes).
 
 | # | Plate | Mock board |
 |---|---|---|
-| 1 | `chip` | `addon_hub_l6.py` `l6-hover`, the first scene: the line and its hover |
-| 2 | `window-me` | `addon_hub_me.py` `me-raid-day` |
-| 3 | `window-builds` | `addon_builds_window.py`'s window at 60, following the Beast Mastery raid build |
-| 4 | `window-gear` | `addon_hub_l3.py` `gear-hunter-60-raid`, the window only |
+| 1 | `quest-reward-marks` | `addon_hub_l10.py` `l10-rewards`, without the "nothing helps" frame and the repeated roll |
+| 2 | `bag-arrow` | `addon_hub_l10.py` `l10-gear-marks`, without the bag item's tooltip |
+| 3 | `talent-marks` | `addon_hub_talents.py`, the whole three-tree window: a level 33 hunter on Beast Mastery leveling, one point to spend |
+| 4 | `window-builds` | `addon_builds_window.py`'s window at 60, following the Beast Mastery raid build |
 | 5 | `window-rotation` | `addon_hub_rotation.py` `rotation-60` |
-| 6 | `window-guild` | `addon_hub_l5.py`'s raid day, signed up In |
-| 7 | `window-officer` | `addon_hub_l7.py` `l7-raid-day` |
-| 8 | `bag-arrow` | `addon_hub_l10.py` `l10-gear-marks`, without the bag item's tooltip |
-| 9 | `quest-reward-marks` | `addon_hub_l10.py` `l10-rewards`, without the "nothing helps" frame and the repeated roll |
-| 10 | `player-tooltip` | `addon_hub_l10.py` `l10-player`, the stale record and the Shift view |
+| 6 | `window-gear` | `addon_hub_l3.py` `gear-hunter-60-raid`, the window only |
+| 7 | `window-guild` | `addon_hub_l5.py`'s raid day, signed up In |
+| 8 | `window-officer` | `addon_hub_l7.py` `l7-raid-day` |
+| 9 | `player-tooltip` | `addon_hub_l10.py` `l10-player`, the stale record and the Shift view |
+| 10 | `window-me` | `addon_hub_me.py` `me-raid-day` |
+| 11 | `chip` | `addon_hub_l6.py` `l6-hover`, the first scene: the line and its hover |
+
+The order follows the store review of 2026-11-14: the arrow first, where a leveling player meets it
+(quest rewards and rolls, then bags), the talent window third, guild surfaces after the player's own.
 
 When a tab changes, fix its lane generator and rerun `gen_captures.py` and `gen_gallery.mjs`;
 never edit a capture by hand. Not in the gallery, because no mock draws them whole: the chat
-badges, the full talent window (the L10 board draws only the strip and two talents) and the
+badges and the
 Settings page (taller than a plate can show readably). The in-game shots below would add them, and
 a lossless shot of any plate's surface may replace its mock capture under the same name (take
 that name out of `gen_captures.py`'s `CAPTURES` too, or the next run draws over it).

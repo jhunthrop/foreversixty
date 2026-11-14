@@ -21,6 +21,9 @@ a sign-up, a raid date). The store fixture below makes one evening of one charac
 - Builds shows her at 60 following the Beast Mastery raid build, every point placed, as Me says; with no
   builds from the site there, the line's hover leaves that item out.
 - The guild's wanted roles are one table (addon_hub.WANTED) on Guild and Officer.
+- The talent window is a second, made-up character mid-leveling (addon_hub_talents: a level 33 hunter on the
+  Beast Mastery leveling build with one point to spend), since Velisandre's plan is complete and a finished
+  plan draws no ring or plates.
 
 The device scale is chosen per capture so the frame fills the plate's stage (gen_gallery's 1440x600 at
 device scale 2) without the plate ever enlarging it, capped per capture so a small tooltip is not drawn
@@ -44,6 +47,7 @@ import addon_hub_l7 as officer  # noqa: E402
 import addon_hub_l10 as marks  # noqa: E402
 import addon_hub_me as me  # noqa: E402
 import addon_hub_rotation as rotation  # noqa: E402
+import addon_hub_talents as talents  # noqa: E402
 
 OUT = HERE / 'captures'
 # gen_gallery.mjs: the stage is 1440x600 CSS px at device scale 2, inside a 1 px border.
@@ -153,6 +157,8 @@ CAPTURES = {
              '#board .row > div:not(:first-child) { display: none !important; } '
              '.scene .mm { display: none !important; } '
              '.scene { background: none !important; box-shadow: none !important; height: 0 !important; }', 4.5),
+    # The whole three-tree window with the ring, the plates and the strip.
+    'talent-marks': (talents.board_talents, '.tw', '', WINDOW_MAX_SCALE),
     'window-me': (me_raid_day, '.win', '', WINDOW_MAX_SCALE),
     'window-builds': (builds_60, '.win', '', WINDOW_MAX_SCALE),
     'window-gear': (gear_raid_ready, '.win', '', WINDOW_MAX_SCALE),

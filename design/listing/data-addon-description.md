@@ -15,7 +15,7 @@ pictures are the main listing's captures, served from foreversixty.gg/addon/.
 | Source | https://github.com/jhunthrop/foreversixty |
 | Website | https://foreversixty.gg/ratings |
 | Relations | Forever Sixty (project 1706689; Wago XKqEdoKy): this pack is its required dependency |
-| Gallery | plates 10, 06 and 07 from the main listing's `gallery/`: the player tooltip, the Guild tab, the Officer tab |
+| Gallery | plates 09, 07 and 08 from the main listing's `gallery/`: the player tooltip, the Guild tab, the Officer tab |
 
 ## Description
 

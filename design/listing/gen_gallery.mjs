@@ -53,16 +53,17 @@ const MAX_PLATE_BYTES = 5 * 1024 * 1024;
 /** Capture file names in gallery order (gen_captures.py renders each from the addon's mocks); titles and
  * captions come from CAPTIONS_FILE. */
 const PLATES = [
-  'chip',
-  'window-me',
+  'quest-reward-marks',
+  'bag-arrow',
+  'talent-marks',
   'window-builds',
-  'window-gear',
   'window-rotation',
+  'window-gear',
   'window-guild',
   'window-officer',
-  'bag-arrow',
-  'quest-reward-marks',
   'player-tooltip',
+  'window-me',
+  'chip',
 ];
 
 /** Reads "N. **Title.** Caption." lines under "## Gallery captions". */
