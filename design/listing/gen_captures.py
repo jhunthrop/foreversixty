@@ -7,7 +7,10 @@ Writes design/listing/captures/<name>.png, which gen_gallery.mjs prefers over an
 board of the addon hub's lane generators (design/mocks/addon_hub_*.py, addon_builds_window.py), the renders
 the 2.0.48 frames were reviewed and shipped against: every word and layout rule there comes from the addon's
 own Locale.lua, Data.lua and models. This script renders those boards again without their review notes and
-cuts out the frame; it never draws a frame of its own.
+cuts out the frame; it never draws a frame of its own. Since 2.0.55 the hub windows wear the shipped brand skin
+through design/mocks/addon_brand_build.py (the committed textures, Theme.SIZES, Hub.LAYOUT, the tokens), and the
+tooltip blocks are drawn in it by their lane (addon_hub_l10.py through addon_ux.item_block and player_header).
+Every lane reads the addon's Lua as of lua_pin.CAPTURE_COMMIT, the store fixture's commit.
 
 Each lane drew Velisandre from its own fixture, so side by side the plates disagreed (a gain, a countdown,
 a sign-up, a raid date). The store fixture below makes one evening of one character out of them:
@@ -40,6 +43,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent / 'mocks'))
 
+import lua_pin  # noqa: E402,F401  (first: every lane reads the fixture's Lua, lua_pin.CAPTURE_COMMIT)
 import addon_builds as ab  # noqa: E402
 import addon_builds_window as builds  # noqa: E402
 import addon_hub as hub  # noqa: E402
@@ -53,12 +57,14 @@ import addon_hub_rotation as rotation  # noqa: E402
 import addon_hub_talents as talents  # noqa: E402
 
 OUT = HERE / 'captures'
-# gen_gallery.mjs: the stage is 1440x600 CSS px at device scale 2, inside a 1 px border.
+# gen_gallery.mjs: the stage is 1440x600 CSS px at device scale 2 (1 px kept clear on each side).
 STAGE_DEVICE = ((1440 - 2) * 2, (600 - 2) * 2)
 MIN_SCALE = 1.5
 WINDOW_MAX_SCALE, MARK_MAX_SCALE = 3, 3.5
 # The boards' review notes and captions: hidden so only the addon's own frames are left.
 HIDE_NOTES = '.cap, .cap2, .note { display: none !important; }'
+# The boards' own ground stays out of the capture: the plate's ground shows between the frames (a PNG with alpha).
+NO_GROUND = 'html, body, #board { background: transparent !important; }'
 
 # --- The store fixture: one evening of one character ---------------------------------------------------------
 
@@ -113,6 +119,13 @@ def builds_60():
     html = builds.board('Builds at 60', builds.window(
         'hunter', builds.NAMES['hunter'], builds.note(60, 51, 51), builds.blocks_html(blocks), right,
         builds.T('windowEscClose'), strip=('Builds', ('Gear',))))
+    # The export names her, and wraps at its separators or the guild's space, never inside a word.
+    code = builds.export('hunter', 60)
+    if html.count(code) != 1:
+        raise RuntimeError('the Builds board no longer shows one export code')
+    shown = code.replace('Thornmaw', 'Velisandre').replace('Ashen Vigil', hub.GUILD).replace(':', ':<wbr>')
+    html = html.replace(code, shown).replace(
+        '</style>', '.rc .box.code { word-break: normal !important; overflow-wrap: anywhere; }</style>', 1)
     return html.replace('Ashen Vigil', hub.GUILD)
 
 
@@ -123,7 +136,11 @@ def gear_raid_ready():
 def guild_signed_in():
     html = guild.win(guild.tonight('in') + guild.prep() + guild.signups(),
                      guild.next_raids(('In as DPS', 'ok')) + guild.guild_block() + guild.sent(), dots=())
-    return shift_dates(hub.board2('Guild, signed up', html).replace('</style>', guild.TITLE_CSS + '</style>', 1))
+    html = hub.board2('Guild, signed up', html).replace('</style>', guild.TITLE_CSS + '</style>', 1)
+    # The raids opened on 9 Dec: by Thu 17 Dec a guild has had three raid nights, not the lane's 41.
+    if html.count('41 raid nights in 90 days') != 1:
+        raise RuntimeError('the Guild board no longer shows the raid nights line')
+    return shift_dates(html.replace('41 raid nights in 90 days', '3 raid nights in 90 days'))
 
 
 def officer_raid_day():
@@ -150,11 +167,37 @@ def chip_hover():
                        + html[first + len(scene):])
 
 
+def player_tooltips():
+    """The stale record dated after the raids opened (13 Dec, four days before raid day), not before them."""
+    html = marks.board_player()
+    if html.count('(6 Dec)') != 1:
+        raise RuntimeError('the player tooltip board no longer dates the stale record 6 Dec')
+    return html.replace('(6 Dec)', '(13 Dec)')
+
+
 def rotation_60():
     return rotation.board_60()
 
 
-# name -> (board html, the frame to cut out, extra CSS for this board, the largest device scale)
+# --- The 2.0.55 skin --------------------------------------------------------------------------------------------
+
+def skinned(tab):
+    """A hub tab's board in the shipped skin: addon_brand_build's renderer (the committed textures, Theme.SIZES,
+    Hub.LAYOUT and the tokens) over the board above, as the brand gate's build captures draw it."""
+    def build():
+        import addon_brand_build as brand  # late: addon_brand imports this module for the boards above
+        brand.install()
+        return brand.mock.TABS[tab]()
+    return build
+
+
+def skin_css():
+    import addon_brand_build as brand
+    return brand.build_css()
+
+
+# name -> (board html, the frame to cut out, extra CSS for this board (or a function giving it), the largest
+# device scale). The hub windows wear the 2.0.55 skin; the tooltip blocks are drawn in it by their lanes.
 CAPTURES = {
     # The line and its hover only: the board's stand-in minimap and its ground are left out.
     'chip': (chip_hover, '#board .row > div:first-child .scene > *',
@@ -163,12 +206,8 @@ CAPTURES = {
              '.scene { background: none !important; box-shadow: none !important; height: 0 !important; }', 4.5),
     # The whole three-tree window with the ring, the plates and the strip.
     'talent-marks': (talents.board_talents, '.tw', '', WINDOW_MAX_SCALE),
-    'window-me': (me_raid_day, '.win', '', WINDOW_MAX_SCALE),
-    'window-builds': (builds_60, '.win', '', WINDOW_MAX_SCALE),
-    'window-gear': (gear_raid_ready, '.win', '', WINDOW_MAX_SCALE),
-    'window-rotation': (rotation_60, '.win', '', WINDOW_MAX_SCALE),
-    'window-guild': (guild_signed_in, '.win', '', WINDOW_MAX_SCALE),
-    'window-officer': (officer_raid_day, '.win', '', WINDOW_MAX_SCALE),
+    **{f'window-{tab}': (skinned(tab), '.win', skin_css, WINDOW_MAX_SCALE)
+       for tab in ('me', 'builds', 'gear', 'rotation', 'guild', 'officer')},
     # The Hands slot with its tooltip and the bags with the arrow; the bag item's tooltip repeats the gain.
     'bag-arrow': (marks.board_gear, '#board',
                   '#board .row > .col:nth-child(2) .tt { display: none !important; }', MARK_MAX_SCALE),
@@ -180,7 +219,7 @@ CAPTURES = {
                            '#board .row > .col:nth-child(2) > .rf:nth-of-type(3) { display: none !important; }',
                            MARK_MAX_SCALE),
     # The stale record and the Shift view; the fresh one is the Shift view's own first lines.
-    'player-tooltip': (marks.board_player, '#board',
+    'player-tooltip': (player_tooltips, '#board',
                        '#board > .row > .col:first-child { display: none !important; }', MARK_MAX_SCALE),
 }
 
@@ -208,7 +247,8 @@ def scale_for(box, most):
 
 def render(browser, name):
     build, selector, extra, most = CAPTURES[name]
-    html = build().replace('</style>', HIDE_NOTES + extra + '</style>', 1)
+    extra = extra() if callable(extra) else extra
+    html = build().replace('</style>', HIDE_NOTES + NO_GROUND + extra + '</style>', 1)
     scale = MIN_SCALE
     for _ in range(2):  # measure at the minimum scale, then shoot at the scale that fills the stage
         ctx = browser.new_context(device_scale_factor=scale, viewport={'width': 1800, 'height': 1200})
@@ -224,7 +264,7 @@ def render(browser, name):
             ctx.close()
             continue
         file = OUT / f'{name}.png'
-        page.screenshot(path=str(file), clip=box, full_page=True)
+        page.screenshot(path=str(file), clip=box, full_page=True, omit_background=True)
         ctx.close()
         print(f'{file.relative_to(HERE.parent.parent)} | {box["width"]}x{box["height"]} css at {scale}x')
         return

@@ -53,16 +53,16 @@ const MAX_PLATE_BYTES = 5 * 1024 * 1024;
 /** Capture file names in gallery order (gen_captures.py renders each from the addon's mocks); titles and
  * captions come from CAPTIONS_FILE. */
 const PLATES = [
-  'quest-reward-marks',
-  'bag-arrow',
-  'talent-marks',
-  'window-builds',
-  'window-rotation',
-  'window-gear',
   'window-guild',
   'window-officer',
-  'player-tooltip',
+  'bag-arrow',
+  'quest-reward-marks',
+  'window-gear',
+  'window-rotation',
   'window-me',
+  'window-builds',
+  'talent-marks',
+  'player-tooltip',
   'chip',
 ];
 
@@ -116,7 +116,7 @@ body{position:relative;color:${INK.text};font-family:'Open Sans',sans-serif;disp
 body::before{content:'';position:absolute;inset:0 0 auto;height:62%;background:url(${band}) center top/cover;
   -webkit-mask-image:linear-gradient(#000 50%,transparent);mask-image:linear-gradient(#000 50%,transparent)}
 .stage{position:relative;height:${STAGE_HEIGHT}px}
-.frame{position:absolute;background:${INK.bg};border:1px solid ${INK.line};border-radius:6px;overflow:hidden}
+.frame{position:absolute}
 .shot{display:block}
 .foot{position:relative;display:grid;grid-template-columns:auto 1fr;gap:28px;align-items:start;margin-top:40px;padding-top:26px;border-top:1px solid ${INK.line}}
 .mark{display:flex;align-items:center;gap:14px;font-family:Marcellus,serif;font-size:28px;color:${INK.cream};white-space:nowrap}
@@ -146,7 +146,7 @@ function placeCapture({ stageWidth, stageHeight, deviceScale }) {
   if (!(shot instanceof HTMLImageElement) || !(frame instanceof HTMLElement) || shot.naturalWidth === 0) {
     throw new Error('capture did not load');
   }
-  const border = 1;
+  const border = 0; // the capture brings its own frames; the plate's ground shows around them
   const fit = Math.min(1, ((stageWidth - 2 * border) * deviceScale) / shot.naturalWidth, ((stageHeight - 2 * border) * deviceScale) / shot.naturalHeight);
   const deviceWidth = Math.floor(shot.naturalWidth * fit);
   const deviceHeight = Math.floor(shot.naturalHeight * fit);

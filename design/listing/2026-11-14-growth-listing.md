@@ -5,6 +5,23 @@ changes three fields of `curseforge-description.md` (name, one line, categories)
 description, Install section, gallery order and captions as approved. The name waits on the
 owner's yes.
 
+## Chosen (owner, 2026-11-14)
+
+The owner picked a raid-first positioning over the proposals below; `curseforge-description.md` carries it.
+
+| Field | Chosen |
+|---|---|
+| Project name (CurseForge and Wago) | **Forever Sixty: Guild Raids, Sim and BiS** (TOC Title and folder stay "Forever Sixty") |
+| One line | Raid sign-ups and guild roster for Forever. Gear upgrades are measured by our sim for your spec and level, on Forever's rules. |
+| Categories | Guild (primary), Boss Encounters, Class, Quests & Leveling, Tooltip, Bags & Inventory, Combat |
+| Gallery | Guild and Officer first, then bags, quest rewards and rolls, Gear, and the player's own tabs |
+
+The pitch: the raid leader's tool for Forever. It runs the sign-ups and shows who is ready, and when a raider
+asks whether an item is worth it, the answer is the sim's (DPS per stat point per level band, on Forever's
+rules, for their spec and level; never a per-item sim run).
+
+The sections below are the research proposal as it stood before the owner's choice.
+
 ## Project display name (owner's call)
 
 CurseForge's search matches the project name and the author, not the summary

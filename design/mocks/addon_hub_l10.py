@@ -31,10 +31,11 @@ import addon_hub as hub
 import addon_hub_l3 as gear_lane
 import addon_ux as ux
 from addon_hub import ADDON, CLIENT_GOLD, QUALITY, esc
-from addon_ux import C, ROOT, arrow, img, l, tooltip
+from addon_ux import C, ROOT, TOOLTIP_BLOCK, arrow, img, inline_arrow, item_block, l, player_header, tooltip
 
 OUT = ROOT / 'design/reviews/2026-11-13-addon-hub/l10'
-DIM = '#8a8a8a'  # Theme.tooltipDim, the attribution and the hint lines
+DIM = TOOLTIP_BLOCK['dim']  # Theme.tooltipDim, the attribution line
+GAIN = TOOLTIP_BLOCK['gain']  # forever.gain: every gain our lines and the roll line show (2.0.55)
 GREY = C['grey']
 SHADOW = 'text-shadow: 1px -1px 0 #000, 1px 1px 0 #000;'
 
@@ -175,15 +176,15 @@ def board_rewards(labels=False):
     roll_gain = gain_over_worn(velisandre(), ROLL_ITEM, 'ranged')
     best = 'Best for 20 to 29'
     quest = quest_frame([reward(2041, best, marked=True), reward(6087, unusable=True), reward(2042)])
-    hover = tooltip(ux.tunic_of_westfall() + [
-        l(f'{arrow()}Upgrade +{gain} DPS', color=C['green']),
+    hover = tooltip(ux.tunic_of_westfall() + item_block([
+        l(f'{inline_arrow()}Upgrade +{gain} DPS', color=GAIN),
         l(best, color=CLIENT_GOLD),
-    ], width=250)
+    ]), width=250)
     none = quest_frame([reward(2041), reward(6087, unusable=True), reward(2042, 'Sells for most', label_color=GREY)])
-    roll_pick = roll_frame(ROLL_ITEM, f'<span style="color:{C["green"]}">+{roll_gain} DPS</span>'
+    roll_pick = roll_frame(ROLL_ITEM, f'<span style="color:{GAIN}">+{roll_gain} DPS</span>'
                                   f'<span style="color:{GREY}"> · </span>'
                                   f'<span style="color:{CLIENT_GOLD}">Best at level 60</span>')
-    roll_up = roll_frame(ROLL_ITEM, f'<span style="color:{C["green"]}">+{roll_gain} DPS</span>')
+    roll_up = roll_frame(ROLL_ITEM, f'<span style="color:{GAIN}">+{roll_gain} DPS</span>')
     roll_no = roll_frame(ROLL_NOT_FOR_YOU, f'<span style="color:{GREY}">Not for you</span>', marked=False, items=WARRIOR)
     half = (lambda text: f'<div class="half">{text}</div>') if labels else (lambda text: '')
     html = row(
@@ -211,7 +212,7 @@ def player(name, cls, guild, race, score_line, tier_hex):
     return tooltip([
         f'<div class="t" style="color:{hub.CLASS_HEX[cls]}">{name}</div>', l(f'&lt;{guild}&gt;'),
         l(f'Level 60 {race} {cls.capitalize()} (Player)'), l('Alliance'),
-        l(score_line, color=tier_hex),
+        player_header(cls), l(score_line, color=tier_hex),
     ], width=270)
 
 
@@ -221,7 +222,7 @@ def board_player():
     shift = tooltip([
         f'<div class="t" style="color:{hub.CLASS_HEX["hunter"]}">Kestrin</div>', l('&lt;Thornwake Company&gt;'),
         l('Level 60 Night Elf Hunter (Player)'), l('Alliance'),
-        l('Forever Score 1240', color=QUALITY[3]),
+        player_header('hunter'), l('Forever Score 1240', color=QUALITY[3]),
         l('Gear', '410', color=GREY, rcolor='#fff'), l('Experience', '352', color=GREY, rcolor='#fff'),
         l('Parses', '268', color=GREY, rcolor='#fff'), l('Attendance', '150', color=GREY, rcolor='#fff'),
         l('Preparation', '60', color=GREY, rcolor='#fff'),
@@ -304,14 +305,13 @@ def board_gear():
     hands = ch.doll()['hands']
     bag, worn, gain = hands['pick']['item_id'], hands['worn'], hands['gain']
     g, w = ux.item(bag), ux.item(worn)
-    attribution = 'Forever Sixty · Beast Mastery, your sim'
-    bag_line = (f'{arrow()}In your bags: <span style="color:{QUALITY[g["quality"]]}">{esc(g["name"])}</span> '
-                f'<span style="color:{C["green"]}">+{gain} DPS</span>')
-    slot_tip = tooltip(item_lines(w) + ['<div class="gap"></div>', l(bag_line), dim(attribution),
-                                        dim('Alt-click: open Gear')], width=330)
-    bag_tip = tooltip(item_lines(g) + ['<div class="gap"></div>',
-                                       l(f'{arrow()}Upgrade +{gain} DPS over {esc(w["name"])}', color=C['green']),
-                                       dim(attribution), dim('Alt-click: open Gear')], width=330)
+    shift = [dim('Beast Mastery, your sim'), l('Alt-click: open Gear', color=TOOLTIP_BLOCK['next'])]
+    bag_line = (f'{inline_arrow()}In your bags: <span style="color:{QUALITY[g["quality"]]}">{esc(g["name"])}</span> '
+                f'<span style="color:{GAIN}">+{gain} DPS</span>')
+    worn_name = f'<span style="color:{QUALITY[w["quality"]]}">{esc(w["name"])}</span>'
+    slot_tip = tooltip(item_lines(w) + item_block([l(bag_line), *shift]), width=330)
+    bag_tip = tooltip(item_lines(g) + item_block([
+        l(f'{inline_arrow()}Upgrade +{gain} DPS over {worn_name}', color=GAIN), *shift]), width=330)
     pane = (f'<div class="frame pane"><div class="small" style="color:{CLIENT_GOLD}">Character</div>'
             + ''.join(slot_cell(ch.worn[s], s == 'hands') for s in PANE_SLOTS) + '</div>')
     cells = [slot_cell(bag, True)] + [stock_cell(icon, count) for icon, count in BAG_STOCK]

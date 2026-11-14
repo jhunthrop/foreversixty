@@ -12,9 +12,9 @@ the current surface.
 
 | Field | Value |
 |---|---|
-| Project name | **Forever Sixty** (rename from "ForeverSixty"; the folder stays `ForeverSixty`) |
-| One line (CurseForge summary, Wago tagline) | A green arrow on the bag item, quest reward or loot roll that beats what you wear, with the gain in DPS. Simulated for Forever at your level and spec. |
-| Categories | Boss Encounters, Class, Guild, Tooltip, Minimap, Quests & Leveling, Combat |
+| Project name (CurseForge and Wago) | **Forever Sixty: Guild Raids, Sim and BiS** (the TOC Title stays "Forever Sixty" and the folder `ForeverSixty`) |
+| One line (CurseForge summary, Wago tagline) | Raid sign-ups and guild roster for Forever. Gear upgrades are measured by our sim for your spec and level, on Forever's rules. |
+| Categories | Guild (primary), Boss Encounters, Class, Quests & Leveling, Tooltip, Bags & Inventory, Combat |
 | Game version | 1.60.1 (World of Warcraft: Forever) |
 | License | All Rights Reserved |
 | Project icon and account avatar | `design/listing/icons/listing-icon-400.png` (the painted tile: the painted LX seal on the painted blue ground, the same image as the app icon and the Discord server icon) |
@@ -26,17 +26,17 @@ the current surface.
 
 ## Gallery captions
 
-1. **Quest rewards and rolls.** The green arrow and the gain on the reward or roll that beats what you wear. "Not for you" on a roll your spec can't use.
-2. **Bags and paperdoll.** A green arrow on the slot and on the bag item that beats it, and the gain on the slot's tooltip.
-3. **Talent window.** The points of your build still to take numbered on the trees, the next one ringed in gold. The line at the foot says what to spend now and counts points off your build in red.
-4. **Builds.** Level 60 and raid builds for every spec. Follow one, or paste a planner code.
-5. **Rotation.** What to press at your level, and how closely you followed it on each boss of your last raid.
-6. **Gear.** Best in slot for your level against what you wear, with the gain on every slot. The top upgrades say where they drop.
-7. **Guild.** Sign up for tonight's raid with In, Late, Bench or Out, see your job, and check your bags for what the fight asks.
-8. **Officer.** The roster by sign-up and score, with gear gap and missing enchants. Remind posts one line to guild chat about everyone not signed up.
-9. **Player tooltip.** "Forever Score 1240" in the tier's colour, dated and greyed when the record is old, the five parts on Shift.
-10. **Your score and last raid.** Your Forever Score and its five parts, then your last raid boss by boss with your parse and biggest loss.
-11. **By the minimap.** "Onyxia's Lair 20:00 · In". Hover for everything waiting; click to open that tab.
+1. **Guild.** Sign up for tonight's raid with In, Late, Bench or Out, see your job, and check your bags for what the fight asks.
+2. **Officer.** Who is signed up, who is missing a flask, an enchant or an attunement, and one click to remind everyone not signed up.
+3. **Bags and paperdoll.** A green arrow on the slot and on the bag item that beats it, and the gain on the slot's tooltip.
+4. **Quest rewards and rolls.** The green arrow and the gain on the quest reward or loot roll that beats what you wear.
+5. **Gear.** Your gear against best in slot at your level, the gain on each slot, and where upgrades come from.
+6. **Rotation.** What to press at your level, and how closely you followed it on each boss of your last raid.
+7. **Your score and last raid.** Your Forever Score and its five parts, then your last raid boss by boss with your parse and biggest loss.
+8. **Builds.** Level 60 and raid builds for every spec. Follow one, or paste a planner code.
+9. **Talent window.** A level 33 hunter mid-leveling: the points of the build still to take numbered on the trees, the next one ringed in gold. The line at the foot says what to spend now and counts points off the build in red.
+10. **Player tooltip.** Any player's Forever Score under their crest, greyed and dated when old. Shift shows the five parts.
+11. **The Forever Sixty line.** Tonight's raid and your sign-up on one line. Hover for everything waiting; click to open that tab.
 
 ## Uploading the gallery
 
@@ -51,23 +51,30 @@ The owner uploads by hand; nothing here logs in to either dashboard.
    stay beside the new ones.
 3. **CurseForge** (project 1706689 > Gallery): upload `gallery/01-…png` to `11-…png` in
    order. For each image, set the title to the bold words of its caption and the description
-   to the rest, then star plate 1 (quest rewards and rolls) as featured. For **Forever Sixty
-   Data** (1706707), upload plates 09, 07 and 08 with the same captions.
+   to the rest, then star plate 1 (Guild) as featured. For **Forever Sixty
+   Data** (1706707), upload plates 10, 01 and 02 with the same captions.
 4. **Wago** (XKqEdoKy > Gallery): the gallery lists the newest upload first and shows 10 per
    page, so upload in reverse order, `11-…png` first and `01-…png` last; plate 11 lands alone
-   on page 2. For ANz7R564, upload 08, then 07, then 09.
+   on page 2. For ANz7R564, upload 02, then 01, then 10.
 5. Open each public page in a private window and check one plate at full size: text and
    frame edges should be sharp.
 
 ## Description
 
-### The arrow is right for Forever.
+### Raid night for Forever guilds.
 
-A green arrow marks the bag item, quest reward or loot roll that beats what you wear, with the gain: "+2.6 DPS". Every number is simulated for Forever's new talent trees, at your level and spec, not carried over from Classic.
+Forever Sixty runs your guild's raid sign-ups and shows who is ready before the pull. When a raider asks whether the new chest is worth it, the answer is already on the tooltip.
 
-The same simulation rings your next talent, grades your rotation boss by boss from your logs, and runs raid night for your guild: sign-ups, jobs, and who is missing flasks.
+- **Raid sign-ups**: In, Late, Bench or Out, from Discord, the site, the addon or the phone app (in beta). Remind pings everyone not signed up in guild chat.
+- **The readiness board** on your guild's page shows each raider's gear and whether chest, back, boots and weapon carry an enchant. In game, Officer adds flasks, protection potions and attunement for tonight's fight.
+- **Upgrades show the DPS you gain**, measured by our sim for your spec at your level.
+- **Upload your combat log** on the site and see each fight, with your casts checked against the rotation (DPS and tanks).
 
-![A green arrow on the character slot and the bag item that beats it](https://foreversixty.gg/addon/bag-arrow.jpg)
+The guild parts in game come through the companion app (Windows and Mac), which carries raids and sign-ups between the site and the addon. The upgrades, marks, Builds and Gear work without it.
+
+Raiders: open Guild before the raid for your sign-up, your job for the fight ("Phase 2 ranged, west side") and what you are still missing, like a Greater Fire Protection Potion.
+
+In Discord, `/raid` shows the guild's next raid and takes sign-ups from the answer, `/signup` works too (a raider with no site account just picks their character), `/readiness` tells officers who is not ready, and `/attendance` shows a raider's attendance.
 
 Open source on **[GitHub](https://github.com/jhunthrop/foreversixty)**, with the changelog and an issue tracker; `/fs diag` lists what works and what does not. Fan-made, not affiliated with Blizzard.
 
@@ -77,47 +84,54 @@ The CurseForge and Wago apps add **Forever Sixty Data**, the nightly Forever Sco
 
 A new character follows its spec's Level 60 build, and the Raid build from 60, so there is nothing to set up. For a build of your own, make it in the **[planner](https://foreversixty.gg/planner)** on foreversixty.gg, press Copy for the game, then paste it on the Builds tab.
 
+### Guild
+
+- **Tonight**: the raid, its start and how long until it, your sign-up with In, Late, Bench and Out, and your job for the fight.
+- **Your prep**: what you are missing for the fight: the attunement, the resistance it asks for, flasks, food and potions.
+- **Sign-ups** by role, the next raids with your answer for each, the guild's top five Forever Scores with your place, and the build the officers sent.
+
+Getting the guild on it: an officer signs in on foreversixty.gg, imports their character, opens the guild page and chooses Claim this guild, then posts the raids there. Each raider installs this addon and the companion app (Windows and Mac), which carries raids, sign-ups and jobs into the game and your answers and gear back to the roster. Raiders without them can still sign up from Discord or the site.
+
+### Officer
+
+For ranks that can edit officer notes. Remind sends one line to guild chat about everyone not signed up.
+
+- **Roster**: sorted by sign-up and then score, with attendance, gear gap in DPS, missing enchants, item level, and a dot for who runs the addon right now. Click a name to whisper, Shift-click to invite.
+- **Readiness**: who runs the addon, who is off the raid build, enchants, attunements, flasks and the fight's protection potions, open jobs and the last ready check.
+- **Push a build**: Send to guild pushes the raid build; guildmates choose whether to follow it.
+- **Loot**: as master looter, looting a boss opens the session here: everyone whose addon answered, ranked by what the item gains them, what they won this week, attendance and whether it is their best pick. Give hands it out on a second click.
+
 ### Bags, paperdoll, quest rewards and rolls
 
 - **A green arrow** on a character slot and on the bag item that beats it or fills it. **A gold corner** on a slot with an upgrade to chase. Alt-click a marked slot or bag item to open Gear on that slot.
 - **Quest rewards**: the green arrow on the reward that is an upgrade, the same verdict as its tooltip under your pick ("Best for 20 to 29"), and "Sells for most" when nothing helps.
-- **Group loot rolls**: the green arrow on an upgrade and one short line, "+5.8 DPS · Best at level 60", "Sidegrade" or "Not for you".
+- **Group loot rolls**: the green arrow on an upgrade and one short line, "+10.1 DPS · Best at level 60", "Sidegrade" or "Not for you".
 
-The arrow also shows in Baganator, Bagnon, AdiBags, ArkInventory and BetterBags. With any other bag addon, `/fs diag` says whether it shows there; the marks on your character pane always do.
+The arrow also shows in the popular bag addons; `/fs diag` names yours and says whether it shows there. The marks on your character pane always do.
 
 ### Item tooltips
 
-One line under the item: the green arrow and the gain ("+2.2 DPS"), "Best in slot", "Best for 20 to 29", "Sidegrade", or the level you can wear it, such as "Mail armor at level 40". Rings and trinkets name the one they replace. Healers read HPS.
+Our lines sit under the item's own, after a blank row and a "Forever Sixty" line with the seal: the green arrow and the gain ("+2.2 DPS"), "Best in slot", "Best for 20 to 29", "Sidegrade", or the level you can wear it, such as "Mail armor at level 40". Rings and trinkets name the one they replace. Healers read HPS.
 
 At most one more line follows, the next upgrade for the slot or a better pick and where it drops. **Hold Shift** for the rest: the stat breakdown, "Also good:" alternatives, and where the weights came from (the spec's, or your own sim).
 
-### The talent window
-
-A number on every point of your build you still have to take, the next talent ringed in gold, and a line at the foot of the window: "Spend 1 now: Bestial Swiftness · 22 of 24 · 1 off plan", or "Next at 25: Lethal Attacks" between levels, with points spent off your build counted in red. Click that line to open Builds. The talent buttons work exactly as before.
-
-### Builds
-
-Every spec's level 60 and raid builds, with the one you follow marked and one-click Follow on the rest. Up next lists your next points in order, with the level each one comes at. Paste a planner code to load a build, or copy your character for the site: talents, gear, bags and professions in one code. With the companion app the site gets it at logout, and the tab says when it last did.
-
-### Rotation
-
-What to press at your level, with a stepper for later levels and the stat weights it is played for. With the companion app, How you played it lists the bosses of your last raid, least followed first, with the biggest loss on each and downtime and early deaths totalled for the night.
+Where the gain comes from: our sim measures what one point of each stat is worth in DPS for your spec, in each level band, on Forever's talent trees and rules. The gain is the item's stats against what you wear, at those values.
 
 ### Gear
 
 From level 10, what you wear against the best in slot for your level. Pick a level band, and at 60 Raid-ready or Bare (no raid buffs or consumables). Every slot shows "Best in slot" or the gain of the best pick, "in your bags" when you already hold it, and "No enchant" where the pick carries one and yours does not. Upgrades lists the top four with the slot and where each drops, and More upgrades the next few. Under it the stat weights (the same table as Rotation) and the sources the picks may use: untick PvP or Reputation and every pick, arrow and tooltip changes at once.
 
-### Guild
+### Rotation
 
-Tonight's raid, its start and how long until it, your sign-up with In, Late, Bench and Out, and your job for the fight. Under it, what you are missing for the fight: the attunement, the resistance it asks for, flasks, food and potions. Below it the sign-ups by role, the next raids with your answer for each, the guild's top five Forever Scores with your own place, and the build the officers sent.
+What to press at your level, with a stepper for later levels and the stat weights it is played for. With the companion app, How you played it lists the bosses of your last raid, least followed first, with the biggest loss on each and downtime and early deaths totalled for the night.
 
-Raids, sign-ups and jobs come from the guild's page on the site through the companion app; your answers go back the same way.
+### Builds
 
-### Officer
+Every spec's level 60 and raid builds, with the one you follow marked and one-click Follow on the rest. Up next lists your next points in order, with the level each one comes at. Paste a planner code to load a build, or copy your character for the site: talents, gear, bags and professions in one code. With the companion app the site gets it at logout, and the tab says when it last did.
 
-For ranks that can edit officer notes. The roster sorted by sign-up and then score, with attendance, gear gap in DPS, missing enchants, item level, and a dot for who runs the addon right now. Tonight's readiness counts who runs the addon, who is off the raid build, enchants, attunements, flasks and the fight's protection potions, open jobs and the last ready check. Remind sends one line to guild chat about everyone not signed up, and Send to guild pushes the raid build; guildmates choose whether to follow it. Click a name to whisper, Shift-click to invite.
+### The talent window
 
-As master looter, looting a boss opens the session here: everyone whose addon answered, ranked by what the item gains them, what they won this week, attendance, whether it is their best pick, and Give, which hands it out on a second click.
+A number on every point of your build you still have to take, the next talent ringed in gold, and a line at the foot of the window: "Spend 1 now: Bestial Swiftness · 22 of 24 · 1 off plan", or "Next at 25: Lethal Attacks" between levels, with points spent off your build counted in red. Click that line to open Builds. The talent buttons work exactly as before.
 
 ### The Forever Score
 
@@ -163,11 +177,12 @@ The minimap button, off on a new install, does the same.
 
 The page also lists the commands, has Reset positions for the line, the minimap button and the window, and says at the foot whether the addon data is current for this patch and the state of the Forever Scores.
 
-### What's new in 2.0.49
+### What's new in 2.0.55
 
-- Gear and Rotation show the same stat weights table. Gear's hit line says Ranged hit or Melee hit for your spec, and ranged hunters no longer see a spell hit line.
+- The Forever Sixty window looks like the website: the painted header with your class crest, the site's nav bar and icons, and each section on its own panel (the cave art on Guild and Officer).
+- Our lines on item tooltips start with the Forever Sixty seal, upgrades show in the site's green, and player tooltips start with the player's class crest.
 
-### The companion app, optional
+### The companion app (needed for the guild tabs)
 
 The companion app from **[foreversixty.gg/setup](https://foreversixty.gg/setup)**, for Windows and Mac, uploads your fights from the combat log for reports, carries your character to the site at logout, and brings back the builds you pick there, your newest sim, your last raid and your guild's raids, sign-ups and jobs. Without it the tooltips, marks, Builds and Gear still work; Me's last raid and sim, Rotation's last raid and the raid parts of Guild and Officer need it.
 

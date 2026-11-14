@@ -97,6 +97,9 @@ def tga_uri(path: Path) -> str:
 
 CREST = b64((ROOT / 'web/public/icons/hd/crests/hunter.webp').read_bytes(), 'image/webp')
 FONT_URI = b64(FONT.read_bytes(), 'font/ttf')
+# Marcellus has old-style figures (a zero reads as a letter O) and no lining set; Friz Quadrata's figures are
+# plain lining ones, so the stand-in takes its digits from Open Sans (apps/shared/fonts, OFL).
+DIGITS_URI = b64((ROOT / 'apps/shared/fonts/OpenSans-Regular.ttf').read_bytes(), 'font/ttf')
 
 
 def item(item_id):
@@ -134,6 +137,7 @@ BODY, SMALL = role('body'), role('small')
 
 CSS = f'''
 @font-face {{ font-family: Friz; src: url({FONT_URI}); }}
+@font-face {{ font-family: Friz; src: url({DIGITS_URI}); unicode-range: U+0030-0039; }}
 @font-face {{ font-family: Title; src: url({TITLE_URI}); }}
 {SITE_FONTS.replace('{{', '{').replace('}}', '}')}
 * {{ box-sizing: border-box; }}
@@ -867,6 +871,35 @@ def tinted_uri(path: Path, hex_: str) -> str:
 
 # The upgrade arrow: the site's upgrade glyph in the gain colour (Theme.arrowMarkup).
 ARROW_ICON = tinted_uri(ROOT / 'addon/ForeverSixty/media/icons/upgrade.tga', color('forever.gain'))
+
+# Our block on a client tooltip as 2.0.55 draws it (design/specs/2026-11-14-addon-brand.md 7 and 17): one blank
+# row, then the header line (the seal on an item, the player's crest on a player) in the accent; gains in
+# forever.gain, the attribution in addon.tooltipDim, the next step in the client tooltip gold.
+TOOLTIP_BLOCK = {'accent': color('forever.accent'), 'gain': color('forever.gain'), 'dim': color('addon.tooltipDim'),
+                 'next': color('forever.tooltipYellow')}
+MEDIA = ROOT / 'addon/ForeverSixty/media'
+
+
+def inline_arrow(size=12):
+    """Theme.arrowMarkup: the upgrade glyph in the gain colour, inline before a tooltip line's words."""
+    return (f'<img src="{ARROW_ICON}" style="width:{size}px;height:{size}px;vertical-align:-1px;'
+            f'margin-right:3px">')
+
+
+def block_header(icon_path=MEDIA / 'seal.tga', size=12):
+    """ItemTooltip.headerText / PlayerTooltip.headerText: an inline texture, then "Forever Sixty"."""
+    return l(f'<img src="{tga_uri(icon_path)}" style="width:{size}px;height:{size}px;vertical-align:-{size // 6}px">'
+             ' Forever Sixty', color=TOOLTIP_BLOCK['accent'])
+
+
+def item_block(lines):
+    """ItemTooltip.drawEntry: the blank row and the seal line before our lines."""
+    return ['<div class="gap"></div>', block_header(), *lines]
+
+
+def player_header(cls):
+    """PlayerTooltip.headerText: the class's crest at 16 px, then "Forever Sixty"."""
+    return block_header(MEDIA / f'crests/{cls}.tga', 16)
 
 
 def tooltip_card(name, quality, lines):

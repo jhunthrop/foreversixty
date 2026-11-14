@@ -19,15 +19,13 @@ writes them to tokens.json). The art and icons are the site's own: web/public/ar
 design/assets/icons/ui, design/assets/ornaments.
 
 The lane generators read the addon's Lua (Data.lua's packed picks, MeFrame.lua's layout), which has moved
-on since the store captures were made, so this script reads it as of aa2c8bbb7 (the captures' commit): the
-shipped window and the mock then show the same evening.
+on since the store captures were made, so this script reads it as of lua_pin.CAPTURE_COMMIT (the store
+fixture's commit): the shipped window and the mock then show the same evening.
 """
 import base64
 import io
 import os
-import pathlib
 import re
-import subprocess
 import sys
 from pathlib import Path
 
@@ -35,35 +33,13 @@ from PIL import Image
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-CAPTURE_COMMIT = 'aa2c8bbb7'
 OUT = ROOT / 'design/reviews/2026-11-14-addon-brand/mock'
 SITE = ROOT / 'design/reviews/2026-11-14-addon-brand/site'
 SHIPPED = ROOT / 'design/listing/captures'
 
-
-def _pin_data_lua():
-    """The lane generators read the addon's Lua (Data.lua's picks, MeFrame.lua's layout) through
-    Path.read_text: answer those reads from the store captures' commit, so the boards are the evening the
-    shipped captures show. A reader that wants the build's own Lua opens the file directly."""
-    original = pathlib.Path.read_text
-    pinned = {}
-
-    def read_text(self, *args, **kwargs):
-        path = str(self)
-        marker = 'addon/ForeverSixty/'
-        if marker in path and path.endswith('.lua'):
-            rel = path[path.index('addon/ForeverSixty/'):]
-            if rel not in pinned:
-                pinned[rel] = subprocess.run(['git', '-C', str(ROOT), 'show', f'{CAPTURE_COMMIT}:{rel}'],
-                                             check=True, capture_output=True, text=True).stdout
-            return pinned[rel]
-        return original(self, *args, **kwargs)
-    pathlib.Path.read_text = read_text
-
-
-_pin_data_lua()
 sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(ROOT / 'design/listing'))
+import lua_pin  # noqa: E402,F401  (pins the lanes' Lua to the store captures' commit)
 import addon_hub_l10 as marks  # noqa: E402
 import addon_ux as ux  # noqa: E402
 import gen_captures as store  # noqa: E402
@@ -166,6 +142,7 @@ def skin_css():
   box-shadow: inset 0 0 0 1px {T['panelEdge']}, 0 8px 28px rgba(0,0,0,.7) !important; }}
 .win .hd {{ position: relative; height: 56px !important; padding: 0 12px !important; gap: 10px !important;
   border-bottom: 1px solid rgba(0,147,178,.5) !important; background-size: 100% 100% !important; }}
+.win .hd.warm {{ border-bottom-color: {T['ruleWarm']} !important; }}
 .win .hd::before {{ content: ''; position: absolute; inset: 0; background: var(--veil); }}
 .win .hd::after {{ content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 260px;
   background: linear-gradient(90deg, {ADDON_NEW['headerFade']}, transparent); }}
@@ -235,7 +212,7 @@ def skin_css():
 
 # --- Plates: each column becomes a stack of plates ---------------------------------------------------------------
 
-VOID = {'img', 'br', 'input', 'hr'}
+VOID = {'img', 'br', 'input', 'hr', 'col', 'wbr'}
 TAG = re.compile(r'<(/?)([a-zA-Z0-9]+)([^>]*?)(/?)>')
 
 
@@ -318,7 +295,9 @@ def column(html, cls, **kw):
 def chrome(html, tab, cls='hunter', lead='rc', cave=False):
     band = band_image(TAB_BAND[tab])
     veil = T[VEIL[TAB_BAND[tab]]]
-    html = html.replace('<div class="hd">', f'<div class="hd" style="background:url({png_uri(band)});--veil:{veil}">', 1)
+    # Officer shares Guild's cave band; its header join is the warm rule (Hub.BANDS officer.join).
+    hd = 'hd warm' if tab == 'Officer' else 'hd'
+    html = html.replace('<div class="hd">', f'<div class="{hd}" style="background:url({png_uri(band)});--veil:{veil}">', 1)
     html = re.sub(r'<span class="crest" style="width:32px;height:32px">.*?</span></span>', crest_hd(cls, 40), html,
                   count=1, flags=re.S)
     html = html.replace('<div class="x">×</div>', f'<div class="x">{glyph("close", 12, T["tabOff"])}</div>', 1)
@@ -381,7 +360,12 @@ def guild():
     return chrome(store.guild_signed_in(), 'Guild', lead='lc', cave=True)
 
 
-TABS = {'me': me, 'gear': gear, 'builds': builds, 'rotation': rotation, 'guild': guild}
+def officer():
+    """The raid day: the roster is the lead plate over the cave art (OfficerTab.build's plateLooks)."""
+    return chrome(store.officer_raid_day(), 'Officer', lead='lc', cave=True)
+
+
+TABS = {'me': me, 'gear': gear, 'builds': builds, 'rotation': rotation, 'guild': guild, 'officer': officer}
 SITE_PAGE = {'me': 'char', 'gear': 'bis', 'builds': 'guide', 'rotation': 'guide', 'guild': 'home'}
 SHIPPED_FILE = {'me': 'window-me', 'gear': 'window-gear', 'builds': 'window-builds', 'rotation': 'window-rotation',
                 'guild': 'window-guild'}

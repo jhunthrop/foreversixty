@@ -23,7 +23,6 @@ window, and the tooltip's client face is stood in for by Marcellus, labelled on 
 """
 import base64
 import io
-import os
 import re
 import sys
 from pathlib import Path
@@ -33,7 +32,7 @@ from PIL import Image
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import addon_brand as mock  # noqa: E402  (pins Data.lua to the store captures' commit)
-from addon_brand import ROOT, T, marks, store, ux  # noqa: E402
+from addon_brand import ROOT, T, marks, ux  # noqa: E402
 from addon_tokens import color  # noqa: E402
 
 ADDON = ROOT / 'addon/ForeverSixty'
@@ -108,6 +107,7 @@ def build_css():
 .win .hd {{ position: relative; height: {G['header']}px !important; padding: 0 {S['hubSide']}px !important;
   gap: {G['crestGap']}px !important; border-bottom: 1px solid {A['headerJoin']} !important; box-sizing: border-box;
   background-size: 100% 100% !important; }}
+.win .hd.warm {{ border-bottom-color: {T['ruleWarm']} !important; }}
 .win .hd::before {{ content: ''; position: absolute; inset: 0; background: var(--veil); }}
 .win .hd::after {{ content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: {S['headerFade']}px;
   background: linear-gradient(90deg, {A['headerFade']}, transparent); }}
@@ -192,21 +192,14 @@ def tooltip_board():
         '<div class="gap"></div>',
         l(f'{ux.arrow()}Upgrade +{gain} DPS over {esc(w["name"])}', color=ux.C['green']),
         marks.dim('Forever Sixty · Beast Mastery, your sim'), marks.dim('Alt-click: open Gear')], width=340)
-    seal = f'<img src="{media("seal")}" style="width:{S["tooltipSeal"]}px;height:{S["tooltipSeal"]}px;vertical-align:-1px">'
-    arrow = (f'<img src="{tga_png(MEDIA / "icons/upgrade.tga", color("forever.gain"))}" '
-             f'style="width:12px;height:12px;vertical-align:-1px;margin-right:3px">')
     name_w = f'<span style="color:{ux.QUALITY[w["quality"]]}">{esc(w["name"])}</span>'
-    built = ux.tooltip(marks.item_lines(g) + [
-        '<div class="gap"></div>',
-        l(f'{seal} Forever Sixty', color=T['accent']),
-        l(f'{arrow}Upgrade +{gain} DPS over {name_w}', color=color('forever.gain')),
-        l('Beast Mastery, your sim', color=color('addon.tooltipDim')),
-        l('Alt-click: open Gear', color=T['tooltipYellow'])], width=340)
-    crest = (f'<img src="{tga_png(MEDIA / "crests/hunter.tga")}" style="width:{S["tooltipCrest"]}px;'
-             f'height:{S["tooltipCrest"]}px;vertical-align:-3px">')
+    built = ux.tooltip(marks.item_lines(g) + ux.item_block([
+        l(f'{ux.inline_arrow()}Upgrade +{gain} DPS over {name_w}', color=ux.TOOLTIP_BLOCK['gain']),
+        l('Beast Mastery, your sim', color=ux.TOOLTIP_BLOCK['dim']),
+        l('Alt-click: open Gear', color=ux.TOOLTIP_BLOCK['next'])]), width=340)
     player = ux.tooltip([
         f'<div class="t" style="color:{color("class.hunter")}">Velisandre</div>', l('Thornwake Company'),
-        l('Level 60 Night Elf Hunter'), l(f'{crest} Forever Sixty', color=T['accent']),
+        l('Level 60 Night Elf Hunter'), ux.player_header('hunter'),
         l('Forever Score 1184', color=color('rarity.rareText'))], width=240)
     wrap = '<style>.tt .l, .tt .l span { white-space: normal !important; }</style>'
     return ux.page(f'{wrap}<div class="row" style="gap:40px;padding-top:22px">'
@@ -218,7 +211,9 @@ def tooltip_board():
 
 
 def install():
-    """Point addon_brand's renderer at the build."""
+    """Point addon_brand's renderer at the build (once; a second call changes nothing)."""
+    if mock.OUT == OUT:
+        return
     mock.OUT = OUT
     mock.band_image = band_image
     mock.glyph = glyph

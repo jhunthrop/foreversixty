@@ -22,20 +22,27 @@ docstring lists what it aligns across the lanes).
 
 | # | Plate | Mock board |
 |---|---|---|
-| 1 | `quest-reward-marks` | `addon_hub_l10.py` `l10-rewards`, without the "nothing helps" frame and the repeated roll |
-| 2 | `bag-arrow` | `addon_hub_l10.py` `l10-gear-marks`, without the bag item's tooltip |
-| 3 | `talent-marks` | `addon_hub_talents.py`, the whole three-tree window: a level 33 hunter on Beast Mastery leveling, one point to spend |
-| 4 | `window-builds` | `addon_builds_window.py`'s window at 60, following the Beast Mastery raid build |
-| 5 | `window-rotation` | `addon_hub_rotation.py` `rotation-60` |
-| 6 | `window-gear` | `addon_hub_l3.py` `gear-hunter-60-raid`, the window only |
-| 7 | `window-guild` | `addon_hub_l5.py`'s raid day, signed up In |
-| 8 | `window-officer` | `addon_hub_l7.py` `l7-raid-day` |
-| 9 | `player-tooltip` | `addon_hub_l10.py` `l10-player`, the stale record and the Shift view |
-| 10 | `window-me` | `addon_hub_me.py` `me-raid-day` |
+| 1 | `window-guild` | `addon_hub_l5.py`'s raid day, signed up In |
+| 2 | `window-officer` | `addon_hub_l7.py` `l7-raid-day` |
+| 3 | `bag-arrow` | `addon_hub_l10.py` `l10-gear-marks`, without the bag item's tooltip |
+| 4 | `quest-reward-marks` | `addon_hub_l10.py` `l10-rewards`, without the "nothing helps" frame and the repeated roll |
+| 5 | `window-gear` | `addon_hub_l3.py` `gear-hunter-60-raid`, the window only |
+| 6 | `window-rotation` | `addon_hub_rotation.py` `rotation-60` |
+| 7 | `window-me` | `addon_hub_me.py` `me-raid-day` |
+| 8 | `window-builds` | `addon_builds_window.py`'s window at 60, following the Beast Mastery raid build |
+| 9 | `talent-marks` | `addon_hub_talents.py`, the whole three-tree window: a level 33 hunter on Beast Mastery leveling, one point to spend |
+| 10 | `player-tooltip` | `addon_hub_l10.py` `l10-player`, the stale record and the Shift view |
 | 11 | `chip` | `addon_hub_l6.py` `l6-hover`, the first scene: the line and its hover |
 
-The order follows the store review of 2026-11-14: the arrow first, where a leveling player meets it
-(quest rewards and rolls, then bags), the talent window third, guild surfaces after the player's own.
+As of 2026-11-14 (addon 2.0.55) the six window plates wear the site-brand skin: `gen_captures.py` puts each tab's
+board through `design/mocks/addon_brand_build.py`, the renderer the brand gate's build captures came from, and
+the tooltip plates draw the 2.0.55 block (the seal or crest line, gains in the site's green). The talent window
+and the line are unchanged by 2.0.55 (the line's crest is the new 128 px texture). Verdicts:
+`design/reviews/2026-11-14-store-gallery/`.
+
+The order follows the raid-first listing of 2026-11-14 (the name "Forever Sixty: Guild Raids, Sim and BiS"):
+the guild's raid night first (Guild, then Officer), then the sim's upgrades where a player meets them (bags,
+quest rewards and rolls, Gear), then the player's own tabs, the talent window, the tooltip and the line.
 
 When a tab changes, fix its lane generator and rerun `gen_captures.py` and `gen_gallery.mjs`;
 never edit a capture by hand. Not in the gallery, because no mock draws them whole: the chat
