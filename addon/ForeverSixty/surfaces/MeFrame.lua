@@ -519,7 +519,9 @@ end
 --- The sim at `y`; the y under it.
 local function drawSim(sim, parent, model, y)
 	local G, width = MeFrame.LAYOUT, Theme.SIZES.windowRight
-	hideAll({ sim.dps, sim.error, sim.date, sim.button })
+	hideAll({ sim.dps, sim.error, sim.date })
+	-- The button stays shown across redraws (it may be under the cursor); it hides only when it goes.
+	Theme.setShown({ sim.button }, model ~= nil and model.button ~= nil)
 	if model == nil then
 		hideSection(sim)
 		drawGains(sim, parent, {}, y)
@@ -612,9 +614,9 @@ local function drawStanding(standing, parent, model, y)
 	return model == nil and y or y + #rows * G.partRow + G.sectionGap
 end
 
---- Gear at `y`: the upgrades, then the enchant rows or the empty line; the y under it.
-local function drawLocalGear(gear, parent, model, y)
-	local G, width = MeFrame.LAYOUT, Theme.SIZES.windowRight
+--- Gear at `y` in `parent`, `width` wide: the upgrades, then the enchant rows or the empty line; the y under it.
+local function drawLocalGear(gear, parent, model, y, width)
+	local G = MeFrame.LAYOUT
 	local rows = model ~= nil and model.rows or {}
 	if model == nil then
 		hideSection(gear)
@@ -640,7 +642,8 @@ local function drawLocalGear(gear, parent, model, y)
 	end
 	y = y + #rows * G.nowRow - (#rows > 0 and G.nowRow - 2 * G.line or 0)
 	local enchants = model ~= nil and model.enchants or {}
-	y = (ns.GearEnchants or require("GearEnchants")).draw(gear.enchants, parent, enchants, y + (#enchants > 0 and 4 or 0))
+	local GearEnchants = ns.GearEnchants or require("GearEnchants")
+	y = GearEnchants.draw(gear.enchants, parent, enchants, y + (#enchants > 0 and 4 or 0), GearEnchants.shortWords)
 	Theme.setShown({ gear.empty }, model ~= nil and model.empty ~= nil)
 	if model ~= nil and model.empty ~= nil then
 		gear.empty:SetText(model.empty)
@@ -652,20 +655,15 @@ end
 
 --- The site line at `y` and the app's address under it; the y under them.
 local function drawSite(site, parent, model, y)
-	local G = MeFrame.LAYOUT
-	Theme.setShown({ site.line }, model ~= nil)
-	Theme.setShown({ site.link }, model ~= nil and model.link ~= nil)
+	Theme.setShown({ site.line, site.link }, model ~= nil)
 	if model == nil then
 		return y
 	end
 	site.line:SetText(model.line)
 	place(site.line, parent, 0, y)
 	y = y + textHeight(site.line)
-	if model.link ~= nil then
-		place(site.link, parent, 0, y + 4)
-		y = y + 4 + G.line
-	end
-	return y + G.sectionGap
+	place(site.link, parent, 0, y + 4)
+	return y + 4 + MeFrame.LAYOUT.line + MeFrame.LAYOUT.sectionGap
 end
 
 --- Draw `model` (MeTab.model): the columns, the footer's line, the window's height. The body's height.
@@ -678,15 +676,22 @@ function MeFrame.draw(model)
 	local left = drawScore(parts.score, parts.left, model.score, 0)
 	left = drawRaid(parts.raid, parts.left, model.lastRaid, left)
 	left = drawStanding(parts.standing, parts.left, model.standing, left)
-	left = drawSite(parts.site, parts.left, model.site, left)
 	local right = drawNow(parts.now, parts.right, model.rightNow, 0)
 	if model.setup ~= nil and MeFrame.setup ~= nil then
 		right = MeFrame.setup.draw(parts.right, Theme.SIZES.windowRight, model.setup, right)
 	elseif MeFrame.setup ~= nil then
 		MeFrame.setup.hide()
 	end
-	right = drawLocalGear(parts.gear, parts.right, model.gear, right)
-	right = drawSim(parts.sim, parts.right, model.sim, right)
+	-- Gear (no site activity yet) joins the shorter column, the sim counted, so neither stands empty beside
+	-- the other; the sim is placed again under it on the right (moved, never hidden).
+	local simmed = drawSim(parts.sim, parts.right, model.sim, right)
+	if left < simmed then
+		left, right = drawLocalGear(parts.gear, parts.left, model.gear, left, Theme.SIZES.windowLeft), simmed
+	else
+		right = drawLocalGear(parts.gear, parts.right, model.gear, right, Theme.SIZES.windowRight)
+		right = drawSim(parts.sim, parts.right, model.sim, right)
+	end
+	left = drawSite(parts.site, parts.left, model.site, left)
 	-- Every section ends in its gap to the next; the last one's is not body.
 	local body = math.max(0, math.max(left, right) - G.sectionGap)
 	Hub.setHints(nil, model.footer)

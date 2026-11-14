@@ -381,11 +381,18 @@ end
 --- bags" in the client gold. The row's hover shows it whole. Pure.
 function GearTab.fullWhere(cell)
 	local slot = L.gearSlotLabels[cell.slot] or cell.slot
+	local source = GearTab.sourceWhere(cell)
+	return source ~= nil and string.format(L.gearWhere, slot, source) or slot
+end
+
+--- The source half of that line, without the slot ("Scholomance · Kirtonos the Herald · 12% drop", "In your
+--- bags" in the client gold), or nil with no source (the Me tab's upgrade rows, where the item names its
+--- slot). Pure.
+function GearTab.sourceWhere(cell)
 	if cell.inBags then
-		return string.format(L.gearWhere, slot, Theme.inlineColor("clientGold", L.gearInBagsLead))
+		return Theme.inlineColor("clientGold", L.gearInBagsLead)
 	end
-	local first, second, percent = sourceParts(cell.pick)
-	return first ~= nil and string.format(L.gearWhere, slot, ItemTooltip.sourceText(first, second, percent)) or slot
+	return ItemTooltip.sourceText(sourceParts(cell.pick))
 end
 
 --- `text` cut at a word: the most whole words that fit with the ellipsis after them, or nil when not

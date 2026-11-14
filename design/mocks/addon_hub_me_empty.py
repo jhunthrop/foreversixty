@@ -13,6 +13,7 @@ Made up: Velisandre, a hunter. At 25 she follows the Beast Mastery leveling buil
 gains are the shipped list's own (the pick against the runner-up she wears); at 60 she is fresh, with the Raid-ready
 list's gains (addon_hub.slot_rows). The talent named next is a Beast Mastery talent from Data.lua.
 """
+import re
 import sys
 
 import addon_builds_window as bw
@@ -44,7 +45,7 @@ KIND_WORDS = {'crafted': 'Crafted', 'quest': None, 'world_drop': None, 'vendor':
 
 
 def where(slot, s):
-    """GearTab.fullWhere's words: the slot, then the source as the tooltip says it (ItemTooltip.sourceParts)."""
+    """GearTab.sourceWhere's words: the source as the tooltip says it (ItemTooltip.sourceParts), no slot."""
     source, kind, chance = s.get('source') or '', s.get('source_kind'), s.get('chance')
     if kind in ('dungeon', 'raid') and ': ' in source:
         place, boss = source.split(': ', 1)
@@ -53,7 +54,7 @@ def where(slot, s):
         text = f'Crafted · {source}'
     else:
         text = source + (f' · {round(chance * 100)}% drop' if chance else '')
-    return f'{SLOTS[slot]} · {text}'
+    return text
 
 
 def band_rows(band, faction='alliance'):
@@ -85,7 +86,7 @@ def gear60():
     band = {s['slot']: s for s in hub.RAID60['slots']}
     rows = sorted((r for r in hub.slot_rows().values() if r['gain'] > 0), key=lambda r: -r['gain'])
     return {'band': 60, 'best': 16 - len(rows), 'scored': 16,
-            'enchants': [enchant('back', 'Enchant Cloak - Greater Defense')],
+            'enchants': [enchant('back', 'Enchant Cloak - Lesser Agility')],
             'upgrades': [{'itemId': r['pick'], 'gain': f'+{r["gain"]:.1f} DPS', 'where': where(r['slot'], band[r['slot']])}
                          for r in rows]}
 
@@ -100,7 +101,8 @@ BUILDS_LEAD = {'tab': 'builds', 'label': 'Builds', 'waiting': [],
 QUIET = dict(record=None, lastRaid=None, sim=None, raidName=None, syncedAgo=None, companion=False, guild=None,
              upgrades=[], pack={'available': True, 'generated': '2026-12-09', 'stale': False})
 SPEND = {'tab': 'builds', 'label': 'Builds', 'lead': BUILDS_LEAD['lead'],
-         'waiting': [{'key': 'spend', 'line': '|cffffd100Spend 1 point|r: Improved Aspect of the Monkey'}]}
+         'waiting': [{'key': 'spend', 'line': '|cffffd100Spend 1 point|r: Improved Aspect of the Monkey',
+                      'short': '|cffffd100Spend 1 point|r'}]}
 SETUP5 = dict(l8.SETUP, example=None, gearOpen=False)
 _STEP_ICON = l8.step_icon
 
@@ -160,22 +162,27 @@ def standing_html(m):
     return out + '<div class="gap"></div>'
 
 
-def gear_html(m):
-    """Each upgrade as a Right now row (MeFrame drawLocalGear), then GearEnchants' rows."""
+def short_words(e):
+    """GearEnchants.shortWords: "Chest: Minor Stats"."""
+    name = re.sub(r'^Enchant [^-]+ - ', '', e['plan']['name'])
+    return f'{SLOTS[e["slot"]]}: {name}'
+
+
+def gear_html(m, width):
+    """Each upgrade as a Right now row (MeFrame drawLocalGear, `width` wide), then GearEnchants' rows."""
     if not m:
         return ''
     out = me.section('Gear', m.get('note'))
     out += ''.join(f'<div class="now"><span class="ni">{item_icon(g["itemId"], G["nowIcon"])}</span>'
-                   f'<div class="tx" style="width:{288 - G["nowIcon"] - G["nowGap"]}px"><div style="width:'
-                   f'{288 - G["nowIcon"] - G["nowGap"] - G["gainValue"]}px">{hub.item_name(g["itemId"])}</div>'
+                   f'<div class="tx" style="width:{width - G["nowIcon"] - G["nowGap"]}px"><div style="width:'
+                   f'{width - G["nowIcon"] - G["nowGap"] - G["gainValue"]}px">{hub.item_name(g["itemId"])}</div>'
                    f'<div class="m">{me.wow(g.get("where") or "")}</div></div>'
                    f'<span class="lk ok">{esc(g["gain"])}</span></div>' for g in m['rows'])
     if m['rows']:
         out += f'<div style="height:{4 - (G["nowRow"] - 2 * G["line"])}px"></div>'
     for e in m.get('enchants') or []:
         out += (f'<div class="ench">{icon(e["plan"]["icon"], 16, "box-shadow:0 0 0 1px #000")}'
-                f'<span class="et"><span style="color:{ADDON["warning"]}">No enchant: {esc(e["plan"]["name"])}</span>'
-                f'<span class="m"> · {SLOTS[e["slot"]]}</span></span></div>')
+                f'<span class="et" style="color:{ADDON["warning"]}">{esc(short_words(e))}</span></div>')
     if m.get('empty'):
         out += f'<div class="m" style="margin-top:2px">{esc(m["empty"])}</div>'
     return out + '<div class="gap"></div>'
@@ -190,9 +197,18 @@ def site_html(m):
 
 def board(name, caption, model, level, dots, tabs):
     figures = me.SEP.join([f'Level {level} Hunter'] + model['figures'])
-    left = standing_html(model.get('standing')) + site_html(model.get('site'))
+    left = standing_html(model.get('standing'))
     right = (l8.setup_html(model['setup']) if model.get('setup') else me.now_html(model.get('rightNow')))
-    right += gear_html(model.get('gear')) + me.sim_html(model.get('sim'))
+    # MeFrame.draw: Gear joins the shorter column, the sim counted (heights as the frame lays them out).
+    rows, now, sim = len((model.get('standing') or {}).get('rows', [])), len(model.get('rightNow') or []), model.get('sim')
+    left_h = 26 + rows * G['partRow'] + G['sectionGap'] if rows else 0
+    right_h = (26 + now * G['nowRow'] + G['sectionGap'] - (G['nowRow'] - 2 * G['line']) if now else 0) + (62 if sim else 0)
+    if left_h < right_h:
+        left += gear_html(model.get('gear'), 388)
+    else:
+        right += gear_html(model.get('gear'), 288)
+    left += site_html(model.get('site'))
+    right += me.sim_html(sim)
     saved = bw.TABS
     bw.TABS = tabs
     try:

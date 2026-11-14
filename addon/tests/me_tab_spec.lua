@@ -272,8 +272,7 @@ describe("the Me tab", function()
 			assert.are.equal("Improved Aspect of the Hawk", rows[3].value)
 			assert.are.equal("Level 26", rows[3].note)
 			assert.are.equal(BUILD.next.icon, rows[3].icon)
-			assert.are.same({ key = "unlock", label = "Next", value = "Level 30: your next gear list", muted = true },
-				rows[4])
+			assert.are.same({ key = "unlock", label = "New gear list", value = "Level 30", muted = true }, rows[4])
 		end)
 
 		it("says Now for a point waiting, in plain text (Right now owns the gold)", function()
@@ -289,7 +288,8 @@ describe("the Me tab", function()
 			assert.are.equal(3, #rows)
 			assert.is_nil(rows[1].note)
 			assert.are.same({ key = "build", label = "Build", value = "No build followed", muted = true }, rows[2])
-			assert.are.equal("Level 10: your first talent point", rows[3].value)
+			assert.are.equal("First talent", rows[3].label)
+			assert.are.equal("Level 10", rows[3].value)
 			assert.is_nil(model.gear)
 		end)
 
@@ -315,11 +315,10 @@ describe("the Me tab", function()
 			assert.is_nil(quiet(own({ gear = { band = 20, best = 0, scored = 0 } })).gear)
 		end)
 
-		it("calls the site once: the app without the companion, a raid at 60 with it, none below 60 or in Set up",
+		it("calls the site once: the app without the companion, nothing with it or in Set up",
 			function()
 				assert.are.same({ line = L.meSiteApp, link = "foreversixty.gg/app" }, quiet(own()).site)
-				assert.is_nil(quiet(own(), { companion = true }).site)
-				assert.are.same({ line = L.meSiteFirstRaid }, quiet(own({ level = 60 }), { companion = true }).site)
+				assert.is_nil(quiet(own({ level = 60 }), { companion = true }).site)
 				local setup = quiet(own(), { setup = { rows = {} } })
 				assert.is_nil(setup.site)
 				assert.is_nil(setup.lastRaid)
@@ -333,7 +332,18 @@ describe("the Me tab", function()
 			local rows = quiet(own(), { leads = { waiting } }).rightNow
 			assert.are.equal(1, #rows)
 			assert.are.equal("Spend 1 point", rows[1].line)
+			waiting.waiting[1] = { line = "Spend 1 point: Spirit Bond", short = "Spend 1 point" }
+			assert.are.equal("Spend 1 point", quiet(own(), { leads = { waiting } }).rightNow[1].line)
+			assert.are.equal("Beast Mastery leveling", MeTab.model(full({ leads = { waiting } })).rightNow[1].line)
 			assert.are.equal(1, #MeTab.model(full({ leads = { calm } })).rightNow)
+		end)
+
+		it("words an enchant row short: the slot, then the enchant without its lead", function()
+			local GearEnchants = require("GearEnchants")
+			assert.are.equal("Chest: Greater Stats", GearEnchants.shortWords(CHEST))
+			assert.are.equal("Feet: Agility beats +3 Agility", GearEnchants.shortWords(BOOTS))
+			assert.are.equal("Wrist: Odd Name", GearEnchants.shortWords({ slot = "wrist", missing = true,
+				plan = { name = "Odd Name" } }))
 		end)
 
 		it("offers the first sim before any run, and Sim again after one", function()
@@ -501,6 +511,24 @@ describe("the Me tab in the window", function()
 		MeFrame.show()
 		assert.are.equal(0, hides)
 		assert.is_true(link:IsShown())
+	end)
+
+	it("keeps Sim again shown across a redraw (the cursor may rest on it)", function()
+		open(INBOX)
+		local model = MeFrame.model
+		model.sim.button = L.meSimAgain
+		MeFrame.draw(model)
+		local button = MeFrame.parts.sim.button
+		assert.is_true(button:IsShown())
+		local hides = 0
+		local hide = button.Hide
+		button.Hide = function(self)
+			hides = hides + 1
+			return hide(self)
+		end
+		MeFrame.draw(model)
+		assert.are.equal(0, hides)
+		assert.is_true(button:IsShown())
 	end)
 
 	it("brings the score and the raid back, and leaves the quiet sections, once the site has them", function()

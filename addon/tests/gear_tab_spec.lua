@@ -189,6 +189,8 @@ describe("the Gear tab's model (GearTab)", function()
 		assert.is_nil(GearTab.whereLine(doll.cells.head, measure, 6))
 		-- The row's hover carries the whole line.
 		assert.are.equal(whole, GearTab.fullWhere(doll.cells.head))
+		-- The Me tab's rows name the item, so their line is the source alone.
+		assert.are.equal("Scarlet Monastery · Herod · 20% drop", GearTab.sourceWhere(doll.cells.head))
 		assert.are.equal("Brawler's Leather…", GearTab.wordCut("Brawler's Leather Leggings", function(text)
 			return #text <= #"Brawler's Leather…"
 		end))

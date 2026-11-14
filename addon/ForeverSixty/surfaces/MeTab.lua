@@ -282,21 +282,23 @@ end
 --- Right now's rows from each other tab's entry { tab, label, lead, waiting }: a tab with something
 --- waiting first, in Hub.URGENT_ORDER, then the others in CALM_ORDER; each row is the tab's own `lead`
 --- ({ icon, itemId, line, sub }), else its first waiting line; at most MAX_NOW. `urgentOrder` is the hub's;
---- `said` names the tabs whose lead the tab already says elsewhere: only their waiting line shows.
+--- `said` names the tabs whose lead the tab already says elsewhere: only their waiting line shows, its
+--- `short` form where it has one (the talent is named beside it).
 --- Pure.
 function MeTab.rightNow(entries, urgentOrder, said)
 	local rows = {}
 	for _, entry in ipairs(entries or {}) do
 		local lead = type(entry.lead) == "table" and type(entry.lead.line) == "string" and entry.lead or nil
 		local first = type(entry.waiting) == "table" and entry.waiting[1] or nil
-		if said ~= nil and said[entry.tab] then
+		local told = said ~= nil and said[entry.tab]
+		if told then
 			lead = nil
 		end
 		if lead ~= nil or first ~= nil then
 			rows[#rows + 1] = {
 				tab = entry.tab, label = entry.label, urgent = first ~= nil,
 				icon = lead and lead.icon, itemId = lead and lead.itemId,
-				line = lead and lead.line or first.line,
+				line = lead and lead.line or (told and first.short) or first.line,
 				sub = lead and lead.sub or nil,
 			}
 		end
@@ -426,13 +428,14 @@ end
 --- The next thing the level brings: the first talent point below FIRST_TALENT_LEVEL, else the next band
 --- with a gear list (`own.nextBand`).
 local function unlockRow(own)
-	local value
+	local label, level
 	if type(own.level) == "number" and own.level < MeTab.FIRST_TALENT_LEVEL then
-		value = string.format(L.meFirstPoint, MeTab.FIRST_TALENT_LEVEL)
+		label, level = L.meFirstPoint, MeTab.FIRST_TALENT_LEVEL
 	elseif type(own.nextBand) == "number" then
-		value = string.format(L.meNextList, own.nextBand)
+		label, level = L.meNextList, own.nextBand
 	end
-	return value ~= nil and { key = "unlock", label = L.meNext, value = value, muted = true } or nil
+	return label ~= nil and { key = "unlock", label = label, value = string.format(L.meAtLevel, level), muted = true }
+		or nil
 end
 
 --- Where you stand: { rows }, each { key, label, value, note, icon, fill, muted }, at most MAX_STANDING.
@@ -481,15 +484,11 @@ function MeTab.localGear(gear)
 	return section
 end
 
---- The one line for what the site adds: { line, link } without the companion; with it { line } at the level
---- cap (a raid brings the rest) and nothing below it; nil while Set up shows (its step 3 carries the
---- address). Pure.
-function MeTab.siteLine(companion, setup, atCap)
-	if setup ~= nil or (companion and not atCap) then
+--- The one line for what the site adds: { line, link } without the companion; nil with it (the footer
+--- says it is synced) or while Set up shows (its step 3 carries the address). Pure.
+function MeTab.siteLine(companion, setup)
+	if setup ~= nil or companion then
 		return nil
-	end
-	if companion then
-		return { line = L.meSiteFirstRaid }
 	end
 	return { line = L.meSiteApp, link = L.meAppLink }
 end
@@ -513,7 +512,7 @@ function MeTab.model(input)
 		lastRaid = not quiet and lastRaid or nil,
 		standing = quiet and MeTab.standing(input.own) or nil,
 		gear = quiet and MeTab.localGear(input.own.gear) or nil,
-		site = quiet and MeTab.siteLine(companion, setup, (input.own.level or 0) >= (input.own.maxLevel or 60)) or nil,
+		site = quiet and MeTab.siteLine(companion, setup) or nil,
 		rightNow = setup == nil and MeTab.rightNow(input.leads, input.urgentOrder, quiet and MeTab.QUIET_SAID or nil)
 			or {},
 		setup = setup,
@@ -655,7 +654,7 @@ local function readGear(data)
 	local upgrades = {}
 	for _, cell in ipairs(GearTab.upgrades(doll).rows) do
 		upgrades[#upgrades + 1] = { itemId = cell.pick.item_id, gain = ItemTooltip.figure(cell.gain, doll.unit),
-			where = GearTab.fullWhere(cell) }
+			where = GearTab.sourceWhere(cell) }
 	end
 	return { band = band, best = tally.best, scored = tally.scored, upgrades = upgrades,
 		enchants = GearTab.enchantRows(doll) }
@@ -664,7 +663,7 @@ end
 --- The primary professions with their skill: the client's skill lines under its Professions header
 --- (TRADE_SKILLS), the header expanded or not. Empty on a client without the skill API.
 local function readProfessions()
-	local count = clientNumber("GetNumSkillLines") or 0
+	local count = type(_G.GetSkillLineInfo) == "function" and clientNumber("GetNumSkillLines") or 0
 	local header, found, inside = _G.TRADE_SKILLS or "Professions", {}, false
 	for index = 1, count do
 		local name, isHeader, _, skill = _G.GetSkillLineInfo(index)
