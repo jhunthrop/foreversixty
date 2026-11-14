@@ -76,7 +76,7 @@ Raiders: open Guild before the raid for your sign-up, your job for the fight ("P
 
 In Discord, `/raid` shows the guild's next raid and takes sign-ups from the answer, `/signup` works too (a raider with no site account just picks their character), `/readiness` tells officers who is not ready, and `/attendance` shows a raider's attendance.
 
-Open source on **[GitHub](https://github.com/jhunthrop/foreversixty)**, with the changelog and an issue tracker; `/fs diag` lists what works and what does not. Fan-made, not affiliated with Blizzard.
+The source is on **[GitHub](https://github.com/jhunthrop/foreversixty)**, with the changelog and an issue tracker; `/fs diag` lists what works and what does not. Fan-made, not affiliated with Blizzard.
 
 ### Install
 
