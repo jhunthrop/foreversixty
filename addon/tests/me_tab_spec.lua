@@ -223,6 +223,147 @@ describe("the Me tab", function()
 		end)
 	end)
 
+	describe("with no site activity yet (2026-11-14-me-empty.md)", function()
+		local BUILD = { name = "Beast Mastery leveling", matched = 15, allowed = 16,
+			next = { name = "Improved Aspect of the Hawk", icon = "Interface\\Icons\\Spell_Nature_RavenForm", level = 26 } }
+		local CHEST = { slot = "chest", missing = true, plan = { id = 1, name = "Enchant Chest - Greater Stats" } }
+		local BRACER = { slot = "wrist", missing = true, plan = { id = 2, name = "Enchant Bracer - Strength" } }
+		local BOOTS = { slot = "feet", missing = false, worn = "+3 Agility",
+			plan = { id = 3, name = "Enchant Boots - Agility" } }
+		local GEAR = { band = 20, best = 9, scored = 16, enchants = { CHEST, BRACER, BOOTS }, upgrades = {
+			{ itemId = 867, gain = "+11.2 DPS", where = "Hands · Stratholme" }, { itemId = 16675, gain = "+7.9 DPS" },
+			{ itemId = 11815, gain = "+4.0 DPS" }, { itemId = 18404, gain = "+2.5 DPS" } } }
+
+		local function quiet(own, extra)
+			local input = full({ record = NONE, lastRaid = NONE, sim = NONE, companion = false, syncedAgo = NONE })
+			input.own = own
+			for key, value in pairs(extra or {}) do
+				input[key] = value
+			end
+			return MeTab.model(input)
+		end
+
+		local function own(extra)
+			local found = { level = 25, maxLevel = 60, xp = 6200, xpMax = 10000, rested = 4000, build = BUILD,
+				nextBand = 30, gear = GEAR }
+			for key, value in pairs(extra or {}) do
+				found[key] = value ~= NONE and value or nil
+			end
+			return found
+		end
+
+		it("is quiet only with no score, no raid with bosses and no sim", function()
+			assert.is_true(MeTab.isQuiet({}))
+			assert.is_true(MeTab.isQuiet({ lastRaid = { bosses = {} }, sim = { slots = {} }, record = {} }))
+			assert.is_false(MeTab.isQuiet({ record = RECORD }))
+			assert.is_false(MeTab.isQuiet({ lastRaid = LAST_RAID }))
+			assert.is_false(MeTab.isQuiet({ sim = SIM }))
+		end)
+
+		it("at 25 with a build: experience and rested, the build on plan, the next point, the next list", function()
+			local model = quiet(own())
+			assert.is_nil(model.score)
+			assert.is_nil(model.lastRaid)
+			local rows = model.standing.rows
+			assert.are.equal(4, #rows)
+			assert.are.same({ key = "xp", label = "Experience", fill = 0.62, value = "62%", note = "Rested 40%" }, rows[1])
+			assert.are.same({ key = "build", label = "Build", value = "Beast Mastery leveling", note = "15 of 16 on plan" },
+				rows[2])
+			assert.are.equal("Improved Aspect of the Hawk", rows[3].value)
+			assert.are.equal("Level 26", rows[3].note)
+			assert.are.equal(BUILD.next.icon, rows[3].icon)
+			assert.are.same({ key = "unlock", label = "New gear list", value = "Level 30", muted = true }, rows[4])
+		end)
+
+		it("says Now for a point waiting, in plain text (Right now owns the gold)", function()
+			local waiting = { name = BUILD.name, matched = 15, allowed = 16, next = { name = "Spirit Bond", now = true } }
+			local row = quiet(own({ build = waiting })).standing.rows[3]
+			assert.are.equal("Now", row.note)
+			assert.is_nil(row.note:find("|c", 1, true))
+		end)
+
+		it("at 5 with no build: experience, no build followed, the first talent point, no gear", function()
+			local model = quiet(own({ level = 5, build = NONE, nextBand = 20, gear = NONE, rested = NONE }))
+			local rows = model.standing.rows
+			assert.are.equal(3, #rows)
+			assert.is_nil(rows[1].note)
+			assert.are.same({ key = "build", label = "Build", value = "No build followed", muted = true }, rows[2])
+			assert.are.equal("First talent", rows[3].label)
+			assert.are.equal("Level 10", rows[3].value)
+			assert.is_nil(model.gear)
+		end)
+
+		it("at 60: no bar, the build and the professions, nothing next, and nothing to chase", function()
+			local done = { name = "Beast Mastery raid build", matched = 51, allowed = 51 }
+			local model = quiet(own({ level = 60, build = done, nextBand = NONE,
+				professions = { { name = "Engineering", rank = 300 }, { name = "Skinning", rank = 285 } },
+				gear = { band = 60, best = 16, scored = 16, upgrades = {}, enchants = {} } }))
+			assert.are.same({ { key = "build", label = "Build", value = "Beast Mastery raid build", note = "51 of 51 on plan" },
+				{ key = "professions", label = "Professions", value = "Engineering 300, Skinning 285" } },
+				model.standing.rows)
+			assert.are.same({ note = "16 of 16 best in slot", rows = {}, enchants = {}, empty = "Nothing to chase at 60." },
+				model.gear)
+		end)
+
+		it("shows the gear tally, the three biggest upgrades and the enchants missing", function()
+			local gear = quiet(own()).gear
+			assert.are.equal("9 of 16 best in slot", gear.note)
+			assert.are.equal(3, #gear.rows)
+			assert.are.same({ itemId = 867, gain = "+11.2 DPS", where = "Hands · Stratholme" }, gear.rows[1])
+			assert.are.same({ CHEST, BRACER }, gear.enchants)
+			assert.is_nil(gear.empty)
+			assert.is_nil(quiet(own({ gear = { band = 20, best = 0, scored = 0 } })).gear)
+		end)
+
+		it("calls the site once: the app without the companion, nothing with it or in Set up",
+			function()
+				assert.are.same({ line = L.meSiteApp, link = "foreversixty.gg/app" }, quiet(own()).site)
+				assert.is_nil(quiet(own({ level = 60 }), { companion = true }).site)
+				local setup = quiet(own(), { setup = { rows = {} } })
+				assert.is_nil(setup.site)
+				assert.is_nil(setup.lastRaid)
+			end)
+
+		it("leaves the Builds lead out of Right now (Where you stand says it) unless something waits there", function()
+			local calm = { tab = "builds", label = "Builds", lead = { line = "Beast Mastery leveling" }, waiting = {} }
+			assert.are.same({}, quiet(own(), { leads = { calm } }).rightNow)
+			local waiting = { tab = "builds", label = "Builds", lead = { line = "Beast Mastery leveling" },
+				waiting = { { line = "Spend 1 point" } } }
+			local rows = quiet(own(), { leads = { waiting } }).rightNow
+			assert.are.equal(1, #rows)
+			assert.are.equal("Spend 1 point", rows[1].line)
+			waiting.waiting[1] = { line = "Spend 1 point: Spirit Bond", short = "Spend 1 point" }
+			assert.are.equal("Spend 1 point", quiet(own(), { leads = { waiting } }).rightNow[1].line)
+			assert.are.equal("Beast Mastery leveling", MeTab.model(full({ leads = { waiting } })).rightNow[1].line)
+			assert.are.equal(1, #MeTab.model(full({ leads = { calm } })).rightNow)
+		end)
+
+		it("words an enchant row short: the slot, then the enchant without its lead", function()
+			local GearEnchants = require("GearEnchants")
+			assert.are.equal("Chest: Greater Stats", GearEnchants.shortWords(CHEST))
+			assert.are.equal("Feet: Agility beats +3 Agility", GearEnchants.shortWords(BOOTS))
+			assert.are.equal("Wrist: Odd Name", GearEnchants.shortWords({ slot = "wrist", missing = true,
+				plan = { name = "Odd Name" } }))
+		end)
+
+		it("offers the first sim before any run, and Sim again after one", function()
+			local first = MeTab.model(full({ sim = NONE })).sim
+			assert.are.equal("Run a sim", first.button)
+			assert.are.equal("Not simmed yet", first.date)
+			assert.are.equal("Sim again", MeTab.model(full()).sim.button)
+		end)
+
+		it("keeps the score and the raid as soon as the site brings one of them", function()
+			local input = full({ lastRaid = NONE, sim = NONE })
+			input.own = own()
+			local model = MeTab.model(input)
+			assert.are.equal(1184, model.score.total)
+			assert.is_nil(model.standing)
+			assert.is_nil(model.gear)
+			assert.is_nil(model.site)
+		end)
+	end)
+
 	describe("what waits on Me", function()
 		local DAY = 86400
 
@@ -292,6 +433,7 @@ describe("the Me tab in the window", function()
 	end)
 
 	after_each(function()
+		_G.UnitXP, _G.UnitXPMax, _G.GetNumSkillLines, _G.GetSkillLineInfo = nil, nil, nil, nil
 		_G.ForeverSixtyDB = nil
 		_G.ForeverSixtyInbox = nil
 		_G.time = nil
@@ -323,14 +465,82 @@ describe("the Me tab in the window", function()
 		assert.are.same({}, Hub.waitingOf(Hub.tab("me")))
 	end)
 
-	it("without the companion or the pack: the pack's line, the app's link, no sim", function()
+	it("with nothing from the site: where you stand from the client, one call to the app, no score or sim", function()
+		_G.UnitXP = function()
+			return 6200
+		end
+		_G.UnitXPMax = function()
+			return 10000
+		end
+		local lines = { { "Professions", true }, { "Engineering", false, false, 155 }, { "Secondary Skills", true },
+			{ "Cooking", false, false, 90 } }
+		_G.GetNumSkillLines = function()
+			return #lines
+		end
+		_G.GetSkillLineInfo = function(index)
+			local line = lines[index]
+			return line[1], line[2], line[3], line[4]
+		end
+		state.level = 25
 		assert.are.equal("me", open(nil))
 		local parts = MeFrame.parts
-		assert.are.equal(L.meNoPack, parts.score.line:GetText())
-		assert.are.equal(L.meNoRaid, parts.raid.empty:GetText())
-		assert.is_true(parts.raid.app:IsShown())
+		assert.is_false(parts.score.heading:IsShown())
+		assert.is_false(parts.raid.heading:IsShown())
+		assert.is_false(parts.raid.app:IsShown())
 		assert.is_false(parts.sim.heading:IsShown())
-		assert.is_false(parts.raid.rows[1].name:IsShown())
+		assert.are.equal(L.meStanding, parts.standing.heading:GetText())
+		assert.is_true(parts.standing.heading:IsShown())
+		assert.are.equal("Experience", parts.standing.rows[1].label:GetText())
+		assert.are.equal("62%", parts.standing.rows[1].value:GetText())
+		assert.is_true(parts.standing.rows[1].fill:IsShown())
+		assert.are.equal(L.meNoBuild, parts.standing.rows[2].value:GetText())
+		assert.are.equal("Engineering 155", parts.standing.rows[3].value:GetText())
+		assert.are.equal(L.meSiteApp, parts.site.line:GetText())
+		assert.is_true(parts.site.link:IsShown())
+	end)
+
+	it("redraws the quiet state without hiding a control that stays (the cursor may rest on it)", function()
+		open(nil)
+		local link = MeFrame.parts.site.link
+		local hides = 0
+		local hide = link.Hide
+		link.Hide = function(self)
+			hides = hides + 1
+			return hide(self)
+		end
+		MeFrame.show()
+		assert.are.equal(0, hides)
+		assert.is_true(link:IsShown())
+	end)
+
+	it("keeps Sim again shown across a redraw (the cursor may rest on it)", function()
+		open(INBOX)
+		local model = MeFrame.model
+		model.sim.button = L.meSimAgain
+		MeFrame.draw(model)
+		local button = MeFrame.parts.sim.button
+		assert.is_true(button:IsShown())
+		local hides = 0
+		local hide = button.Hide
+		button.Hide = function(self)
+			hides = hides + 1
+			return hide(self)
+		end
+		MeFrame.draw(model)
+		assert.are.equal(0, hides)
+		assert.is_true(button:IsShown())
+	end)
+
+	it("brings the score and the raid back, and leaves the quiet sections, once the site has them", function()
+		open(nil)
+		_G.ForeverSixtyInbox = INBOX
+		MeFrame.show()
+		local parts = MeFrame.parts
+		assert.is_true(parts.score.number:IsShown())
+		assert.is_false(parts.standing.heading:IsShown())
+		assert.is_false(parts.standing.rows[1].label:IsShown())
+		assert.is_false(parts.site.line:IsShown())
+		assert.is_false(parts.site.link:IsShown())
 	end)
 
 	it("leads Right now with another tab's own line, and its link opens that tab", function()

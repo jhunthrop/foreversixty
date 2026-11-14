@@ -52,10 +52,11 @@ local function buildRow(parent, width)
 	return row
 end
 
---- The rows' frames, made once under `parent`, `width` wide.
-function GearEnchants.build(parent, width)
+--- The rows' frames, made once under `parent`, `width` wide: `count` of them (the Me tab's two), else as
+--- many as a doll can flag.
+function GearEnchants.build(parent, width, count)
 	local section = { rows = {} }
-	for index = 1, GearEnchants.LAYOUT.rows do
+	for index = 1, count or GearEnchants.LAYOUT.rows do
 		section.rows[index] = buildRow(parent, width)
 	end
 	return section
@@ -69,9 +70,18 @@ function GearEnchants.words(row)
 	return lead .. Theme.inlineColor("muted", L.dialogSeparator .. slot)
 end
 
+--- A row's words where room is short (the Me tab): the slot, then the enchant without its "Enchant Chest - "
+--- lead ("Chest: Minor Stats"), or that over the weaker one worn. Pure.
+function GearEnchants.shortWords(row)
+	local name = row.plan.name:gsub("^Enchant [^%-]+ %- ", "")
+	local text = row.missing and name or string.format(L.gearEnchantBeats, name, row.worn or "")
+	return string.format(L.gearEnchantShort, L.gearSlotLabels[row.slot] or row.slot, text)
+end
+
 --- Draw `rows` (GearTab.enchantRows) at `y` under `parent`; the y after them. A row that stays a row is
---- moved and repainted in place, never hidden and shown again (it may be under the cursor).
-function GearEnchants.draw(section, parent, rows, y)
+--- moved and repainted in place, never hidden and shown again (it may be under the cursor). `words` (a
+--- row's text) is GearEnchants.words unless given.
+function GearEnchants.draw(section, parent, rows, y, words)
 	local G = GearEnchants.LAYOUT
 	for index, row in ipairs(section.rows) do
 		local shown = rows[index]
@@ -82,7 +92,7 @@ function GearEnchants.draw(section, parent, rows, y)
 			local icon = shown.plan.icon ~= nil and ICON_PATH .. shown.plan.icon
 				or Compat.spellTexture(shown.plan.spellId) or Theme.UNKNOWN_ICON
 			row.icon:SetTexture(icon)
-			row.text:SetText(GearEnchants.words(shown))
+			row.text:SetText((words or GearEnchants.words)(shown))
 			row.frame:ClearAllPoints()
 			row.frame:SetPoint("TOPLEFT", parent, "TOPLEFT", 0, -(y + (index - 1) * G.row))
 			row.frame:Show()

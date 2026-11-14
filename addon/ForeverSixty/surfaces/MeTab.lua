@@ -259,7 +259,8 @@ function MeTab.sim(input)
 		section.date = day ~= nil and string.format(L.meSimmed, day) or nil
 	end
 	if input.spec ~= nil then
-		section.button = section.queued and L.meSimQueued or L.meSimAgain
+		section.button = section.queued and L.meSimQueued or (sim ~= nil and L.meSimAgain or L.meSimRun)
+		section.date = section.date or (sim == nil and not section.queued and L.meSimNone or nil)
 	end
 	if sim == nil and section.button == nil and #section.gains == 0 then
 		return nil
@@ -280,18 +281,24 @@ end
 
 --- Right now's rows from each other tab's entry { tab, label, lead, waiting }: a tab with something
 --- waiting first, in Hub.URGENT_ORDER, then the others in CALM_ORDER; each row is the tab's own `lead`
---- ({ icon, itemId, line, sub }), else its first waiting line; at most MAX_NOW. `urgentOrder` is the hub's.
+--- ({ icon, itemId, line, sub }), else its first waiting line; at most MAX_NOW. `urgentOrder` is the hub's;
+--- `said` names the tabs whose lead the tab already says elsewhere: only their waiting line shows, its
+--- `short` form where it has one (the talent is named beside it).
 --- Pure.
-function MeTab.rightNow(entries, urgentOrder)
+function MeTab.rightNow(entries, urgentOrder, said)
 	local rows = {}
 	for _, entry in ipairs(entries or {}) do
 		local lead = type(entry.lead) == "table" and type(entry.lead.line) == "string" and entry.lead or nil
 		local first = type(entry.waiting) == "table" and entry.waiting[1] or nil
+		local told = said ~= nil and said[entry.tab]
+		if told then
+			lead = nil
+		end
 		if lead ~= nil or first ~= nil then
 			rows[#rows + 1] = {
 				tab = entry.tab, label = entry.label, urgent = first ~= nil,
 				icon = lead and lead.icon, itemId = lead and lead.itemId,
-				line = lead and lead.line or first.line,
+				line = lead and lead.line or (told and first.short) or first.line,
 				sub = lead and lead.sub or nil,
 			}
 		end
@@ -363,7 +370,132 @@ function MeTab.waitingItems(lastRaid, clock, seen)
 	return { item }
 end
 
---- The whole tab: { score, lastRaid, rightNow, setup, sim, footer }. On the first open (`input.setup`, the
+-- No site activity yet (design/specs/2026-11-14-me-empty.md) -----------------------------------------------
+
+--- Where you stand shows at most this many rows, Gear this many upgrades; talents start at this level.
+MeTab.MAX_STANDING = 5
+MeTab.MAX_LOCAL_ENCHANTS = 2
+MeTab.MAX_LOCAL_GAINS = 3
+MeTab.FIRST_TALENT_LEVEL = 10
+--- Where you stand already says the build: the Builds tab's lead leaves Right now (its waiting line stays).
+MeTab.QUIET_SAID = { builds = true }
+
+--- Whether the site has brought nothing for this character yet: no score record, no boss in a last raid,
+--- no sim. Then Me shows what the client knows instead of the score and the raid. Pure.
+function MeTab.isQuiet(input)
+	local record, raid, sim = input.record, input.lastRaid, input.sim
+	local hasScore = type(record) == "table" and type(record.score) == "number"
+	local hasRaid = type(raid) == "table" and type(raid.bosses) == "table" and #raid.bosses > 0
+	local hasSim = type(sim) == "table" and type(sim.dps) == "number"
+	return not (hasScore or hasRaid or hasSim)
+end
+
+local function percent(part, whole)
+	return math.floor(100 * part / whole + 0.5)
+end
+
+--- The first row: the experience bar with its share and the rested share; none at the level cap.
+local function levelRow(own)
+	if type(own.level) == "number" and own.level >= own.maxLevel then
+		return nil
+	end
+	if type(own.xp) ~= "number" or type(own.xpMax) ~= "number" or own.xpMax <= 0 then
+		return nil
+	end
+	local fill = math.max(0, math.min(1, own.xp / own.xpMax))
+	local rested = type(own.rested) == "number" and own.rested > 0 and percent(own.rested, own.xpMax) or 0
+	return { key = "xp", label = L.meExperience, fill = fill, value = string.format(L.mePercent, percent(own.xp,
+		own.xpMax)), note = rested > 0 and string.format(L.meRested, rested) or nil }
+end
+
+--- The build row and the next point's row from `own.build` ({ name, matched, allowed, next = { name,
+--- icon, level, now } }).
+local function buildRows(own)
+	local build = own.build
+	if type(build) ~= "table" or type(build.name) ~= "string" then
+		return { { key = "build", label = L.meBuild, value = L.meNoBuild, muted = true } }
+	end
+	local rows = { { key = "build", label = L.meBuild, value = build.name,
+		note = (build.allowed or 0) > 0 and string.format(L.windowOnPlan, build.matched, build.allowed) or nil } }
+	local nextPoint = build.next
+	if type(nextPoint) == "table" and type(nextPoint.name) == "string" then
+		rows[2] = { key = "point", label = L.meNextPoint, value = nextPoint.name, icon = nextPoint.icon,
+			note = nextPoint.now and L.meNow or (nextPoint.level and string.format(L.meAtLevel, nextPoint.level)) }
+	end
+	return rows
+end
+
+--- The next thing the level brings: the first talent point below FIRST_TALENT_LEVEL, else the next band
+--- with a gear list (`own.nextBand`).
+local function unlockRow(own)
+	local label, level
+	if type(own.level) == "number" and own.level < MeTab.FIRST_TALENT_LEVEL then
+		label, level = L.meFirstPoint, MeTab.FIRST_TALENT_LEVEL
+	elseif type(own.nextBand) == "number" then
+		label, level = L.meNextList, own.nextBand
+	end
+	return label ~= nil and { key = "unlock", label = label, value = string.format(L.meAtLevel, level), muted = true }
+		or nil
+end
+
+--- Where you stand: { rows }, each { key, label, value, note, icon, fill, muted }, at most MAX_STANDING.
+--- `own`: { level, maxLevel, xp, xpMax, rested, build, professions ({ name, rank }), nextBand }. Pure.
+function MeTab.standing(own)
+	local rows = {}
+	local function add(row)
+		if row ~= nil and #rows < MeTab.MAX_STANDING then
+			rows[#rows + 1] = row
+		end
+	end
+	add(levelRow(own))
+	for _, row in ipairs(buildRows(own)) do
+		add(row)
+	end
+	if type(own.professions) == "table" and #own.professions > 0 then
+		local named = {}
+		for index, skill in ipairs(own.professions) do
+			named[index] = string.format(L.meProfession, skill.name, skill.rank)
+		end
+		add({ key = "professions", label = L.meProfessions, value = table.concat(named, L.sourcesListSeparator) })
+	end
+	add(unlockRow(own))
+	return { rows = rows }
+end
+
+--- The Gear section at the character's band: { note, rows (each { itemId, gain, where }), enchants (GearTab's
+--- enchant rows, at most MAX_LOCAL_ENCHANTS), empty }, nil without a list for the band. `gear`: { band, best,
+--- scored, upgrades (largest first), enchants (GearTab.enchantRows) }. Pure.
+function MeTab.localGear(gear)
+	if type(gear) ~= "table" or type(gear.band) ~= "number" or (gear.scored or 0) == 0 then
+		return nil
+	end
+	local rows = {}
+	for index = 1, math.min(#(gear.upgrades or {}), MeTab.MAX_LOCAL_GAINS) do
+		rows[index] = gear.upgrades[index]
+	end
+	local enchants = {}
+	for index = 1, math.min(#(gear.enchants or {}), MeTab.MAX_LOCAL_ENCHANTS) do
+		enchants[index] = gear.enchants[index]
+	end
+	local section = { note = string.format(L.gearBestOf, gear.best, gear.scored), rows = rows, enchants = enchants }
+	if #rows == 0 and #enchants == 0 then
+		section.empty = string.format(L.meNothingToChase, gear.band)
+	end
+	return section
+end
+
+--- The one line for what the site adds: { line, link } without the companion; nil with it (the footer
+--- says it is synced) or while Set up shows (its step 3 carries the address). Pure.
+function MeTab.siteLine(companion, setup)
+	if setup ~= nil or companion then
+		return nil
+	end
+	return { line = L.meSiteApp, link = L.meAppLink }
+end
+
+--- The whole tab: { score, lastRaid, standing, gear, site, rightNow, setup, sim, footer }. With nothing from
+--- the site yet (MeTab.isQuiet) and the client's own facts in `input.own` (MeTab.readOwn), Where you stand,
+--- Gear and the site line take the score's and the raid's place. On the first open (`input.setup`, the
 --- Set up model, spec 4.1) Set up takes Right now's place, the footer says how to bring it back, and the
 --- Last raid's companion line is left out (Set up's step 3 carries the app's address, once). Pure.
 function MeTab.model(input)
@@ -374,10 +506,15 @@ function MeTab.model(input)
 	if setup ~= nil and lastRaid ~= nil and lastRaid.empty ~= nil then
 		lastRaid = nil
 	end
+	local quiet = MeTab.isQuiet(input) and type(input.own) == "table"
 	return {
-		score = MeTab.score(input),
-		lastRaid = lastRaid,
-		rightNow = setup == nil and MeTab.rightNow(input.leads, input.urgentOrder) or {},
+		score = not quiet and MeTab.score(input) or nil,
+		lastRaid = not quiet and lastRaid or nil,
+		standing = quiet and MeTab.standing(input.own) or nil,
+		gear = quiet and MeTab.localGear(input.own.gear) or nil,
+		site = quiet and MeTab.siteLine(companion, setup) or nil,
+		rightNow = setup == nil and MeTab.rightNow(input.leads, input.urgentOrder, quiet and MeTab.QUIET_SAID or nil)
+			or {},
 		setup = setup,
 		sim = MeTab.sim({ companion = companion, sim = input.sim, upgrades = input.upgrades, spec = input.spec,
 			queued = input.queued }),
@@ -443,7 +580,7 @@ function MeTab.inputs(deps)
 	local loot = message(key, "loot_values")
 	local synced = MeTab.hasCompanion() and deps.BuildDialog.parseUtc(inbox().generated_at) or nil
 	local guild = Theme.playerGuild()
-	return {
+	local input = {
 		level = Compat.playerLevel(), record = ownRecord(key), pack = pack, packDays = Score.ageDays(pack, clock),
 		lastRaid = message(key, "last_raid"), raidName = type(loot) == "table" and loot.raid or nil,
 		companion = MeTab.hasCompanion(),
@@ -452,6 +589,107 @@ function MeTab.inputs(deps)
 		spec = spec, queued = deps.Export.simRequest ~= nil or (type(ack) == "table" and ack.sim_request_state == "queued"),
 		leads = MeTab.entries(deps.Hub), urgentOrder = deps.Hub.URGENT_ORDER,
 		guild = guild, buildName = type(deps.Follow.build) == "table" and deps.Follow.build.name or nil,
+	}
+	-- The client's own facts only when the site has nothing yet: the gear read is the Gear tab's whole model.
+	input.own = MeTab.isQuiet(input) and MeTab.readOwn(deps.data) or nil
+	return input
+end
+
+-- What the client knows (no site activity) ------------------------------------------------------------------
+
+--- A client call answered with a number, else nil (the call missing on this client).
+local function clientNumber(name, ...)
+	local call = _G[name]
+	local value = type(call) == "function" and call(...) or nil
+	return type(value) == "number" and value or nil
+end
+
+--- The followed build with its points on plan and next point: { name, matched, allowed, next = { name, icon,
+--- level, now } }, nil with no build followed.
+local function readBuild(data, level)
+	local Follow = ns.Follow or require("Follow")
+	local Progress = ns.Progress or require("Progress")
+	local Talents = ns.Talents or require("Talents")
+	local build = Follow.build
+	if type(build) ~= "table" or type(build.name) ~= "string" or build.name == "" then
+		return nil
+	end
+	local ranks = Talents.readRanks(data) or {}
+	local progress = Progress.build(build, ranks, level)
+	local allowed = Progress.pointsAllowed(build, level)
+	local found = { name = build.name, matched = math.min(progress.matched, allowed), allowed = allowed }
+	local point = progress.point
+	local talent = point ~= nil and Talents.cellOf(data, build.classSlug, point.tab, point.tier, point.column) or nil
+	if type(talent) == "table" and type(talent.name) == "string" and talent.name ~= "" then
+		local now = Progress.unspentPoints(level, ranks) > 0
+		found.next = { name = talent.name, icon = Talents.iconFor(talent), now = now,
+			level = not now and Progress.nextPointLevel(level, ranks) or nil }
+	end
+	return found
+end
+
+--- The lowest band above `level` the spec has a gear list for, or nil.
+local function nextBand(data, spec, level)
+	local bySpec = spec ~= nil and type(data) == "table" and type(data.bis) == "table" and data.bis[spec] or nil
+	local found
+	for band in pairs(type(bySpec) == "table" and bySpec or {}) do
+		if type(band) == "number" and band > (level or 0) and (found == nil or band < found) then
+			found = band
+		end
+	end
+	return found
+end
+
+--- The Gear tab's own model at the character's band, as it opens (MeTab.localGear's input), or nil.
+local function readGear(data)
+	local GearTab = ns.GearTab or require("GearTab")
+	local ItemTooltip = ns.ItemTooltip or require("ItemTooltip")
+	local input = GearTab.read(data)
+	local band = GearTab.ownBand(input)
+	if band == nil or not GearTab.hasList(input, band) then
+		return nil
+	end
+	local doll = GearTab.doll(GearTab.withCondition(input, band, GearTab.conditionAt(input, band, nil)), band)
+	local tally = GearTab.tally(doll)
+	local upgrades = {}
+	for _, cell in ipairs(GearTab.upgrades(doll).rows) do
+		upgrades[#upgrades + 1] = { itemId = cell.pick.item_id, gain = ItemTooltip.figure(cell.gain, doll.unit),
+			where = GearTab.sourceWhere(cell), whereShort = GearTab.sourceWhere(cell, true) }
+	end
+	return { band = band, best = tally.best, scored = tally.scored, upgrades = upgrades,
+		enchants = GearTab.enchantRows(doll) }
+end
+
+--- The primary professions with their skill: the client's skill lines under its Professions header
+--- (TRADE_SKILLS), the header expanded or not. Empty on a client without the skill API.
+local function readProfessions()
+	local count = type(_G.GetSkillLineInfo) == "function" and clientNumber("GetNumSkillLines") or 0
+	local header, found, inside = _G.TRADE_SKILLS or "Professions", {}, false
+	for index = 1, count do
+		local name, isHeader, _, skill = _G.GetSkillLineInfo(index)
+		if isHeader then
+			inside = name == header
+		elseif inside and type(name) == "string" and type(skill) == "number" then
+			found[#found + 1] = { name = name, rank = skill }
+		end
+	end
+	return found
+end
+
+--- Where the character stands from the client and the shipped data (MeTab.standing's `own`, with `gear`).
+--- The gear read is the Gear tab's whole model; a failure there leaves Gear out, never the tab.
+function MeTab.readOwn(data)
+	local Follow = ns.Follow or require("Follow")
+	local Progress = ns.Progress or require("Progress")
+	local level = Compat.playerLevel()
+	local ok, gear = pcall(readGear, data)
+	return {
+		level = level, maxLevel = Progress.MAX_LEVEL,
+		xp = clientNumber("UnitXP", "player"), xpMax = clientNumber("UnitXPMax", "player"),
+		rested = clientNumber("GetXPExhaustion"),
+		build = readBuild(data, level), professions = readProfessions(),
+		nextBand = nextBand(data, Follow.buildSpec(data, Follow.build), level),
+		gear = ok and gear or nil,
 	}
 end
 

@@ -2422,7 +2422,8 @@ function BuildDialog.waiting()
 			or string.format(L.hubSpendMany, unspent))
 		local named, talent = pcall(BuildDialog.nextTalent, Follow.build, ranks, data, level)
 		local line = named and talent ~= nil and string.format(L.hubSpendOn, spend, talent) or spend
-		items[#items + 1] = { key = "spend", line = line, fact = level .. ":" .. unspent }
+		-- `short`: the line without the talent, for a surface that names the talent beside it (Me).
+		items[#items + 1] = { key = "spend", line = line, short = spend, fact = level .. ":" .. unspent }
 	end
 	local rows = currentRows()
 	if #rows > 0 then
