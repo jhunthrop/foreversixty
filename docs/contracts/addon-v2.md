@@ -202,7 +202,7 @@ player may use, `loot!` is shown to the master looter, nothing is applied automa
 ```
 prefix "FS1"; payload = "<v>|<type>|<fields...>", fields "|"-separated, values URL-safe (no "|", "\n")
 v = 1
-hello     | level | specSlug | gearGap(int) | buildName | scoreDate(YYYY-MM-DD or "-")
+hello     | level | specSlug | gearGap(int) | buildName | scoreDate(YYYY-MM-DD or "-") [ | addonVersion ]   (optional, added 2026-11-15)
 share     | buildCode
 push      | buildCode | buildName           (sender must be guild rank index <= 1 or raid leader; receivers verify with GetGuildInfo / UnitIsGroupLeader)
 loot?     | itemId | lootId
@@ -244,6 +244,10 @@ Notes for the reader:
   hello's own `buildName`. A snapshot! goes only while "Share my build with my guild" is on, so
   a player who turned it off sends none of this. `Comms.readiness` reads the four; a receiver
   keeps a sender's last readiness through a later hello.
+- **hello's addonVersion** (added 2026-11-15). One optional field after the hello's five, inside
+  version 1: the TOC `Version` ("2.0.56"), as snapshot! v2 carries it. A receiver whose own version
+  is older says one chat line a session that an update is out (`Comms.noticeNewerVersion`, which
+  reads a snapshot!'s version the same way). A v1 reader keeps the field unread.
 
 ---
 

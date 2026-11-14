@@ -3,6 +3,7 @@
 -- only encode and decode are exercised here, against the golden message lines the API and
 -- the companion pin too; sending is verified in the real client, never through wow_mock.
 local helper = require("spec_helper")
+local L = require("Locale")
 
 -- busted runs from addon/ (the CI and the local command); a run from the repository root also works.
 local ROOTS = { "../docs/contracts/fixtures/", "docs/contracts/fixtures/" }
@@ -411,6 +412,81 @@ describe("Comms, the FS1 protocol", function()
 			assert.are.equal("2.0.46", first.addonVersion)
 			Comms.onEvent("FS1", "1|hello|60|hunter-beast-mastery|14|Beast Mastery raid|2026-12-09", "GUILD", "Other-Yell")
 			assert.are.equal(first, Comms.seen["Other-Yell"].readiness)
+		end)
+	end)
+
+	-- The update notice: a guildmate's hello (or snapshot!) carrying a later version than ours.
+	describe("the update notice", function()
+		local printed, originalPrint, originalVersion
+
+		before_each(function()
+			Comms.reset()
+			printed = {}
+			originalPrint, originalVersion = _G.print, Comms.addonVersion
+			_G.print = function(text)
+				printed[#printed + 1] = text
+			end
+			Comms.addonVersion = function()
+				return "2.0.56"
+			end
+		end)
+
+		after_each(function()
+			_G.print, Comms.addonVersion = originalPrint, originalVersion
+		end)
+
+		local function hello(version, sender)
+			Comms.onEvent("FS1", "1|hello|60|hunter-beast-mastery|14|Beast Mastery raid|2026-12-09|" .. version,
+				"GUILD", sender)
+		end
+
+		it("compares versions part by part, and never a malformed one", function()
+			assert.is_true(Comms.isNewerVersion("2.0.57", "2.0.56"))
+			assert.is_true(Comms.isNewerVersion("2.0.100", "2.0.99"))
+			assert.is_true(Comms.isNewerVersion("2.1", "2.0.56"))
+			assert.is_false(Comms.isNewerVersion("2.0.56", "2.0.56"))
+			assert.is_false(Comms.isNewerVersion("2.0.9", "2.0.10"))
+			assert.is_false(Comms.isNewerVersion("-", "2.0.56"))
+			assert.is_false(Comms.isNewerVersion("2.0.57", "-"))
+			assert.is_false(Comms.isNewerVersion("2.0.57-beta", "2.0.56"))
+			assert.is_false(Comms.isNewerVersion(nil, "2.0.56"))
+		end)
+
+		it("names the hello's version after its profile", function()
+			local named = Comms.named("hello", Comms.decode("1|hello|20|warrior-arms|14|Arms|-|2.0.57").fields)
+			assert.are.equal("2.0.57", named.addonVersion)
+			assert.is_nil(Comms.named("hello", Comms.decode("1|hello|20|warrior-arms|14|Arms|-").fields).addonVersion)
+		end)
+
+		it("says one line the first time a guildmate is newer, and no more that session", function()
+			hello("2.0.55", "Older-Yell")
+			hello("2.0.56", "Same-Yell")
+			assert.are.equal(0, #printed)
+			hello("2.0.57", "Newer-Yell")
+			assert.are.equal(1, #printed)
+			assert.is_truthy(printed[1]:find(string.format(L.commsUpdateAvailable, "2.0.57"), 1, true))
+			hello("2.0.58", "Newest-Yell")
+			Comms.onEvent("FS1", "1|snapshot!|60|hunter-beast-mastery|14|Beast Mastery raid|2026-12-09|2.0.59|||",
+				"GUILD", "Other-Yell")
+			assert.are.equal(1, #printed)
+		end)
+
+		it("hears a newer version on a snapshot! too, and stays quiet for a v1 hello", function()
+			Comms.onEvent("FS1", "1|hello|60|hunter-beast-mastery|14|Beast Mastery raid|2026-12-09", "GUILD", "Old-Yell")
+			assert.are.equal(0, #printed)
+			Comms.onEvent("FS1", "1|snapshot!|60|hunter-beast-mastery|14|Beast Mastery raid|2026-12-09|2.0.57|||",
+				"GUILD", "Other-Yell")
+			assert.are.equal(1, #printed)
+		end)
+
+		it("sends its own version after the hello's profile", function()
+			Comms.helloFields = function()
+				return { 60, "hunter-beast-mastery", 14, "Beast Mastery raid", "2026-12-09" }
+			end
+			local fields = Comms.helloMessageFields()
+			assert.are.equal("2.0.56", fields[6])
+			assert.are.equal("1|hello|60|hunter-beast-mastery|14|Beast Mastery raid|2026-12-09|2.0.56",
+				Comms.encode("hello", fields))
 		end)
 	end)
 

@@ -56,7 +56,9 @@ Comms.FIELDS = {
 --- them keeps them, decode's rule). snapshot! v2: the readiness an officer reads (spec
 --- 2026-11-13-addon-hub section 9): the addon's version, the raids the player is attuned to,
 --- the encounter items held and the consumables carried by kind. A v1 snapshot! has none.
+--- hello: the addon's version (added 2026-11-15), so a guildmate on an older one hears an update is out.
 Comms.OPTIONAL = {
+	["hello"] = { "addonVersion" },
 	["snapshot!"] = { "addonVersion", "attuned", "encounterItems", "supplies" },
 }
 
@@ -445,7 +447,7 @@ local handlers = {}
 --- Forget every timer, listener and sender. Specs only.
 function Comms.reset()
 	lastSent, lastHelloFrom, lastPushFrom, openLoot, handlers = {}, {}, {}, {}, {}
-	Comms.seen, Comms.dropped, Comms.failed, Comms.failureNoted = {}, 0, 0, nil
+	Comms.seen, Comms.dropped, Comms.failed, Comms.failureNoted, Comms.updateNoticed = {}, 0, 0, nil, false
 end
 
 --- Seconds left before `kind` may go out on `channel` again, or nil when it may go now.
@@ -632,13 +634,68 @@ function Comms.sharing()
 	return Prefs.flag("broadcast") ~= false
 end
 
+--- The hello as sent: the hello fields, then the addon's version (Comms.OPTIONAL). A build name
+--- that would take the message past 255 bytes is shortened, never split.
+function Comms.helloMessageFields()
+	local fields = Comms.helloFields()
+	fields[#fields + 1] = Comms.addonVersion()
+	while Comms.encode("hello", fields) == nil and fields[4] ~= "" do
+		fields[4] = shorten(fields[4])
+	end
+	return fields
+end
+
 --- Say hello on GUILD: at login and when the talents change, at most once a minute.
 --- True when sent, else false and why (the switch first: off sends nothing).
 function Comms.hello()
 	if not Comms.sharing() then
 		return false, L.commsSharingOff
 	end
-	return Comms.send("hello", Comms.helloFields(), "GUILD")
+	return Comms.send("hello", Comms.helloMessageFields(), "GUILD")
+end
+
+-- The update notice ------------------------------------------------------------------------
+
+--- A version's numbers ("2.0.56" -> { 2, 0, 56 }), or nil for anything else ("-", "2.0.56-beta"). Pure.
+local function versionParts(version)
+	if type(version) ~= "string" or not version:match("^%d+[%.%d]*$") or version:find("%.%.") then
+		return nil
+	end
+	local parts = {}
+	for number in version:gmatch("%d+") do
+		parts[#parts + 1] = tonumber(number)
+	end
+	return parts
+end
+
+--- Whether `theirs` is a later version than `mine`, part by part ("2.0.10" after "2.0.9"); false
+--- when either is not a plain version. Pure.
+function Comms.isNewerVersion(theirs, mine)
+	local a, b = versionParts(theirs), versionParts(mine)
+	if a == nil or b == nil then
+		return false
+	end
+	for index = 1, math.max(#a, #b) do
+		local left, right = a[index] or 0, b[index] or 0
+		if left ~= right then
+			return left > right
+		end
+	end
+	return false
+end
+
+--- Set once the update line has been said: one line per session, whoever else is newer later.
+Comms.updateNoticed = false
+
+--- One quiet chat line the first time a guildmate's hello or snapshot! carries a later version
+--- than this addon's own (`mine`, Comms.addonVersion by default). True when it was said.
+function Comms.noticeNewerVersion(theirs, mine)
+	if Comms.updateNoticed or not Comms.isNewerVersion(theirs, mine or Comms.addonVersion()) then
+		return false
+	end
+	Comms.updateNoticed = true
+	Theme.say(string.format(L.commsUpdateAvailable, theirs))
+	return true
 end
 
 -- Receiving -------------------------------------------------------------------------------
@@ -762,8 +819,10 @@ function Comms.onEvent(prefix, text, channel, sender)
 		end
 		lastHelloFrom[sender] = now
 		remember(sender, named, channel, now, kind)
+		protect(Comms.noticeNewerVersion, named.addonVersion)
 	elseif kind == "snapshot!" then
 		remember(sender, named, channel, now, kind)
+		protect(Comms.noticeNewerVersion, named.addonVersion)
 	elseif kind == "snapshot?" then
 		-- The limit is checked first, so a refused reply never reads talents, gear or score.
 		if Comms.CHANNELS["snapshot!"][channel] and waitFor("snapshot!", channel, now) == nil then

@@ -1,4 +1,5 @@
 1|hello|20|warrior-arms|14|Arms leveling|2026-11-04
+1|hello|60|hunter-beast-mastery|14|Beast Mastery raid|2026-12-09|2.0.56
 1|share|FSB1:1.60.1.70291:warrior:111121:chest=6627:attack_power=30
 1|push|FSB1:1.60.1.70291:warrior:111121:chest=6627:attack_power=30|Arms raid
 1|push|FSB1:1.60.1.70291:warrior:111121:chest=6627:attack_power=30|Arms 100%25 %7C Fury%0Atank

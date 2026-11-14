@@ -32,8 +32,9 @@ local FS1_FIELDS = {
 	["hello"] = 5, ["share"] = 1, ["push"] = 2, ["loot?"] = 2, ["loot!"] = 5,
 	["snapshot?"] = 0, ["snapshot!"] = 5,
 }
---- The fields a type may add inside version 1 (contract 2's optional fields): snapshot! v2.
-local FS1_OPTIONAL = { ["snapshot!"] = 4 }
+--- The fields a type may add inside version 1 (contract 2's optional fields): snapshot! v2 and the
+--- hello's addon version.
+local FS1_OPTIONAL = { ["snapshot!"] = 4, ["hello"] = 1 }
 
 local function set(list)
 	local out = {}

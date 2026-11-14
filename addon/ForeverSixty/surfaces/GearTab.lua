@@ -378,7 +378,7 @@ end
 
 --- An upgrade's whole second line: the slot and the source with its drop chance ("Feet · Scholomance ·
 --- Kirtonos the Herald · 12% drop", the chance only where the data has one), or the slot and "In your
---- bags" in the client gold. The row's hover shows it whole. Pure.
+--- bags" in plain ink. The row's hover shows it whole. Pure.
 function GearTab.fullWhere(cell)
 	local slot = L.gearSlotLabels[cell.slot] or cell.slot
 	local source = GearTab.sourceWhere(cell)
@@ -386,11 +386,12 @@ function GearTab.fullWhere(cell)
 end
 
 --- The source half of that line, without the slot ("Scholomance · Kirtonos the Herald · 12% drop", "In your
---- bags" in the client gold), or nil with no source (the Me tab's upgrade rows, where the item names its
---- slot); `noChance` leaves the drop chance out, for a row too narrow for it. Pure.
+--- bags" in plain ink: gold is only the waiting dot's and the score's), or nil with no source (the Me tab's
+--- upgrade rows, where the item names its slot); `noChance` leaves the drop chance out, for a row too narrow
+--- for it. Pure.
 function GearTab.sourceWhere(cell, noChance)
 	if cell.inBags then
-		return Theme.inlineColor("clientGold", L.gearInBagsLead)
+		return Theme.inlineColor("body", L.gearInBagsLead)
 	end
 	local first, second, percent = sourceParts(cell.pick)
 	return ItemTooltip.sourceText(first, second, not noChance and percent or nil)

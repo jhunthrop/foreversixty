@@ -93,7 +93,7 @@ describe("GuildRaid, the Guild tab's model", function()
 		local old = GuildRaid.answerOf(answered, { answer = "out", answered_at = 1 })
 		assert.are.equal("in", old.answer)
 		local none = GuildRaid.answerWords(GuildRaid.answerOf(signup(), nil))
-		assert.are.same({ L.guildNotSigned, "clientGold" }, { none.word, none.hex })
+		assert.are.same({ L.guildNotSigned, "loss" }, { none.word, none.hex })
 		assert.are.equal(L.guildOnRoster, GuildRaid.answerWords(GuildRaid.answerOf(nil, nil)).word)
 	end)
 

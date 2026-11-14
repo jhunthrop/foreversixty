@@ -167,7 +167,7 @@ function GuildRaid.answerWords(answer)
 		return { word = L.guildOnRoster, hex = "body" }
 	end
 	if answer.answer == "none" then
-		return { word = L.guildNotSigned, hex = "clientGold" }
+		return { word = L.guildNotSigned, hex = "loss" }
 	end
 	local parts = {}
 	local role = L.guildRoles[answer.role or ""]

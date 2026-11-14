@@ -187,7 +187,7 @@ function GearTabView.statusLine(cell, unit)
 	elseif type(cell.gain) == "number" and cell.gain > 0 then
 		local gain = Theme.inlineColor("success", ItemTooltip.figure(cell.gain, unit))
 		if cell.inBags then
-			gain = gain .. " " .. Theme.inlineColor("clientGold", L.gearInBags)
+			gain = gain .. " " .. Theme.inlineColor("body", L.gearInBags)
 		end
 		parts[#parts + 1] = gain
 	elseif cell.pick ~= nil and type(cell.gain) == "number" then
