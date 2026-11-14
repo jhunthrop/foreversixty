@@ -2,7 +2,7 @@
   "spec": "rogue-assassination",
   "build": "1.60.1.70938",
   "engine_version": "037798db1",
-  "generated_at": "2026-11-14T00:06:51Z",
+  "generated_at": "2026-11-14T02:22:36Z",
   "bands": [
     {
       "spec": "rogue-assassination",
@@ -1174,8 +1174,8 @@
         "off_hand: Blackfang",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 7.917719164,
-      "verify_run_seconds": 34.066179861,
+      "weights_run_seconds": 4.891706022,
+      "verify_run_seconds": 20.771546385,
       "coverage": {
         "back": {
           "eligible": 104,
@@ -2418,8 +2418,8 @@
         "off_hand: Edward's Knife",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 7.917719164,
-      "verify_run_seconds": 33.830054253,
+      "weights_run_seconds": 4.891706022,
+      "verify_run_seconds": 21.152008333,
       "coverage": {
         "back": {
           "eligible": 105,
@@ -3817,8 +3817,8 @@
         "off_hand: Claw of the Shadowmancer",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 7.729756633,
-      "verify_run_seconds": 18.403322517,
+      "weights_run_seconds": 4.846214575,
+      "verify_run_seconds": 11.688097629,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -5191,8 +5191,8 @@
         "off_hand: Claw of the Shadowmancer",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 7.729756633,
-      "verify_run_seconds": 18.36864107,
+      "weights_run_seconds": 4.846214575,
+      "verify_run_seconds": 11.73598698,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -6592,8 +6592,8 @@
         "off_hand: Black Menace",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 7.800440712,
-      "verify_run_seconds": 15.670973235999998,
+      "weights_run_seconds": 4.991436393,
+      "verify_run_seconds": 9.822355503,
       "coverage": {
         "back": {
           "eligible": 257,
@@ -7986,8 +7986,8 @@
         "off_hand: Coldrage Dagger",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 7.800440712,
-      "verify_run_seconds": 16.260190919,
+      "weights_run_seconds": 4.991436393,
+      "verify_run_seconds": 10.217755718,
       "coverage": {
         "back": {
           "eligible": 259,
@@ -9526,8 +9526,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 7.978765494,
-      "verify_run_seconds": 35.839505595000006,
+      "weights_run_seconds": 5.037173859,
+      "verify_run_seconds": 21.581074298,
       "coverage": {
         "back": {
           "eligible": 331,
@@ -11112,8 +11112,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 7.978765494,
-      "verify_run_seconds": 30.891752588,
+      "weights_run_seconds": 5.037173859,
+      "verify_run_seconds": 18.996145706,
       "coverage": {
         "back": {
           "eligible": 336,
@@ -12833,8 +12833,8 @@
         "off_hand: Alcor's Sunrazor",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 8.180246488,
-      "verify_run_seconds": 101.803735589,
+      "weights_run_seconds": 5.176315415,
+      "verify_run_seconds": 64.696714544,
       "coverage": {
         "back": {
           "eligible": 467,
@@ -14579,8 +14579,8 @@
         "off_hand: Alcor's Sunrazor",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 8.180246488,
-      "verify_run_seconds": 97.388593598,
+      "weights_run_seconds": 5.176315415,
+      "verify_run_seconds": 60.661617593,
       "coverage": {
         "back": {
           "eligible": 473,
@@ -15630,7 +15630,7 @@
             },
             "quest": {
               "item_id": 12548,
-              "rank": 7,
+              "rank": 6,
               "source": "The Princess's Surprise",
               "dps_delta": -6.58
             },
@@ -15665,11 +15665,11 @@
               "dps_delta": -3.527389532
             },
             {
-              "item_id": 272407,
-              "item_name": "Blessed Band of Light",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": -3.527389532
+              "item_id": 13098,
+              "item_name": "Painweaver Band",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: General Drakkisath",
+              "dps_delta": -4.197937063
             }
           ],
           "runners_up": [
@@ -15698,14 +15698,14 @@
               ],
               "next": {
                 "item_id": 13098,
-                "rank": 6,
+                "rank": 5,
                 "source": "Blackrock Spire: General Drakkisath",
                 "dps_delta": -4.2
               }
             },
             "quest": {
               "item_id": 12548,
-              "rank": 7,
+              "rank": 6,
               "source": "The Princess's Surprise",
               "dps_delta": -4.67,
               "not_with": [
@@ -15713,7 +15713,7 @@
               ],
               "next": {
                 "item_id": 13217,
-                "rank": 9,
+                "rank": 8,
                 "source": "Houses of the Holy",
                 "dps_delta": -5.52
               }
@@ -15729,7 +15729,7 @@
               ],
               "next": {
                 "item_id": 19514,
-                "rank": 8,
+                "rank": 7,
                 "source": "Silverwing Sentinels",
                 "dps_delta": -5.18,
                 "standing": "honored"
@@ -15751,7 +15751,7 @@
               ],
               "next": {
                 "item_id": 2246,
-                "rank": 18,
+                "rank": 17,
                 "source_kind": "world_drop",
                 "source": "World drop",
                 "dps_delta": -6.31
@@ -16310,8 +16310,8 @@
         "off_hand: Alcor's Sunrazor",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 9.058981806,
-      "verify_run_seconds": 89.82265311900001,
+      "weights_run_seconds": 5.756343452,
+      "verify_run_seconds": 58.105503478,
       "coverage": {
         "back": {
           "eligible": 467,
@@ -17353,7 +17353,7 @@
             },
             "quest": {
               "item_id": 13217,
-              "rank": 8,
+              "rank": 7,
               "source": "Houses of the Holy",
               "dps_delta": -7.43
             }
@@ -17382,11 +17382,11 @@
               "dps_delta": -3.527389532
             },
             {
-              "item_id": 272407,
-              "item_name": "Blessed Band of Light",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": -3.527389532
+              "item_id": 13098,
+              "item_name": "Painweaver Band",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: General Drakkisath",
+              "dps_delta": -4.197937063
             }
           ],
           "runners_up": [
@@ -17412,14 +17412,14 @@
               ],
               "next": {
                 "item_id": 13098,
-                "rank": 6,
+                "rank": 5,
                 "source": "Blackrock Spire: General Drakkisath",
                 "dps_delta": -4.2
               }
             },
             "quest": {
               "item_id": 13217,
-              "rank": 8,
+              "rank": 7,
               "source": "Houses of the Holy",
               "dps_delta": -5.52,
               "not_with": [
@@ -17427,7 +17427,7 @@
               ],
               "next": {
                 "item_id": 9533,
-                "rank": 14,
+                "rank": 13,
                 "source": "Divino-matic Rod",
                 "dps_delta": -5.88
               }
@@ -17443,7 +17443,7 @@
               ],
               "next": {
                 "item_id": 19510,
-                "rank": 7,
+                "rank": 6,
                 "source": "Warsong Outriders",
                 "dps_delta": -5.18,
                 "standing": "honored"
@@ -17475,7 +17475,7 @@
               ],
               "next": {
                 "item_id": 2246,
-                "rank": 17,
+                "rank": 16,
                 "source_kind": "world_drop",
                 "source": "World drop",
                 "dps_delta": -6.31
@@ -18096,8 +18096,8 @@
         "off_hand: Alcor's Sunrazor",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 9.058981806,
-      "verify_run_seconds": 86.22925338099999,
+      "weights_run_seconds": 5.756343452,
+      "verify_run_seconds": 55.518757755,
       "coverage": {
         "back": {
           "eligible": 473,

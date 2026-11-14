@@ -2,7 +2,7 @@
   "spec": "rogue-combat",
   "build": "1.60.1.70938",
   "engine_version": "037798db1",
-  "generated_at": "2026-11-14T00:14:36Z",
+  "generated_at": "2026-11-14T02:27:27Z",
   "bands": [
     {
       "spec": "rogue-combat",
@@ -1174,8 +1174,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 6.625433315,
-      "verify_run_seconds": 17.015206445,
+      "weights_run_seconds": 3.994334598,
+      "verify_run_seconds": 10.736588821,
       "coverage": {
         "back": {
           "eligible": 104,
@@ -2416,8 +2416,8 @@
         "off_hand: Edward's Knife",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 6.625433315,
-      "verify_run_seconds": 16.702464373,
+      "weights_run_seconds": 3.994334598,
+      "verify_run_seconds": 10.422010891,
       "coverage": {
         "back": {
           "eligible": 105,
@@ -3790,8 +3790,8 @@
         "off_hand: Claw of the Shadowmancer",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 6.729671098,
-      "verify_run_seconds": 12.423027753,
+      "weights_run_seconds": 4.24772216,
+      "verify_run_seconds": 7.928951596999999,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -5163,8 +5163,8 @@
         "off_hand: Claw of the Shadowmancer",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 6.729671098,
-      "verify_run_seconds": 13.938485676,
+      "weights_run_seconds": 4.24772216,
+      "verify_run_seconds": 8.70491114,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -6563,8 +6563,8 @@
         "off_hand: Black Menace",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 7.246326648,
-      "verify_run_seconds": 27.806950706000002,
+      "weights_run_seconds": 4.592062502,
+      "verify_run_seconds": 17.422937631,
       "coverage": {
         "back": {
           "eligible": 257,
@@ -7956,8 +7956,8 @@
         "off_hand: Coldrage Dagger",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 7.246326648,
-      "verify_run_seconds": 28.291292928,
+      "weights_run_seconds": 4.592062502,
+      "verify_run_seconds": 17.402493867,
       "coverage": {
         "back": {
           "eligible": 259,
@@ -9502,8 +9502,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 7.012338476,
-      "verify_run_seconds": 28.972708106000002,
+      "weights_run_seconds": 4.475686212,
+      "verify_run_seconds": 18.222258884,
       "coverage": {
         "back": {
           "eligible": 331,
@@ -11094,8 +11094,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 7.012338476,
-      "verify_run_seconds": 21.886674162,
+      "weights_run_seconds": 4.475686212,
+      "verify_run_seconds": 13.682581153,
       "coverage": {
         "back": {
           "eligible": 336,
@@ -12853,8 +12853,8 @@
         "off_hand: Alcor's Sunrazor",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 8.134148204,
-      "verify_run_seconds": 93.520901658,
+      "weights_run_seconds": 5.152068551,
+      "verify_run_seconds": 58.492602647999995,
       "coverage": {
         "back": {
           "eligible": 467,
@@ -14556,8 +14556,8 @@
         "off_hand: Alcor's Sunrazor",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 8.134148204,
-      "verify_run_seconds": 98.65047577200001,
+      "weights_run_seconds": 5.152068551,
+      "verify_run_seconds": 61.505833466000006,
       "coverage": {
         "back": {
           "eligible": 473,
@@ -15736,7 +15736,7 @@
               ],
               "next": {
                 "item_id": 2246,
-                "rank": 17,
+                "rank": 16,
                 "source_kind": "world_drop",
                 "source": "World drop",
                 "dps_delta": -9.33
@@ -16336,8 +16336,8 @@
         "off_hand: Alcor's Sunrazor",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 8.883685337,
-      "verify_run_seconds": 97.033853032,
+      "weights_run_seconds": 5.5920639340000005,
+      "verify_run_seconds": 61.602456953,
       "coverage": {
         "back": {
           "eligible": 467,
@@ -17461,7 +17461,7 @@
               ],
               "next": {
                 "item_id": 9533,
-                "rank": 14,
+                "rank": 13,
                 "source": "Divino-matic Rod",
                 "dps_delta": -8.14
               }
@@ -17510,7 +17510,7 @@
               ],
               "next": {
                 "item_id": 2246,
-                "rank": 16,
+                "rank": 15,
                 "source_kind": "world_drop",
                 "source": "World drop",
                 "dps_delta": -9.33
@@ -18135,8 +18135,8 @@
         "off_hand: Alcor's Sunrazor",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 8.883685337,
-      "verify_run_seconds": 91.586301854,
+      "weights_run_seconds": 5.5920639340000005,
+      "verify_run_seconds": 59.284104119999995,
       "coverage": {
         "back": {
           "eligible": 473,
