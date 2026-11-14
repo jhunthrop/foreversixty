@@ -1133,6 +1133,66 @@ const MailPlanGuild = "Guild"
 // MailPlanRaidGuild is mail.plan.raidGuild: Raid guild
 const MailPlanRaidGuild = "Raid guild"
 
+// MailTrialCompany is mail.trial.company: Commish LLC
+const MailTrialCompany = "Commish LLC"
+
+// MailTrialStripeAlsoReminds is mail.trial.stripeAlsoReminds: You may also get a reminder from Stripe, our payment processor.
+const MailTrialStripeAlsoReminds = "You may also get a reminder from Stripe, our payment processor."
+
+// MailTrialWhySent is mail.trial.whySent: You're getting this because {reason} on Forever Sixty.
+const MailTrialWhySent = "You're getting this because {reason} on Forever Sixty."
+
+// MailTrialPlanFor is mail.trial.planFor: {plan} for {guild}
+const MailTrialPlanFor = "{plan} for {guild}"
+
+// MailTrialYearlyCharge is mail.trial.yearlyCharge: {amount} for the next 12 months
+const MailTrialYearlyCharge = "{amount} for the next 12 months"
+
+// MailTrialReminderSubject is mail.trial.reminder.subject: {whose} ends on {date}
+const MailTrialReminderSubject = "{whose} ends on {date}"
+
+// MailTrialReminderWhose is mail.trial.reminder.whose: Your free {plan}
+const MailTrialReminderWhose = "Your free {plan}"
+
+// MailTrialReminderWhoseGuild is mail.trial.reminder.whoseGuild: {guild}'s free {plan}
+const MailTrialReminderWhoseGuild = "{guild}'s free {plan}"
+
+// MailTrialReminderLead is mail.trial.reminder.lead: {whose} ends on {date}. On that day you'll be charged {charge}. Cancel before {date} (UTC) and you pay nothing.
+const MailTrialReminderLead = "{whose} ends on {date}. On that day you'll be charged {charge}. Cancel before {date} (UTC) and you pay nothing."
+
+// MailTrialReminderPlan is mail.trial.reminder.plan: Plan: {name}, {interval}: {amount}
+const MailTrialReminderPlan = "Plan: {name}, {interval}: {amount}"
+
+// MailTrialReminderCancel is mail.trial.reminder.cancel: Cancel here: {url}
+const MailTrialReminderCancel = "Cancel here: {url}"
+
+// MailTrialReminderKeep is mail.trial.reminder.keep: To keep Premium, do nothing.
+const MailTrialReminderKeep = "To keep Premium, do nothing."
+
+// MailTrialReminderKeepGuild is mail.trial.reminder.keepGuild: To keep the plan, do nothing.
+const MailTrialReminderKeepGuild = "To keep the plan, do nothing."
+
+// MailTrialReminderReason is mail.trial.reminder.reason: you started a free {plan} trial
+const MailTrialReminderReason = "you started a free {plan} trial"
+
+// MailTrialReminderReasonGuild is mail.trial.reminder.reasonGuild: you started a free {plan} trial for {guild}
+const MailTrialReminderReasonGuild = "you started a free {plan} trial for {guild}"
+
+// MailTrialReceiptSubject is mail.trial.receipt.subject: Receipt: {name}, {price}
+const MailTrialReceiptSubject = "Receipt: {name}, {price}"
+
+// MailTrialReceiptLead is mail.trial.receipt.lead: Your free trial ended and we charged {price} on {date}. Your receipt: {url}
+const MailTrialReceiptLead = "Your free trial ended and we charged {price} on {date}. Your receipt: {url}"
+
+// MailTrialReceiptNext is mail.trial.receipt.next: The next charge is {amount} on {date}. Change or cancel any time: {url}
+const MailTrialReceiptNext = "The next charge is {amount} on {date}. Change or cancel any time: {url}"
+
+// MailTrialReceiptReason is mail.trial.receipt.reason: your free {plan} trial became a paid plan
+const MailTrialReceiptReason = "your free {plan} trial became a paid plan"
+
+// MailTrialReceiptReasonGuild is mail.trial.receipt.reasonGuild: the free {plan} trial for {guild} became a paid plan
+const MailTrialReceiptReasonGuild = "the free {plan} trial for {guild} became a paid plan"
+
 // ConfirmAppTitle is confirm.app.title: Sign in to the Forever Sixty app
 const ConfirmAppTitle = "Sign in to the Forever Sixty app"
 

@@ -1,10 +1,10 @@
 package billingmail
 
 import (
-	"fmt"
 	"strings"
 	"time"
 
+	"github.com/jhunthrop/foreversixty/api/internal/copygen"
 	"github.com/jhunthrop/foreversixty/api/internal/mail"
 )
 
@@ -12,13 +12,8 @@ import (
 // the instant's UTC day in the house style, as every trial surface on the site says it, and the
 // text keeps straight apostrophes: it is plain text.
 
-const (
-	trialDateLayout = "2 Jan 2006"
-	// companyName signs every trial email; never a person's name.
-	companyName = "Commish LLC"
-	// stripeAlsoReminds is said once, so our reminder never contradicts Stripe's own.
-	stripeAlsoReminds = "You may also get a reminder from Stripe, our payment processor."
-)
+// trialDateLayout is the house date: "15 Nov 2026".
+const trialDateLayout = "2 Jan 2006"
 
 // TrialDate is a trial's date as the site and the emails say it: "15 Nov 2026" (UTC).
 func TrialDate(t time.Time) string { return t.UTC().Format(trialDateLayout) }
@@ -51,21 +46,29 @@ func planName(plan Plan, guild string) string {
 	if guild == "" {
 		return string(plan)
 	}
-	return fmt.Sprintf("%s for %s", plan, guild)
+	return copygen.Fill(copygen.MailTrialPlanFor, "{plan}", string(plan), "{guild}", guild)
 }
 
 // firstCharge is what the first charge buys: "$40 for the next 12 months", or "$5 a month".
 func firstCharge(cents int64, interval string) (string, error) {
 	if interval == intervalYearly {
 		amount, err := FormatPrice(cents, "")
-		return amount + " for the next 12 months", err
+		return copygen.Fill(copygen.MailTrialYearlyCharge, "{amount}", amount), err
 	}
 	return FormatPrice(cents, interval)
 }
 
-// whySent is the closing line and the company.
+// whySent is the closing line and the company, which signs every trial email (never a person).
 func whySent(reason string) string {
-	return fmt.Sprintf("You're getting this because %s on Forever Sixty.\n%s", reason, companyName)
+	return copygen.Fill(copygen.MailTrialWhySent, "{reason}", reason) + "\n" + copygen.MailTrialCompany
+}
+
+// byGuild picks the guild form of a text when the email is for a guild's plan.
+func byGuild(guild, premium, forGuild string) string {
+	if guild == "" {
+		return premium
+	}
+	return forGuild
 }
 
 // TrialReminderEmail builds the reminder.
@@ -78,23 +81,20 @@ func TrialReminderEmail(r TrialReminder) (mail.Message, error) {
 	if err != nil {
 		return mail.Message{}, err
 	}
-	date, name := TrialDate(r.EndsOn), planName(r.Plan, r.Guild)
-	whose, keep, reason := "Your free "+string(r.Plan), "To keep Premium, do nothing.",
-		"you started a free Premium trial"
-	if r.Guild != "" {
-		whose = fmt.Sprintf("%s's free %s", r.Guild, r.Plan)
-		keep = "To keep the plan, do nothing."
-		reason = fmt.Sprintf("you started a free %s trial for %s", r.Plan, r.Guild)
+	date, plan := TrialDate(r.EndsOn), string(r.Plan)
+	fill := func(text string) string {
+		return copygen.Fill(text, "{plan}", plan, "{guild}", r.Guild)
 	}
+	whose := fill(byGuild(r.Guild, copygen.MailTrialReminderWhose, copygen.MailTrialReminderWhoseGuild))
 	text := strings.Join([]string{
-		fmt.Sprintf("%s ends on %s. On that day you'll be charged %s. Cancel before %s (UTC) and you pay nothing.",
-			whose, date, charge, date),
-		fmt.Sprintf("Plan: %s, %s: %s", name, r.Interval, amount),
-		"Cancel in one click: " + r.CancelURL,
-		keep + " " + stripeAlsoReminds,
-		whySent(reason),
+		copygen.Fill(copygen.MailTrialReminderLead, "{whose}", whose, "{date}", date, "{charge}", charge),
+		copygen.Fill(copygen.MailTrialReminderPlan, "{name}", planName(r.Plan, r.Guild), "{interval}", r.Interval, "{amount}", amount),
+		copygen.Fill(copygen.MailTrialReminderCancel, "{url}", r.CancelURL),
+		byGuild(r.Guild, copygen.MailTrialReminderKeep, copygen.MailTrialReminderKeepGuild) + " " + copygen.MailTrialStripeAlsoReminds,
+		whySent(fill(byGuild(r.Guild, copygen.MailTrialReminderReason, copygen.MailTrialReminderReasonGuild))),
 	}, "\n\n")
-	return mail.Message{To: r.To, Subject: fmt.Sprintf("%s ends on %s", whose, date), Text: text}, nil
+	subject := copygen.Fill(copygen.MailTrialReminderSubject, "{whose}", whose, "{date}", date)
+	return mail.Message{To: r.To, Subject: subject, Text: text}, nil
 }
 
 // TrialReceiptEmail builds the receipt.
@@ -107,15 +107,13 @@ func TrialReceiptEmail(r TrialReceipt) (mail.Message, error) {
 	if err != nil {
 		return mail.Message{}, err
 	}
-	name := planName(r.Plan, r.Guild)
-	reason := fmt.Sprintf("your free %s trial became a paid plan", r.Plan)
-	if r.Guild != "" {
-		reason = fmt.Sprintf("the free %s trial for %s became a paid plan", r.Plan, r.Guild)
-	}
+	reason := copygen.Fill(byGuild(r.Guild, copygen.MailTrialReceiptReason, copygen.MailTrialReceiptReasonGuild),
+		"{plan}", string(r.Plan), "{guild}", r.Guild)
 	text := strings.Join([]string{
-		fmt.Sprintf("Your free trial ended and we charged %s on %s. Your receipt: %s", price, TrialDate(r.ChargedOn), r.ReceiptURL),
-		fmt.Sprintf("The next charge is %s on %s. Change or cancel any time: %s", amount, TrialDate(r.NextOn), r.ManageURL),
+		copygen.Fill(copygen.MailTrialReceiptLead, "{price}", price, "{date}", TrialDate(r.ChargedOn), "{url}", r.ReceiptURL),
+		copygen.Fill(copygen.MailTrialReceiptNext, "{amount}", amount, "{date}", TrialDate(r.NextOn), "{url}", r.ManageURL),
 		whySent(reason),
 	}, "\n\n")
-	return mail.Message{To: r.To, Subject: fmt.Sprintf("Receipt: %s, %s", name, price), Text: text}, nil
+	subject := copygen.Fill(copygen.MailTrialReceiptSubject, "{name}", planName(r.Plan, r.Guild), "{price}", price)
+	return mail.Message{To: r.To, Subject: subject, Text: text}, nil
 }
