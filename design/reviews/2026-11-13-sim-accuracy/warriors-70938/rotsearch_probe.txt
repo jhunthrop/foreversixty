@@ -1,0 +1,150 @@
+remote-test: 5236dc4b83f9e5ea13804a288ab18e81f2cba95c -> forever-ci on 192.168.1.182 (run 20261114032644-5236dc4b8-30038, in sim): bash ../design/reviews/2026-11-13-sim-accuracy/warriors-70938/rotsearch.sh
+remote-test: engine pinned to 00e13541b
+########## warrior-arms-raid.md
+Baseline (the curated rotation): **955.8 ± 2.2 DPS** (800 iterations).
+| Kind | Action / spell | Delta DPS | ± | Verdict |
+| remove | #1 ((autocastOtherCooldowns)) | +70.9 | 2.9 | helps |
+| remove | #10 (Slam (rank 5)) | +47.7 | 2.9 | helps |
+| remove | #11 (Spearing Strike) | +18.6 | 3.0 | helps |
+| remove | #12 (Hamstring (rank 3)) | +33.1 | 2.9 | helps |
+| remove | #13 (Heroic Strike (rank 8)) | +0.4 | 3.0 | no effect |
+| remove | #2 (Berserker Stance) | -4.2 | 3.0 | hurts |
+| remove | #3 (spell 2687) | +0.3 | 3.0 | no effect |
+| remove | #4 (Battle Shout (rank 6)) | +0.0 | 3.1 | no effect |
+| remove | #5 (Rend (rank 7)) | +110.2 | 3.0 | helps |
+| remove | #6 (Overpower (rank 4)) | +159.3 | 3.0 | helps |
+| remove | #7 (Mortal Strike (rank 4)) | +79.9 | 3.0 | helps |
+| remove | #8 (spell 1329555) | +19.6 | 3.0 | helps |
+| remove | #9 (Execute (rank 5)) | +42.7 | 3.0 | helps |
+| insert | Bloodthirst | +0.0 | 3.1 | no effect |
+| insert | Death Wish | +0.0 | 3.1 | no effect |
+| insert | Devastate | +0.0 | 3.1 | no effect |
+| insert | Heroic Shot | +0.0 | 3.1 | no effect |
+| insert | Horn of Lordaeron | +0.0 | 3.1 | no effect |
+| insert | Mocking Blow | +0.0 | 3.1 | no effect |
+| insert | Pummel | -5.3 | 3.1 | hurts |
+| insert | Raging Blow | +0.0 | 3.1 | no effect |
+| insert | Recklessness | +0.0 | 3.1 | no effect |
+| insert | Recycle | +0.0 | 3.1 | no effect |
+| insert | Revenge | +0.0 | 3.1 | no effect |
+| insert | Shadow Mark | +0.0 | 3.1 | no effect |
+| insert | Shield Bash | +0.0 | 3.1 | no effect |
+| insert | Shield Slam | +0.0 | 3.1 | no effect |
+| insert | Test Strike | +0.0 | 3.1 | no effect |
+| insert | Test Strike W35 | +0.0 | 3.1 | no effect |
+| insert | Test Strike W50 | +0.0 | 3.1 | no effect |
+| insert | Thunder Clap | -97.5 | 3.1 | hurts |
+| insert | Victory Rush | +0.0 | 3.1 | no effect |
+**Verdict: the search found a better rotation, +9.6 DPS (+1.0%), beyond the combined error ±3.0.** Baseline 955.8 ± 2.2, best 965.4 ± 2.1 (800 iterations).
+| # | Baseline | Winner |
+########## warrior-arms.md
+Baseline (the curated rotation): **317.0 ± 0.7 DPS** (800 iterations).
+| Kind | Action / spell | Delta DPS | ± | Verdict |
+| remove | #1 ((autocastOtherCooldowns)) | +25.5 | 1.0 | helps |
+| remove | #10 (Slam (rank 5)) | +19.0 | 1.0 | helps |
+| remove | #11 (Spearing Strike) | +7.0 | 1.0 | helps |
+| remove | #12 (Hamstring (rank 3)) | +0.0 | 1.0 | no effect |
+| remove | #13 (Heroic Strike (rank 8)) | -0.8 | 1.0 | no effect |
+| remove | #2 (Berserker Stance) | +10.3 | 1.0 | helps |
+| remove | #3 (spell 2687) | +0.6 | 1.0 | no effect |
+| remove | #4 (Battle Shout (rank 6)) | +13.6 | 1.0 | helps |
+| remove | #5 (Rend (rank 7)) | +46.1 | 1.0 | helps |
+| remove | #6 (Overpower (rank 4)) | +50.0 | 1.0 | helps |
+| remove | #7 (Mortal Strike (rank 4)) | +37.9 | 1.0 | helps |
+| remove | #8 (spell 1329555) | +0.0 | 1.0 | no effect |
+| remove | #9 (Execute (rank 5)) | +27.8 | 1.0 | helps |
+| insert | Bloodthirst | +0.0 | 1.0 | no effect |
+| insert | Death Wish | +0.0 | 1.0 | no effect |
+| insert | Devastate | +0.0 | 1.0 | no effect |
+| insert | Heroic Shot | +0.0 | 1.0 | no effect |
+| insert | Horn of Lordaeron | +0.0 | 1.0 | no effect |
+| insert | Mocking Blow | +0.0 | 1.0 | no effect |
+| insert | Pummel | -6.3 | 1.0 | hurts |
+| insert | Raging Blow | +0.0 | 1.0 | no effect |
+| insert | Recklessness | +0.0 | 1.0 | no effect |
+| insert | Recycle | +0.0 | 1.0 | no effect |
+| insert | Revenge | +0.0 | 1.0 | no effect |
+| insert | Shadow Mark | +0.0 | 1.0 | no effect |
+| insert | Shield Bash | +0.0 | 1.0 | no effect |
+| insert | Shield Slam | +0.0 | 1.0 | no effect |
+| insert | Test Strike | +0.0 | 1.0 | no effect |
+| insert | Test Strike W35 | +0.0 | 1.0 | no effect |
+| insert | Test Strike W50 | +0.0 | 1.0 | no effect |
+| insert | Thunder Clap | -30.4 | 1.0 | hurts |
+| insert | Victory Rush | +0.0 | 1.0 | no effect |
+**Verdict: the search found a better rotation, +1.6 DPS (+0.5%), beyond the combined error ±1.0.** Baseline 317.0 ± 0.7, best 318.6 ± 0.7 (800 iterations).
+| # | Baseline | Winner |
+########## warrior-fury-raid.md
+Baseline (the curated rotation): **1041.0 ± 2.0 DPS** (800 iterations).
+| Kind | Action / spell | Delta DPS | ± | Verdict |
+| remove | #1 ((autocastOtherCooldowns)) | +39.0 | 2.8 | helps |
+| remove | #10 (Berserker Rage) | +1.6 | 2.8 | no effect |
+| remove | #11 (Overpower (rank 4)) | +0.0 | 2.8 | no effect |
+| remove | #12 (Heroic Strike (rank 8)) | +70.1 | 2.8 | helps |
+| remove | #2 (spell 2687) | +0.3 | 2.8 | no effect |
+| remove | #3 (Death Wish) | +4.2 | 2.9 | helps |
+| remove | #4 (Recklessness) | +19.3 | 2.8 | helps |
+| remove | #5 (Battle Shout (rank 6)) | +0.0 | 2.8 | no effect |
+| remove | #6 (Execute (rank 5)) | +122.5 | 2.7 | helps |
+| remove | #7 (Bloodthirst (rank 4)) | +108.5 | 2.8 | helps |
+| remove | #8 (spell 1680) | +80.0 | 2.8 | helps |
+| remove | #9 (spell 1329555) | +20.0 | 2.8 | helps |
+| insert | Devastate | +0.0 | 2.8 | no effect |
+| insert | Hamstring | -403.5 | 2.5 | hurts |
+| insert | Heroic Shot | +0.0 | 2.8 | no effect |
+| insert | Horn of Lordaeron | +0.0 | 2.8 | no effect |
+| insert | Mocking Blow | +0.0 | 2.8 | no effect |
+| insert | Mortal Strike | +0.0 | 2.8 | no effect |
+| insert | Pummel | -19.0 | 2.9 | hurts |
+| insert | Raging Blow | +0.0 | 2.8 | no effect |
+| insert | Recycle | +0.0 | 2.8 | no effect |
+| insert | Rend | +0.0 | 2.8 | no effect |
+| insert | Revenge | +0.0 | 2.8 | no effect |
+| insert | Shadow Mark | +0.0 | 2.8 | no effect |
+| insert | Shield Bash | +0.0 | 2.8 | no effect |
+| insert | Shield Slam | +0.0 | 2.8 | no effect |
+| insert | Spearing Strike | +0.0 | 2.8 | no effect |
+| insert | Test Strike | +0.0 | 2.8 | no effect |
+| insert | Test Strike W35 | +0.0 | 2.8 | no effect |
+| insert | Test Strike W50 | +0.0 | 2.8 | no effect |
+| insert | Thunder Clap | +0.0 | 2.8 | no effect |
+| insert | Victory Rush | +0.0 | 2.8 | no effect |
+**Verdict: the search found a better rotation, +14.4 DPS (+1.4%), beyond the combined error ±2.9.** Baseline 1041.0 ± 2.0, best 1055.4 ± 2.1 (800 iterations).
+| # | Baseline | Winner |
+########## warrior-fury.md
+Baseline (the curated rotation): **362.0 ± 0.8 DPS** (800 iterations).
+| Kind | Action / spell | Delta DPS | ± | Verdict |
+| remove | #1 ((autocastOtherCooldowns)) | +8.7 | 1.1 | helps |
+| remove | #10 (Berserker Rage) | +0.8 | 1.1 | no effect |
+| remove | #11 (Overpower (rank 4)) | +0.0 | 1.1 | no effect |
+| remove | #12 (Heroic Strike (rank 8)) | +18.2 | 1.1 | helps |
+| remove | #2 (spell 2687) | +0.2 | 1.1 | no effect |
+| remove | #3 (Death Wish) | +6.5 | 1.1 | helps |
+| remove | #4 (Recklessness) | +21.5 | 1.1 | helps |
+| remove | #5 (Battle Shout (rank 6)) | -1.3 | 1.1 | hurts |
+| remove | #6 (Execute (rank 5)) | +77.7 | 1.0 | helps |
+| remove | #7 (Bloodthirst (rank 4)) | +18.2 | 1.1 | helps |
+| remove | #8 (spell 1680) | +22.6 | 1.1 | helps |
+| remove | #9 (spell 1329555) | +12.6 | 1.1 | helps |
+| insert | Devastate | +0.0 | 1.1 | no effect |
+| insert | Hamstring | -171.7 | 0.9 | hurts |
+| insert | Heroic Shot | +0.0 | 1.1 | no effect |
+| insert | Horn of Lordaeron | +0.0 | 1.1 | no effect |
+| insert | Mocking Blow | +0.0 | 1.1 | no effect |
+| insert | Mortal Strike | +0.0 | 1.1 | no effect |
+| insert | Pummel | -16.8 | 1.1 | hurts |
+| insert | Raging Blow | +0.0 | 1.1 | no effect |
+| insert | Recycle | +0.0 | 1.1 | no effect |
+| insert | Rend | +0.0 | 1.1 | no effect |
+| insert | Revenge | +0.0 | 1.1 | no effect |
+| insert | Shadow Mark | +0.0 | 1.1 | no effect |
+| insert | Shield Bash | +0.0 | 1.1 | no effect |
+| insert | Shield Slam | +0.0 | 1.1 | no effect |
+| insert | Spearing Strike | +0.0 | 1.1 | no effect |
+| insert | Test Strike | +0.0 | 1.1 | no effect |
+| insert | Test Strike W35 | +0.0 | 1.1 | no effect |
+| insert | Test Strike W50 | +0.0 | 1.1 | no effect |
+| insert | Thunder Clap | +0.0 | 1.1 | no effect |
+| insert | Victory Rush | +0.0 | 1.1 | no effect |
+| # | Baseline | Winner |
+remote-test: exit 0 in 150s (5236dc4b83f9e5ea13804a288ab18e81f2cba95c)

@@ -10,5 +10,5 @@ for spec in warrior-arms warrior-fury; do
 	nice --adjustment=15 env GOMAXPROCS=5 "$bin/rotation-search" -repo-root .. -out "$out" -spec "$spec" -preset raid >/dev/null 2>&1
 	nice --adjustment=15 env GOMAXPROCS=5 "$bin/rotation-search" -repo-root .. -out "$out" -spec "$spec" >/dev/null 2>&1
 done
-for f in "$out"/*.md; do echo "########## $(basename "$f")"; grep -E "^[|] (remove|insert|move|swap|Kind)|Baseline" "$f"; done
+for f in "$out"/*.md; do echo "########## $(basename "$f")"; sed -n "/Verdict/,\$p" "$f"; done
 rm -rf "$out" "$bin"
