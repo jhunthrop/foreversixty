@@ -2,7 +2,7 @@
   "spec": "warrior-fury",
   "build": "1.60.1.70938",
   "engine_version": "037798db1",
-  "generated_at": "2026-11-14T00:11:14Z",
+  "generated_at": "2026-11-14T02:34:03Z",
   "bands": [
     {
       "spec": "warrior-fury",
@@ -1198,8 +1198,8 @@
         "off_hand: Diamond Hammer",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 4.625524433,
-      "verify_run_seconds": 17.942406551,
+      "weights_run_seconds": 6.144698537,
+      "verify_run_seconds": 24.348702941000003,
       "coverage": {
         "back": {
           "eligible": 104,
@@ -2512,8 +2512,8 @@
         "off_hand: Diamond Hammer",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 4.625524433,
-      "verify_run_seconds": 18.174967529,
+      "weights_run_seconds": 6.144698537,
+      "verify_run_seconds": 25.204390047,
       "coverage": {
         "back": {
           "eligible": 105,
@@ -3930,8 +3930,8 @@
         "off_hand: Bloody Brass Knuckles",
         "ranged: Double-barreled Shotgun"
       ],
-      "weights_run_seconds": 5.375187172,
-      "verify_run_seconds": 10.675755123,
+      "weights_run_seconds": 7.168305195,
+      "verify_run_seconds": 14.231007094999999,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -5339,8 +5339,8 @@
         "off_hand: Bloody Brass Knuckles",
         "ranged: Double-barreled Shotgun"
       ],
-      "weights_run_seconds": 5.375187172,
-      "verify_run_seconds": 9.492996405,
+      "weights_run_seconds": 7.168305195,
+      "verify_run_seconds": 13.076329667,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -6780,8 +6780,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 5.507968942,
-      "verify_run_seconds": 18.681576029,
+      "weights_run_seconds": 7.12442372,
+      "verify_run_seconds": 24.603254466,
       "coverage": {
         "back": {
           "eligible": 257,
@@ -8195,8 +8195,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 5.507968942,
-      "verify_run_seconds": 18.140242035,
+      "weights_run_seconds": 7.12442372,
+      "verify_run_seconds": 23.324223302,
       "coverage": {
         "back": {
           "eligible": 259,
@@ -9787,8 +9787,8 @@
         "off_hand: Doomforged Straightedge",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 5.702255451,
-      "verify_run_seconds": 16.832890652,
+      "weights_run_seconds": 7.468265682,
+      "verify_run_seconds": 21.738844353999998,
       "coverage": {
         "back": {
           "eligible": 330,
@@ -11411,8 +11411,8 @@
         "off_hand: Doomforged Straightedge",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 5.702255451,
-      "verify_run_seconds": 16.790928054000002,
+      "weights_run_seconds": 7.468265682,
+      "verify_run_seconds": 21.565627192999997,
       "coverage": {
         "back": {
           "eligible": 335,
@@ -13129,8 +13129,8 @@
         "off_hand: Felstriker",
         "ranged: Bloodseeker"
       ],
-      "weights_run_seconds": 5.953884493,
-      "verify_run_seconds": 92.58689274299999,
+      "weights_run_seconds": 7.769260382,
+      "verify_run_seconds": 119.75700077799999,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -14861,8 +14861,8 @@
         "main_hand: Persuader",
         "off_hand: Felstriker"
       ],
-      "weights_run_seconds": 5.953884493,
-      "verify_run_seconds": 101.861196949,
+      "weights_run_seconds": 7.769260382,
+      "verify_run_seconds": 131.376743047,
       "coverage": {
         "back": {
           "eligible": 472,
@@ -15976,7 +15976,7 @@
               ],
               "next": {
                 "item_id": 13217,
-                "rank": 13,
+                "rank": 12,
                 "source": "Houses of the Holy",
                 "dps_delta": -7.46
               }
@@ -16576,8 +16576,8 @@
         "off_hand: Felstriker",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 6.658817527,
-      "verify_run_seconds": 105.515935607,
+      "weights_run_seconds": 8.755355704,
+      "verify_run_seconds": 136.49782787799998,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -17607,7 +17607,7 @@
             },
             "quest": {
               "item_id": 13217,
-              "rank": 12,
+              "rank": 11,
               "source": "Houses of the Holy",
               "dps_delta": -13.32
             }
@@ -17668,7 +17668,7 @@
             },
             "quest": {
               "item_id": 13217,
-              "rank": 12,
+              "rank": 11,
               "source": "Houses of the Holy",
               "dps_delta": -7.87,
               "not_with": [
@@ -17676,7 +17676,7 @@
               ],
               "next": {
                 "item_id": 11862,
-                "rank": 16,
+                "rank": 15,
                 "source": "Bone-Bladed Weapons",
                 "dps_delta": -7.93
               }
@@ -18351,8 +18351,8 @@
         "off_hand: Felstriker",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 6.658817527,
-      "verify_run_seconds": 101.854051909,
+      "weights_run_seconds": 8.755355704,
+      "verify_run_seconds": 132.899482808,
       "coverage": {
         "back": {
           "eligible": 472,
