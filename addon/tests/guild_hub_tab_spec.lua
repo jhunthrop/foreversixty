@@ -162,7 +162,7 @@ describe("GuildRaid, the Guild tab's model", function()
 		local rows = GuildRaid.nextRaids(two, 42)
 		assert.are.equal(2, #rows)
 		assert.are.same({ "In as DPS", "success", true }, { rows[1].answer.word, rows[1].answer.hex, rows[1].shown })
-		assert.are.same({ L.guildNotSigned, "clientGold", false }, { rows[2].answer.word, rows[2].answer.hex,
+		assert.are.same({ L.guildNotSigned, "loss", false }, { rows[2].answer.word, rows[2].answer.hex,
 			rows[2].shown })
 		assert.is_nil(rows[2].coming)
 	end)

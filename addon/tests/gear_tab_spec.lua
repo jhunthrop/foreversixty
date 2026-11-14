@@ -172,7 +172,7 @@ describe("the Gear tab's model (GearTab)", function()
 		assert.are.equal("Legs · The Ravaged Caravan · Quest", GearTab.whereLine(doll.cells.legs))
 		assert.are.equal("Main Hand · Razorfen Downs · Amnennar the Coldbringer", GearTab.whereLine(doll.cells.main_hand))
 		local hands = GearTab.whereLine(doll.cells.hands)
-		assert.are.equal("Hands · " .. require("Theme").inlineColor("clientGold", L.gearInBagsLead), hands)
+		assert.are.equal("Hands · " .. require("Theme").inlineColor("body", L.gearInBagsLead), hands)
 	end)
 
 	it("lets the slot, then the chance, then the place's last words give way, never a word cut in two", function()
