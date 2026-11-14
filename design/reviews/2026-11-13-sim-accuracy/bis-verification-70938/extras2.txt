@@ -1,0 +1,5 @@
+paladin-retribution-dps-bare60-alliance-emptied-mh18717 -spec paladin-retribution -preset bare -band 60 -faction alliance -iterations 3000 -seed 7 -gear main_hand:18717
+paladin-retribution-dps-bare60-alliance-emptied-mh250617 -spec paladin-retribution -preset bare -band 60 -faction alliance -iterations 3000 -seed 7 -gear main_hand:250617
+paladin-retribution-dps-bare60-horde-emptied-mh11921 -spec paladin-retribution -preset bare -band 60 -faction horde -iterations 3000 -seed 7 -gear main_hand:11921
+paladin-retribution-dps-bare60-horde-emptied-mh250619 -spec paladin-retribution -preset bare -band 60 -faction horde -iterations 3000 -seed 7 -gear main_hand:250619
+paladin-retribution-dps-bare60-horde-emptied-mh19106 -spec paladin-retribution -preset bare -band 60 -faction horde -iterations 3000 -seed 7 -gear main_hand:19106
