@@ -159,7 +159,9 @@ describe("Gear", function()
 				"|cff1eff00Equip: Improves your chance to hit with spells by 1%.|r",
 				"Equip: Increases damage and healing done by magical spells and effects by up to 20.",
 			},
-			[LINKS.savant] = { "Cap of the Scarlet Savant", "Equip: Improves your chance to get a critical strike with spells by 2%." },
+			[LINKS.savant] = {
+				"Cap of the Scarlet Savant", "Equip: Improves your chance to get a critical strike with spells by 2%.",
+			},
 			[LINKS.bloodfang] = {
 				"Bloodfang Chestpiece",
 				"Equip: Improves your chance to get a critical strike by 1%.",
