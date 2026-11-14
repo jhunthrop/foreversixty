@@ -18,26 +18,39 @@ const (
 )
 
 // autocompleteSignup suggests /signup's raid (the guild's planned raids, soonest first) and
-// character (the account's own verified characters in the guild). Anyone who is not a
-// verified member through a verified character gets nothing (R1).
+// character (the account's own verified characters in the guild). A Discord user with no site
+// account, or a Discord-only one, is also offered the guild's directory roster as character
+// picks (pickChoices). Otherwise anyone who is not a verified member through a verified
+// character gets nothing (R1), and the raid choices stay members only.
 func (s *Service) autocompleteSignup(ctx context.Context, in Interaction) ([]Choice, error) {
 	focused, typed := in.Focused()
 	if focused != optRaid && focused != optCharacter {
 		return []Choice{}, nil
 	}
 	userID, linked, err := s.viewer(ctx, in)
-	if err != nil || !linked {
+	if err != nil {
 		return []Choice{}, err
 	}
 	guildID, bound, err := s.serverGuild(ctx, in)
 	if err != nil || !bound {
 		return []Choice{}, err
 	}
-	cands, err := s.cachedCandidates(ctx, guildID, userID)
-	if err != nil {
-		return nil, err
+	var verified []guilds.SignupCandidate
+	if linked {
+		cands, err := s.cachedCandidates(ctx, guildID, userID)
+		if err != nil {
+			return nil, err
+		}
+		verified = verifiedOf(cands)
 	}
-	verified := verifiedOf(cands)
+	if focused == optCharacter {
+		if may, err := s.mayPick(ctx, userID, linked); err != nil || may {
+			if err != nil {
+				return nil, err
+			}
+			return s.pickChoices(ctx, guildID, verified, typed)
+		}
+	}
 	if len(verified) == 0 {
 		return []Choice{}, nil
 	}

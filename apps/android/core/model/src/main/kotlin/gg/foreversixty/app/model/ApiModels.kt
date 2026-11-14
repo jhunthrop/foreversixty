@@ -1470,6 +1470,8 @@ data class GuildRosterRow(
     @SerialName("attendance") val attendance: GuildAttendance,
     @SerialName("account_key") val accountKey: String,
     @SerialName("supporter") val supporter: Boolean,
+    /** As on RaidSignup: the picker's Discord name for a character picked on Discord (no export yet; logged_at is then when it was picked), absent otherwise. */
+    @SerialName("discord_picked_by") val discordPickedBy: String? = null,
     @SerialName("last_report_at") val lastReportAt: String? = null,
     @SerialName("may_remove") val mayRemove: Boolean,
     @SerialName("may_approve") val mayApprove: Boolean,
@@ -2842,6 +2844,8 @@ data class RaidNotSigned(
     @SerialName("spec_name") val specName: String? = null,
     /** The spec's talent-tab icon stem, /data/{build}/icons/{stem}.webp. Lane F4 contract, handler pending. */
     @SerialName("spec_icon") val specIcon: String? = null,
+    /** As on RaidSignup. */
+    @SerialName("discord_picked_by") val discordPickedBy: String? = null,
 )
 
 @Serializable
@@ -2939,6 +2943,8 @@ data class RaidSignup(
     @SerialName("spec_name") val specName: String? = null,
     /** The spec's talent-tab icon stem, /data/{build}/icons/{stem}.webp. Lane F4 contract, handler pending. */
     @SerialName("spec_icon") val specIcon: String? = null,
+    /** The Discord name of the Discord-only account that picked this character from the guild's directory roster on Discord, until a Battle.net sign-in confirms it; officers see it marked. Absent for every other character. */
+    @SerialName("discord_picked_by") val discordPickedBy: String? = null,
 )
 
 @Serializable

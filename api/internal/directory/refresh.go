@@ -29,8 +29,7 @@ var errStop = errors.New("directory: pass stopped")
 // Pass seeds the sweep, reads due rosters, then due characters oldest first, then learns
 // realm rulesets and expires what no source confirmed within 30 days. It runs until nothing is due or ctx ends; the
 // budget paces every call. A 429 stops it with RateLimited set and no error.
-func (s *Service) Pass(ctx context.Context) (PassResult, error) {
-	var res PassResult
+func (s *Service) Pass(ctx context.Context) (res PassResult, err error) {
 	startCalls := s.budget().Calls()
 	defer func() { res.Calls = s.budget().Calls() - startCalls }()
 	if err := s.seed(ctx); err != nil {
@@ -44,6 +43,11 @@ func (s *Service) Pass(ctx context.Context) (PassResult, error) {
 			}
 			return res, err
 		}
+	}
+	// A pass cut short by its deadline still learns and expires; one whose process is shutting
+	// down (its parent context gone) leaves that to the next pass.
+	if ctx.Err() != nil && !errors.Is(ctx.Err(), context.DeadlineExceeded) {
+		return res, nil
 	}
 	after := context.WithoutCancel(ctx)
 	learned, err := s.learnRealms(after)

@@ -3849,6 +3849,8 @@ public struct GuildRosterRow: Codable, Sendable, Equatable {
     public let attendance: GuildAttendance
     public let accountKey: String
     public let supporter: Bool
+    /// As on RaidSignup: the picker's Discord name for a character picked on Discord (no export yet; logged_at is then when it was picked), absent otherwise.
+    public let discordPickedBy: String?
     public let lastReportAt: Date?
     public let mayRemove: Bool
     public let mayApprove: Bool
@@ -3888,6 +3890,7 @@ public struct GuildRosterRow: Codable, Sendable, Equatable {
         attendance: GuildAttendance,
         accountKey: String,
         supporter: Bool,
+        discordPickedBy: String? = nil,
         lastReportAt: Date? = nil,
         mayRemove: Bool,
         mayApprove: Bool,
@@ -3919,6 +3922,7 @@ public struct GuildRosterRow: Codable, Sendable, Equatable {
         self.attendance = attendance
         self.accountKey = accountKey
         self.supporter = supporter
+        self.discordPickedBy = discordPickedBy
         self.lastReportAt = lastReportAt
         self.mayRemove = mayRemove
         self.mayApprove = mayApprove
@@ -3952,6 +3956,7 @@ public struct GuildRosterRow: Codable, Sendable, Equatable {
         case attendance
         case accountKey
         case supporter
+        case discordPickedBy
         case lastReportAt
         case mayRemove
         case mayApprove
@@ -7562,6 +7567,8 @@ public struct RaidNotSigned: Codable, Sendable, Equatable {
     public let specName: String?
     /// The spec's talent-tab icon stem, /data/{build}/icons/{stem}.webp. Lane F4 contract, handler pending.
     public let specIcon: String?
+    /// As on RaidSignup.
+    public let discordPickedBy: String?
 
     public init(
         characterKey: String,
@@ -7572,7 +7579,8 @@ public struct RaidNotSigned: Codable, Sendable, Equatable {
         specKey: String? = nil,
         role: String? = nil,
         specName: String? = nil,
-        specIcon: String? = nil
+        specIcon: String? = nil,
+        discordPickedBy: String? = nil
     ) {
         self.characterKey = characterKey
         self.name = name
@@ -7583,6 +7591,7 @@ public struct RaidNotSigned: Codable, Sendable, Equatable {
         self.role = role
         self.specName = specName
         self.specIcon = specIcon
+        self.discordPickedBy = discordPickedBy
     }
 
     enum CodingKeys: String, CodingKey {
@@ -7595,6 +7604,7 @@ public struct RaidNotSigned: Codable, Sendable, Equatable {
         case role
         case specName
         case specIcon
+        case discordPickedBy
     }
 }
 
@@ -7800,6 +7810,8 @@ public struct RaidSignup: Codable, Sendable, Equatable {
     public let specName: String?
     /// The spec's talent-tab icon stem, /data/{build}/icons/{stem}.webp. Lane F4 contract, handler pending.
     public let specIcon: String?
+    /// The Discord name of the Discord-only account that picked this character from the guild's directory roster on Discord, until a Battle.net sign-in confirms it; officers see it marked. Absent for every other character.
+    public let discordPickedBy: String?
 
     public init(
         characterKey: String,
@@ -7815,7 +7827,8 @@ public struct RaidSignup: Codable, Sendable, Equatable {
         specKey: String? = nil,
         also: [RaidAlsoSignup] = [],
         specName: String? = nil,
-        specIcon: String? = nil
+        specIcon: String? = nil,
+        discordPickedBy: String? = nil
     ) {
         self.characterKey = characterKey
         self.name = name
@@ -7831,6 +7844,7 @@ public struct RaidSignup: Codable, Sendable, Equatable {
         self.also = also
         self.specName = specName
         self.specIcon = specIcon
+        self.discordPickedBy = discordPickedBy
     }
 
     enum CodingKeys: String, CodingKey {
@@ -7848,6 +7862,7 @@ public struct RaidSignup: Codable, Sendable, Equatable {
         case also
         case specName
         case specIcon
+        case discordPickedBy
     }
 
     public init(from decoder: any Decoder) throws {
@@ -7866,6 +7881,7 @@ public struct RaidSignup: Codable, Sendable, Equatable {
         also = try c.decodeIfPresent([RaidAlsoSignup].self, forKey: .also) ?? []
         specName = try c.decodeIfPresent(String.self, forKey: .specName)
         specIcon = try c.decodeIfPresent(String.self, forKey: .specIcon)
+        discordPickedBy = try c.decodeIfPresent(String.self, forKey: .discordPickedBy)
     }
 }
 

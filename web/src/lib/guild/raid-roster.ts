@@ -32,6 +32,8 @@ export interface RosterRow {
   own: boolean;
   /** The muted line naming the account's other answered characters, `null` when it has none. */
   also: string | null;
+  /** The picker's Discord name for a character picked on Discord, not yet confirmed by Battle.net. */
+  discord_picked_by?: string;
 }
 
 /** `Also: Rootbound (Restoration Druid, Bench)`: the account's other answered characters, best

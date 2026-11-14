@@ -557,8 +557,26 @@ const DiscordOfficerCameAsWords = "Came as {Name}"
 // DiscordOfficerExcusedSuffix is discord.officer.excusedSuffix: , excused
 const DiscordOfficerExcusedSuffix = ", excused"
 
-// DiscordPressNotLinked is discord.press.notLinked: Link your Discord account to Forever Sixty to sign up from here, then press the button again.
-const DiscordPressNotLinked = "Link your Discord account to Forever Sixty to sign up from here, then press the button again."
+// DiscordPressNotLinked is discord.press.notLinked: Run /signup and pick your character under **character**. You are signed up when you send it. Or link Discord to use your Battle.net characters.
+const DiscordPressNotLinked = "Run /signup and pick your character under **character**. You are signed up when you send it. Or link Discord to use your Battle.net characters."
+
+// DiscordPressPickFirst is discord.press.pickFirst: Pick your character first: run /signup and choose it under **character**.
+const DiscordPressPickFirst = "Pick your character first: run /signup and choose it under **character**."
+
+// DiscordPickChoice is discord.pick.choice: {Name} · {Level} {Class}
+const DiscordPickChoice = "{Name} · {Level} {Class}"
+
+// DiscordPickClaimed is discord.pick.claimed: You picked {Name}. Sign in with Battle.net to confirm it is yours.
+const DiscordPickClaimed = "You picked {Name}. Sign in with Battle.net to confirm it is yours."
+
+// DiscordPickTaken is discord.pick.taken: {Name} is already claimed by another account. If it is yours, ask an officer to free it, or sign in with Battle.net.
+const DiscordPickTaken = "{Name} is already claimed by another account. If it is yours, ask an officer to free it, or sign in with Battle.net."
+
+// DiscordPickTooMany is discord.pick.tooMany: You have picked {n} characters already. Ask an officer to free one, or sign in with Battle.net.
+const DiscordPickTooMany = "You have picked {n} characters already. Ask an officer to free one, or sign in with Battle.net."
+
+// DiscordPickOwnAccount is discord.pick.ownAccount: You are signed in with Battle.net. Pick one of your own characters under **character**.
+const DiscordPickOwnAccount = "You are signed in with Battle.net. Pick one of your own characters under **character**."
 
 // DiscordPressNotMember is discord.press.notMember: Sign-ups are for members of {Guild}. Save your character on Forever Sixty and an officer can approve it.
 const DiscordPressNotMember = "Sign-ups are for members of {Guild}. Save your character on Forever Sixty and an officer can approve it."

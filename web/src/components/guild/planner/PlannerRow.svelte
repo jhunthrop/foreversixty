@@ -81,6 +81,9 @@
         >{/if}
       {#if row.also !== null}<span class="block break-words" data-testid="raid-roster-also">{row.also}</span
         >{/if}
+      {#if officer && row.discord_picked_by}<span class="block" data-testid="raid-roster-discord-claim"
+          >{raidCopy.discordClaim(row.discord_picked_by)}</span
+        >{/if}
       {#if row.note !== ''}<span class="text-text block break-words" data-testid="raid-roster-note"
           >{row.note}</span
         >{/if}

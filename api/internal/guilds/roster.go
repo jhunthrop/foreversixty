@@ -121,14 +121,21 @@ func (s *Store) RemoveCharacter(ctx context.Context, guildID int64, characterKey
 	}
 	defer func() { _ = tx.Rollback(ctx) }()
 	var userID int64
+	var picked bool
 	err = tx.QueryRow(ctx,
-		`delete from guild_characters where guild_id = $1 and character_key = $2 returning user_id`,
-		guildID, characterKey).Scan(&userID)
+		`delete from guild_characters where guild_id = $1 and character_key = $2
+		 returning user_id, coalesce(verified_by = 'discord', false)`,
+		guildID, characterKey).Scan(&userID, &picked)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return ErrNotFound
 	}
 	if err != nil {
 		return fmt.Errorf("guilds: remove character: %w", err)
+	}
+	if picked {
+		if err := releaseDiscordPick(ctx, tx, guildID, characterKey, userID); err != nil {
+			return err
+		}
 	}
 	if err := RecomputeMembership(ctx, tx, guildID, &userID); err != nil {
 		return err
@@ -140,6 +147,25 @@ func (s *Store) RemoveCharacter(ctx context.Context, guildID int64, characterKey
 		return err
 	}
 	return tx.Commit(ctx)
+}
+
+// releaseDiscordPick frees a character picked on Discord that an officer removed from the
+// roster: the Discord-only account's characters row goes, so the real owner can pick it or
+// sign in, and so do its sign-ups for raids still to come.
+func releaseDiscordPick(ctx context.Context, tx pgx.Tx, guildID int64, characterKey string, userID int64) error {
+	if _, err := tx.Exec(ctx,
+		`delete from guild_raid_signups s using guild_raids r
+		  where s.raid_id = r.id and r.guild_id = $1 and s.character_key = $2 and s.signed_by = $3
+		    and r.starts_at > now()`, guildID, characterKey, userID); err != nil {
+		return fmt.Errorf("guilds: release discord pick sign-ups: %w", err)
+	}
+	if _, err := tx.Exec(ctx,
+		`delete from characters c using users u
+		  where c.key = $1 and c.user_id = $2 and u.id = c.user_id and u.discord_only and c.source = 'discord'`,
+		characterKey, userID); err != nil {
+		return fmt.Errorf("guilds: release discord pick: %w", err)
+	}
+	return nil
 }
 
 // SetConsent updates the caller's own per-guild consent level.

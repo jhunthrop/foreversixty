@@ -84,7 +84,8 @@ func raidRosterOn(ctx context.Context, q dbQuerier, guildID int64, key string) (
 		select gc.character_key, gc.user_id, gc.verified_at is not null,
 		       coalesce(nullif(c.name, ''), nullif(ae.name, ''), split_part(gc.character_key, '/', 3)),
 		       lower(coalesce(fm.class, c.class, '')), coalesce(fm.spec, ''), coalesce(fm.role, ''),
-		       coalesce(gc.raid_spec, '')
+		       coalesce(gc.raid_spec, ''),
+		       coalesce(case when gc.verified_by = 'discord' then (select l.display_name from discord_links l where l.user_id = gc.user_id) end, '')
 		from guild_characters gc
 		left join characters c on c.key = gc.character_key
 		left join addon_exports ae on ae.character_key = gc.character_key
@@ -102,7 +103,8 @@ func raidRosterOn(ctx context.Context, q dbQuerier, guildID int64, key string) (
 	out := []raidRosterChar{}
 	for rows.Next() {
 		var c raidRosterChar
-		if err := rows.Scan(&c.CharacterKey, &c.userID, &c.verified, &c.Name, &c.Class, &c.Spec, &c.role, &c.raidSpec); err != nil {
+		if err := rows.Scan(&c.CharacterKey, &c.userID, &c.verified, &c.Name, &c.Class, &c.Spec, &c.role, &c.raidSpec,
+			&c.DiscordPickedBy); err != nil {
 			return nil, fmt.Errorf("guilds: raid roster: %w", err)
 		}
 		out = append(out, c.applyRaidSpec())

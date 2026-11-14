@@ -243,6 +243,8 @@ export interface GuildRosterRow {
   verified: boolean;
   /** The account shows the Supporter mark; absent from an API that predates it. */
   supporter?: boolean;
+  /** As on GuildRaidSignup: the picker's Discord name, absent for any other character. */
+  discord_picked_by?: string;
   /** addon_exports.updated_at within the last 24h (spec section 4.1, RULING 9). */
   logged_recently: boolean;
   /** `addon_exports.updated_at` itself (control-centre contract: "replaces logged_recently;
@@ -934,6 +936,9 @@ export interface GuildRaidSignup extends GuildRaidRowComp {
   /** The account's other answered characters, best place first: the row is the account's best
    *  place, these ride its Also line and count nowhere (raids spec 3.7). Absent from an older API. */
   also?: GuildRaidAlsoSignup[];
+  /** The picker's Discord name for a character picked on Discord from the guild's directory
+   *  roster, until a Battle.net sign-in confirms it; absent otherwise. Officers see it marked. */
+  discord_picked_by?: string;
 }
 
 /** Another answered character of a sign-up row's account. */
@@ -951,6 +956,8 @@ export interface GuildRaidNotSigned extends GuildRaidRowComp {
   name: string;
   class: string;
   spec: string;
+  /** As on GuildRaidSignup. */
+  discord_picked_by?: string;
 }
 
 export interface GuildRaidViewerCharacter {

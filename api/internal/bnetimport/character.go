@@ -14,6 +14,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/bnetapi"
 	"github.com/jhunthrop/foreversixty/api/internal/character"
+	"github.com/jhunthrop/foreversixty/api/internal/directory"
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/synclog"
 )
@@ -51,6 +52,13 @@ func (s *Service) writeCharacterRow(ctx context.Context, ref characterRef, ch bn
 	}
 	defer func() { _ = tx.Rollback(ctx) }()
 
+	// A character a Discord-only account picked on Discord is this account's: the Battle.net
+	// owner takes it over, with its guild row and sign-ups, before the row is written.
+	if moved, err := directory.TakeOverDiscordClaims(ctx, tx, ref.UserID, ref.Region, ch.ID); err != nil {
+		return false, err
+	} else if moved > 0 {
+		s.logger().Info("bnetimport", "op", "discord_claim_taken_over", "user_id", ref.UserID, "rows", moved)
+	}
 	if err := s.carryProvisionalKey(ctx, tx, ref); err != nil {
 		return false, err
 	}

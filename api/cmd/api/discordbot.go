@@ -10,6 +10,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/config"
+	"github.com/jhunthrop/foreversixty/api/internal/directory"
 	"github.com/jhunthrop/foreversixty/api/internal/discordbot"
 	"github.com/jhunthrop/foreversixty/api/internal/notify"
 	"github.com/jhunthrop/foreversixty/api/internal/server"
@@ -44,6 +45,8 @@ func botDeps(cfg config.Config, pool *pgxpool.Pool, deps server.Deps, log *slog.
 		ApplicationID: cfg.DiscordApplicationID, CommandsGuildID: cfg.DiscordCommandsGuildID,
 		PublicBaseURL: cfg.PublicBaseURL, APIBaseURL: cfg.APIBaseURL,
 		Guilds: deps.Guilds, Notify: deps.Notify, Log: log,
+		// The sign-up by character pick: Discord-only accounts and the guild's directory roster.
+		Claims: &directory.Claims{Pool: pool},
 	}
 }
 

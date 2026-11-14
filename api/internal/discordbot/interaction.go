@@ -26,11 +26,24 @@ type Interaction struct {
 	// Source is the pressed message's embeds and components, for the card failure echo.
 	Source        sourceMessage
 	DiscordUserID string
-	ReceivedAt    time.Time
+	// DisplayName is the presser's name as the server shows it (nickname, else global name,
+	// else username): what a Discord-only account is called.
+	DisplayName string
+	ReceivedAt  time.Time
 }
 
 type wireUser struct {
-	ID string `json:"id"`
+	ID         string  `json:"id"`
+	Username   string  `json:"username"`
+	GlobalName *string `json:"global_name"`
+}
+
+// name is the user's global name, else the username.
+func (u wireUser) name() string {
+	if u.GlobalName != nil && *u.GlobalName != "" {
+		return *u.GlobalName
+	}
+	return u.Username
 }
 
 type wireInteraction struct {
@@ -42,6 +55,7 @@ type wireInteraction struct {
 	Data          json.RawMessage `json:"data"`
 	Member        *struct {
 		User wireUser `json:"user"`
+		Nick *string  `json:"nick"`
 	} `json:"member"`
 	User    *wireUser `json:"user"`
 	Message *struct {
@@ -62,9 +76,12 @@ func ParseInteraction(body []byte, receivedAt time.Time) (Interaction, error) {
 	}
 	switch {
 	case w.Member != nil:
-		in.DiscordUserID = w.Member.User.ID
+		in.DiscordUserID, in.DisplayName = w.Member.User.ID, w.Member.User.name()
+		if w.Member.Nick != nil && *w.Member.Nick != "" {
+			in.DisplayName = *w.Member.Nick
+		}
 	case w.User != nil:
-		in.DiscordUserID = w.User.ID
+		in.DiscordUserID, in.DisplayName = w.User.ID, w.User.name()
 	}
 	if w.Message != nil {
 		in.MessageID = w.Message.ID

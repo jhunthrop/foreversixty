@@ -223,11 +223,14 @@ func chosen(verified []guilds.SignupCandidate, ref string) (guilds.SignupCandida
 	return guilds.SignupCandidate{}, false
 }
 
-// notSignable answers an account with no verified character in the guild: none at all, one
-// waiting for approval, or several.
+// notSignable answers an account with no verified character in the guild: none at all (a
+// Discord-only account is asked to pick one), one waiting for approval, or several.
 func (s *Service) notSignable(ctx context.Context, a signupAsk, cands []guilds.SignupCandidate) (Reply, error) {
 	switch len(cands) {
 	case 0:
+		if may, err := s.mayPick(ctx, a.UserID, true); err != nil || may {
+			return a.reply(pressCopy.PickFirst), err
+		}
 		return s.notMember(ctx, a)
 	case 1:
 		return a.reply(fill(pressCopy.WaitingOne, "{Name}", memberText(cands[0].Name))), nil

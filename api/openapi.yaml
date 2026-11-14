@@ -2388,6 +2388,7 @@ components:
         attendance: { $ref: '#/components/schemas/GuildAttendance' }
         account_key: { type: string }
         supporter: { type: boolean }
+        discord_picked_by: { type: string, description: "As on RaidSignup: the picker's Discord name for a character picked on Discord (no export yet; logged_at is then when it was picked), absent otherwise." }
         last_report_at: { type: [string, "null"], format: date-time }
         may_remove: { type: boolean }
         may_approve: { type: boolean }
@@ -2978,6 +2979,7 @@ components:
                     state: { type: string, enum: [in, late, bench, out] }
               spec_name: { type: string, description: "The spec's display name (specs.json name), e.g. Fury. Lane F4 contract, handler pending." }
               spec_icon: { type: string, description: "The spec's talent-tab icon stem, /data/{build}/icons/{stem}.webp. Lane F4 contract, handler pending." }
+              discord_picked_by: { type: string, description: "The Discord name of the Discord-only account that picked this character from the guild's directory roster on Discord, until a Battle.net sign-in confirms it; officers see it marked. Absent for every other character." }
         not_signed:
           type: array
           items:
@@ -2994,6 +2996,7 @@ components:
               role: { type: string, enum: [tank, healer, dps], description: "The spec's role, for an officer's Add. Lane F4 contract, handler pending." }
               spec_name: { type: string, description: "The spec's display name (specs.json name), e.g. Fury. Lane F4 contract, handler pending." }
               spec_icon: { type: string, description: "The spec's talent-tab icon stem, /data/{build}/icons/{stem}.webp. Lane F4 contract, handler pending." }
+              discord_picked_by: { type: string, description: As on RaidSignup. }
         viewer:
           type: object
           title: RaidViewer

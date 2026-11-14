@@ -7,6 +7,8 @@ import "github.com/jhunthrop/foreversixty/api/internal/copygen"
 // {Name}-style markers are filled by fill.
 var pressCopy = struct {
 	NotLinked string
+	// PickFirst answers a Discord-only account with no character picked yet.
+	PickFirst string
 	// Refusals before the sign-up.
 	Locked, Cancelled, Ended string
 	NotMember, SetupButton   string
@@ -24,6 +26,7 @@ var pressCopy = struct {
 	NoRaid string
 }{
 	NotLinked:         copygen.DiscordPressNotLinked,
+	PickFirst:         copygen.DiscordPressPickFirst,
 	Locked:            copygen.RaidLocked,
 	Cancelled:         copygen.RaidCancelled,
 	Ended:             copygen.RaidEnded,
@@ -54,3 +57,25 @@ var pressCopy = struct {
 
 // roleWords are the sign-up roles as the sentences say them.
 var roleWords = map[string]string{"tank": copygen.RaidRoleTank, "healer": copygen.RaidRoleHealer, "dps": copygen.GuidesRoleDps}
+
+// pickCopy is the sign-up by character pick (design/specs/2026-10-27-discord-bot.md §6.2, the
+// Pick rows): a Discord user with no site account picks their character from the guild's
+// directory roster under /signup's character option.
+var pickCopy = struct {
+	// Choice is one autocomplete choice: "Vela Thornbrook · 41 Mage".
+	Choice string
+	// Claimed leads the first sign-up of a newly picked character.
+	Claimed string
+	// Taken answers a pick another account already holds.
+	Taken string
+	// OwnAccount answers a pick asked by an account with a Battle.net sign-in.
+	OwnAccount string
+	// TooMany answers a pick past directory.MaxDiscordPicks; {n} is the cap.
+	TooMany string
+}{
+	Choice:     copygen.DiscordPickChoice,
+	Claimed:    copygen.DiscordPickClaimed,
+	Taken:      copygen.DiscordPickTaken,
+	OwnAccount: copygen.DiscordPickOwnAccount,
+	TooMany:    copygen.DiscordPickTooMany,
+}

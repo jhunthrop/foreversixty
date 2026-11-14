@@ -120,6 +120,9 @@ func (s *Service) finishLink(r *http.Request, userID int64, code string) string 
 	}
 	err = s.d.Store.SaveLink(r.Context(), userID, who.ID, who.DisplayName)
 	if errors.Is(err, ErrLinkConflict) {
+		err = s.mergeDiscordOnly(r.Context(), userID, who)
+	}
+	if errors.Is(err, ErrLinkConflict) {
 		return linkConflict
 	}
 	if err != nil {
@@ -140,4 +143,27 @@ func (s *Service) unlink(w http.ResponseWriter, r *http.Request) {
 	}
 	s.log.Info("discordbot", "op", "unlink", "user_id", userID)
 	w.WriteHeader(http.StatusNoContent)
+}
+
+// mergeDiscordOnly settles a link whose Discord account already holds a Discord-only account
+// (a sign-up by character pick): that account's picks and sign-ups fold into userID, it is
+// deleted, and the link is saved. A Discord account linked to any other account stays
+// ErrLinkConflict.
+func (s *Service) mergeDiscordOnly(ctx context.Context, userID int64, who Identity) error {
+	if s.d.Claims == nil {
+		return ErrLinkConflict
+	}
+	holder, linked, err := s.d.Store.UserByDiscord(ctx, who.ID)
+	if err != nil || !linked {
+		return errors.Join(ErrLinkConflict, err)
+	}
+	only, err := s.d.Claims.IsDiscordOnly(ctx, holder)
+	if err != nil || !only {
+		return errors.Join(ErrLinkConflict, err)
+	}
+	if err := s.d.Claims.MergeDiscordOnly(ctx, holder, userID); err != nil {
+		return fmt.Errorf("discordbot: merge discord-only account: %w", err)
+	}
+	s.log.Info("discordbot", "op", "discord_only_merged", "user_id", userID)
+	return s.d.Store.SaveLink(ctx, userID, who.ID, who.DisplayName)
 }

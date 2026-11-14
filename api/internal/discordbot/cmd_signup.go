@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/jhunthrop/foreversixty/api/internal/directory"
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 )
 
@@ -24,6 +25,11 @@ func (s *Service) cmdSignup(ctx context.Context, in Interaction) (Reply, error) 
 	if state != "" && !knownSignUpState(state) {
 		return pressReply(pressCopy.Failure, false), nil
 	}
+	if picked, _ := in.Option(optCharacter); picked != "" {
+		if bnetID, ok := directory.PickID(picked); ok {
+			return s.signupByPick(ctx, in, state, bnetID), nil
+		}
+	}
 	a, refused, ok := s.resolveAsker(ctx, in, false)
 	if !ok {
 		return refused, nil
@@ -33,28 +39,34 @@ func (s *Service) cmdSignup(ctx context.Context, in Interaction) (Reply, error) 
 	}
 	a.State = state
 	a.CharacterKey, _ = in.Option(optCharacter)
+	return s.signupNamedRaid(ctx, in, a), nil
+}
+
+// signupNamedRaid runs a /signup whose state and character are set: the raid option's raid, else
+// the guild's next signable one.
+func (s *Service) signupNamedRaid(ctx context.Context, in Interaction, a signupAsk) Reply {
 	raidRef, _ := in.Option(optRaid)
 	if raidRef != "" {
 		id, err := strconv.ParseInt(raidRef, 10, 64)
 		if err != nil || id <= 0 {
-			return a.reply(pressCopy.Failure), nil
+			return a.reply(pressCopy.Failure)
 		}
 		a.RaidID = id
 		// A named raid's state is told only to a member, so its ids cannot be probed.
 		if rep, member, err := s.memberGate(ctx, a); err != nil || !member {
-			return s.gateAnswer(in, rep, err), nil
+			return s.gateAnswer(in, rep, err)
 		}
-		return s.runFlow(ctx, in, a), nil
+		return s.runFlow(ctx, in, a)
 	}
 	raidID, rep, err := s.nextRaidFor(ctx, a)
 	if err != nil {
-		return s.saveFailed(in, false, err), nil
+		return s.saveFailed(in, false, err)
 	}
 	if raidID == 0 {
-		return rep, nil
+		return rep
 	}
 	a.RaidID = raidID
-	return s.runFlow(ctx, in, a), nil
+	return s.runFlow(ctx, in, a)
 }
 
 // signupCardReply is a /signup with no status: the card, or the failure sentence on an error.

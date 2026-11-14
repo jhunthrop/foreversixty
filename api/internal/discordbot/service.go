@@ -31,6 +31,9 @@ type Deps struct {
 	PublicKey                                                 ed25519.PublicKey
 	ApplicationID, CommandsGuildID, PublicBaseURL, APIBaseURL string
 	Guilds                                                    GuildService
+	// Claims is the sign-up by character pick: Discord-only accounts and their picks from the
+	// guild's character directory roster (directory.Claims). Nil offers no picks.
+	Claims DiscordClaims
 	// Characters answers /char: the public character page.
 	Characters CharacterCards
 	// Sheets draws the character sheet Share in channel posts for /bis and /char. Nil posts

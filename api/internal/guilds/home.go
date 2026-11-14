@@ -167,8 +167,11 @@ type RosterRow struct {
 	Professions  []string    `json:"professions,omitempty"`
 	AccountKey   string      `json:"account_key"`
 	// Supporter is true when the row's account shows the supporter mark (Service.markSupporters).
-	Supporter    bool       `json:"supporter"`
-	LastReportAt *time.Time `json:"last_report_at"`
+	Supporter bool `json:"supporter"`
+	// DiscordPickedBy is the Discord name of the Discord-only account that picked this character
+	// from the guild's directory roster on Discord, until a Battle.net sign-in confirms it.
+	DiscordPickedBy string     `json:"discord_picked_by,omitempty"`
+	LastReportAt    *time.Time `json:"last_report_at"`
 	// MayRemove is computed server-side from the exact same
 	// mayRemoveRow rule the DELETE .../characters/{key} route enforces
 	// (item 7, fourth security review response), from the viewpoint of
@@ -440,8 +443,9 @@ func (s *Store) HomeRoster(ctx context.Context, guildID int64, g Guild, actorID 
 // so one request reads it once.
 func (s *Store) homeRoster(ctx context.Context, guildID int64, source string, g Guild, actorID int64, moderator, verifiedOfficer bool) ([]RosterRow, error) {
 	rows, err := s.Pool.Query(ctx, `
-		select gc.character_key, gc.user_id, ae.region, ae.ruleset, ae.name, gc.rank, gc.verified_at is not null,
-		       ae.updated_at >= now() - interval '24 hours', ae.updated_at, gm.consent,
+		select gc.character_key, gc.user_id, coalesce(ae.region, c.region), coalesce(ae.ruleset, c.ruleset),
+		       coalesce(ae.name, c.name), gc.rank, gc.verified_at is not null,
+		       coalesce(ae.updated_at >= now() - interval '24 hours', false), coalesce(ae.updated_at, gc.refreshed_at), gm.consent,
 		       case when gm.consent in ('gear', 'gear_bags') then fm.class end,
 		       case when gm.consent in ('gear', 'gear_bags') then fm.spec end,
 		       case when gm.consent in ('gear', 'gear_bags') then fm.role end,
@@ -450,9 +454,11 @@ func (s *Store) homeRoster(ctx context.Context, guildID int64, source string, g 
 		       case when gm.consent in ('gear', 'gear_bags') then ae.export end,
 		       `+rosterSimExportSQL+`,
 		       case when gm.consent in ('gear', 'gear_bags') then gc.raid_spec end,
-		       coalesce(u.main_character_key = gc.character_key, false)
+		       coalesce(u.main_character_key = gc.character_key, false),
+		       coalesce(case when gc.verified_by = 'discord' then (select l.display_name from discord_links l where l.user_id = gc.user_id) end, '')
 		from guild_characters gc
-		join addon_exports ae on ae.character_key = gc.character_key
+		left join addon_exports ae on ae.character_key = gc.character_key
+		left join characters c on c.key = gc.character_key
 		join guild_members gm on gm.guild_id = gc.guild_id and gm.user_id = gc.user_id
 		left join users u on u.id = gc.user_id
 		left join lateral (
@@ -462,7 +468,9 @@ func (s *Store) homeRoster(ctx context.Context, guildID int64, source string, g 
 		  order by m.fought_at desc limit 1
 		) fm on true
 		where gc.guild_id = $1 and gc.character_key not like 'account:%'
-		order by case gc.rank when 'leader' then 0 when 'officer' then 1 else 2 end, ae.name
+		  -- A character with no export is listed only when it was picked on Discord.
+		  and (ae.character_key is not null or (gc.verified_by = 'discord' and c.key is not null))
+		order by case gc.rank when 'leader' then 0 when 'officer' then 1 else 2 end, coalesce(ae.name, c.name)
 	`, guildID)
 	if err != nil {
 		return nil, fmt.Errorf("guilds: home roster: %w", err)
@@ -472,11 +480,16 @@ func (s *Store) homeRoster(ctx context.Context, guildID int64, source string, g 
 	for rows.Next() {
 		var raidSpec *string
 		var isMain bool
-		row, err := s.scanRosterRow(rows, g, actorID, moderator, verifiedOfficer, &raidSpec, &isMain)
+		var pickedBy string
+		row, err := s.scanRosterRow(rows, g, actorID, moderator, verifiedOfficer, &raidSpec, &isMain, &pickedBy)
 		if err != nil {
 			return nil, err
 		}
 		row.IsMain = isMain
+		if moderator || verifiedOfficer {
+			// The picker's Discord name is for officers, who free a wrong pick.
+			row.DiscordPickedBy = pickedBy
+		}
 		out = append(out, row.withRaidSpec(raidSpec))
 	}
 	if err := rows.Err(); err != nil {

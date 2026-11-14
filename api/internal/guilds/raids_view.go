@@ -55,6 +55,10 @@ type SignupView struct {
 	// Also is the account's other answered characters, best place first (raids spec §3.7): the
 	// row is the account's best place, and these show under it without counting anywhere.
 	Also []AlsoSignup `json:"also"`
+	// DiscordPickedBy is the Discord name of the Discord-only account that picked this character
+	// from the guild's directory roster on Discord, until a Battle.net sign-in confirms it:
+	// officers see it marked. Empty (absent) for every other character.
+	DiscordPickedBy string `json:"discord_picked_by,omitempty"`
 }
 
 // AlsoSignup is another answered character of a row's account, as its Also line names it.
@@ -68,14 +72,15 @@ type AlsoSignup struct {
 }
 
 // RaidCharacter is a verified roster character with no sign-up yet. Group and SpecKey read as
-// on SignupView, with the character's default role.
+// on SignupView, with the character's default role; DiscordPickedBy as on SignupView.
 type RaidCharacter struct {
-	CharacterKey string  `json:"character_key"`
-	Name         string  `json:"name"`
-	Class        string  `json:"class"`
-	Spec         string  `json:"spec"`
-	Group        string  `json:"group"`
-	SpecKey      *string `json:"spec_key"`
+	DiscordPickedBy string  `json:"discord_picked_by,omitempty"`
+	CharacterKey    string  `json:"character_key"`
+	Name            string  `json:"name"`
+	Class           string  `json:"class"`
+	Spec            string  `json:"spec"`
+	Group           string  `json:"group"`
+	SpecKey         *string `json:"spec_key"`
 }
 
 // ViewerCharacter is one of the viewer's characters in the guild. State is null until it
@@ -308,12 +313,16 @@ func buildRaidView(r Raid, signups []Signup, vc raidViewContext) (RaidView, erro
 	}
 	shown, also := onePerAccount(signups)
 	v.Counts = countSignups(shown)
+	picked := make(map[string]string, len(vc.roster))
+	for _, c := range vc.roster {
+		picked[c.CharacterKey] = c.DiscordPickedBy
+	}
 	for _, sg := range shown {
 		v.Signups = append(v.Signups, SignupView{
 			CharacterKey: sg.CharacterKey, Name: sg.Name, Class: sg.Class, Spec: sg.Spec,
 			Role: sg.Role, State: sg.State, Note: sg.Note, LateMinutes: sg.LateMinutes, Own: vc.owns(sg),
 			Group: raidspec.Group(sg.Class, sg.Spec, sg.Role), SpecKey: specKey(sg.Class, sg.Spec, sg.Role),
-			Also: alsoSignups(also[sg.SignedBy]),
+			Also: alsoSignups(also[sg.SignedBy]), DiscordPickedBy: picked[sg.CharacterKey],
 		})
 	}
 	sortSignups(v.Signups)
