@@ -1,8 +1,8 @@
 {
   "spec": "priest-shadow",
   "build": "1.60.1.70938",
-  "engine_version": "037798db1",
-  "generated_at": "2026-11-14T04:47:14Z",
+  "engine_version": "f0f90b5f9",
+  "generated_at": "2026-11-14T06:57:44Z",
   "bands": [
     {
       "spec": "priest-shadow",
@@ -1163,8 +1163,8 @@
         "main_hand: Staff of the Blessed Seer",
         "ranged: Skycaller"
       ],
-      "weights_run_seconds": 3.403262573,
-      "verify_run_seconds": 3.1503320510000004,
+      "weights_run_seconds": 3.273157385,
+      "verify_run_seconds": 2.804097984,
       "coverage": {
         "back": {
           "eligible": 104,
@@ -2421,8 +2421,8 @@
         "main_hand: Staff of the Blessed Seer",
         "ranged: Skycaller"
       ],
-      "weights_run_seconds": 3.403262573,
-      "verify_run_seconds": 2.864934452,
+      "weights_run_seconds": 3.273157385,
+      "verify_run_seconds": 2.514159911,
       "coverage": {
         "back": {
           "eligible": 105,
@@ -3822,8 +3822,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 3.323774899,
-      "verify_run_seconds": 5.519666772,
+      "weights_run_seconds": 3.133637654,
+      "verify_run_seconds": 4.861220856,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -5255,8 +5255,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 3.323774899,
-      "verify_run_seconds": 4.994798663,
+      "weights_run_seconds": 3.133637654,
+      "verify_run_seconds": 4.56855857,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -6696,8 +6696,8 @@
         "main_hand: Staff of Jordan",
         "ranged: Plaguerot Sprig"
       ],
-      "weights_run_seconds": 3.724699948,
-      "verify_run_seconds": 3.7619865089999998,
+      "weights_run_seconds": 3.274943521,
+      "verify_run_seconds": 3.452311647,
       "coverage": {
         "back": {
           "eligible": 257,
@@ -8099,8 +8099,8 @@
         "main_hand: Staff of Jordan",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 3.724699948,
-      "verify_run_seconds": 4.403804706,
+      "weights_run_seconds": 3.274943521,
+      "verify_run_seconds": 4.0026930620000005,
       "coverage": {
         "back": {
           "eligible": 259,
@@ -9795,8 +9795,8 @@
         "trinket2: Enriched Seal",
         "ranged: Woestave"
       ],
-      "weights_run_seconds": 3.315765255,
-      "verify_run_seconds": 6.42305348,
+      "weights_run_seconds": 3.12752014,
+      "verify_run_seconds": 5.628377087,
       "coverage": {
         "back": {
           "eligible": 330,
@@ -11526,8 +11526,8 @@
         "off_hand: Truesilver Conduit",
         "ranged: Woestave"
       ],
-      "weights_run_seconds": 3.315765255,
-      "verify_run_seconds": 6.314033876,
+      "weights_run_seconds": 3.12752014,
+      "verify_run_seconds": 5.860908299,
       "coverage": {
         "back": {
           "eligible": 335,
@@ -13355,8 +13355,8 @@
         "off_hand: Book of the Dead",
         "ranged: Oblivion's Touch"
       ],
-      "weights_run_seconds": 3.421418117,
-      "verify_run_seconds": 25.860919162,
+      "weights_run_seconds": 3.183033828,
+      "verify_run_seconds": 22.852569341000002,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -15140,8 +15140,8 @@
         "off_hand: Book of the Dead",
         "ranged: Oblivion's Touch"
       ],
-      "weights_run_seconds": 3.421418117,
-      "verify_run_seconds": 21.068452619,
+      "weights_run_seconds": 3.183033828,
+      "verify_run_seconds": 18.685867507,
       "coverage": {
         "back": {
           "eligible": 472,
@@ -16842,8 +16842,8 @@
         "main_hand: Ironbark Staff",
         "ranged: Bonecreeper Stylus"
       ],
-      "weights_run_seconds": 3.745836388,
-      "verify_run_seconds": 22.449345433999998,
+      "weights_run_seconds": 3.533830321,
+      "verify_run_seconds": 21.152242559,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -18518,8 +18518,8 @@
         "main_hand: Ironbark Staff",
         "ranged: Bonecreeper Stylus"
       ],
-      "weights_run_seconds": 3.745836388,
-      "verify_run_seconds": 22.193429268,
+      "weights_run_seconds": 3.533830321,
+      "verify_run_seconds": 20.833465741,
       "coverage": {
         "back": {
           "eligible": 472,

@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat. An item's crit rating
 
 ### Band 20 (human, 000000000000000000-03502001000000000-00000000000000000)
 
-Set DPS (verified): 41.8. Weights run: 24.7s. Verify run: 140.1s. 203 eligible items had no known source.
+Set DPS (verified): 41.8. Weights run: 23.7s. Verify run: 135.6s. 203 eligible items had no known source.
 
 Race sweep: human 41.8 ± 0.0, gnome 40.4 ± 0.0, night-elf 39.1 ± 0.0, dwarf 38.7 ± 0.0 (heal_score); the guide race human is best.
 
@@ -40,7 +40,7 @@ No-known-source sample (15 of 203, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (human, 000000000000000000-33502003030110000-00000000000000000)
 
-Set DPS (verified): 76.2. Weights run: 24.4s. Verify run: 157.1s. 325 eligible items had no known source.
+Set DPS (verified): 76.2. Weights run: 23.5s. Verify run: 150.4s. 325 eligible items had no known source.
 
 Race sweep: human 76.2 ± 0.0, gnome 72.2 ± 0.0, night-elf 70.4 ± 0.0, dwarf 69.8 ± 0.0 (heal_score); the guide race human is best.
 
@@ -72,7 +72,7 @@ No-known-source sample (15 of 325, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (human, 000000000000000000-33502003030121431-00000000000000000)
 
-Set DPS (verified): 175.1. Weights run: 110.9s. Verify run: 253.2s. 461 eligible items had no known source.
+Set DPS (verified): 175.1. Weights run: 106.2s. Verify run: 242.5s. 461 eligible items had no known source.
 
 Race sweep: human 175.1 ± 0.2, gnome 171.2 ± 0.2, night-elf 168.8 ± 0.2, dwarf 167.8 ± 0.2 (heal_score); the guide race human is best.
 
@@ -104,7 +104,7 @@ No-known-source sample (15 of 461, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (human, 005005000000000000-33502003030121431-00000000000000000)
 
-Set DPS (verified): 257.8. Weights run: 42.3s. Verify run: 374.2s. 608 eligible items had no known source.
+Set DPS (verified): 257.8. Weights run: 40.5s. Verify run: 358.1s. 608 eligible items had no known source.
 
 Race sweep: human 257.6 ± 0.2, gnome 251.2 ± 0.2, night-elf 246.8 ± 0.2, dwarf 245.4 ± 0.2 (heal_score); the guide race human is best.
 
@@ -136,7 +136,7 @@ No-known-source sample (15 of 608, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (human, 005005031030000000-33505003030121431-00000000000000000)
 
-Set DPS (verified): 419.3. Weights run: 39.7s. Verify run: 1108.1s. 1525 eligible items had no known source.
+Set DPS (verified): 419.3. Weights run: 38.1s. Verify run: 1063.3s. 1525 eligible items had no known source.
 
 Race sweep: human 419.1 ± 0.3, gnome 399.5 ± 0.3, night-elf 387.1 ± 0.3, dwarf 383.7 ± 0.3 (heal_score); the guide race human is best.
 
@@ -154,8 +154,8 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | waist | Penitent's Cinch (272394) | Pix Xizzix [vendor] | 105.1 healing_power points (19.11 DPS) | yes | Wisdom of the Timbermaw (19047, -4.93 DPS) [crafted]; Marshal's Satin Sash (17609, -4.95 DPS) [pvp]; Grimgore Noose (13403, -7.11 DPS) [dungeon] |
 | legs | Devout Skirt (16694) | Stratholme: Baron Rivendare [dungeon] | 120.0 healing_power points (21.82 DPS) | yes | Marshal's Satin Legguards (231626, -1.08 DPS) [vendor]; Wolfshear Leggings (13206, -1.55 DPS) [dungeon]; Rainstrider Leggings (11123, -2.38 DPS) [quest] |
 | feet | Devout Sandals (16691) | Stratholme: Maleki the Pallid [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Mooncloth Boots (15802, +0.00 DPS) [crafted]; Faith Healer's Boots (22247, -0.33 DPS) [dungeon]; Mistwalker Boots (10629, -1.84 DPS) [dungeon] |
-| finger1 | Band of Mending (22334) | Stratholme: Balnazzar [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Rosewine Circle (13178, +0.00 DPS) [dungeon]; The Postmaster's Seal (13392, -0.38 DPS) [dungeon]; Band of the Hierophant (13096, -1.90 DPS) [world_drop] |
-| finger2 | Blessed Band of Light (272407) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Rosewine Circle (13178, +0.00 DPS) [dungeon]; The Postmaster's Seal (13392, -0.15 DPS) [dungeon]; Band of the Hierophant (13096, -1.67 DPS) [world_drop] |
+| finger1 | Band of Mending (22334) | Stratholme: Balnazzar [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Rosewine Circle (13178, +0.00 DPS) [dungeon]; The Postmaster's Seal (13392, -0.38 DPS) [dungeon]; Channeler's Ring (272406, -1.29 DPS) [vendor] |
+| finger2 | Blessed Band of Light (272407) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Rosewine Circle (13178, +0.00 DPS) [dungeon]; The Postmaster's Seal (13392, -0.15 DPS) [dungeon]; Channeler's Ring (272406, -1.06 DPS) [vendor] |
 | trinket1 | Ankh of Life (1713) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Shard of the Splithooves (10659, -0.98 DPS) [quest]; Evonice's Landin' Pilla (18951, -1.24 DPS) [quest]; Enriched Seal (271903, -2.06 DPS) [rep] |
 | trinket2 | Burst of Knowledge (11832) | Blackrock Depths: Ambassador Flamelash [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Shard of the Splithooves (10659, -2.16 DPS) [quest]; Evonice's Landin' Pilla (18951, -2.42 DPS) [quest]; Enriched Seal (271903, -3.24 DPS) [rep] |
 | main_hand | Redemption (22406) | Stratholme: Cannon Master Willey [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Grand Marshal's Warhammer (23454, +0.00 DPS) [vendor]; Staff of Metanoia (22394, -2.86 DPS) [dungeon]; Glowing Brightwood Staff (812, -5.28 DPS) [world_drop] |
@@ -168,7 +168,7 @@ No-known-source sample (15 of 1525, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (human, 005005031030000000-33505003030121431-00000000000000000)
 
-Set DPS (verified): 880.7. Weights run: 64.1s. Verify run: 580.3s. 1525 eligible items had no known source.
+Set DPS (verified): 880.7. Weights run: 61.5s. Verify run: 553.6s. 1525 eligible items had no known source.
 
 Race sweep: human 880.9 ± 0.5, gnome 867.4 ± 0.5, night-elf 851.2 ± 0.5, dwarf 848.9 ± 0.5 (heal_score); the guide race human is best.
 
@@ -202,7 +202,7 @@ No-known-source sample (15 of 1525, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (undead, 000000000000000000-03502001000000000-00000000000000000)
 
-Set DPS (verified): 41.0. Weights run: 24.7s. Verify run: 131.8s. 196 eligible items had no known source.
+Set DPS (verified): 41.0. Weights run: 23.7s. Verify run: 124.9s. 196 eligible items had no known source.
 
 Race sweep: undead 41.0 ± 0.0, troll 37.3 ± 0.0 (heal_score); the guide race undead is best.
 
@@ -234,7 +234,7 @@ No-known-source sample (15 of 196, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (undead, 000000000000000000-33502003030110000-00000000000000000)
 
-Set DPS (verified): 79.3. Weights run: 24.4s. Verify run: 151.7s. 318 eligible items had no known source.
+Set DPS (verified): 79.3. Weights run: 23.5s. Verify run: 144.5s. 318 eligible items had no known source.
 
 Race sweep: undead 79.4 ± 0.0, troll 70.8 ± 0.0 (heal_score); the guide race undead is best.
 
@@ -266,7 +266,7 @@ No-known-source sample (15 of 318, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (undead, 000000000000000000-33502003030121431-00000000000000000)
 
-Set DPS (verified): 182.0. Weights run: 110.9s. Verify run: 249.1s. 454 eligible items had no known source.
+Set DPS (verified): 182.0. Weights run: 106.2s. Verify run: 236.0s. 454 eligible items had no known source.
 
 Race sweep: undead 181.8 ± 0.2, troll 167.3 ± 0.2 (heal_score); the guide race undead is best.
 
@@ -298,7 +298,7 @@ No-known-source sample (15 of 454, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (undead, 005005000000000000-33502003030121431-00000000000000000)
 
-Set DPS (verified): 272.0. Weights run: 42.3s. Verify run: 344.2s. 601 eligible items had no known source.
+Set DPS (verified): 272.0. Weights run: 40.5s. Verify run: 323.8s. 601 eligible items had no known source.
 
 Race sweep: undead 271.7 ± 0.2, troll 244.5 ± 0.2 (heal_score); the guide race undead is best.
 
@@ -330,7 +330,7 @@ No-known-source sample (15 of 601, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (undead, 005005031030000000-33505003030121431-00000000000000000)
 
-Set DPS (verified): 429.6. Weights run: 39.7s. Verify run: 1073.1s. 1520 eligible items had no known source.
+Set DPS (verified): 429.6. Weights run: 38.1s. Verify run: 1035.5s. 1520 eligible items had no known source.
 
 Race sweep: undead 429.6 ± 0.3, troll 391.9 ± 0.3 (heal_score); the guide race undead is best.
 
@@ -349,7 +349,7 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | legs | Devout Skirt (16694) | Stratholme: Baron Rivendare [dungeon] | 120.0 healing_power points (21.82 DPS) | yes | General's Satin Legguards (231634, -1.08 DPS) [vendor]; Rainstrider Leggings (11123, -2.38 DPS) [quest]; Wolfshear Leggings (13206, -13.83 DPS, sim-verified) [dungeon] |
 | feet | Devout Sandals (16691) | Stratholme: Maleki the Pallid [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Faith Healer's Boots (22247, -0.33 DPS) [dungeon]; Mistwalker Boots (10629, -1.84 DPS) [dungeon]; Mooncloth Boots (15802, -8.54 DPS, sim-verified) [crafted] |
 | finger1 | Rosewine Circle (13178) | Blackrock Spire: Urok Doomhowl [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Blessed Band of Light (272407, -0.23 DPS) [vendor]; The Postmaster's Seal (13392, -0.39 DPS) [dungeon]; Naglering (11669, -14.36 DPS, sim-verified) [dungeon] |
-| finger2 | Band of Mending (22334) | Stratholme: Balnazzar [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Blessed Band of Light (272407, -0.23 DPS) [vendor]; The Postmaster's Seal (13392, -0.38 DPS) [dungeon]; Darkspear Signet (272068, -1.12 DPS) [vendor] |
+| finger2 | Band of Mending (22334) | Stratholme: Balnazzar [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Blessed Band of Light (272407, -0.23 DPS) [vendor]; The Postmaster's Seal (13392, -0.38 DPS) [dungeon]; Channeler's Ring (272406, -1.29 DPS) [vendor] |
 | trinket1 | Burst of Knowledge (11832) | Blackrock Depths: Ambassador Flamelash [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Shard of the Splithooves (10659, -2.16 DPS) [quest]; Evonice's Landin' Pilla (18951, -2.42 DPS) [quest]; Dormant Heart of the Mountain (249473, -4.95 DPS, sim-verified) [crafted] |
 | trinket2 | Ankh of Life (1713) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Shard of the Splithooves (10659, -0.98 DPS) [quest]; Evonice's Landin' Pilla (18951, -1.24 DPS) [quest]; Darkspear Voodoo Seal (272061, -2.06 DPS) [vendor] |
 | main_hand | Redemption (22406) | Stratholme: Cannon Master Willey [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | High Warlord's Battle Mace (23464, +0.00 DPS) [vendor]; Staff of Metanoia (22394, -3.81 DPS, sim-verified) [dungeon]; Glowing Brightwood Staff (812, -5.28 DPS) [world_drop] |
@@ -362,7 +362,7 @@ No-known-source sample (15 of 1520, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (undead, 005005031030000000-33505003030121431-00000000000000000)
 
-Set DPS (verified): 893.4. Weights run: 64.1s. Verify run: 575.9s. 1520 eligible items had no known source.
+Set DPS (verified): 893.4. Weights run: 61.5s. Verify run: 548.5s. 1520 eligible items had no known source.
 
 Race sweep: undead 893.4 ± 0.5, troll 846.6 ± 0.5 (heal_score); the guide race undead is best.
 

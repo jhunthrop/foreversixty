@@ -1,8 +1,8 @@
 {
   "spec": "priest-holy",
   "build": "1.60.1.70938",
-  "engine_version": "037798db1",
-  "generated_at": "2026-11-14T01:59:33Z",
+  "engine_version": "f0f90b5f9",
+  "generated_at": "2026-11-14T06:55:34Z",
   "bands": [
     {
       "spec": "priest-holy",
@@ -1139,8 +1139,8 @@
         "main_hand: Staff of Westfall",
         "ranged: Sable Wand"
       ],
-      "weights_run_seconds": 24.696970113,
-      "verify_run_seconds": 140.126977238,
+      "weights_run_seconds": 23.664235849,
+      "verify_run_seconds": 135.624948721,
       "coverage": {
         "back": {
           "eligible": 104,
@@ -2385,8 +2385,8 @@
         "main_hand: Living Root",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 24.696970113,
-      "verify_run_seconds": 131.806348953,
+      "weights_run_seconds": 23.664235849,
+      "verify_run_seconds": 124.85613254,
       "coverage": {
         "back": {
           "eligible": 105,
@@ -3795,8 +3795,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Thunderwood"
       ],
-      "weights_run_seconds": 24.388621489,
-      "verify_run_seconds": 157.113494652,
+      "weights_run_seconds": 23.509304211,
+      "verify_run_seconds": 150.36295447,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -4839,9 +4839,9 @@
               ],
               "next": {
                 "item_id": 272071,
-                "rank": 9,
+                "rank": 22,
                 "source": "Creeg Bothunk",
-                "dps_delta": -0.93,
+                "dps_delta": -1.4,
                 "standing": "honored"
               }
             },
@@ -5179,8 +5179,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Wand of Mana Concentration"
       ],
-      "weights_run_seconds": 24.388621489,
-      "verify_run_seconds": 151.71214629099998,
+      "weights_run_seconds": 23.509304211,
+      "verify_run_seconds": 144.52381816599998,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -6246,9 +6246,9 @@
               ],
               "next": {
                 "item_id": 271915,
-                "rank": 36,
+                "rank": 28,
                 "source": "Theramore Expeditionary Force",
-                "dps_delta": -1.83,
+                "dps_delta": -1.56,
                 "standing": "honored"
               }
             },
@@ -6263,7 +6263,7 @@
               ],
               "next": {
                 "item_id": 276202,
-                "rank": 28,
+                "rank": 29,
                 "source": "Friz Frazzlespark",
                 "dps_delta": -1.59,
                 "standing": "friendly"
@@ -6648,8 +6648,8 @@
         "off_hand: Orb of Lorica",
         "ranged: Captain Rackmore's Tiller"
       ],
-      "weights_run_seconds": 110.930136203,
-      "verify_run_seconds": 253.172042056,
+      "weights_run_seconds": 106.160311622,
+      "verify_run_seconds": 242.48328543,
       "coverage": {
         "back": {
           "eligible": 257,
@@ -7714,9 +7714,9 @@
               ],
               "next": {
                 "item_id": 272070,
-                "rank": 9,
+                "rank": 25,
                 "source": "Creeg Bothunk",
-                "dps_delta": -0.78,
+                "dps_delta": -1.56,
                 "standing": "honored"
               }
             },
@@ -8095,8 +8095,8 @@
         "off_hand: Beacon of Hope",
         "ranged: Captain Rackmore's Tiller"
       ],
-      "weights_run_seconds": 110.930136203,
-      "verify_run_seconds": 249.07978864,
+      "weights_run_seconds": 106.160311622,
+      "verify_run_seconds": 235.976107097,
       "coverage": {
         "back": {
           "eligible": 259,
@@ -9720,8 +9720,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Cairnstone Sliver"
       ],
-      "weights_run_seconds": 42.334467601,
-      "verify_run_seconds": 374.233430646,
+      "weights_run_seconds": 40.527599886,
+      "verify_run_seconds": 358.147520554,
       "coverage": {
         "back": {
           "eligible": 330,
@@ -10831,9 +10831,9 @@
               ],
               "next": {
                 "item_id": 272069,
-                "rank": 21,
+                "rank": 36,
                 "source": "Creeg Bothunk",
-                "dps_delta": -2.73,
+                "dps_delta": -3.98,
                 "standing": "honored"
               }
             },
@@ -11361,8 +11361,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Charged Lightning Rod"
       ],
-      "weights_run_seconds": 42.334467601,
-      "verify_run_seconds": 344.163576548,
+      "weights_run_seconds": 40.527599886,
+      "verify_run_seconds": 323.750919001,
       "coverage": {
         "back": {
           "eligible": 335,
@@ -12388,11 +12388,11 @@
               "dps_delta": -0.382250665
             },
             {
-              "item_id": 13096,
-              "item_name": "Band of the Hierophant",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -1.89669557
+              "item_id": 272406,
+              "item_name": "Channeler's Ring",
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
+              "dps_delta": -1.285206088
             }
           ],
           "runners_up": [
@@ -12410,7 +12410,7 @@
           "by_kind": {
             "quest": {
               "item_id": 11868,
-              "rank": 9,
+              "rank": 10,
               "source": "Ogre Head On A Stick = Party",
               "dps_delta": -2.75
             },
@@ -12429,7 +12429,7 @@
             },
             "world": {
               "item_id": 13096,
-              "rank": 5,
+              "rank": 6,
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -1.9
@@ -12459,11 +12459,11 @@
               "dps_delta": -0.154791954
             },
             {
-              "item_id": 13096,
-              "item_name": "Band of the Hierophant",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -1.669236858
+              "item_id": 272406,
+              "item_name": "Channeler's Ring",
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
+              "dps_delta": -1.057747376
             }
           ],
           "runners_up": [
@@ -12490,7 +12490,7 @@
             },
             "quest": {
               "item_id": 11868,
-              "rank": 9,
+              "rank": 10,
               "source": "Ogre Head On A Stick = Party",
               "dps_delta": -2.53,
               "not_with": [
@@ -12498,7 +12498,7 @@
               ],
               "next": {
                 "item_id": 16058,
-                "rank": 10,
+                "rank": 11,
                 "source": "In Dreams",
                 "dps_delta": -2.62
               }
@@ -12514,21 +12514,21 @@
               ],
               "next": {
                 "item_id": 271913,
-                "rank": 42,
+                "rank": 30,
                 "source": "Theramore Expeditionary Force",
-                "dps_delta": -7.37,
+                "dps_delta": -6.29,
                 "standing": "honored"
               }
             },
             "vendor": {
               "item_id": 272406,
-              "rank": 11,
+              "rank": 5,
               "source": "Pix Xizzix",
-              "dps_delta": -2.69
+              "dps_delta": -1.06
             },
             "world": {
               "item_id": 13096,
-              "rank": 5,
+              "rank": 6,
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -1.67,
@@ -12537,7 +12537,7 @@
               ],
               "next": {
                 "item_id": 5266,
-                "rank": 6,
+                "rank": 7,
                 "source_kind": "world_drop",
                 "source": "World drop",
                 "dps_delta": -1.89
@@ -13027,8 +13027,8 @@
         "main_hand: Redemption",
         "ranged: Wand of Eternal Light"
       ],
-      "weights_run_seconds": 39.677396935,
-      "verify_run_seconds": 1108.066299061,
+      "weights_run_seconds": 38.076686728,
+      "verify_run_seconds": 1063.286606874,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -14094,7 +14094,7 @@
             },
             "rep": {
               "item_id": 19518,
-              "rank": 16,
+              "rank": 14,
               "source": "Warsong Outriders",
               "dps_delta": -3.98,
               "standing": "honored"
@@ -14137,11 +14137,11 @@
               "dps_delta": -0.382250665
             },
             {
-              "item_id": 272068,
-              "item_name": "Darkspear Signet",
+              "item_id": 272406,
+              "item_name": "Channeler's Ring",
               "source_kind": "vendor",
-              "source": "Creeg Bothunk",
-              "dps_delta": -1.11708664
+              "source": "Pix Xizzix",
+              "dps_delta": -1.285206088
             }
           ],
           "runners_up": [
@@ -14189,7 +14189,7 @@
             },
             "rep": {
               "item_id": 19518,
-              "rank": 16,
+              "rank": 14,
               "source": "Warsong Outriders",
               "dps_delta": -3.97,
               "standing": "honored",
@@ -14213,11 +14213,10 @@
                 272407
               ],
               "next": {
-                "item_id": 272068,
+                "item_id": 272406,
                 "rank": 5,
-                "source": "Creeg Bothunk",
-                "dps_delta": -1.12,
-                "standing": "honored"
+                "source": "Pix Xizzix",
+                "dps_delta": -1.29
               }
             },
             "world": {
@@ -14777,8 +14776,8 @@
         "main_hand: Redemption",
         "ranged: Wand of Eternal Light"
       ],
-      "weights_run_seconds": 39.677396935,
-      "verify_run_seconds": 1073.115667026,
+      "weights_run_seconds": 38.076686728,
+      "verify_run_seconds": 1035.454186128,
       "coverage": {
         "back": {
           "eligible": 472,
@@ -15836,7 +15835,7 @@
             },
             "rep": {
               "item_id": 19522,
-              "rank": 10,
+              "rank": 11,
               "source": "Silverwing Sentinels",
               "dps_delta": -6.49,
               "standing": "honored"
@@ -15927,14 +15926,14 @@
               ],
               "next": {
                 "item_id": 12543,
-                "rank": 9,
+                "rank": 10,
                 "source": "The Princess's Surprise",
                 "dps_delta": -4.76
               }
             },
             "rep": {
               "item_id": 19522,
-              "rank": 10,
+              "rank": 11,
               "source": "Silverwing Sentinels",
               "dps_delta": -5.34,
               "standing": "honored",
@@ -15942,28 +15941,18 @@
                 19522
               ],
               "next": {
-                "item_id": 21563,
-                "rank": 52,
-                "source": "Stormpike Guard",
-                "dps_delta": -10.35,
-                "standing": "exalted"
+                "item_id": 271913,
+                "rank": 42,
+                "source": "Theramore Expeditionary Force",
+                "dps_delta": -9.9,
+                "standing": "honored"
               }
             },
             "vendor": {
-              "item_id": 19522,
-              "rank": 10,
-              "source": "Illiyana Moonblaze",
-              "dps_delta": -5.34,
-              "standing": "honored",
-              "not_with": [
-                19522
-              ],
-              "next": {
-                "item_id": 272406,
-                "rank": 16,
-                "source": "Pix Xizzix",
-                "dps_delta": -6.35
-              }
+              "item_id": 272406,
+              "rank": 6,
+              "source": "Pix Xizzix",
+              "dps_delta": -3.42
             },
             "world": {
               "item_id": 13001,
@@ -15976,7 +15965,7 @@
               ],
               "next": {
                 "item_id": 19109,
-                "rank": 12,
+                "rank": 13,
                 "source": "Ivus the Forest Lord",
                 "dps_delta": -5.91
               }
@@ -16512,8 +16501,8 @@
         "trinket2: Dormant Heart of the Mountain",
         "ranged: Wand of Eternal Light"
       ],
-      "weights_run_seconds": 64.104882112,
-      "verify_run_seconds": 580.3351188209999,
+      "weights_run_seconds": 61.482381727,
+      "verify_run_seconds": 553.613038886,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -17570,7 +17559,7 @@
             },
             "rep": {
               "item_id": 19518,
-              "rank": 11,
+              "rank": 12,
               "source": "Warsong Outriders",
               "dps_delta": -6.61,
               "standing": "honored"
@@ -17660,7 +17649,7 @@
             },
             "rep": {
               "item_id": 19518,
-              "rank": 11,
+              "rank": 12,
               "source": "Warsong Outriders",
               "dps_delta": -6.49,
               "standing": "honored",
@@ -17669,7 +17658,7 @@
               ],
               "next": {
                 "item_id": 21563,
-                "rank": 56,
+                "rank": 53,
                 "source": "Frostwolf Clan",
                 "dps_delta": -11.5,
                 "standing": "exalted"
@@ -17684,14 +17673,10 @@
                 272407
               ],
               "next": {
-                "item_id": 19518,
-                "rank": 11,
-                "source": "Kelm Hargunth",
-                "dps_delta": -6.49,
-                "standing": "honored",
-                "not_with": [
-                  19518
-                ]
+                "item_id": 272406,
+                "rank": 7,
+                "source": "Pix Xizzix",
+                "dps_delta": -4.58
               }
             },
             "world": {
@@ -17705,7 +17690,7 @@
               ],
               "next": {
                 "item_id": 19109,
-                "rank": 13,
+                "rank": 14,
                 "source": "Ivus the Forest Lord",
                 "dps_delta": -7.07
               }
@@ -18258,8 +18243,8 @@
         "trinket2: Dormant Heart of the Mountain",
         "ranged: Wand of Eternal Light"
       ],
-      "weights_run_seconds": 64.104882112,
-      "verify_run_seconds": 575.901418794,
+      "weights_run_seconds": 61.482381727,
+      "verify_run_seconds": 548.477708045,
       "coverage": {
         "back": {
           "eligible": 472,
