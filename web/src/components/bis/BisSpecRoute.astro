@@ -107,7 +107,8 @@ const jsonLd =
 const inlineData = server === undefined ? undefined : defaultSlice(server.data, band);
 if (inlineData !== undefined) registerBisPageData(inlineData);
 // The slice's tooltips alone, the same way; the rest come with the full data.
-const inlineTooltips = server === undefined || inlineData === undefined ? {} : sliceTooltips(server.tooltips, inlineData);
+const inlineTooltips =
+  server === undefined || inlineData === undefined ? {} : sliceTooltips(server.tooltips, inlineData);
 registerBisTooltips(specEntry.spec, inlineTooltips);
 const tooltipModelsJson = JSON.stringify(inlineTooltips).replace(/</g, '\\u003c');
 
