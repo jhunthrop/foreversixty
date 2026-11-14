@@ -39,7 +39,7 @@ warlock-destruction Bane of Doom fb683d565974  the next clause says "all fight b
 warlock-destruction Conflagrate 4e13bb2a457f  the clause says "once you have Conflagrate"; "it eats" ties the last clause to it
 warlock-destruction Shadow and Flame 6c28e9c5c5da  mechanic: "each point of Shadow and Flame"
 warrior-arms Bloodthrill d2cfe4cc6dc4  the clause says "once the talent is in"
-warrior-arms Overpower c05f25e25887  the clause before says "once Bloodthrill is in"; Overpower trains first
+warrior-arms Overpower a177157af4dd  the clause before says "once Bloodthrill is in"; Overpower trains first
 warrior-protection Revenge af051249cbee  why to live in Defensive Stance; true for each ability once trained
 warrior-protection Shield Block af051249cbee  why to live in Defensive Stance; true for each ability once trained
 warrior-protection Shield Wall af051249cbee  why to live in Defensive Stance; true for each ability once trained

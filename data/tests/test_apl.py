@@ -314,6 +314,8 @@ EXPECTED_ABILITY_NAMES = {
         23894: "Bloodthirst",
         1680: "Whirlwind",
         1329555: "Reckless Swings",
+        7373: "Hamstring",
+        10610: "Windfury Totem",
         18499: "Berserker Rage",
         11585: "Overpower",
         20662: "Execute",
