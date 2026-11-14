@@ -9,9 +9,6 @@
 import { isRealIcon } from '../icons/placeholder';
 import { dataUrl } from '../planner/load';
 import type { BandArt } from './primitives';
-// The phone files' bytes as data URLs, built in (assets.test.ts holds each to its file).
-import bandPhoneInline from '/art/band-1200.webp?inline';
-import heroPhoneInline from '/art/hero-1200.webp?inline';
 
 const DIR = '/art';
 
@@ -56,16 +53,8 @@ export const GROUND_TILE_PX = 1600;
 export const BAND_ART = art('band', 1200, 2400);
 /** The home hero, the camp road at dusk. */
 export const HERO_ART = art('hero', 1200, 2400);
-/**
- * Each band art's phone file as a data URL, the page's own band pixels inside the page itself
- * (2026-11-13, band LCP). The band is the largest paint on most pages, and as a CSS background
- * its file was found only after the stylesheet and then queued behind the document and the
- * faces: real visitors saw it seconds after the title. Inline it paints with the first frame.
- * The desktop file is not inlined but drawn over it (ui/band.css), so a wide screen gets the
- * same art at once and the sharper copy when it lands. A page inlines only its own art
- * (artStyle): the band is 3.5 KB, the hero 20 KB and only home draws it.
- */
-export const ART_INLINE: Readonly<Record<BandArt, string>> = { band: bandPhoneInline, hero: heroPhoneInline };
+/** Each band art by its key (a page's `art`, ui/band.css's data-art). */
+export const BAND_ARTS: Readonly<Record<BandArt, ResponsiveArt>> = { band: BAND_ART, hero: HERO_ART };
 /** Behind the raid plaque: the cave mouth and its lava glow. */
 export const CAVE_ART = art('cave', 800, 1600);
 /** The link preview's background, 1200 x 630 (lib/og.ts). */
@@ -94,26 +83,27 @@ const url = (file: string): string => `url('${file}')`;
 /**
  * The art as CSS custom properties, set once on <html> by Base.astro, so the stylesheets
  * (global.css, nav.css, the primitives) read the manifest instead of naming files. The page's
- * own band art (`art`) has its phone file inlined (ART_INLINE). A page without Base.astro (the
- * API's /b/{id}) carries the same properties in its copied chrome.
+ * own band art (`art`) draws its phone file from `ownPhone`: Base.astro passes the file inlined
+ * as a data URL (lib/ui/art-inline.ts), so the band paints with the first frame. A page without
+ * Base.astro (the API's /b/{id}) carries the same properties in its copied chrome.
  */
-export function artCssVars(art: BandArt): Readonly<Record<string, string>> {
-  const phone = (key: BandArt, file: ResponsiveArt): string => url(key === art ? ART_INLINE[key] : file.phone);
+export function artCssVars(art: BandArt, ownPhone: string): Readonly<Record<string, string>> {
+  const phone = (key: BandArt): string => url(key === art ? ownPhone : BAND_ARTS[key].phone);
   return {
     '--art-ground': url(GROUND_TILE),
     '--art-ground-size': `${GROUND_TILE_PX}px`,
     '--art-band': url(BAND_ART.desktop),
-    '--art-band-phone': phone('band', BAND_ART),
+    '--art-band-phone': phone('band'),
     '--art-hero': url(HERO_ART.desktop),
-    '--art-hero-phone': phone('hero', HERO_ART),
+    '--art-hero-phone': phone('hero'),
     '--art-cave': url(CAVE_ART.desktop),
     '--art-cave-phone': url(CAVE_ART.phone),
   };
 }
 
 /** artCssVars as an inline style attribute value. */
-export function artStyle(art: BandArt): string {
-  return Object.entries(artCssVars(art))
+export function artStyle(art: BandArt, ownPhone: string): string {
+  return Object.entries(artCssVars(art, ownPhone))
     .map(([name, value]) => `${name}:${value}`)
     .join(';');
 }

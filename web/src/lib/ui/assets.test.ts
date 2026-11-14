@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { ART_INLINE, BAND_ART, FAVICON, HERO_ART, artCssVars, catalogueIconUrl, iconUrl } from './assets';
+import { BAND_ART, FAVICON, HERO_ART, artCssVars, catalogueIconUrl, iconUrl } from './assets';
 import { SEAL, sealFor } from './seal';
 import { PLACEHOLDER_ICON } from '../icons/placeholder';
 
@@ -63,20 +63,11 @@ describe('FAVICON', () => {
   });
 });
 
-describe('ART_INLINE', () => {
-  it.each([
-    ['band', BAND_ART],
-    ['hero', HERO_ART],
-  ] as const)('is the %s phone file, byte for byte, as a WebP data URL', (key, file) => {
-    const [head, body] = ART_INLINE[key].split(',');
-    expect(head).toBe('data:image/webp;base64');
-    expect(Buffer.from(body ?? '', 'base64').equals(publicFile(file.phone))).toBe(true);
-  });
-
-  it("paints a page's own band art from the page, and leaves the other art a file", () => {
-    expect(artCssVars('band')['--art-band-phone']).toBe(`url('${ART_INLINE.band}')`);
-    expect(artCssVars('band')['--art-hero-phone']).toBe(`url('${HERO_ART.phone}')`);
-    expect(artCssVars('hero')['--art-hero-phone']).toBe(`url('${ART_INLINE.hero}')`);
-    expect(artCssVars('hero')['--art-band-phone']).toBe(`url('${BAND_ART.phone}')`);
+describe('artCssVars', () => {
+  it("draws the page's own band art from the given source, and the other art from its file", () => {
+    expect(artCssVars('band', 'data:x')['--art-band-phone']).toBe("url('data:x')");
+    expect(artCssVars('band', 'data:x')['--art-hero-phone']).toBe(`url('${HERO_ART.phone}')`);
+    expect(artCssVars('hero', 'data:y')['--art-hero-phone']).toBe("url('data:y')");
+    expect(artCssVars('hero', 'data:y')['--art-band-phone']).toBe(`url('${BAND_ART.phone}')`);
   });
 });

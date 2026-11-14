@@ -21,9 +21,9 @@
   body {
     isolation: isolate;
   }
-  /* The desktop file lies over the phone file, which is inlined in the page (lib/ui/assets.ts
-     ART_INLINE): the band paints with the first frame and sharpens when the wide copy lands,
-     instead of waiting on a request found only after this stylesheet (the band LCP, 2026-11-13). */
+  /* The desktop file lies over the phone file, which is inlined in the page (lib/ui/art-inline.ts):
+     the band paints with the first frame and sharpens when the wide copy lands, instead of waiting
+     on a request found only after this stylesheet (the band LCP, 2026-11-13). */
   .ui-band {
     --band-size: max(100%, 1440px) auto;
     --band-at: center calc(-96px - var(--band-y, 0px)) / var(--band-size) no-repeat;
