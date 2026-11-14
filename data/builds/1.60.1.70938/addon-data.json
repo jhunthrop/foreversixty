@@ -142443,14 +142443,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 13404,
+                  "source_kind": "dungeon",
+                  "source": "Stratholme: The Unforgiven"
+                },
+                {
                   "item_id": 227086,
                   "source_kind": "vendor",
                   "source": "PvP rank 10 · Lieutenant Commander · Alliance"
-                },
-                {
-                  "item_id": 231562,
-                  "source_kind": "vendor",
-                  "source": "PvP rank 13 · Field Marshal · Alliance"
                 }
               ]
             },
@@ -142461,14 +142461,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 22403,
-                  "source_kind": "dungeon",
-                  "source": "Stratholme: Cannon Master Willey"
-                },
-                {
                   "item_id": 12103,
                   "source_kind": "dungeon",
                   "source": "Stratholme: Balnazzar"
+                },
+                {
+                  "item_id": 22403,
+                  "source_kind": "dungeon",
+                  "source": "Stratholme: Cannon Master Willey"
                 }
               ]
             },
@@ -142497,14 +142497,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 13340,
-                  "source_kind": "dungeon",
-                  "source": "Stratholme: Baron Rivendare"
-                },
-                {
                   "item_id": 272411,
                   "source_kind": "vendor",
                   "source": "Pix Xizzix"
+                },
+                {
+                  "item_id": 13340,
+                  "source_kind": "dungeon",
+                  "source": "Stratholme: Baron Rivendare"
                 }
               ]
             },
@@ -142520,9 +142520,9 @@
                   "source": "PvP rank 13 · Field Marshal · Alliance"
                 },
                 {
-                  "item_id": 252484,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
+                  "item_id": 16466,
+                  "source_kind": "vendor",
+                  "source": "PvP rank 13 · Field Marshal · Alliance"
                 }
               ]
             },
@@ -142533,14 +142533,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 13211,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: Halycon"
+                },
+                {
                   "item_id": 16461,
                   "source_kind": "pvp",
                   "source": "PvP rank 12 · Marshal · Alliance"
-                },
-                {
-                  "item_id": 12966,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: The Beast"
                 }
               ]
             },
@@ -142551,14 +142551,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 867,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
-                {
                   "item_id": 231560,
                   "source_kind": "pvp",
                   "source": "PvP rank 12 · Marshal · Alliance"
+                },
+                {
+                  "item_id": 13963,
+                  "source_kind": "quest",
+                  "source": "Maxwell's Mission"
                 }
               ]
             },
@@ -142587,14 +142587,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 237818,
-                  "source_kind": "vendor",
-                  "source": "Illiyana Moonblaze"
-                },
-                {
                   "item_id": 231558,
                   "source_kind": "vendor",
                   "source": "PvP rank 12 · Marshal · Alliance"
+                },
+                {
+                  "item_id": 237818,
+                  "source_kind": "vendor",
+                  "source": "Illiyana Moonblaze"
                 }
               ]
             },
@@ -142605,12 +142605,12 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 14616,
-                  "source_kind": "dungeon",
-                  "source": "Scholomance"
+                  "item_id": 16462,
+                  "source_kind": "vendor",
+                  "source": "PvP rank 12 · Marshal · Alliance"
                 },
                 {
-                  "item_id": 16462,
+                  "item_id": 231561,
                   "source_kind": "vendor",
                   "source": "PvP rank 12 · Marshal · Alliance"
                 }
@@ -142664,9 +142664,9 @@
                   "source": "Blackrock Spire: Mother Smolderweb"
                 },
                 {
-                  "item_id": 249469,
-                  "source_kind": "crafted",
-                  "source": "Enchanting"
+                  "item_id": 13382,
+                  "source_kind": "dungeon",
+                  "source": "Stratholme: Cannon Master Willey"
                 }
               ]
             },
@@ -142682,9 +142682,9 @@
                   "source": "Blackrock Spire: Mother Smolderweb"
                 },
                 {
-                  "item_id": 249469,
-                  "source_kind": "crafted",
-                  "source": "Enchanting"
+                  "item_id": 13382,
+                  "source_kind": "dungeon",
+                  "source": "Stratholme: Cannon Master Willey"
                 }
               ]
             },
@@ -142700,8 +142700,8 @@
                   "source": "PvP rank 14 · Grand Marshal · Alliance"
                 },
                 {
-                  "item_id": 234570,
-                  "source_kind": "vendor",
+                  "item_id": 234566,
+                  "source_kind": "pvp",
                   "source": "PvP rank 14 · Grand Marshal · Alliance"
                 }
               ]
@@ -142751,9 +142751,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 231568,
-                  "source_kind": "vendor",
-                  "source": "PvP rank 13 · Warlord · Horde"
+                  "item_id": 13404,
+                  "source_kind": "dungeon",
+                  "source": "Stratholme: The Unforgiven"
                 },
                 {
                   "item_id": 227080,
@@ -142774,9 +142774,9 @@
                   "source": "Stratholme: Balnazzar"
                 },
                 {
-                  "item_id": 13089,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 22403,
+                  "source_kind": "dungeon",
+                  "source": "Stratholme: Cannon Master Willey"
                 }
               ]
             },
@@ -142805,14 +142805,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 20068,
-                  "source_kind": "rep",
-                  "source": "The Defilers"
+                  "item_id": 272411,
+                  "source_kind": "vendor",
+                  "source": "Pix Xizzix"
                 },
                 {
-                  "item_id": 11626,
+                  "item_id": 13340,
                   "source_kind": "dungeon",
-                  "source": "Blackrock Depths: High Interrogator Gerstahn "
+                  "source": "Stratholme: Baron Rivendare"
                 }
               ]
             },
@@ -142841,14 +142841,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 13211,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: Halycon"
+                },
+                {
                   "item_id": 16570,
                   "source_kind": "pvp",
                   "source": "PvP rank 12 · General · Horde"
-                },
-                {
-                  "item_id": 19582,
-                  "source_kind": "rep",
-                  "source": "Warsong Outriders"
                 }
               ]
             },
@@ -142859,14 +142859,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 16571,
+                  "item_id": 231569,
                   "source_kind": "vendor",
                   "source": "PvP rank 12 · General · Horde"
                 },
                 {
-                  "item_id": 231569,
-                  "source_kind": "vendor",
-                  "source": "PvP rank 12 · General · Horde"
+                  "item_id": 13963,
+                  "source_kind": "quest",
+                  "source": "Warlord's Command"
                 }
               ]
             },
@@ -142877,14 +142877,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 16572,
-                  "source_kind": "pvp",
-                  "source": "PvP rank 12 · General · Horde"
-                },
-                {
                   "item_id": 22207,
                   "source_kind": "dungeon",
                   "source": "Blackrock Depths: Emperor Dagran Thaurissan"
+                },
+                {
+                  "item_id": 272397,
+                  "source_kind": "vendor",
+                  "source": "Pix Xizzix"
                 }
               ]
             },
@@ -142936,9 +142936,9 @@
                   "source": "Maraudon: Princess Theradras"
                 },
                 {
-                  "item_id": 13098,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: General Drakkisath"
+                  "item_id": 272406,
+                  "source_kind": "vendor",
+                  "source": "Pix Xizzix"
                 }
               ]
             },
@@ -142954,9 +142954,9 @@
                   "source": "Maraudon: Princess Theradras"
                 },
                 {
-                  "item_id": 13098,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: General Drakkisath"
+                  "item_id": 272406,
+                  "source_kind": "vendor",
+                  "source": "Pix Xizzix"
                 }
               ]
             },
@@ -142985,14 +142985,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 13213,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: Mother Smolderweb"
+                },
+                {
                   "item_id": 19120,
                   "source_kind": "quest",
                   "source": "Job Opening: Guard Captain of Revantusk Village"
-                },
-                {
-                  "item_id": 249469,
-                  "source_kind": "crafted",
-                  "source": "Enchanting"
                 }
               ]
             },
@@ -143008,8 +143008,8 @@
                   "source": "PvP rank 14 · High Warlord · Horde"
                 },
                 {
-                  "item_id": 234548,
-                  "source_kind": "vendor",
+                  "item_id": 234543,
+                  "source_kind": "pvp",
                   "source": "PvP rank 14 · High Warlord · Horde"
                 }
               ]
@@ -143026,9 +143026,9 @@
                   "source": "PvP rank 14 · High Warlord · Horde"
                 },
                 {
-                  "item_id": 14555,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 12939,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: Warchief Rend Blackhand"
                 }
               ]
             },
@@ -143039,9 +143039,9 @@
               "chance": 0.08,
               "alternatives": [
                 {
-                  "item_id": 19107,
-                  "source_kind": "quest",
-                  "source": "The Legend of Korrak"
+                  "item_id": 2100,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 },
                 {
                   "item_id": 18680,
@@ -143094,12 +143094,12 @@
         },
         "weights": {
           "attack_power": 1.0,
-          "agility": 2.735,
+          "agility": 2.586,
           "strength": 1.21,
-          "crit": 3.383,
-          "hit": 5.122,
-          "melee_haste": 23.632,
-          "intellect": 1.282
+          "crit": 3.068,
+          "hit": 5.362,
+          "melee_haste": 24.597,
+          "intellect": 1.275
         },
         "hit_to_cap": {
           "alliance": {
@@ -174925,7 +174925,6 @@
     "14461": "Elunarian Handgrips",
     "14465": "Elunarian Belt",
     "14502": "Frostbite Girdle",
-    "14503": "Death's Clutch",
     "14525": "Boneclenched Gauntlets",
     "14539": "Bone Ring Helm",
     "14545": "Ghostloom Leggings",
