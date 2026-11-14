@@ -1,8 +1,8 @@
 {
   "spec": "hunter-beast-mastery",
   "build": "1.60.1.70938",
-  "engine_version": "5603877e4",
-  "generated_at": "2026-11-13T21:17:20Z",
+  "engine_version": "037798db1",
+  "generated_at": "2026-11-14T00:04:07Z",
   "bands": [
     {
       "spec": "hunter-beast-mastery",
@@ -1143,8 +1143,8 @@
         "main_hand: Impaling Harpoon",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 6.360581702,
-      "verify_run_seconds": 12.632576856,
+      "weights_run_seconds": 6.433036052,
+      "verify_run_seconds": 12.532301702,
       "coverage": {
         "back": {
           "eligible": 104,
@@ -2395,8 +2395,8 @@
         "main_hand: Impaling Harpoon",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 6.360581702,
-      "verify_run_seconds": 12.419891503999999,
+      "weights_run_seconds": 6.433036052,
+      "verify_run_seconds": 12.123467000999998,
       "coverage": {
         "back": {
           "eligible": 105,
@@ -3769,8 +3769,8 @@
         "main_hand: Felbough Arm",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 5.9621437010000005,
-      "verify_run_seconds": 17.818211139,
+      "weights_run_seconds": 6.123050636,
+      "verify_run_seconds": 17.566225023,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -5118,8 +5118,8 @@
         "main_hand: Felbough Arm",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 5.9621437010000005,
-      "verify_run_seconds": 18.739332367,
+      "weights_run_seconds": 6.123050636,
+      "verify_run_seconds": 18.728219555000003,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -6496,8 +6496,8 @@
         "main_hand: Staff of Jordan",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 6.340019435,
-      "verify_run_seconds": 12.808419101,
+      "weights_run_seconds": 6.483624733,
+      "verify_run_seconds": 12.945727762999999,
       "coverage": {
         "back": {
           "eligible": 257,
@@ -7875,8 +7875,8 @@
         "main_hand: Staff of Jordan",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 6.340019435,
-      "verify_run_seconds": 12.782143634,
+      "weights_run_seconds": 6.483624733,
+      "verify_run_seconds": 12.907621765,
       "coverage": {
         "back": {
           "eligible": 259,
@@ -9452,8 +9452,8 @@
         "trinket2: Devilsaur Tooth",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 6.314375855,
-      "verify_run_seconds": 27.280515734,
+      "weights_run_seconds": 6.357866842,
+      "verify_run_seconds": 27.24686095,
       "coverage": {
         "back": {
           "eligible": 330,
@@ -11033,8 +11033,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 6.314375855,
-      "verify_run_seconds": 27.891786857,
+      "weights_run_seconds": 6.357866842,
+      "verify_run_seconds": 28.153075323000003,
       "coverage": {
         "back": {
           "eligible": 335,
@@ -12725,8 +12725,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Eaglehorn Long Bow"
       ],
-      "weights_run_seconds": 6.34633407,
-      "verify_run_seconds": 67.505610092,
+      "weights_run_seconds": 6.461641622,
+      "verify_run_seconds": 67.53974453400001,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -14435,8 +14435,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Eaglehorn Long Bow"
       ],
-      "weights_run_seconds": 6.34633407,
-      "verify_run_seconds": 67.108070362,
+      "weights_run_seconds": 6.461641622,
+      "verify_run_seconds": 66.83060895300001,
       "coverage": {
         "back": {
           "eligible": 472,
@@ -16090,8 +16090,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Eaglehorn Long Bow"
       ],
-      "weights_run_seconds": 6.638148867,
-      "verify_run_seconds": 67.978380048,
+      "weights_run_seconds": 6.730135139,
+      "verify_run_seconds": 66.668133392,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -17762,8 +17762,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Eaglehorn Long Bow"
       ],
-      "weights_run_seconds": 6.638148867,
-      "verify_run_seconds": 67.586247756,
+      "weights_run_seconds": 6.730135139,
+      "verify_run_seconds": 66.640588443,
       "coverage": {
         "back": {
           "eligible": 472,
