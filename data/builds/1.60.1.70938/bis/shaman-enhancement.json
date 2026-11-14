@@ -2,7 +2,7 @@
   "spec": "shaman-enhancement",
   "build": "1.60.1.70938",
   "engine_version": "f9385b498",
-  "generated_at": "2026-11-14T07:21:53Z",
+  "generated_at": "2026-11-14T14:01:07Z",
   "bands": [
     {
       "spec": "shaman-enhancement",
@@ -1160,8 +1160,8 @@
         "finger2: Protector's Band",
         "main_hand: Twisted Chanter's Staff"
       ],
-      "weights_run_seconds": 4.806831754,
-      "verify_run_seconds": 10.484885781000001,
+      "weights_run_seconds": 5.40012122,
+      "verify_run_seconds": 11.403751311,
       "coverage": {
         "back": {
           "eligible": 104,
@@ -2421,8 +2421,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Twisted Chanter's Staff"
       ],
-      "weights_run_seconds": 4.806831754,
-      "verify_run_seconds": 10.843845313000001,
+      "weights_run_seconds": 5.40012122,
+      "verify_run_seconds": 11.90831402,
       "coverage": {
         "back": {
           "eligible": 105,
@@ -3719,8 +3719,8 @@
         "finger2: Seal of Wrynn",
         "main_hand: Viscous Hammer"
       ],
-      "weights_run_seconds": 4.960775011,
-      "verify_run_seconds": 13.80955717,
+      "weights_run_seconds": 5.531069748,
+      "verify_run_seconds": 15.440643877,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -5053,8 +5053,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Viscous Hammer"
       ],
-      "weights_run_seconds": 4.960775011,
-      "verify_run_seconds": 15.391811845,
+      "weights_run_seconds": 5.531069748,
+      "verify_run_seconds": 17.26993186,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -6371,8 +6371,8 @@
         "trinket1: Ankh of Life",
         "main_hand: Fiery War Axe"
       ],
-      "weights_run_seconds": 5.101356374,
-      "verify_run_seconds": 15.225941077,
+      "weights_run_seconds": 5.790238749,
+      "verify_run_seconds": 16.604220337,
       "coverage": {
         "back": {
           "eligible": 257,
@@ -7708,8 +7708,8 @@
         "trinket1: Ankh of Life",
         "main_hand: Fiery War Axe"
       ],
-      "weights_run_seconds": 5.101356374,
-      "verify_run_seconds": 16.547724926,
+      "weights_run_seconds": 5.790238749,
+      "verify_run_seconds": 18.452743967,
       "coverage": {
         "back": {
           "eligible": 259,
@@ -9155,8 +9155,8 @@
         "trinket2: Thunderbrew's Boot Flask",
         "main_hand: Soulkeeper"
       ],
-      "weights_run_seconds": 5.218359471,
-      "verify_run_seconds": 12.980189393,
+      "weights_run_seconds": 5.834085463,
+      "verify_run_seconds": 14.323806791,
       "coverage": {
         "back": {
           "eligible": 330,
@@ -10641,8 +10641,8 @@
         "trinket2: Rune of the Guard Captain",
         "main_hand: Soulkeeper"
       ],
-      "weights_run_seconds": 5.218359471,
-      "verify_run_seconds": 16.688805519,
+      "weights_run_seconds": 5.834085463,
+      "verify_run_seconds": 18.348234953000002,
       "coverage": {
         "back": {
           "eligible": 335,
@@ -12342,8 +12342,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Totem of Rage"
       ],
-      "weights_run_seconds": 4.927382541,
-      "verify_run_seconds": 57.566438062,
+      "weights_run_seconds": 5.360289301,
+      "verify_run_seconds": 63.874255526000006,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -14061,8 +14061,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Totem of Rage"
       ],
-      "weights_run_seconds": 4.927382541,
-      "verify_run_seconds": 55.205436367000004,
+      "weights_run_seconds": 5.360289301,
+      "verify_run_seconds": 61.998188283999994,
       "coverage": {
         "back": {
           "eligible": 473,
@@ -15671,8 +15671,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Totem of Rage"
       ],
-      "weights_run_seconds": 4.902029961,
-      "verify_run_seconds": 50.996547588000006,
+      "weights_run_seconds": 5.616887059,
+      "verify_run_seconds": 57.277755804,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -17334,8 +17334,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Totem of Rage"
       ],
-      "weights_run_seconds": 4.902029961,
-      "verify_run_seconds": 51.976222284,
+      "weights_run_seconds": 5.616887059,
+      "verify_run_seconds": 59.148603585,
       "coverage": {
         "back": {
           "eligible": 473,

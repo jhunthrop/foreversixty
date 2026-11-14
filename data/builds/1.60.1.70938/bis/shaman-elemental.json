@@ -2,7 +2,7 @@
   "spec": "shaman-elemental",
   "build": "1.60.1.70938",
   "engine_version": "f9385b498",
-  "generated_at": "2026-11-14T07:17:00Z",
+  "generated_at": "2026-11-14T13:55:38Z",
   "bands": [
     {
       "spec": "shaman-elemental",
@@ -1149,8 +1149,8 @@
         "main_hand: Evocator's Blade",
         "off_hand: Seedcloud Buckler"
       ],
-      "weights_run_seconds": 4.57962394,
-      "verify_run_seconds": 8.00576759,
+      "weights_run_seconds": 5.448789317,
+      "verify_run_seconds": 8.325335506,
       "coverage": {
         "back": {
           "eligible": 104,
@@ -2395,8 +2395,8 @@
         "main_hand: Evocator's Blade",
         "off_hand: Seedcloud Buckler"
       ],
-      "weights_run_seconds": 4.57962394,
-      "verify_run_seconds": 9.028212556,
+      "weights_run_seconds": 5.448789317,
+      "verify_run_seconds": 9.890804683,
       "coverage": {
         "back": {
           "eligible": 105,
@@ -3711,8 +3711,8 @@
         "main_hand: Swinetusk Shank",
         "off_hand: Orb of Mystic Insight"
       ],
-      "weights_run_seconds": 4.154897864,
-      "verify_run_seconds": 7.783151765,
+      "weights_run_seconds": 5.09333444,
+      "verify_run_seconds": 8.583995478,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -5070,8 +5070,8 @@
         "main_hand: Swinetusk Shank",
         "off_hand: Orb of Mystic Insight"
       ],
-      "weights_run_seconds": 4.154897864,
-      "verify_run_seconds": 8.972294418,
+      "weights_run_seconds": 5.09333444,
+      "verify_run_seconds": 10.241353034,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -6401,8 +6401,8 @@
         "trinket1: Ankh of Life",
         "main_hand: Staff of Jordan"
       ],
-      "weights_run_seconds": 5.233423017,
-      "verify_run_seconds": 12.418026785,
+      "weights_run_seconds": 5.797656569,
+      "verify_run_seconds": 13.089015904,
       "coverage": {
         "back": {
           "eligible": 257,
@@ -7747,8 +7747,8 @@
         "trinket1: Ankh of Life",
         "main_hand: Staff of Jordan"
       ],
-      "weights_run_seconds": 5.233423017,
-      "verify_run_seconds": 13.335274862999999,
+      "weights_run_seconds": 5.797656569,
+      "verify_run_seconds": 14.369496929,
       "coverage": {
         "back": {
           "eligible": 259,
@@ -9431,8 +9431,8 @@
         "main_hand: Blade of Eternal Darkness",
         "off_hand: Gizlock's Hypertech Buckler"
       ],
-      "weights_run_seconds": 4.90748692,
-      "verify_run_seconds": 12.044404843999999,
+      "weights_run_seconds": 5.457382914,
+      "verify_run_seconds": 13.105770571,
       "coverage": {
         "back": {
           "eligible": 330,
@@ -11129,8 +11129,8 @@
         "main_hand: Blade of Eternal Darkness",
         "off_hand: Gizlock's Hypertech Buckler"
       ],
-      "weights_run_seconds": 4.90748692,
-      "verify_run_seconds": 13.248881278999999,
+      "weights_run_seconds": 5.457382914,
+      "verify_run_seconds": 14.275825094000002,
       "coverage": {
         "back": {
           "eligible": 335,
@@ -12915,8 +12915,8 @@
         "off_hand: Rhombeard Protector",
         "ranged: Totem of Thunder"
       ],
-      "weights_run_seconds": 5.075138741,
-      "verify_run_seconds": 49.586954256999995,
+      "weights_run_seconds": 5.606483899,
+      "verify_run_seconds": 54.486838552,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -14705,8 +14705,8 @@
         "off_hand: Rhombeard Protector",
         "ranged: Burning Totem"
       ],
-      "weights_run_seconds": 5.075138741,
-      "verify_run_seconds": 50.125875523000005,
+      "weights_run_seconds": 5.606483899,
+      "verify_run_seconds": 55.491323742,
       "coverage": {
         "back": {
           "eligible": 473,
@@ -16433,8 +16433,8 @@
         "main_hand: Ironbark Staff",
         "ranged: Totem of Thunder"
       ],
-      "weights_run_seconds": 3.811863519,
-      "verify_run_seconds": 40.322240729,
+      "weights_run_seconds": 4.246596038,
+      "verify_run_seconds": 44.273954608000004,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -18139,8 +18139,8 @@
         "main_hand: Ironbark Staff",
         "ranged: Totem of Thunder"
       ],
-      "weights_run_seconds": 3.811863519,
-      "verify_run_seconds": 40.090496134,
+      "weights_run_seconds": 4.246596038,
+      "verify_run_seconds": 45.015528509,
       "coverage": {
         "back": {
           "eligible": 473,
