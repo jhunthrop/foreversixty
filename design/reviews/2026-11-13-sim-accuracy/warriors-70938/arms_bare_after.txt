@@ -1,0 +1,12 @@
+remote-test: cfc67c3d74dcd067f70a909a375427519c299c22 -> forever-ci on 192.168.1.182 (run 20261114031946-cfc67c3d7-149, in sim): env SPECS=warrior-arms BANDS=bare:50 bare:40 bare:30 bare:20 TANKS=  bash ../design/reviews/2026-11-13-sim-accuracy/warriors-70938/bands.sh
+remote-test: engine pinned to 00e13541b
+engine replace github.com/wowsims/classic => github.com/jhunthrop/wowsims-forever v1.0.15-0.20261114031012-00e13541b3fb
+warrior-arms bare 50 alliance dps 223.4 0.2
+warrior-arms bare 50 horde dps 225.4 0.1
+warrior-arms bare 40 alliance dps 151.8 0.1
+warrior-arms bare 40 horde dps 150.7 0.1
+warrior-arms bare 30 alliance dps 68.1 0.0
+warrior-arms bare 30 horde dps 68.3 0.0
+warrior-arms bare 20 alliance dps 33.0 0.0
+warrior-arms bare 20 horde dps 34.2 0.0
+remote-test: exit 0 in 9s (cfc67c3d74dcd067f70a909a375427519c299c22)
