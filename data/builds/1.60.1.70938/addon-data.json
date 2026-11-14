@@ -64669,10 +64669,7 @@
               9.0
             ],
             "white": null,
-            "spell": [
-              16.0,
-              16.0
-            ],
+            "spell": null,
             "school": null
           },
           "horde": {
@@ -64681,10 +64678,7 @@
               9.0
             ],
             "white": null,
-            "spell": [
-              16.0,
-              16.0
-            ],
+            "spell": null,
             "school": null
           }
         }
@@ -65250,10 +65244,7 @@
               9.0
             ],
             "white": null,
-            "spell": [
-              15.0,
-              16.0
-            ],
+            "spell": null,
             "school": null
           },
           "horde": {
@@ -65262,10 +65253,7 @@
               9.0
             ],
             "white": null,
-            "spell": [
-              15.0,
-              16.0
-            ],
+            "spell": null,
             "school": null
           }
         }
@@ -65845,10 +65833,7 @@
               9.0
             ],
             "white": null,
-            "spell": [
-              13.5,
-              16.0
-            ],
+            "spell": null,
             "school": null
           },
           "horde": {
@@ -65857,10 +65842,7 @@
               9.0
             ],
             "white": null,
-            "spell": [
-              13.5,
-              16.0
-            ],
+            "spell": null,
             "school": null
           }
         }
@@ -66496,10 +66478,7 @@
               9.0
             ],
             "white": null,
-            "spell": [
-              11.5,
-              16.0
-            ],
+            "spell": null,
             "school": null
           },
           "horde": {
@@ -66508,10 +66487,7 @@
               9.0
             ],
             "white": null,
-            "spell": [
-              9.9,
-              16.0
-            ],
+            "spell": null,
             "school": null
           }
         }
@@ -67153,10 +67129,7 @@
               9.0
             ],
             "white": null,
-            "spell": [
-              10.0,
-              16.0
-            ],
+            "spell": null,
             "school": null
           },
           "horde": {
@@ -67165,10 +67138,7 @@
               9.0
             ],
             "white": null,
-            "spell": [
-              10.0,
-              16.0
-            ],
+            "spell": null,
             "school": null
           }
         }
@@ -67726,10 +67696,7 @@
               9.0
             ],
             "white": null,
-            "spell": [
-              16.0,
-              16.0
-            ],
+            "spell": null,
             "school": null
           },
           "horde": {
@@ -67738,10 +67705,7 @@
               9.0
             ],
             "white": null,
-            "spell": [
-              16.0,
-              16.0
-            ],
+            "spell": null,
             "school": null
           }
         }
@@ -68304,10 +68268,7 @@
               9.0
             ],
             "white": null,
-            "spell": [
-              16.0,
-              16.0
-            ],
+            "spell": null,
             "school": null
           },
           "horde": {
@@ -68316,10 +68277,7 @@
               9.0
             ],
             "white": null,
-            "spell": [
-              16.0,
-              16.0
-            ],
+            "spell": null,
             "school": null
           }
         }
@@ -68897,10 +68855,7 @@
               9.0
             ],
             "white": null,
-            "spell": [
-              13.5,
-              16.0
-            ],
+            "spell": null,
             "school": null
           },
           "horde": {
@@ -68909,10 +68864,7 @@
               9.0
             ],
             "white": null,
-            "spell": [
-              13.5,
-              16.0
-            ],
+            "spell": null,
             "school": null
           }
         }
@@ -69549,10 +69501,7 @@
               9.0
             ],
             "white": null,
-            "spell": [
-              11.0,
-              16.0
-            ],
+            "spell": null,
             "school": null
           },
           "horde": {
@@ -69561,10 +69510,7 @@
               9.0
             ],
             "white": null,
-            "spell": [
-              9.4,
-              16.0
-            ],
+            "spell": null,
             "school": null
           }
         }
@@ -69778,14 +69724,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 18701,
-                  "source_kind": "dungeon",
-                  "source": "Scholomance: Scholomance Handler"
-                },
-                {
                   "item_id": 9533,
                   "source_kind": "quest",
                   "source": "Divino-matic Rod"
+                },
+                {
+                  "item_id": 18701,
+                  "source_kind": "dungeon",
+                  "source": "Scholomance: Scholomance Handler"
                 }
               ]
             },
@@ -70068,14 +70014,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 18701,
-                  "source_kind": "dungeon",
-                  "source": "Scholomance: Scholomance Handler"
-                },
-                {
                   "item_id": 9533,
                   "source_kind": "quest",
                   "source": "Divino-matic Rod"
+                },
+                {
+                  "item_id": 18701,
+                  "source_kind": "dungeon",
+                  "source": "Scholomance: Scholomance Handler"
                 }
               ]
             },
@@ -70205,10 +70151,7 @@
               9.0
             ],
             "white": null,
-            "spell": [
-              7.0,
-              16.0
-            ],
+            "spell": null,
             "school": null
           },
           "horde": {
@@ -70217,10 +70160,7 @@
               9.0
             ],
             "white": null,
-            "spell": [
-              10.0,
-              16.0
-            ],
+            "spell": null,
             "school": null
           }
         }
@@ -141752,10 +141692,7 @@
               9.0
             ],
             "white": null,
-            "spell": [
-              9.0,
-              16.0
-            ],
+            "spell": null,
             "school": null
           },
           "horde": {
@@ -141764,10 +141701,7 @@
               9.0
             ],
             "white": null,
-            "spell": [
-              9.0,
-              16.0
-            ],
+            "spell": null,
             "school": null
           }
         }
@@ -142410,10 +142344,7 @@
               9.0
             ],
             "white": null,
-            "spell": [
-              8.0,
-              16.0
-            ],
+            "spell": null,
             "school": null
           },
           "horde": {
@@ -142422,10 +142353,7 @@
               9.0
             ],
             "white": null,
-            "spell": [
-              8.3,
-              16.0
-            ],
+            "spell": null,
             "school": null
           }
         }
