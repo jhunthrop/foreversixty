@@ -40,7 +40,7 @@ No-known-source sample (15 of 251, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (night-elf, 0000000000000000-51100332020102100000-0000000000000000)
 
-Set DPS (verified): 66.8. Weights run: 3.9s. Verify run: 7.6s. 424 eligible items had no known source.
+Set DPS (verified): 66.8. Weights run: 4.0s. Verify run: 7.6s. 424 eligible items had no known source.
 
 Race sweep: night-elf 252.4 ± 0.5, high-order-skyborne 249.7 ± 0.4 (threat_per_second); the guide race night-elf is best.
 
@@ -72,7 +72,7 @@ No-known-source sample (15 of 424, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (night-elf, 0000000000000000-51200332023102123010-0000000000000000)
 
-Set DPS (verified): 96.9. Weights run: 4.1s. Verify run: 5.3s. 607 eligible items had no known source.
+Set DPS (verified): 96.9. Weights run: 4.3s. Verify run: 5.3s. 607 eligible items had no known source.
 
 Race sweep: night-elf 368.5 ± 0.8, high-order-skyborne 358.2 ± 0.8 (threat_per_second); the guide race night-elf is best.
 
@@ -104,7 +104,7 @@ No-known-source sample (15 of 607, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (night-elf, 0000000000000000-51200332023102125510-0300000000000000)
 
-Set DPS (verified): 152.7. Weights run: 4.1s. Verify run: 7.9s. 817 eligible items had no known source.
+Set DPS (verified): 152.7. Weights run: 4.3s. Verify run: 7.9s. 817 eligible items had no known source.
 
 Race sweep: night-elf 595.3 ± 1.1, high-order-skyborne 585.1 ± 1.1 (threat_per_second); the guide race night-elf is best.
 
@@ -136,7 +136,7 @@ No-known-source sample (15 of 817, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (night-elf, 0000000000000000-51230332023102125510-0550000000000000)
 
-Set DPS (verified): 237.7. Weights run: 7.9s. Verify run: 42.2s. 1988 eligible items had no known source.
+Set DPS (verified): 237.7. Weights run: 8.2s. Verify run: 42.2s. 1988 eligible items had no known source.
 
 Race sweep: high-order-skyborne 963.8 ± 0.9, night-elf 956.4 ± 0.9 (threat_per_second); high-order-skyborne beats the guide race night-elf by 7.4 (0.78%) ± 1.3, beyond error.
 
@@ -168,7 +168,7 @@ No-known-source sample (15 of 1988, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (night-elf, 0000000000000000-51230332023102125510-0550000000000000)
 
-Set DPS (verified): 497.9. Weights run: 9.0s. Verify run: 46.0s. 1988 eligible items had no known source.
+Set DPS (verified): 497.9. Weights run: 9.2s. Verify run: 45.0s. 1988 eligible items had no known source.
 
 Race sweep: high-order-skyborne 1940.3 ± 2.1, night-elf 1938.7 ± 2.2 (threat_per_second); high-order-skyborne beats the guide race night-elf by 1.5 (0.08%) ± 3.0, inside error.
 
@@ -202,7 +202,7 @@ No-known-source sample (15 of 1988, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (tauren, 0000000000000000-51100301000000000000-0000000000000000)
 
-Set DPS (verified): 23.0. Weights run: 4.5s. Verify run: 5.2s. 247 eligible items had no known source.
+Set DPS (verified): 23.0. Weights run: 4.5s. Verify run: 5.3s. 247 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 93.5 ± 0.2, tauren 93.5 ± 0.2 (threat_per_second); windshaper-skyborne beats the guide race tauren by 0.0 (0.03%) ± 0.3, inside error.
 
@@ -234,7 +234,7 @@ No-known-source sample (15 of 247, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (tauren, 0000000000000000-51100332020102100000-0000000000000000)
 
-Set DPS (verified): 65.3. Weights run: 3.9s. Verify run: 7.4s. 425 eligible items had no known source.
+Set DPS (verified): 65.3. Weights run: 4.0s. Verify run: 7.1s. 425 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 248.4 ± 0.4, tauren 245.9 ± 0.5 (threat_per_second); windshaper-skyborne beats the guide race tauren by 2.5 (1.01%) ± 0.6, beyond error.
 
@@ -266,7 +266,7 @@ No-known-source sample (15 of 425, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (tauren, 0000000000000000-51200332023102123010-0000000000000000)
 
-Set DPS (verified): 93.3. Weights run: 4.1s. Verify run: 5.0s. 606 eligible items had no known source.
+Set DPS (verified): 93.3. Weights run: 4.3s. Verify run: 5.0s. 606 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 353.9 ± 0.8, tauren 353.8 ± 0.8 (threat_per_second); windshaper-skyborne beats the guide race tauren by 0.1 (0.03%) ± 1.1, inside error.
 
@@ -298,7 +298,7 @@ No-known-source sample (15 of 606, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (tauren, 0000000000000000-51200332023102125510-0300000000000000)
 
-Set DPS (verified): 148.7. Weights run: 4.1s. Verify run: 11.0s. 816 eligible items had no known source.
+Set DPS (verified): 148.7. Weights run: 4.3s. Verify run: 10.8s. 816 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 585.1 ± 1.1, tauren 578.3 ± 1.1 (threat_per_second); windshaper-skyborne beats the guide race tauren by 6.8 (1.18%) ± 1.5, beyond error.
 
@@ -330,7 +330,7 @@ No-known-source sample (15 of 816, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (tauren, 0000000000000000-51230332023102125510-0550000000000000)
 
-Set DPS (verified): 229.7. Weights run: 7.9s. Verify run: 43.8s. 1992 eligible items had no known source.
+Set DPS (verified): 229.7. Weights run: 8.2s. Verify run: 43.3s. 1992 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 921.8 ± 0.9, tauren 917.4 ± 0.9 (threat_per_second); windshaper-skyborne beats the guide race tauren by 4.5 (0.49%) ± 1.2, beyond error.
 
@@ -362,7 +362,7 @@ No-known-source sample (15 of 1992, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (tauren, 0000000000000000-51230332023102125510-0550000000000000)
 
-Set DPS (verified): 552.6. Weights run: 9.0s. Verify run: 46.6s. 1992 eligible items had no known source.
+Set DPS (verified): 552.6. Weights run: 9.2s. Verify run: 44.8s. 1992 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 2167.0 ± 2.4, tauren 2149.1 ± 2.4 (threat_per_second); windshaper-skyborne beats the guide race tauren by 17.9 (0.83%) ± 3.4, beyond error.
 
