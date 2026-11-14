@@ -2,7 +2,7 @@
   "spec": "druid-feral-bear",
   "build": "1.60.1.70938",
   "engine_version": "f9385b498",
-  "generated_at": "2026-11-14T07:23:56Z",
+  "generated_at": "2026-11-14T14:04:22Z",
   "bands": [
     {
       "spec": "druid-feral-bear",
@@ -1288,8 +1288,8 @@
         "trinket1: Rune of Duty",
         "main_hand: Rakzur Club"
       ],
-      "weights_run_seconds": 4.077798805,
-      "verify_run_seconds": 4.740814456,
+      "weights_run_seconds": 4.469357432,
+      "verify_run_seconds": 5.079230377,
       "coverage": {
         "back": {
           "eligible": 104,
@@ -2659,8 +2659,8 @@
         "trinket1: Rune of Duty",
         "main_hand: Rakzur Club"
       ],
-      "weights_run_seconds": 4.077798805,
-      "verify_run_seconds": 4.7327715349999995,
+      "weights_run_seconds": 4.469357432,
+      "verify_run_seconds": 5.0925053049999995,
       "coverage": {
         "back": {
           "eligible": 105,
@@ -4150,8 +4150,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Viscous Hammer"
       ],
-      "weights_run_seconds": 3.480682646,
-      "verify_run_seconds": 7.018516845,
+      "weights_run_seconds": 3.888935105,
+      "verify_run_seconds": 7.146435927,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -5601,8 +5601,8 @@
         "trinket2: Defiler's Talisman",
         "main_hand: Viscous Hammer"
       ],
-      "weights_run_seconds": 3.480682646,
-      "verify_run_seconds": 6.529669335,
+      "weights_run_seconds": 3.888935105,
+      "verify_run_seconds": 6.7971902900000005,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -7206,8 +7206,8 @@
         "trinket2: Talisman of Arathor",
         "main_hand: Ironshod Bludgeon"
       ],
-      "weights_run_seconds": 3.736664688,
-      "verify_run_seconds": 4.794712661,
+      "weights_run_seconds": 4.161545691,
+      "verify_run_seconds": 5.227751790999999,
       "coverage": {
         "back": {
           "eligible": 257,
@@ -8808,8 +8808,8 @@
         "trinket2: Defiler's Talisman",
         "main_hand: Cragwood Maul"
       ],
-      "weights_run_seconds": 3.736664688,
-      "verify_run_seconds": 4.634401071,
+      "weights_run_seconds": 4.161545691,
+      "verify_run_seconds": 4.914509292,
       "coverage": {
         "back": {
           "eligible": 259,
@@ -10431,8 +10431,8 @@
         "trinket2: Talisman of Arathor",
         "main_hand: Warden Staff"
       ],
-      "weights_run_seconds": 3.679707792,
-      "verify_run_seconds": 7.628981565,
+      "weights_run_seconds": 4.06272032,
+      "verify_run_seconds": 7.363597146,
       "coverage": {
         "back": {
           "eligible": 330,
@@ -12142,8 +12142,8 @@
         "trinket2: Defiler's Talisman",
         "main_hand: Warden Staff"
       ],
-      "weights_run_seconds": 3.679707792,
-      "verify_run_seconds": 10.104432037999999,
+      "weights_run_seconds": 4.06272032,
+      "verify_run_seconds": 10.491990372,
       "coverage": {
         "back": {
           "eligible": 335,
@@ -13916,8 +13916,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of Brutality"
       ],
-      "weights_run_seconds": 6.885237368,
-      "verify_run_seconds": 39.112817198,
+      "weights_run_seconds": 7.99510315,
+      "verify_run_seconds": 41.014485111,
       "coverage": {
         "back": {
           "eligible": 467,
@@ -15687,8 +15687,8 @@
         "trinket2: Defiler's Talisman",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 6.885237368,
-      "verify_run_seconds": 39.670011132,
+      "weights_run_seconds": 7.99510315,
+      "verify_run_seconds": 42.446912734,
       "coverage": {
         "back": {
           "eligible": 473,
@@ -17448,8 +17448,8 @@
         "main_hand: Headmaster's Charge",
         "ranged: Idol of Brutality"
       ],
-      "weights_run_seconds": 7.421931431,
-      "verify_run_seconds": 41.552418599999996,
+      "weights_run_seconds": 8.533748245,
+      "verify_run_seconds": 43.962958982,
       "coverage": {
         "back": {
           "eligible": 467,
@@ -19147,8 +19147,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of Brutality"
       ],
-      "weights_run_seconds": 7.421931431,
-      "verify_run_seconds": 43.120822544,
+      "weights_run_seconds": 8.533748245,
+      "verify_run_seconds": 45.338698689,
       "coverage": {
         "back": {
           "eligible": 473,
