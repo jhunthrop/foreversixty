@@ -151905,14 +151905,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 20134,
+                  "source_kind": "quest",
+                  "source": "The Darkreaver Menace"
+                },
+                {
                   "item_id": 231657,
                   "source_kind": "vendor",
                   "source": "PvP rank 13 · Warlord · Horde"
-                },
-                {
-                  "item_id": 12752,
-                  "source_kind": "quest",
-                  "source": "Cap of the Scarlet Savant"
                 }
               ]
             },
@@ -151923,14 +151923,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 14558,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
+                },
+                {
                   "item_id": 12929,
                   "source_kind": "dungeon",
                   "source": "Blackrock Spire: Pyroguard Emberseer"
-                },
-                {
-                  "item_id": 1443,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
                 }
               ]
             },
@@ -151977,14 +151977,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 231653,
-                  "source_kind": "vendor",
-                  "source": "PvP rank 13 · Warlord · Horde"
-                },
-                {
                   "item_id": 11726,
                   "source_kind": "dungeon",
                   "source": "Blackrock Depths: Gorosh the Dervish"
+                },
+                {
+                  "item_id": 231653,
+                  "source_kind": "vendor",
+                  "source": "PvP rank 13 · Warlord · Horde"
                 }
               ]
             },
@@ -152013,13 +152013,13 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 231655,
-                  "source_kind": "vendor",
-                  "source": "PvP rank 12 · General · Horde"
+                  "item_id": 14615,
+                  "source_kind": "dungeon",
+                  "source": "Scholomance"
                 },
                 {
-                  "item_id": 231660,
-                  "source_kind": "pvp",
+                  "item_id": 231655,
+                  "source_kind": "vendor",
                   "source": "PvP rank 12 · General · Horde"
                 }
               ]
@@ -152049,14 +152049,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 22741,
+                  "source_kind": "rep",
+                  "source": "Warsong Outriders"
+                },
+                {
                   "item_id": 231658,
                   "source_kind": "vendor",
                   "source": "PvP rank 12 · General · Horde"
-                },
-                {
-                  "item_id": 252606,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
                 }
               ]
             },
@@ -152072,9 +152072,9 @@
                   "source": "PvP rank 12 · General · Horde"
                 },
                 {
-                  "item_id": 231661,
-                  "source_kind": "vendor",
-                  "source": "PvP rank 12 · General · Horde"
+                  "item_id": 275618,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
                 }
               ]
             },
@@ -152162,7 +152162,7 @@
                   "source": "PvP rank 14 · High Warlord · Horde"
                 },
                 {
-                  "item_id": 234546,
+                  "item_id": 234545,
                   "source_kind": "pvp",
                   "source": "PvP rank 14 · High Warlord · Horde"
                 }
@@ -152173,13 +152173,7 @@
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Magmus",
               "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 228176,
-                  "source_kind": "vendor",
-                  "source": "Pix Xizzix"
-                }
-              ]
+              "alternatives": []
             }
           }
         },
@@ -152224,11 +152218,11 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 2.2,
-          "agility": 1.44,
-          "crit": 2.441,
-          "melee_haste": 24.751,
-          "intellect": 1.692,
-          "spell_power": 0.915
+          "agility": 1.455,
+          "crit": 2.392,
+          "melee_haste": 20.185,
+          "intellect": 1.653,
+          "spell_power": 0.886
         },
         "hit_to_cap": {
           "alliance": {
@@ -174609,7 +174603,6 @@
     "11928": "Thaurissan's Royal Scepter",
     "11929": "Haunting Specter Leggings",
     "11930": "The Emperor's New Cape",
-    "11931": "Dreadforge Retaliator",
     "11933": "Imperial Jewel",
     "11936": "Relic Hunter Belt",
     "11962": "Manacle Cuffs",
@@ -176800,7 +176793,6 @@
     "11860": 37.3,
     "11863": 31.1,
     "11923": 25.0,
-    "11931": 50.5,
     "12247": 16.8,
     "12248": 17.5,
     "12250": 23.0,
