@@ -529,15 +529,15 @@
           "ranks": [
             {
               "spell_id": 415140,
-              "description": "Increases your Attack Power by an amount equal to 50% of your Intellect."
+              "description": "Increases your Attack Power by an amount equal to 33% of your Intellect."
+            },
+            {
+              "spell_id": 415140,
+              "description": "Increases your Attack Power by an amount equal to 66% of your Intellect."
             },
             {
               "spell_id": 415140,
               "description": "Increases your Attack Power by an amount equal to 100% of your Intellect."
-            },
-            {
-              "spell_id": 415140,
-              "description": "Increases your Attack Power by an amount equal to 150% of your Intellect."
             }
           ],
           "spell_id": 415140
@@ -712,7 +712,7 @@
           "ranks": [
             {
               "spell_id": 17364,
-              "description": "Instantly strike for 150% weapon damage and increase the damage you deal to the target with your next Lightning Bolt, Chain Lightning, or Earth Shock spell by 20% for 12 sec."
+              "description": "Instantly strike for 100% weapon damage and increase the damage you deal to the target with your next Lightning Bolt, Chain Lightning, or Earth Shock spell by 20% for 12 sec."
             }
           ],
           "spell_id": 17364
@@ -809,23 +809,23 @@
           "ranks": [
             {
               "spell_id": 408498,
-              "description": "When you deal damage with a melee attack, you have a chance to reduce the cast time and Mana cost of your next Lightning Bolt spell by 4%. Stacks up to 5 times. Lasts 30 sec."
+              "description": "When you deal damage with a melee attack, you have a ((Mainhand weapon min base speed * 6 / 60) * 100)% chance (based on weapon speed) to reduce the cast time and Mana cost of your next Lightning Bolt spell by 20%. Stacks up to 5 times. Lasts 30 sec."
             },
             {
               "spell_id": 408498,
-              "description": "When you deal damage with a melee attack, you have a chance to reduce the cast time and Mana cost of your next Lightning Bolt spell by 8%. Stacks up to 5 times. Lasts 30 sec."
+              "description": "When you deal damage with a melee attack, you have a ((Mainhand weapon min base speed * 7 / 60) * 100)% chance (based on weapon speed) to reduce the cast time and Mana cost of your next Lightning Bolt spell by 20%. Stacks up to 5 times. Lasts 30 sec."
             },
             {
               "spell_id": 408498,
-              "description": "When you deal damage with a melee attack, you have a chance to reduce the cast time and Mana cost of your next Lightning Bolt spell by 12%. Stacks up to 5 times. Lasts 30 sec."
+              "description": "When you deal damage with a melee attack, you have a ((Mainhand weapon min base speed * 8 / 60) * 100)% chance (based on weapon speed) to reduce the cast time and Mana cost of your next Lightning Bolt spell by 20%. Stacks up to 5 times. Lasts 30 sec."
             },
             {
               "spell_id": 408498,
-              "description": "When you deal damage with a melee attack, you have a chance to reduce the cast time and Mana cost of your next Lightning Bolt spell by 16%. Stacks up to 5 times. Lasts 30 sec."
+              "description": "When you deal damage with a melee attack, you have a ((Mainhand weapon min base speed * 9 / 60) * 100)% chance (based on weapon speed) to reduce the cast time and Mana cost of your next Lightning Bolt spell by 20%. Stacks up to 5 times. Lasts 30 sec."
             },
             {
               "spell_id": 408498,
-              "description": "When you deal damage with a melee attack, you have a chance to reduce the cast time and Mana cost of your next Lightning Bolt spell by 20%. Stacks up to 5 times. Lasts 30 sec."
+              "description": "When you deal damage with a melee attack, you have a ((Mainhand weapon min base speed * 10 / 60) * 100)% chance (based on weapon speed) to reduce the cast time and Mana cost of your next Lightning Bolt spell by 20%. Stacks up to 5 times. Lasts 30 sec."
             }
           ],
           "spell_id": 408498

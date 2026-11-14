@@ -474,6 +474,38 @@
           "superseded_by": null
         },
         {
+          "id": 217716,
+          "name": "Vile Concoction",
+          "quality": 1,
+          "item_level": 1,
+          "required_level": 1,
+          "class_id": 0,
+          "subclass_id": 8,
+          "inventory_type": 0,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 217727,
+          "name": "Ward of the Dead",
+          "quality": 1,
+          "item_level": 1,
+          "required_level": 0,
+          "class_id": 4,
+          "subclass_id": 0,
+          "inventory_type": 12,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
           "id": 270126,
           "name": "Conqueror's Pendant",
           "quality": 3,
@@ -1021,6 +1053,45 @@
           "fields": [
             "item_level",
             "required_level",
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
+          "id": 18754,
+          "before": {
+            "id": 18754,
+            "name": "Fel Hardened Bracers",
+            "quality": 3,
+            "item_level": 62,
+            "required_level": 57,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 9,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "classic-db",
+            "stats_source": "classic-db",
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 18754,
+            "name": "Fel Hardened Bracers",
+            "quality": 3,
+            "item_level": 62,
+            "required_level": 57,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 9,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
             "required_level_source",
             "stats_source"
           ]
@@ -3214,6 +3285,10 @@
         {
           "id": 1330855,
           "name": "Gloves of Holy Might"
+        },
+        {
+          "id": 1331408,
+          "name": "更新互动"
         }
       ],
       "removed": [],

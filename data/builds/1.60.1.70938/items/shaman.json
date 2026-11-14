@@ -894,7 +894,9 @@
       "stats": {
         "intellect": 5,
         "stamina": 5,
-        "mp5": 2
+        "mp5": 2,
+        "spell_power": 46,
+        "healing": 46
       },
       "damage_min": 30,
       "damage_max": 56,
@@ -6436,7 +6438,9 @@
       "armor": 0,
       "stats": {
         "intellect": 9,
-        "stamina": 4
+        "stamina": 4,
+        "spell_power": 46,
+        "healing": 46
       },
       "damage_min": 15,
       "damage_max": 29,
@@ -6655,7 +6659,9 @@
         "intellect": 17,
         "stamina": 8,
         "spirit": 7,
-        "crit": 7
+        "crit": 7,
+        "spell_power": 46,
+        "healing": 46
       },
       "damage_min": 54,
       "damage_max": 81,
@@ -85768,7 +85774,7 @@
       "armor": 0,
       "stats": {
         "stamina": 8,
-        "mp5": 4
+        "mp5": 2
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -100518,7 +100524,7 @@
       "item_level": 35,
       "armor": 0,
       "stats": {
-        "stamina": 13
+        "stamina": 10
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -128419,7 +128425,7 @@
       "armor": 0,
       "stats": {
         "stamina": 11,
-        "mp5": 6
+        "mp5": 3
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -130214,7 +130220,7 @@
       "armor": 0,
       "stats": {
         "stamina": 11,
-        "mp5": 2
+        "mp5": 3
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -169663,7 +169669,7 @@
       "armor": 0,
       "stats": {
         "stamina": 14,
-        "mp5": 7
+        "mp5": 3
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -236259,7 +236265,7 @@
       "armor": 0,
       "stats": {
         "stamina": 16,
-        "mp5": 9
+        "mp5": 4
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -240237,7 +240243,7 @@
       "armor": 0,
       "stats": {
         "stamina": 16,
-        "mp5": 3
+        "mp5": 4
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -249504,7 +249510,7 @@
         "spell_power": 10,
         "stamina": 10,
         "spirit": 8,
-        "hit": 10
+        "hit": 1
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -251868,6 +251874,8 @@
       "stats": {
         "intellect": 14,
         "hit": 10,
+        "spell_power": 9,
+        "healing": 9,
         "spirit": 8
       },
       "damage_min": 0,

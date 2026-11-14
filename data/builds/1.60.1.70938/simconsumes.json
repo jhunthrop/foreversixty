@@ -8693,6 +8693,15 @@
     ]
   },
   {
+    "id": 217716,
+    "name": "Vile Concoction",
+    "quality": 1,
+    "required_level": 1,
+    "spell_ids": [
+      440827
+    ]
+  },
+  {
     "id": 217736,
     "name": "Rune of the Coterie",
     "quality": 2,

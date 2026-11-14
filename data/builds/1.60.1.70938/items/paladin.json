@@ -818,7 +818,9 @@
       "stats": {
         "intellect": 5,
         "stamina": 5,
-        "mp5": 2
+        "mp5": 2,
+        "spell_power": 46,
+        "healing": 46
       },
       "damage_min": 30,
       "damage_max": 56,
@@ -855,7 +857,9 @@
       "stats": {
         "intellect": 6,
         "stamina": 3,
-        "crit": 7
+        "crit": 7,
+        "spell_power": 46,
+        "healing": 46
       },
       "damage_min": 27,
       "damage_max": 50,
@@ -84626,7 +84630,7 @@
       "armor": 0,
       "stats": {
         "stamina": 8,
-        "mp5": 4
+        "mp5": 2
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -99267,7 +99271,7 @@
       "item_level": 35,
       "armor": 0,
       "stats": {
-        "stamina": 13
+        "stamina": 10
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -127369,7 +127373,7 @@
       "armor": 0,
       "stats": {
         "stamina": 11,
-        "mp5": 6
+        "mp5": 3
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -129158,7 +129162,7 @@
       "armor": 0,
       "stats": {
         "stamina": 11,
-        "mp5": 2
+        "mp5": 3
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -177560,7 +177564,7 @@
       "armor": 0,
       "stats": {
         "stamina": 14,
-        "mp5": 7
+        "mp5": 3
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -240231,7 +240235,7 @@
     {
       "id": 286590,
       "name": "Silithid Queen's Husk",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_plate08",
       "slot": "chest",
       "quality": 3,
       "required_level": 56,
@@ -240254,7 +240258,7 @@
       "unique": false,
       "client_unconfirmed": false,
       "percent_stats": {},
-      "icon_source": "client",
+      "icon_source": "wowhead",
       "weapon_type": null,
       "superseded_by": null,
       "bonding": "pickup",
@@ -244563,7 +244567,7 @@
       "slot": "wrist",
       "quality": 3,
       "required_level": 57,
-      "required_level_source": "classic-db",
+      "required_level_source": "client",
       "item_level": 62,
       "armor": 283,
       "stats": {
@@ -244577,13 +244581,11 @@
       "dps": 0.0,
       "two_hand": false,
       "effect_text": "",
-      "stats_source": "classic-db",
+      "stats_source": null,
       "set_id": null,
       "unique": false,
       "client_unconfirmed": false,
-      "percent_stats": {
-        "defense": 3
-      },
+      "percent_stats": {},
       "icon_source": "client",
       "weapon_type": null,
       "superseded_by": null,
@@ -253633,7 +253635,7 @@
       "armor": 0,
       "stats": {
         "stamina": 16,
-        "mp5": 9
+        "mp5": 4
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -259051,7 +259053,7 @@
       "armor": 0,
       "stats": {
         "stamina": 16,
-        "mp5": 3
+        "mp5": 4
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -269164,7 +269166,7 @@
         "spell_power": 10,
         "stamina": 10,
         "spirit": 8,
-        "hit": 10
+        "hit": 1
       },
       "damage_min": 0,
       "damage_max": 0,
@@ -270953,6 +270955,8 @@
       "stats": {
         "intellect": 14,
         "hit": 10,
+        "spell_power": 9,
+        "healing": 9,
         "spirit": 8
       },
       "damage_min": 0,
