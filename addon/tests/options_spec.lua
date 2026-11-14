@@ -302,18 +302,18 @@ describe("Options", function()
 		end)
 	end)
 
-	it("opens the tour again on /fs tour, and never on /fs help", function()
+	it("opens Me's Set up again on /fs tour, and never on /fs help", function()
 		local Onboarding = require("Onboarding")
-		local opened = {}
-		Onboarding.open = function(page)
-			opened[#opened + 1] = page
+		local opened = 0
+		Onboarding.open = function()
+			opened = opened + 1
 			return true
 		end
 		assert.are.same({}, Options.handle("tour"))
 		Options.handle("help")
 		Options.handle("help all")
-		assert.are.same({ 1 }, opened)
-		assert.are.equal("/fs tour: see the tour again", require("Locale").settingsCommands[5])
+		assert.are.equal(1, opened)
+		assert.are.equal("/fs tour: the Set up steps on Me again", require("Locale").settingsCommands[5])
 	end)
 
 	-- Spec 2026-11-13-addon-hub 10: /fs welcome, /fs panel, /fs job, /fs jobs, /fs group and /fs floor are
@@ -656,25 +656,19 @@ describe("Options", function()
 		assert.are.equal("|cffffec71Forever Sixty|r: " .. Locale.settingsCommands[1], state.printed[1])
 	end)
 
-	-- design/specs/2026-11-08-addon-ux.md 1.6 and 4.2, 2026-11-13-addon-builds-window.md 5: the minimap
-	-- button and the window's binding toggle the window; the compartment entry and the panel's binding
-	-- toggle the addon panel.
-	it("makes the chip the minimap button's launcher, the window's binding toggle it, the keybind the panel",
-		function()
+	-- Spec 2026-11-13-addon-hub 10: the one key binding toggles the window as /fs does; the minimap button and
+	-- the compartment entry are the chip's twins.
+	it("makes the chip the minimap button's launcher and the key binding toggle the window", function()
 		local Hub = require("Hub")
-		local Panel = require("Panel")
 		local calls = {}
 		Hub.toggle = function(id)
 			calls[#calls + 1] = "window " .. tostring(id)
 		end
-		Panel.toggle = function(from)
-			calls[#calls + 1] = "panel " .. tostring(from)
-		end
 		Options.register()
 		_G.FOREVERSIXTY_TOGGLE_WINDOW()
-		_G.FOREVERSIXTY_TOGGLE_HUB()
-		assert.are.same({ "panel key", "window nil" }, calls)
-		assert.are.equal(require("Locale").bindingHub, _G.BINDING_NAME_FOREVERSIXTY_HUB)
+		assert.are.same({ "window nil" }, calls)
+		assert.are.equal(require("Locale").bindingToggle, _G.BINDING_NAME_FOREVERSIXTY_TOGGLE)
+		assert.is_nil(_G.FOREVERSIXTY_TOGGLE_HUB)
 		-- Spec 2026-11-13-addon-hub 6: the minimap button and the compartment are the chip's twins.
 		assert.are.equal(require("Chip"), require("Minimap").launcher)
 		-- Right-click is the Settings page's (L3.5), or the commands where it cannot open.
@@ -996,25 +990,20 @@ describe("Options", function()
 	end)
 
 	-- L4.3 ruling 1: the character-panel tab refreshes on the chip's events (every surface
-	-- refresh, the equipment change, the inbox's load) and on an item it waits on.
+	-- refresh, the equipment change, the inbox's load).
 	it("refreshes the panel tab with every surface, on an equipment change and on the inbox's load", function()
 		local PanelTab, Chip, SlotMarks = require("PanelTab"), require("Chip"), require("SlotMarks")
 		Chip.refresh = function() end
 		SlotMarks.refresh = function() end
-		local events, info = {}, {}
+		local events = {}
 		PanelTab.refresh = function(_, event)
 			events[#events + 1] = event or "none"
-		end
-		PanelTab.onItemInfo = function(itemId)
-			info[#info + 1] = itemId
 		end
 		Options.onEvent(Options.frame, "BAG_UPDATE_DELAYED")
 		Options.onEvent(Options.frame, "PLAYER_EQUIPMENT_CHANGED", 5, false)
 		Options.onEvent(Options.frame, "TRAIT_CONFIG_UPDATED")
 		Options.readInbox()
 		assert.are.same({ "BAG_UPDATE_DELAYED", "PLAYER_EQUIPMENT_CHANGED", "TRAIT_CONFIG_UPDATED", "none" }, events)
-		Options.onEvent(Options.frame, "GET_ITEM_INFO_RECEIVED", 300, true)
-		assert.are.same({ 300 }, info)
 	end)
 
 	it("prints the panel tab's line on /fs diag", function()

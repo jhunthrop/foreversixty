@@ -1,20 +1,132 @@
 -- addon/tests/onboarding_spec.lua
--- The first-run tour (design/specs/2026-11-08-addon-ux.md 3.1) and hiding one's own Forever Score
--- (the coordinator's ruling, 2026-11-08): the pages for a character in a guild or not, the set-up
--- page's states, when the tour is due and how it ends, every page drawn through the client mock
--- without writing into a client frame, the small QR, and the score switch's two ends (the outbox
--- field, and the player's own score read from the inbox).
+-- The first open (design/specs/2026-11-13-addon-hub.md 4.1, board hub-me-setup.png): the first login of a new
+-- tour version opens the window on Me with Set up in place of Right now, never in combat or an instance;
+-- /fs tour brings it back. The steps' model, when it is due (a first install, a reinstall with or without its
+-- SavedVariables), the worn item step 2 shows, Set up drawn in the window, and hiding one's own Forever
+-- Score (the coordinator's ruling, 2026-11-08: the outbox field, and the player's own score from the inbox).
 local helper = require("spec_helper")
 local mock = require("wow_mock")
 local L = require("Locale")
 
-describe("Onboarding, the pure model", function()
-	local Onboarding, TourExample
+local SPECS = { { slug = "hunter-beast-mastery", name = "Beast Mastery" },
+	{ slug = "hunter-marksmanship", name = "Marksmanship" }, { slug = "hunter-survival", name = "Survival" } }
+local EXAMPLE = { slot = "wrist", slotId = 9, itemId = 19587, name = "Slashclaw Bracers" }
+
+describe("Set up, the pure model", function()
+	local Onboarding
 
 	before_each(function()
 		mock.install({})
 		helper.load("Theme").reset()
 		Onboarding = helper.load("Onboarding")
+	end)
+
+	after_each(function()
+		_G.ForeverSixtyDB = nil
+		mock.uninstall()
+	end)
+
+	-- Owner 2026-11-13: deleting the addon folder keeps SavedVariables, so a reinstall never saw the
+	-- tour again. The stamp is the tour's version: a changed Set up shows once more to everyone.
+	it("is due until this version is seen on the account, and never under Tooltips only", function()
+		assert.are.equal(3, Onboarding.TOUR_VERSION)
+		-- A first install, and a reinstall that wiped SavedVariables.
+		assert.is_true(Onboarding.due(nil, false))
+		assert.is_true(Onboarding.due({}, false))
+		-- A reinstall that kept SavedVariables from an older tour: once more.
+		assert.is_true(Onboarding.due({ welcomedAt = 1 }, false))
+		assert.is_true(Onboarding.due({ welcomedAt = 1, tourSeen = 2 }, false))
+		assert.is_false(Onboarding.due({ welcomedAt = 1, tourSeen = Onboarding.TOUR_VERSION }, false))
+		assert.is_false(Onboarding.due({}, true))
+	end)
+
+	it("stamps the account with this version and keeps the first welcome's time", function()
+		_G.ForeverSixtyDB = { welcomedAt = 7 }
+		Onboarding.stamp()
+		assert.are.equal(Onboarding.TOUR_VERSION, _G.ForeverSixtyDB.tourSeen)
+		assert.are.equal(7, _G.ForeverSixtyDB.welcomedAt)
+		_G.ForeverSixtyDB = nil
+		Onboarding.stamp()
+		assert.is_number(_G.ForeverSixtyDB.welcomedAt)
+	end)
+
+	it("numbers three steps, each its object and the tab it opens, with nothing done yet", function()
+		local model = Onboarding.steps({ specs = SPECS, classToken = "HUNTER", example = EXAMPLE, gearOpen = true })
+		assert.are.equal("3 steps", model.note)
+		local spec, hover, app = model.rows[1], model.rows[2], model.rows[3]
+		assert.are.same({ 1, 2, 3 }, { spec.number, hover.number, app.number })
+		assert.are.equal(L.hubPickSpec, spec.line)
+		assert.are.equal("Beast Mastery · Marksmanship · Survival", spec.sub)
+		assert.are.equal("HUNTER", spec.crest)
+		assert.is_nil(spec.icon)
+		assert.are.equal("builds", spec.tab)
+		assert.are.equal("Hover an item you wear", hover.line)
+		assert.are.equal("Slashclaw Bracers, below", hover.sub)
+		assert.are.equal(19587, hover.itemId)
+		assert.are.equal("gear", hover.tab)
+		assert.are.equal("Get the companion app", app.line)
+		assert.are.equal("foreversixty.gg/app", app.link)
+		assert.is_nil(app.tab)
+		assert.are.same({ false, false, false }, { spec.done, hover.done, app.done })
+		assert.are.equal(EXAMPLE, model.example)
+	end)
+
+	it("ticks a step once it is done: the build followed, a hover, the companion", function()
+		local model = Onboarding.steps({ specs = SPECS, classToken = "HUNTER", build = {}, buildName = "Beast Mastery raid",
+			specIcon = "bm", example = EXAMPLE, gearOpen = true, hovered = true, companion = true })
+		assert.are.equal("3 of 3 done", model.note)
+		assert.is_true(model.rows[1].done)
+		assert.are.equal("Beast Mastery raid", model.rows[1].sub)
+		assert.are.equal("bm", model.rows[1].icon)
+		assert.is_nil(model.rows[1].crest)
+		assert.is_true(model.rows[2].done)
+		assert.is_true(model.rows[3].done)
+		assert.is_nil(model.rows[3].link)
+		assert.are.equal("1 of 3 done", Onboarding.steps({ specs = SPECS, companion = true }).note)
+	end)
+
+	it("drops step 2's Gear link below level 10 and its item with nothing worn", function()
+		local hover = Onboarding.steps({ specs = SPECS, gearOpen = false }).rows[2]
+		assert.is_nil(hover.tab)
+		assert.is_nil(hover.sub)
+		assert.is_nil(hover.itemId)
+	end)
+end)
+
+describe("Set up on the Me tab, the model", function()
+	local MeTab
+
+	before_each(function()
+		mock.install({ class = { name = "Hunter", token = "HUNTER" }, level = 60, playerName = "Bob" })
+		helper.load("Theme")
+		MeTab = helper.load("MeTab")
+	end)
+
+	after_each(function()
+		mock.uninstall()
+	end)
+
+	it("takes Right now's place, leaves the companion line of the raid out and footers /fs tour", function()
+		local setup = { note = "3 steps", rows = {} }
+		local leads = { { tab = "gear", label = "Gear", lead = { line = "Gloves" } } }
+		local model = MeTab.model({ level = 60, companion = false, pack = { absent = true }, leads = leads,
+			setup = setup })
+		assert.are.equal(setup, model.setup)
+		assert.are.same({}, model.rightNow)
+		assert.is_nil(model.lastRaid)
+		assert.are.equal("/fs tour", model.footer)
+		local calm = MeTab.model({ level = 60, companion = false, pack = { absent = true }, leads = leads })
+		assert.are.equal(1, #calm.rightNow)
+		assert.are.equal(L.meNoRaid, calm.lastRaid.empty)
+	end)
+end)
+
+describe("the worn item step 2 shows", function()
+	local TourExample
+
+	before_each(function()
+		mock.install({})
+		helper.load("Theme").reset()
 		TourExample = helper.load("TourExample")
 	end)
 
@@ -22,288 +134,141 @@ describe("Onboarding, the pure model", function()
 		mock.uninstall()
 	end)
 
-	it("has five pages in a guild and four without, the guild's page skipped", function()
-		assert.are.same({ "loop", "site", "back", "guild", "setup" }, Onboarding.pageKeys(true))
-		assert.are.same({ "loop", "site", "back", "setup" }, Onboarding.pageKeys(false))
-	end)
-
-	it("draws the loop's guild node only in a guild, under the player's own faction banner", function()
-		assert.are.equal(6, #Onboarding.loopNodes(true, "horde", "HUNTER"))
-		assert.are.equal(Onboarding.BANNERS.horde, Onboarding.loopNodes(true, "horde", "HUNTER")[6].icon)
-		assert.are.equal(5, #Onboarding.loopNodes(false, "alliance", "HUNTER"))
-		-- The diagram says the loop; no caption restates it (review 2026-11-10).
-		assert.is_nil(L.tourLoopCaption)
-	end)
-
-	it("offers the path tiles with no build, the build followed otherwise", function()
-		local tiles = Onboarding.setup({ level = 6, specs = { { slug = "hunter-beast-mastery", name = "Beast Mastery" } } })
-		assert.are.equal(1, #tiles.tiles)
-		-- Round 2: the note "loads its leveling build" went; the points split sits beside the question.
-		assert.is_nil(tiles.tilesNote)
-		assert.are.equal("2 Holy · 2 Retribution", Onboarding.setup({ level = 13, specs = {},
-			split = "2 Holy · 2 Retribution" }).split)
-		local followed = Onboarding.setup({ level = 24, build = { order = { {}, {} } }, buildName = "Beast Mastery leveling",
-			progress = { matched = 1, nextLevel = 25 }, pointName = "Lethal Attacks" })
-		assert.are.equal(string.format(L.tourYourPath, "Beast Mastery leveling"), followed.path.name)
-		assert.are.equal(string.format(L.tourNextPoint, 25, "Lethal Attacks"), followed.path.next)
-		assert.is_nil(followed.tiles)
-	end)
-
-	it("says the companion has run under a day, warns past three days, and offers both rows otherwise", function()
-		local fresh = Onboarding.setup({ siteAge = 2 * 3600, name = "Bow Jackzon" })
-		assert.is_true(fresh.seen.ok)
-		assert.are.equal(string.format(L.tourSiteSaw, "Bow Jackzon", "2 hours ago"), fresh.seen.detail)
-		assert.is_nil(fresh.signIn)
-		assert.is_nil(fresh.companion)
-		local silent = Onboarding.setup({ siteAge = 4 * 86400, name = "Bow Jackzon" })
-		assert.is_false(silent.seen.ok)
-		assert.are.equal(string.format(L.tourSiteSilent, "Bow Jackzon", 4), silent.seen.text)
-		assert.is_true(silent.companion)
-		local never = Onboarding.setup({})
-		assert.is_true(never.signIn)
-		assert.is_true(never.companion)
-		assert.is_nil(never.seen)
-	end)
-
-	-- Owner 2026-11-13: deleting the addon folder keeps SavedVariables, so a reinstall never saw the
-	-- tour again. The stamp is the tour's version now: a changed tour shows once more to everyone.
-	it("is due until this tour's version is ended on the account, and never under Tooltips only", function()
-		assert.are.equal(2, Onboarding.TOUR_VERSION)
-		-- A first install, and a reinstall that wiped SavedVariables.
-		assert.is_true(Onboarding.due(nil, false))
-		assert.is_true(Onboarding.due({}, false))
-		-- A reinstall that kept SavedVariables from the first tour, or an account that saw it: once more.
-		assert.is_true(Onboarding.due({ welcomedAt = 1 }, false))
-		assert.is_true(Onboarding.due({ welcomedAt = 1, tourSeen = 1 }, false))
-		assert.is_false(Onboarding.due({ welcomedAt = 1, tourSeen = Onboarding.TOUR_VERSION }, false))
-		assert.is_false(Onboarding.due({}, true))
-	end)
-
-	it("stamps the account with this tour's version and keeps the first welcome's time", function()
-		_G.ForeverSixtyDB = { welcomedAt = 1793000000 }
-		Onboarding.stamp()
-		assert.are.equal(Onboarding.TOUR_VERSION, _G.ForeverSixtyDB.tourSeen)
-		assert.are.equal(1793000000, _G.ForeverSixtyDB.welcomedAt)
-		assert.is_false(Onboarding.due(_G.ForeverSixtyDB, false))
-		_G.ForeverSixtyDB = nil
-		Onboarding.stamp()
-		assert.is_number(_G.ForeverSixtyDB.welcomedAt)
-		assert.are.equal(Onboarding.TOUR_VERSION, _G.ForeverSixtyDB.tourSeen)
-		_G.ForeverSixtyDB = nil
-	end)
-
-	it("keeps the app QR small and labelled Join the app beta until the apps ship", function()
-		assert.are.equal(48, Onboarding.QR_SIZE)
-		assert.are.equal("Join the app beta", L.tourAppBeta)
-		assert.are.equal("foreversixty.gg/app", Onboarding.APP)
-		assert.are.equal("Settings can hide it from others.", L.tourScoreHide)
-	end)
-
-	it("says In, Late, Bench or Out on the guild page", function()
-		assert.are.equal("Answer In, Late, Bench or Out", L.tourAnswer)
-	end)
-
-	it("puts the Horde banner on a Horde guild node, from Compat.playerFaction's lower-case answer", function()
-		assert.are.equal(Onboarding.BANNERS.horde, Onboarding.loopNodes(true, "horde", "HUNTER")[6].icon)
-		assert.are.equal(Onboarding.BANNERS.alliance, Onboarding.loopNodes(true, nil, "HUNTER")[6].icon)
-		assert.are_not.equal(Onboarding.BANNERS.horde, Onboarding.BANNERS.alliance)
-	end)
-
-	it("heads each page in the panel's title band: the heading, the welcome, and 2 of 5", function()
-		local head = Onboarding.head("site", 2, 5, { classToken = "HUNTER", faction = "horde" })
-		-- Round 2: the welcome line sits under page 1's heading only.
-		assert.are.equal(L.tourTitle, Onboarding.head("loop", 1, 5, { classToken = "HUNTER", faction = "horde" }).meta)
-		assert.are.same({ title = L.tourSiteHeading, classToken = "HUNTER", faction = "horde",
-			number = 2, unit = "of 5" }, head)
-	end)
-
-	it("draws the loop's arrows from flat parts, mirrored for left and turned for down", function()
-		assert.are.same(Onboarding.ARROW_PARTS, Onboarding.arrowParts("right"))
-		assert.are.same({ 6, 4, 10, 2 }, Onboarding.arrowParts("left")[1])
-		assert.are.same({ 0, 4, 2, 2 }, Onboarding.arrowParts("left")[4])
-		assert.are.same({ 4, 0, 2, 10 }, Onboarding.arrowParts("down")[1])
-		assert.are.same({ 4, 14, 2, 2 }, Onboarding.arrowParts("down")[4])
-	end)
-
-	it("keeps the tour's copy free of glyph arrows, dots and the old opt-out wording", function()
-		assert.is_nil(L.tourArrowRight)
-		assert.is_nil(L.tourDot)
-		assert.are.equal(L.settingsTooltipsOnly, L.tourJustTooltips)
-	end)
-
-	it("hovers Tooltips only with the setting's own hint and that it ends the tour", function()
-		assert.are.equal(L.tourJustTooltips, L.tourJustTooltipsHint[1])
-		assert.are.equal(L.settingsTooltipsOnlyHint, L.tourJustTooltipsHint[2].text)
-		assert.are.equal(3, #L.tourJustTooltipsHint)
-	end)
-
-	it("sizes each page to its content, between the floor and the full height", function()
-		assert.are.equal(Onboarding.MIN_HEIGHT, Onboarding.frameHeight(0))
-		assert.are.equal(Onboarding.HEIGHT, Onboarding.frameHeight(2000))
-		local mid = Onboarding.frameHeight(200)
-		assert.is_true(mid > Onboarding.MIN_HEIGHT and mid < Onboarding.HEIGHT)
-	end)
-
-	it("shows the panel's first upgrade as the tooltip shows it: the arrow and its figure, then slot and source",
-		function()
-			local example = TourExample.example({ upgrade = { name = "Ranger Bow", hex = "0070dd", gain = 3.5, unit = "dps",
-				detail = "Ranged · World drop" } })
-			assert.are.equal("Ranger Bow", example.name)
-			assert.are.equal("0070dd", example.hex)
-			assert.is_truthy(example.lines[1][1]:find("+3.5 DPS", 1, true))
-			assert.is_truthy(example.lines[1][1]:find("|T", 1, true))
-			assert.are.equal("tooltipGreen", example.lines[1][2])
-			assert.are.same({ "Ranged · World drop", "tooltipMuted" }, example.lines[2])
-		end)
-
-	it("falls back to the data's pick, Best in slot at the band ahead for a low character", function()
-		local data = {
-			bis = { ["hunter-beast-mastery"] = { [20] = { alliance = {
-				chest = "6468|D|Wailing Caverns: Mutanus the Devourer|0.31",
-			} } } },
-			bisNames = { [6468] = "Deviate Scale Belt" },
-		}
-		local pick = TourExample.dataPick(data, "hunter-beast-mastery", 6, "alliance")
-		assert.are.equal(6468, pick.itemId)
-		assert.are.equal(20, pick.band)
-		assert.is_true(pick.upcoming)
-		local example = TourExample.example({ pick = pick })
-		assert.are.equal("Deviate Scale Belt", example.name)
-		assert.are.same({ string.format(L.tooltipYourBisAt, 20), "clientGold" }, example.lines[1])
-		assert.is_truthy(example.lines[2][1]:find("Mutanus the Devourer", 1, true))
-		assert.is_nil(TourExample.dataPick(data, "hunter-beast-mastery", 6, nil))
-		assert.is_nil(TourExample.example({}))
-	end)
-
-	it("says the tooltip's own gold line on a pick in the character's band: Best for its span", function()
-		local data = {
-			bis = { ["hunter-beast-mastery"] = {
-				[40] = { alliance = { chest = "6468|D|Wailing Caverns: Mutanus the Devourer|0.31" } },
-				[50] = { alliance = { chest = "6468|D|Wailing Caverns: Mutanus the Devourer|0.31" } },
-				[60] = { alliance = { chest = "6469|D|Wailing Caverns: Mutanus the Devourer|0.31" } },
-			} },
-			bisNames = { [6468] = "Deviate Scale Belt", [6469] = "Venomstrike" },
-		}
-		local pick = TourExample.dataPick(data, "hunter-beast-mastery", 42, "alliance")
-		assert.is_false(pick.upcoming)
-		assert.are.equal(60, pick.after)
-		local example = TourExample.example({ pick = pick })
-		assert.are.same({ "Best for 40 to 59", "clientGold" }, example.lines[1])
-		local top = TourExample.example({ pick = TourExample.dataPick(data, "hunter-beast-mastery", 60, "alliance") })
-		assert.are.same({ "Best at level 60", "clientGold" }, top.lines[1])
-	end)
-
-	-- The example is read from the shipped Data.lua at runtime, so a nightly refresh redraws it. This
-	-- pins the shape only (data contracts are floors), never which item the nightly picked.
-	it("reads a named main hand from the shipped data for a level 6 Beast Mastery hunter", function()
-		local Data = require("Data")
-		local pick = TourExample.dataPick(Data, "hunter-beast-mastery", 6, "alliance")
-		assert.is_table(pick)
-		assert.are.equal(Data.bis["hunter-beast-mastery"][20].alliance.main_hand:match("^(%d+)"), tostring(pick.itemId))
-		assert.are.equal(Data.bisNames[pick.itemId], pick.name)
-		assert.is_string(pick.name)
-		assert.is_true(pick.upcoming)
-		assert.is_string(TourExample.example({ pick = pick }).lines[2][1])
+	it("is the worn item Gear's top upgrade replaces, else the main hand, chest or legs, else any", function()
+		local worn = { wrist = { itemId = 1 }, legs = { itemId = 2 }, head = { itemId = 3 } }
+		assert.are.equal("wrist", TourExample.choose(worn, { { slot = "feet" }, { slot = "wrist" } }))
+		assert.are.equal("legs", TourExample.choose(worn, {}))
+		assert.are.equal("head", TourExample.choose({ head = { itemId = 3 } }, nil))
+		assert.is_nil(TourExample.choose({}, {}))
 	end)
 end)
 
-describe("Onboarding, the frame", function()
-	local Onboarding, state
+describe("Set up in the window", function()
+	local state, Hub, MeFrame, Onboarding, Theme
 
-	local function start(guild)
-		state = mock.install({ class = { name = "Hunter", token = "HUNTER" }, level = 6, playerName = "Bow" })
-		helper.load("Theme").reset()
+	local function load()
+		Theme = helper.load("Theme")
+		Theme.reset()
+		helper.load("Prefs")
+		helper.load("Widgets")
+		helper.load("Export")
+		helper.load("Follow")
+		helper.load("BuildDialog")
+		helper.load("MeTab")
+		-- The Builds tab first (its load gives a fresh window), then Me into that same window.
+		package.loaded.MeFrame = nil
+		MeFrame = require("MeFrame")
+		Hub = require("Hub")
 		Onboarding = helper.load("Onboarding")
-		require("Export").guildInfo = function()
-			return guild and { name = "Employed Millennials" } or nil
-		end
-		_G.ForeverSixtyDB = {}
+		Onboarding.register()
 	end
+
+	before_each(function()
+		state = mock.install({ class = { name = "Hunter", token = "HUNTER" }, level = 60, playerName = "Bob",
+			realm = "Ashbringer", region = 1,
+			equipped = { [9] = "|cff0070dd|Hitem:19587::::::::60:::::|h[Slashclaw Bracers]|h|r" },
+			itemStats = { [19587] = { __name = "Slashclaw Bracers", __quality = 3 } },
+			globals = { GetItemInfoInstant = function(link)
+				return tonumber(tostring(link):match("item:(%d+)"))
+			end } })
+		_G.ForeverSixtyDB = nil
+		load()
+	end)
 
 	after_each(function()
 		_G.ForeverSixtyDB = nil
 		mock.uninstall()
 	end)
 
-	it("draws every page of a guild's tour, writing nothing into a client frame", function()
-		start(true)
-		assert.is_true(Onboarding.open(1))
-		local seen = {}
-		for _ = 1, 5 do
-			seen[#seen + 1] = Onboarding.draw()
-			if #seen < 5 then
-				Onboarding.page = Onboarding.page + 1
-			end
-		end
-		assert.are.same({ "loop", "site", "back", "guild", "setup" }, seen)
-		assert.are.equal(Onboarding.WIDTH, Onboarding.frame:GetWidth())
-		-- The panel's chrome: the umber ground and the title band with the medallion.
-		assert.is_not_nil(Onboarding.frame.foreverSixtyBackground)
-		assert.is_not_nil(Onboarding.band.foreverSixtyMedallion)
-		assert.are.equal(L.tourSetupHeading, Onboarding.band.foreverSixtyTitle:GetText())
-		assert.are.equal("5", Onboarding.band.foreverSixtyNumber:GetText())
+	it("opens on Me with Set up in Right now's place, the worn item's tooltip under it, and stamps", function()
+		assert.is_true(Onboarding.open())
+		assert.are.equal("me", Hub.active)
+		local section = Onboarding.section
+		assert.are.equal(L.meSetUp, section.heading:GetText())
+		assert.is_true(section.heading:IsShown())
+		assert.is_false(MeFrame.parts.now.heading:IsShown())
+		assert.are.equal(L.hubPickSpec, section.rows[1].line:GetText())
+		-- The spec not picked yet: the class's ringed crest, never a square icon.
+		assert.is_true(section.rows[1].crest:IsShown())
+		assert.is_false(section.rows[1].cell:IsShown())
+		assert.is_true(section.rows[2].cell:IsShown())
+		assert.are.equal("Slashclaw Bracers, below", section.rows[2].sub:GetText())
+		assert.is_true(section.rows[3].address:IsShown())
+		assert.is_true(section.tooltip:IsShown())
+		assert.are.equal(1, mock.countCalls(section.tooltip, "SetInventoryItem"))
+		assert.is_true(require("ItemTooltip").embedded[section.tooltip])
+		assert.are.equal(L.meTourFoot, Hub.footer.enter:GetText())
+		assert.are.equal(Onboarding.TOUR_VERSION, _G.ForeverSixtyDB.tourSeen)
 		assert.are.same({}, state.clientWrites)
 	end)
 
-	it("ends for good on Skip tour, Done or Just the tooltips, stamping the account", function()
-		start(false)
-		Onboarding.open(1)
-		Onboarding.finish()
-		assert.is_number(_G.ForeverSixtyDB.welcomedAt)
-		assert.are.equal(Onboarding.TOUR_VERSION, _G.ForeverSixtyDB.tourSeen)
-		assert.is_false(Onboarding.frame:IsShown())
+	it("goes back to Right now once the window hides", function()
+		Onboarding.open()
+		Hub.close()
+		assert.is_false(Onboarding.showing)
+		Hub.open("me")
+		assert.is_false(Onboarding.section.heading:IsShown())
+		assert.is_false(Onboarding.section.tooltip:IsShown())
 	end)
 
-	it("shows once on a reinstall that kept the old tour's stamp, and once on one that wiped it", function()
-		for _, kept in ipairs({ { welcomedAt = 1793000000 }, {} }) do
-			start(false)
-			_G.ForeverSixtyDB = kept
-			Onboarding.register()
-			local SiteStatus = require("SiteStatus")
-			SiteStatus.welcoming = nil
-			-- The login's welcome asks the tour's own rule, not the old stamp.
-			assert.is_true(SiteStatus.welcomeDue())
-			SiteStatus.openTour()
-			assert.is_true(Onboarding.frame:IsShown())
-			Onboarding.finish()
-			assert.are.equal(Onboarding.TOUR_VERSION, _G.ForeverSixtyDB.tourSeen)
-			assert.is_false(SiteStatus.welcomeDue())
-			SiteStatus.openTour()
-			assert.is_false(Onboarding.frame:IsShown())
-			mock.uninstall()
+	it("opens a step's tab from its gold link", function()
+		Onboarding.open()
+		local row = Onboarding.section.rows[1]
+		row.open:GetScript("OnClick")(row.open)
+		assert.are.equal("builds", Hub.active)
+	end)
+
+	it("ticks step 2 after the player's own hover, never after its own picture's", function()
+		Onboarding.open()
+		assert.is_true(Onboarding.section.rows[2].number:IsShown())
+		assert.is_true(Onboarding.noteHover())
+		assert.is_true(_G.ForeverSixtyDB.tourHovered)
+		assert.is_false(Onboarding.section.rows[2].number:IsShown())
+		assert.is_true(Onboarding.section.rows[2].tick:IsShown())
+		assert.is_false(Onboarding.noteHover())
+	end)
+
+	it("never opens in combat or an instance; it shows when combat ends or the zone changes", function()
+		Theme.inCombat = function() return true end
+		assert.is_false(Onboarding.open())
+		assert.is_false(Hub.isShown())
+		assert.is_nil(_G.ForeverSixtyDB)
+		Theme.inCombat = function() return false end
+		Theme.instanceName = function() return "Molten Core" end
+		assert.is_false(Onboarding.onEvent("PLAYER_REGEN_ENABLED"))
+		assert.are.equal("outside", Onboarding.pending)
+		Theme.instanceName = function() return nil end
+		assert.is_true(Onboarding.onEvent("ZONE_CHANGED_NEW_AREA"))
+		assert.are.equal("me", Hub.active)
+	end)
+
+	it("opens five seconds into a fresh install's first login, and not on the next", function()
+		assert.is_true(Hub.afterEnteringWorld(true, false))
+		assert.is_false(Hub.isShown())
+		mock.runTimers(state)
+		assert.is_true(Hub.isShown())
+		assert.is_true(Onboarding.section.heading:IsShown())
+		Hub.close()
+		Hub.afterEnteringWorld(true, false)
+		mock.runTimers(state)
+		assert.is_false(Hub.isShown())
+		-- A loading screen asks nothing.
+		assert.is_false(Hub.afterEnteringWorld(false, false))
+	end)
+
+	it("opens on a reinstall that kept an older tour's stamp, and never under Tooltips only", function()
+		_G.ForeverSixtyDB = { welcomedAt = 1793000000, tourSeen = 2 }
+		Hub.afterEnteringWorld(true, false)
+		mock.runTimers(state)
+		assert.is_true(Hub.isShown())
+		Hub.close()
+		_G.ForeverSixtyDB = { prefs = { tooltipsOnly = true } }
+		require("Prefs").flag = function(key)
+			return key == "tooltipsOnly"
 		end
-	end)
-
-	it("walks Next to the last page and Next past it ends the tour", function()
-		start(false)
-		Onboarding.open(1)
-		for _ = 1, 3 do
-			Onboarding.next()
-		end
-		assert.are.equal(4, Onboarding.page)
-		Onboarding.back()
-		assert.are.equal(3, Onboarding.page)
-	end)
-
-	it("never opens in combat; combat hides it without ending it, and it comes back once after", function()
-		start(false)
-		require("Theme").inCombat = function() return true end
-		assert.is_false(Onboarding.open(1))
-		require("Theme").inCombat = function() return false end
-		Onboarding.onEvent("PLAYER_REGEN_ENABLED")
-		assert.is_true(Onboarding.frame:IsShown())
-		Onboarding.page = 2
-		Onboarding.onEvent("PLAYER_REGEN_DISABLED")
-		assert.is_false(Onboarding.frame:IsShown())
-		assert.is_nil(_G.ForeverSixtyDB.welcomedAt)
-		Onboarding.onEvent("PLAYER_REGEN_ENABLED")
-		assert.is_true(Onboarding.frame:IsShown())
-		assert.are.equal(2, Onboarding.page)
-		-- A second fight hides it again; this time it waits for /fs help.
-		Onboarding.onEvent("PLAYER_REGEN_DISABLED")
-		Onboarding.onEvent("PLAYER_REGEN_ENABLED")
-		assert.is_false(Onboarding.frame:IsShown())
-		assert.is_nil(_G.ForeverSixtyDB.welcomedAt)
+		Hub.afterEnteringWorld(true, false)
+		mock.runTimers(state)
+		assert.is_false(Hub.isShown())
 	end)
 end)
 

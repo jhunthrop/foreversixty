@@ -1914,7 +1914,8 @@ local function drawEntry(tooltip, entry, redraw)
 			tooltip:AddLine(text, r, g, b, WRAP)
 		end
 	end
-	if not ItemTooltip.mayShow(tooltip) then
+	-- A tooltip drawn inside our own window (ItemTooltip.embed) is shown by its owner, never compared.
+	if ItemTooltip.embedded[tooltip] or not ItemTooltip.mayShow(tooltip) then
 		return
 	end
 	tooltip:Show()
@@ -2103,6 +2104,26 @@ function ItemTooltip.isScanner(tooltip)
 	return ok and anchor == "ANCHOR_NONE" and points == 0
 end
 
+--- The tooltips drawn inside the addon's own window (weak keys): Set up's picture of a worn item
+--- (TourExample). The item section is drawn on them as on any hover; the owner shows them and they
+--- never open a compare tooltip nor count as the player's hover (ItemTooltip.onHover).
+ItemTooltip.embedded = setmetatable({}, { __mode = "k" })
+
+--- Injection: runs after the player's own item hover drew (Onboarding.noteHover, Set up's step 2).
+ItemTooltip.onHover = nil
+
+--- Marks `tooltip` as one drawn inside our window. On a client without the tooltip processor the item
+--- hook sits on GameTooltip alone, so the embedded tooltip gets its own.
+function ItemTooltip.embed(tooltip)
+	ItemTooltip.embedded[tooltip] = true
+	if ItemTooltip.how == "legacy" and type(tooltip.HookScript) == "function" then
+		tooltip:HookScript("OnTooltipSetItem", function(self)
+			ItemTooltip.onTooltip(self, ItemTooltip.itemLinkFrom(self))
+		end)
+	end
+	return tooltip
+end
+
 --- One guarded body for both hook shapes. A Lua error inside a tooltip hook
 --- breaks every tooltip in the game, so a failure turns the hook off.
 function ItemTooltip.onTooltip(tooltip, itemLink)
@@ -2125,6 +2146,13 @@ function ItemTooltip.onTooltip(tooltip, itemLink)
 	if not ok then
 		ItemTooltip.disabled = true
 		Theme.note(string.format(L.diagTooltipHookFailed, tostring(err)))
+		return
+	end
+	if ItemTooltip.onHover ~= nil and not ItemTooltip.embedded[tooltip] then
+		local hovered, hoverErr = pcall(ItemTooltip.onHover)
+		if not hovered then
+			Theme.note(string.format(L.diagOnboardingFailed, tostring(hoverErr)))
+		end
 	end
 end
 

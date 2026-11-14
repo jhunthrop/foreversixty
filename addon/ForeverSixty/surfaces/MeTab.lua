@@ -361,18 +361,26 @@ function MeTab.waitingItems(lastRaid, clock, seen)
 	return { item }
 end
 
---- The whole tab: { score, lastRaid, rightNow, sim, footer }. Pure.
+--- The whole tab: { score, lastRaid, rightNow, setup, sim, footer }. On the first open (`input.setup`, the
+--- Set up model, spec 4.1) Set up takes Right now's place, the footer says how to bring it back, and the
+--- Last raid's companion line is left out (Set up's step 3 carries the app's address, once). Pure.
 function MeTab.model(input)
 	local companion = input.companion == true
+	local setup = input.setup
+	local lastRaid = MeTab.lastRaid({ lastRaid = input.lastRaid, raidName = input.raidName, companion = companion,
+		level = input.level })
+	if setup ~= nil and lastRaid ~= nil and lastRaid.empty ~= nil then
+		lastRaid = nil
+	end
 	return {
 		score = MeTab.score(input),
-		lastRaid = MeTab.lastRaid({ lastRaid = input.lastRaid, raidName = input.raidName, companion = companion,
-			level = input.level }),
-		rightNow = MeTab.rightNow(input.leads, input.urgentOrder),
+		lastRaid = lastRaid,
+		rightNow = setup == nil and MeTab.rightNow(input.leads, input.urgentOrder) or {},
+		setup = setup,
 		sim = MeTab.sim({ companion = companion, sim = input.sim, upgrades = input.upgrades, spec = input.spec,
 			queued = input.queued }),
-		footer = MeTab.footer({ pack = input.pack, packDays = input.packDays, companion = companion,
-			syncedAgo = input.syncedAgo }),
+		footer = setup ~= nil and L.meTourFoot or MeTab.footer({ pack = input.pack, packDays = input.packDays,
+			companion = companion, syncedAgo = input.syncedAgo }),
 	}
 end
 

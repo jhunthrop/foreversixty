@@ -252,7 +252,7 @@ describe("SettingsPage, the command list", function()
 			"/fs copy: copy my character for the site",
 			"/fs me, builds, gear, rotation, guild, officer: open that tab",
 			"/fs link: copy a player's site page",
-			"/fs tour: see the tour again",
+			"/fs tour: the Set up steps on Me again",
 				"/fs ready: check flasks, food and buffs now",
 			"/fs loot: what an item is worth to you",
 				"/fs options: open the settings page",
@@ -587,7 +587,7 @@ describe("SettingsPage, the layout", function()
 			"/fs copy: copy my character for the site",
 			"/fs me, builds, gear, rotation, guild, officer: open that tab",
 			"/fs link: copy a player's site page",
-			"/fs tour: see the tour again",
+			"/fs tour: the Set up steps on Me again",
 			"/fs help: all the commands",
 		}, SettingsPage.commandLines())
 		assert.are.equal(5, SettingsPage.COMMANDS_SHOWN)

@@ -1,10 +1,8 @@
 -- addon/tests/addon_tour_spec.lua
--- The addon-tour lane (design/specs/2026-11-08-addon-ux.md section 6, owner 2026-11-11): every tour
--- page opens on a lead; the last page asks the spec question when the points name no tree and lays
--- its tiles out for three or four specs; the tour steps aside while the Builds dialog is open and
--- comes back on the same page; the Builds dialog leads with the addon's own builds for the class,
--- the followed one marked, one tap follows another; Follow.chooseDefault answers the question over
--- a saved build too.
+-- The addon-tour lane (owner 2026-11-11), folded into the window (design/specs/2026-11-13-addon-hub.md 4.1):
+-- Me's Set up asks the spec question with the class's specs and links the Builds tab; the Builds tab leads
+-- with the addon's own builds for the class, the followed one marked, one tap follows another;
+-- Follow.chooseDefault answers the question over a saved build too.
 local helper = require("spec_helper")
 local mock = require("wow_mock")
 local L = require("Locale")
@@ -36,74 +34,27 @@ local UNDECIDED = { { name = "Arms", talents = { { name = "Improved Heroic Strik
 	maxRank = 3 } } }, { name = "Fury", talents = { { name = "Cruelty", tier = 1, column = 3, rank = 1, maxRank = 5 } } },
 	{ name = "Protection", talents = {} } }
 
-describe("the tour's pages (spec 6.3 and 6.2), the pure model", function()
-	local Onboarding
+describe("Me's Set up for an undecided warrior (spec 2026-11-13-addon-hub 4.1)", function()
+	local Onboarding, Hub
 
 	before_each(function()
-		mock.install({})
-		helper.load("Theme").reset()
-		Onboarding = helper.load("Onboarding")
-	end)
-
-	after_each(function()
-		mock.uninstall()
-	end)
-
-	it("opens every page on a lead that says what the player gets", function()
-		for _, key in ipairs({ "loop", "site", "back", "guild", "setup" }) do
-			local lead = Onboarding.lead(key)
-			assert.is_string(lead, key)
-			assert.is_truthy(#lead > 40 and #lead <= 160, key .. ": " .. #lead)
-			assert.is_nil(lead:find("\226\128\147", 1, true), key)
-			assert.is_nil(lead:find("\226\128\148", 1, true), key)
-		end
-		assert.are.equal(L.tourLoopLead, Onboarding.lead("loop"))
-		-- Page 4's intro is gone: the lead carries its claim.
-		assert.is_nil(L.tourGuildIntro)
-		assert.are.equal("The line by your minimap.", L.tourGuildChipNote)
-	end)
-
-	it("asks the spec question over the tiles when the points name no tree, else Pick your path", function()
-		local asked = Onboarding.setup({ level = 13, question = "Are you Holy or Retribution?",
-			specs = { { slug = "paladin-holy", name = "Holy" } } })
-		assert.are.equal("Are you Holy or Retribution?", asked.ask)
-		assert.are.equal(1, #asked.tiles)
-		local plain = Onboarding.setup({ level = 13, specs = { { slug = "paladin-holy", name = "Holy" } } })
-		assert.are.equal(L.panelPickPath, plain.ask)
-		assert.is_nil(Onboarding.setup({ level = 13, build = { order = {} }, buildName = "Holy build" }).tiles)
-	end)
-
-	it("lays three tiles out at 190 and the druid's four at 141, within the content", function()
-		assert.are.equal(190, Onboarding.tileWidth(3))
-		assert.are.equal(141, Onboarding.tileWidth(4))
-		assert.is_true(Onboarding.tileWidth(4) * 4 + Onboarding.TILE_GAP * 3 <= Onboarding.WIDTH - 2 * Onboarding.PAD)
-	end)
-end)
-
-describe("the tour steps aside for the Builds dialog (spec 6.1)", function()
-	local Onboarding, BuildDialog, state
-
-	before_each(function()
-		state = mock.install({ class = { name = "Warrior", token = "WARRIOR" }, level = 13, playerName = "Bob",
+		mock.install({ class = { name = "Warrior", token = "WARRIOR" }, level = 13, playerName = "Bob",
 			realm = "Ashbringer", region = 1, talents = UNDECIDED })
 		helper.load("Theme").reset()
 		_G.ForeverSixtyDB = {}
 		_G.ForeverSixtyInbox = nil
 		helper.load("Prefs")
 		helper.load("Widgets")
-		helper.load("Cards")
 		helper.load("Export")
 		helper.load("Talents")
-		helper.load("Gear")
 		helper.load("Follow")
 		helper.load("Chip")
-		BuildDialog = helper.load("BuildDialog")
-		BuildDialog.data = DATA
+		helper.load("BuildDialog").data = DATA
+		package.loaded.MeFrame = nil
+		require("MeFrame").data = DATA
+		Hub = require("Hub")
+		Hub.data = DATA
 		Onboarding = helper.load("Onboarding")
-		Onboarding.data = DATA
-		require("Export").guildInfo = function()
-			return nil
-		end
 	end)
 
 	after_each(function()
@@ -111,49 +62,28 @@ describe("the tour steps aside for the Builds dialog (spec 6.1)", function()
 		mock.uninstall()
 	end)
 
-	it("hides without stamping the account, and comes back on the same page when the dialog hides", function()
-		assert.is_true(Onboarding.open(4))
-		assert.are.equal("setup", Onboarding.draw())
-		assert.is_true(BuildDialog.open("paste"))
-		mock.runTimers(state)
-		assert.is_false(Onboarding.frame:IsShown())
-		assert.is_nil(_G.ForeverSixtyDB.welcomedAt)
-		assert.is_true(BuildDialog.frame:IsShown())
-		assert.is_not_nil(mock.lastCall(BuildDialog.frame, "Raise"))
-		BuildDialog.close()
-		assert.is_true(Onboarding.frame:IsShown())
-		assert.are.equal(4, Onboarding.page)
-		assert.is_nil(_G.ForeverSixtyDB.welcomedAt)
+	it("asks for the spec with the class's specs from the data, and links the Builds tab", function()
+		local first = Onboarding.steps(Onboarding.inputs(DATA)).rows[1]
+		assert.is_false(first.done)
+		assert.are.equal(L.hubPickSpec, first.line)
+		assert.are.equal("Arms · Fury", first.sub)
+		assert.are.equal("builds", first.tab)
 	end)
 
-	it("does nothing when the tour is not showing", function()
-		assert.is_false(Onboarding.stepAside())
-		assert.is_false(Onboarding.stepBack())
-		assert.is_true(BuildDialog.open("paste"))
-		BuildDialog.close()
-		assert.is_true(Onboarding.frame == nil or not Onboarding.frame:IsShown())
+	it("ticks the step with the build's name once a build is followed", function()
+		require("Follow").chooseDefault(DATA, "warrior-arms", 13, "leveling")
+		local first = Onboarding.steps(Onboarding.inputs(DATA)).rows[1]
+		assert.is_true(first.done)
+		assert.are.equal("Arms leveling", first.sub)
 	end)
 
-	it("draws the question, the tiles and the footer's again line on the last page for an undecided warrior",
-		function()
-		Onboarding.open(4)
-		-- Every shown text on every frame (the mock keeps font strings in each frame's regions).
-		local texts = {}
-		for _, frame in ipairs(state.frames) do
-			for _, region in ipairs(frame.regions or {}) do
-				if type(region.GetText) == "function" and region:IsVisible() then
-					texts[region:GetText() or ""] = true
-				end
-			end
-			if type(frame.GetText) == "function" and frame:IsVisible() then
-				texts[frame:GetText() or ""] = true
-			end
-		end
-		assert.is_true(texts["Are you Arms or Fury?"] == true)
-		assert.is_true(texts[L.tourAgain] == true)
-		assert.is_true(texts[L.tourSetupLead] == true)
-		assert.is_true(texts["Arms"] == true and texts["Fury"] == true)
-		assert.is_true(Onboarding.frame:GetHeight() <= Onboarding.HEIGHT)
+	it("opens on Me with the question's step and the Builds link, which opens the Builds tab", function()
+		assert.is_true(Onboarding.open())
+		local row = Onboarding.section.rows[1]
+		assert.are.equal("Arms · Fury", row.sub:GetText())
+		assert.is_true(row.open:IsShown())
+		row.open:GetScript("OnClick")(row.open)
+		assert.are.equal("builds", Hub.active)
 	end)
 end)
 

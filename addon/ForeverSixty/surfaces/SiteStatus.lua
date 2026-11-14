@@ -19,10 +19,8 @@ local BuildDialog = ns.BuildDialog or require("BuildDialog")
 
 local SiteStatus = {}
 
---- The site has seen the character "recently" within a day; the companion is "silent" past three (the
---- tour's companion step reads it).
+--- The site has seen the character "recently" within a day.
 SiteStatus.FRESH_SECONDS = 24 * 3600
-SiteStatus.SILENT_SECONDS = 72 * 3600
 --- Seconds after PLAYER_ENTERING_WORLD of the login line: with the export's first refresh.
 SiteStatus.LOGIN_DELAY = 5
 
@@ -227,21 +225,6 @@ function SiteStatus.loginLine(data)
 	return string.format(L.siteLoginBuilds, #rows, who, nameList(rows))
 end
 
---- Whether the welcome (the tour) is due at this entering of the world: the tour's own rule when
---- it is wired (SiteStatus.tourDue, set by Onboarding.register: this tour version not ended on
---- the account), else ForeverSixtyDB.welcomedAt, one stamp for the account, not set; and not
---- already waiting to say it this session.
-function SiteStatus.welcomeDue()
-	if SiteStatus.welcoming then
-		return false
-	end
-	if SiteStatus.tourDue ~= nil then
-		return SiteStatus.tourDue() == true
-	end
-	return type(ForeverSixtyDB) ~= "table" or ForeverSixtyDB.welcomedAt == nil
-end
-
-
 --- PLAYER_ENTERING_WORLD (`initial`: a login from the character screen, `reloading`: a /reload; both
 --- false: a loading screen in the world, which says nothing): five seconds in (after the export's
 --- refresh, queued first), say the one line that is true, if any. The rule, so the same line is
@@ -258,19 +241,11 @@ function SiteStatus.afterEnteringWorld(data, initial, reloading)
 	end
 	local login = initial == true or (legacy and not SiteStatus.announced)
 	SiteStatus.announced = true
-	-- X.7: the first entering of the world on a client with no stamp says the welcome, before
-	-- any line of the inbox's.
-	local welcoming = SiteStatus.welcomeDue()
-	SiteStatus.welcoming = SiteStatus.welcoming or welcoming
 	local remembered = SiteStatus.memory(true)
 	if login then
 		remembered.loginAt = BuildDialog.liveClock().now
 	end
 	Theme.after(SiteStatus.LOGIN_DELAY, function()
-		-- The first login's welcome is the tour now (design/specs/2026-11-08-addon-ux.md 3.1): no chat lines.
-		if welcoming and SiteStatus.openTour ~= nil then
-			SiteStatus.openTour()
-		end
 		local line = SiteStatus.loginLine(data)
 		local again = not login and line == remembered.said
 		if line ~= nil and not again then

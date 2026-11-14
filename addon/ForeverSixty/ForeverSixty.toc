@@ -60,7 +60,6 @@ surfaces\SiteStatus.lua
 surfaces\Settings.lua
 surfaces\RotationTab.lua
 surfaces\PanelTab.lua
-surfaces\Panel.lua
 surfaces\TourExample.lua
 surfaces\Onboarding.lua
 surfaces\GuildTab.lua

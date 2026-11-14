@@ -5,7 +5,7 @@
 --   lua design/mocks/addon_me_model.lua <inputs.lua>
 --
 -- <inputs.lua> returns { [state] = input, ... } (MeTab.model's input, plus `guild` and `buildName` for the
--- header's figures). Runs from the repository root on plain Lua with the specs' client mock.
+-- header's figures, and `setupInput` for Onboarding.steps on the first open). Runs from the repository root on plain Lua with the specs' client mock.
 package.path = "addon/ForeverSixty/?.lua;addon/ForeverSixty/surfaces/?.lua;addon/tests/?.lua;" .. package.path
 local mock = require("wow_mock")
 mock.install({ class = { name = "Hunter", token = "HUNTER" }, level = 60, playerName = "Velisandre" })
@@ -43,7 +43,13 @@ end
 
 local states = dofile(assert(arg[1], "usage: lua addon_me_model.lua <inputs.lua>"))
 local out = {}
+local Onboarding
 for name, input in pairs(states) do
+	-- The first open (lane L8): Set up's own model from its inputs, in Right now's place.
+	if input.setupInput ~= nil then
+		Onboarding = Onboarding or require("Onboarding")
+		input.setup = Onboarding.steps(input.setupInput)
+	end
 	local model = MeTab.model(input)
 	model.figures = MeTab.figures(input)
 	out[name] = model

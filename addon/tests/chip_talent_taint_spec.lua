@@ -195,60 +195,6 @@ describe("the chip's talent click", function()
 		end)
 	end)
 
-	describe("the panel's Talents button", function()
-		local Panel
-
-		local function talentModel()
-			return Panel.model({ who = "Bow Jackzon", fact = "Level 24 Hunter", classToken = "HUNTER", level = 24,
-				targets = {}, build = { classSlug = "hunter", order = { {}, {}, {} } }, unspent = 1,
-				buildName = "Beast Mastery leveling", pointName = "Lethal Attacks",
-				progress = { matched = 2, total = 3, offPlan = 0, nextLevel = 25, point = {} } })
-		end
-
-		local function openWithTalents()
-			Panel.ensure()
-			Panel.draw(talentModel())
-			Panel.frame:Show()
-		end
-
-		before_each(function()
-			start()
-			Panel = helper.load("Panel")
-		end)
-
-		it("is covered by the secure click while the panel is open, and its own click opens nothing", function()
-			openWithTalents()
-			local cover = Panel.talentCover.button
-			assert.are.equal(SECURE_TEMPLATE, cover.template)
-			assert.are.equal(_G.UIParent, cover.parent)
-			assert.is_true(cover:IsShown())
-			assert.is_true(called(cover, "SetAllPoints"))
-			Panel.talentsButton.foreverSixtyAction()
-			assert.are.equal(0, opened)
-		end)
-
-		it("loses its cover when the panel closes, which it does as combat starts", function()
-			openWithTalents()
-			local cover = Panel.talentCover.button
-			Panel.onCombatStart()
-			assert.is_false(cover:IsShown())
-			lockdown(true)
-			local before = #cover.calls
-			Panel.syncTalentButton()
-			assert.are.equal(before, #cover.calls)
-		end)
-
-		it("opens the window from its own click on a client without the micro button", function()
-			mock.uninstall()
-			start(true)
-			Panel = helper.load("Panel")
-			openWithTalents()
-			assert.is_nil(Panel.talentCover.button)
-			Panel.talentsButton.foreverSixtyAction()
-			assert.are.equal(1, opened)
-		end)
-	end)
-
 	describe("on a client without the micro button", function()
 		before_each(function()
 			start(true)

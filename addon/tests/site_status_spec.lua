@@ -50,14 +50,12 @@ describe("what the site has and what the inbox holds", function()
 		} } }
 	end
 
-	--- The account was welcomed at an earlier login unless a spec says otherwise (X.7: the welcome
-	--- is its own describe block below).
-	local welcomed = true
-
+	--- The account saw this Set up at an earlier login (the first open is onboarding_spec's).
 	local function fire(event, ...)
-		if event == "PLAYER_ENTERING_WORLD" and welcomed then
+		if event == "PLAYER_ENTERING_WORLD" then
 			_G.ForeverSixtyDB = _G.ForeverSixtyDB or {}
 			_G.ForeverSixtyDB.welcomedAt = _G.ForeverSixtyDB.welcomedAt or 1
+			_G.ForeverSixtyDB.tourSeen = require("Onboarding").TOUR_VERSION
 		end
 		Options.onEvent(Options.frame, event, ...)
 	end
@@ -469,72 +467,14 @@ describe("what the site has and what the inbox holds", function()
 		end)
 	end)
 
-	-- design/specs/2026-11-08-addon-ux.md 3.1: the first login opens the tour (no chat lines), once per
-	-- account, five seconds in; the tour stamps the account when the player ends it.
-	describe("the first-login tour", function()
-		local opened
-
-		local function login()
-			fire("PLAYER_ENTERING_WORLD", true, false)
-			mock.runTimers(state)
-		end
-
-		before_each(function()
-			welcomed = false
+	describe("the login", function()
+		it("says no welcome in chat and runs no OnUpdate", function()
+			record(GEAR)
+			inbox(ack(3600))
 			state.printed = {}
-			opened = 0
-			SiteStatus.openTour = function()
-				opened = opened + 1
-			end
-		end)
-
-		after_each(function()
-			welcomed = true
-			SiteStatus.openTour = nil
-		end)
-
-		it("opens the tour five seconds in and says no welcome in chat", function()
-			record(GEAR)
-			inbox(ack(3600))
 			fire("PLAYER_ENTERING_WORLD", true, false)
-			assert.is_true(timersAt(5) >= 1)
-			assert.are.equal(0, opened)
 			mock.runTimers(state)
-			assert.are.equal(1, opened)
 			assert.are.same({}, state.printed)
-			assert.is_nil(L.welcomeOn)
-			assert.is_nil(SiteStatus.welcome)
-		end)
-
-		it("opens it once when the world is entered twice before the five seconds are up", function()
-			record(GEAR)
-			inbox(ack(3600))
-			fire("PLAYER_ENTERING_WORLD", true, false)
-			fire("PLAYER_ENTERING_WORLD", true, false)
-			mock.runTimers(state)
-			assert.are.equal(1, opened)
-		end)
-
-		it("does not open it at a reload or a loading screen, but the inbox still speaks", function()
-			record(GEAR)
-			inbox(ack(3600), build("Arms raid", ARMS))
-			_G.ForeverSixtyDB.welcomedAt = 1793000000
-			login()
-			assert.are.equal(0, opened)
-			assert.are.same({ Theme.chatLine(string.format(L.siteLoginBuild, "Bob", "Arms raid")) }, state.printed)
-		end)
-
-		it("is one stamp for the account: another character that finds it set sees nothing", function()
-			record(GEAR)
-			inbox(ack(3600))
-			_G.ForeverSixtyDB.welcomedAt = 1793000000
-			login()
-			assert.are.equal(0, opened)
-		end)
-
-		it("runs no OnUpdate", function()
-			record(GEAR)
-			login()
 			for _, frame in ipairs(state.frames) do
 				assert.is_nil(frame:GetScript("OnUpdate"))
 			end

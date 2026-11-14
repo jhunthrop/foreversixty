@@ -55,12 +55,8 @@ describe("the TOC", function()
 		-- The character-panel tab (L4.3): reads the tooltip's Next lines, the rotation, the
 		-- build dialog's split and opens it; Options refreshes it.
 		"surfaces/PanelTab.lua",
-		-- The addon panel (design/specs/2026-11-08-addon-ux.md 4): reads the chip, the tooltip's
-		-- sections and PanelTab's readers; the chip, the pane button, the keybind and the compartment
-		-- open it.
-		"surfaces/Panel.lua",
-		-- The first-run tour (spec 3.1): reads the chip, the panel and SiteStatus; Options opens it.
-		-- Its page 2 example reads the panel's upgrades and the item tooltip's lines.
+		-- The first open (hub spec 4.1): Me's Set up, drawn into MeFrame; its picture reads Gear's upgrades
+		-- and shows the worn item through the item tooltip's own lines. Options opens it on /fs tour.
 		"surfaces/TourExample.lua", "surfaces/Onboarding.lua",
 		-- The guild frame's door (Options refreshes it), then the hub's Guild tab and its model.
 		"surfaces/GuildTab.lua", "GuildRaid.lua", "surfaces/GuildHubTab.lua",

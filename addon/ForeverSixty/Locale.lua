@@ -23,7 +23,7 @@ local L = {
 		"/fs copy: copy my character for the site",
 		"/fs me, builds, gear, rotation, guild, officer: open that tab",
 		"/fs link: copy a player's site page",
-		"/fs tour: see the tour again",
+		"/fs tour: the Set up steps on Me again",
 		"/fs ready: check flasks, food and buffs now",
 		"/fs loot: what an item is worth to you",
 		"/fs options: open the settings page",
@@ -416,8 +416,7 @@ local L = {
 	-- own expand-in-place affordance now (overviewRotationMoreCount).
 	overviewRotationMore = "Turn on advanced detail in Settings to see the rest.",
 	bindingHeader = "Forever Sixty",
-	bindingToggle = "Toggle the Forever Sixty panel",
-	bindingHub = "Toggle the Forever Sixty window",
+	bindingToggle = "Toggle the Forever Sixty window",
 	diagNoTooltipHook = "This client has no tooltip hook API; item tooltips will not show Forever Sixty's lines.",
 	diagCompartmentFailed = "This client's addon compartment did not accept Forever Sixty; "
 		.. "the minimap button is used instead.",
@@ -1354,12 +1353,12 @@ L.tourDone = "Done"
 L.tourOpenPanel = "Open my panel"
 -- The title band's right-hand number: "2 of 5".
 L.tourPageOf = "of %d"
-L.diagOnboardingFailed = "The first-run tour failed once: %s"
+L.diagOnboardingFailed = "Set up (the first open) failed once: %s"
 
 -- The addon panel, the in-game home (surfaces/Panel.lua, design/specs/2026-11-08-addon-ux.md section 4).
 -- The title band's number: the Forever Score in its tier colour, then this unit in bone-dim.
 L.panelTabOpens = "Opens Gear."
-L.diagPanelState = "Panel: %s"
+L.diagPanelState = "Window: %s"
 -- The chip's hover with nothing waiting and no tab to name.
 L.chipHintOpen = "Click: open Forever Sixty"
 -- The title band's meta line: "Level 24 Hunter".
@@ -1552,6 +1551,14 @@ L.meSimmed = "Simmed %s"
 -- The Builds line on Right now (spec 4.1): "51 of 51 points on plan".
 L.mePointsOnPlan = "%d of %d points on plan"
 L.meSimQueued = "Queued"
+-- The first open's Set up (spec 4.1, board hub-me-setup.png): three steps in Right now's place.
+L.meSetUp = "Set up"
+L.meSteps = "%d steps"
+L.meStepsDone = "%d of %d done"
+L.meStepHover = "Hover an item you wear"
+L.meStepBelow = "%s, below"
+L.meStepApp = "Get the companion app"
+L.meTourFoot = "/fs tour"
 L.meSynced = "Companion synced %s"
 L.meNoCompanion = "No companion"
 L.meNoPackFoot = "No ratings pack"

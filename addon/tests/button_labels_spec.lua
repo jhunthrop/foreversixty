@@ -8,7 +8,6 @@
 -- frame the addon builds and fails on a visible text button, or a visible string, that draws nothing.
 local helper = require("spec_helper")
 local mock = require("wow_mock")
-local L = require("Locale")
 
 local DATA = {
 	build = "1.60.1.70291",
@@ -105,18 +104,16 @@ local function loadAddon(state)
 	helper.load("BuildsPane")
 	local modules = {
 		BuildDialog = helper.load("BuildDialog"),
-		Onboarding = helper.load("Onboarding"),
-		Panel = helper.load("Panel"),
 	}
 	helper.load("MeTab")
 	package.loaded.MeFrame = nil
 	modules.MeFrame = require("MeFrame")
+	modules.Onboarding = helper.load("Onboarding")
 	helper.load("Minimap")
 	modules.Settings = helper.load("Settings")
 	modules.Settings.data = DATA
 	modules.Chip = require("Chip")
 	modules.BuildDialog.data = DATA
-	modules.Onboarding.data = DATA
 	mock.enterWorld(state)
 	return modules
 end
@@ -199,17 +196,15 @@ describe("every visible button draws its label", function()
 		end
 	end)
 
-	it("labels Skip tour on every page of the tour opened at login, Back and Next as well", function()
+	it("labels every link of Me's Set up opened at login, drawn twice", function()
 		local Onboarding = modules.Onboarding
-		assert.is_true(Onboarding.open(1))
-		for page = 1, 5 do
-			mock.renderFrame(state)
-			assert.are.equal(page, Onboarding.page)
-			assert.are.same({}, blankLabels(state), "page " .. page)
-			if page < 5 then
-				Onboarding.next()
-			end
-		end
+		assert.is_true(Onboarding.open())
+		mock.renderFrame(state)
+		assert.are.same({}, blankLabels(state), "first draw")
+		modules.MeFrame.show()
+		mock.renderFrame(state)
+		assert.are.same({}, blankLabels(state), "drawn again")
+		require("Hub").close()
 	end)
 
 	it("labels every button on the Forever Sixty window's Builds tab", function()
@@ -276,29 +271,6 @@ describe("every visible button draws its label", function()
 		mock.renderFrame(state)
 		assert.are.same({}, blankLabels(state), "drawn again")
 		officerDone()
-	end)
-
-	it("labels the panel's Change and every other button, drawn twice", function()
-		local Panel = modules.Panel
-		local model = Panel.model({ level = 24, classToken = "WARRIOR", fact = "Level 24 Warrior", now = 0,
-			targets = { { itemId = 1, name = "Axe", hex = "0070dd", gain = 3.5, unit = "dps", slotWord = "Two-hand",
-				source = "World drop" } },
-			build = { classSlug = "warrior", order = { {}, {} } }, unspent = 1, pointName = "Cruelty",
-			progress = { matched = 1, total = 2, offPlan = 1, nextLevel = 25, point = {} } })
-		Panel.draw(model)
-		Panel.frame:Show()
-		mock.renderFrame(state)
-		Panel.draw(model)
-		assert.are.same({}, blankLabels(state))
-		assert.is_true(#state.frames > 0)
-		local labelled = 0
-		for _, frame in ipairs(state.frames) do
-			if frame.kind == "Button" and frame.foreverSixtyLabel ~= nil and frame:IsVisible() then
-				labelled = labelled + 1
-			end
-		end
-		assert.is_true(labelled > 0)
-		assert.is_string(L.panelChange)
 	end)
 
 	it("labels the Level buttons, the source switches and Default on the Gear tab, drawn twice", function()

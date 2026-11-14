@@ -15,6 +15,7 @@ Molten Core night and her sim. The Guild, Gear and Rotation lines in Right now a
 with the acceptance board's words until their lanes land; the Builds line is BuildDialog.lead's shape.
 """
 import json
+import os
 import re
 import subprocess
 import sys
@@ -142,7 +143,8 @@ def models():
     with tempfile.NamedTemporaryFile('w', suffix='.lua', delete=False) as handle:
         handle.write('return ' + lua(STATES) + '\n')
         path = handle.name
-    run = subprocess.run(['lua', str(ROOT / 'design/mocks/addon_me_model.lua'), path], cwd=ROOT,
+    # LuaJIT, as busted runs the addon (Lua 5.5 refuses the addon's assignments to loop variables).
+    run = subprocess.run([os.environ.get('LUA', 'luajit'), str(ROOT / 'design/mocks/addon_me_model.lua'), path], cwd=ROOT,
                          capture_output=True, text=True, check=True)
     return json.loads(run.stdout)
 

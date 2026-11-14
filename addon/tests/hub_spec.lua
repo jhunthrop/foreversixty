@@ -179,12 +179,9 @@ describe("the Forever Sixty window (Hub)", function()
 		assert.is_true(Hub.isShown())
 	end)
 
-	it("runs the fallback instead once the window turned itself off, and steps the tour aside and back", function()
+	it("runs the fallback instead once the window turned itself off, and tells the first open it hid", function()
 		tab("builds", 1)
 		local calls = {}
-		Hub.beforeOpen = function()
-			calls[#calls + 1] = "aside"
-		end
 		Hub.afterHide = function()
 			calls[#calls + 1] = "back"
 		end
@@ -195,7 +192,7 @@ describe("the Forever Sixty window (Hub)", function()
 			calls[#calls + 1] = "fallback"
 		end
 		assert.is_nil(Hub.open())
-		assert.are.same({ "aside", "back", "fallback" }, calls)
+		assert.are.same({ "back", "fallback" }, calls)
 	end)
 
 	it("sets the hints for the active tab, and grows to the content keeping its top", function()

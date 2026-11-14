@@ -291,7 +291,7 @@ function PanelTab.toggle()
 	end)
 end
 
---- The chip's events (Options): the button is made and placed; the open panel redraws itself.
+--- The chip's events (Options): the button is made and placed.
 function PanelTab.refresh(data)
 	if data ~= nil then
 		PanelTab.data = data
@@ -299,10 +299,6 @@ function PanelTab.refresh(data)
 	guarded(function()
 		PanelTab.ensureButton()
 	end)
-	local Panel = ns.Panel
-	if Panel ~= nil and Panel.isOpen() then
-		Panel.refresh(data)
-	end
 end
 
 --- A click staged in the talent window: one redraw on the next frame however many arrive.
@@ -332,14 +328,6 @@ function PanelTab.onButtonShow(button)
 	end)
 end
 
---- GET_ITEM_INFO_RECEIVED: the open panel redraws (its upgrade rows may have waited on the item).
-function PanelTab.onItemInfo(itemId)
-	local Panel = ns.Panel
-	if tonumber(itemId) ~= nil and Panel ~= nil and Panel.isOpen() then
-		Panel.refresh()
-	end
-end
-
 --- Combat ended: makes the button a combat lockdown held back, and nothing when none was.
 function PanelTab.onCombatEnd()
 	if not PanelTab.deferred then
@@ -349,11 +337,9 @@ function PanelTab.onCombatEnd()
 	PanelTab.refresh()
 end
 
---- /fs diag's line: "Panel: open" or "Panel: closed".
+--- /fs diag's line: "Window: open" or "Window: closed" (the Forever Sixty window).
 function PanelTab.diagLine()
-	local Panel = ns.Panel
-	local open = Panel ~= nil and Panel.isOpen()
-	return string.format(L.diagPanelState, open and L.diagPanelOpen or L.diagPanelClosed)
+	return string.format(L.diagPanelState, Hub.isShown() and L.diagPanelOpen or L.diagPanelClosed)
 end
 
 ns.PanelTab = PanelTab

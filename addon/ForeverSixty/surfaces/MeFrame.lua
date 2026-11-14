@@ -522,6 +522,11 @@ function MeFrame.draw(model)
 	local left = drawScore(parts.score, parts.left, model.score, 0)
 	left = drawRaid(parts.raid, parts.left, model.lastRaid, left)
 	local right = drawNow(parts.now, parts.right, model.rightNow, 0)
+	if model.setup ~= nil and MeFrame.setup ~= nil then
+		right = MeFrame.setup.draw(parts.right, Theme.SIZES.windowRight, model.setup, right)
+	elseif MeFrame.setup ~= nil then
+		MeFrame.setup.hide()
+	end
 	right = drawSim(parts.sim, parts.right, model.sim, right)
 	-- Every section ends in its gap to the next; the last one's is not body.
 	local body = math.max(0, math.max(left, right) - G.sectionGap)
@@ -532,6 +537,19 @@ end
 
 -- The tab -------------------------------------------------------------------------------------------------
 
+-- The pieces Set up (Onboarding, the first open) draws with, so its section reads as the tab's own.
+MeFrame.kit = {
+	text = text, link = link, itemCell = itemCell, paintCell = paintCell, heading = heading, place = place,
+	fit = fit, hideAll = hideAll, hideSection = hideSection,
+	section = function(parent, width, title)
+		return BuildsWindow.buildSection(parent, width, { text = text }, title, nil)
+	end,
+}
+
+--- Injection: the first open's Set up (Onboarding sets it): `model(data)` while it shows, else nil;
+--- `draw(parent, width, model, y)` and `hide()` in the right column, in Right now's place.
+MeFrame.setup = nil
+
 --- The live inputs.
 function MeFrame.inputs()
 	return MeTab.inputs({ Hub = Hub, Export = Export, Follow = Follow, BuildDialog = BuildDialog,
@@ -539,7 +557,10 @@ function MeFrame.inputs()
 end
 
 function MeFrame.show()
-	MeFrame.model = MeTab.model(MeFrame.inputs())
+	local input = MeFrame.inputs()
+	local setup = MeFrame.setup
+	input.setup = setup ~= nil and setup.model(MeFrame.data or ns.Data) or nil
+	MeFrame.model = MeTab.model(input)
 	return MeFrame.draw(MeFrame.model)
 end
 

@@ -72,12 +72,14 @@ Hub.EDIT_OFFICER_NOTE_FLAG = 12
 Hub.data = nil
 
 --- Injection points: `fallback` runs instead when the window turned itself off this session (Options:
---- the command list); the tour fills `beforeOpen` and `afterHide` (it steps aside while the window is
---- open and comes back when it hides). `disabled` is set by a tab's render check (off screen).
+--- the command list); `afterHide` runs as the window hides and `firstOpen` when the login timer fires (both
+--- the first open's, Onboarding: Me's Set up). `disabled` is set by a tab's render check (off screen).
 Hub.fallback = nil
-Hub.beforeOpen = nil
 Hub.afterHide = nil
+Hub.firstOpen = nil
 Hub.disabled = false
+--- Seconds after a login or a /reload that the first open is asked for (with the export's first refresh).
+Hub.FIRST_OPEN_DELAY = 5
 
 --- Every tab, in strip order. Filled by Hub.register at load.
 Hub.tabs = {}
@@ -521,7 +523,7 @@ function Hub.ensure()
 			Hub.afterHide()
 		end
 	end)
-	-- Above whatever else sits on the DIALOG strata (the tour steps aside, spec 6.1).
+	-- Above whatever else sits on the DIALOG strata.
 	if type(frame.SetToplevel) == "function" then
 		frame:SetToplevel(true)
 	end
@@ -729,9 +731,6 @@ function Hub.open(id, options)
 	if target == nil then
 		return nil
 	end
-	if Hub.beforeOpen ~= nil then
-		Hub.beforeOpen()
-	end
 	local frame = Hub.ensure()
 	Hub.place()
 	frame:Show()
@@ -761,6 +760,22 @@ function Hub.toggle(id)
 		return nil
 	end
 	return Hub.open(id)
+end
+
+--- PLAYER_ENTERING_WORLD (`initial` a login, `reloading` a /reload; both false a loading screen, which asks
+--- nothing): Hub.firstOpen runs FIRST_OPEN_DELAY seconds in, and decides itself whether the window opens
+--- (spec 4.1: the first login of a new tour version). A client that passes neither flag counts as a login.
+--- True when the timer was set.
+function Hub.afterEnteringWorld(initial, reloading)
+	if (initial == false and reloading == false) or Hub.firstOpen == nil then
+		return false
+	end
+	return Theme.after(Hub.FIRST_OPEN_DELAY, function()
+		local ok, err = pcall(Hub.firstOpen)
+		if not ok then
+			Theme.note(string.format(L.diagOnboardingFailed, tostring(err)))
+		end
+	end)
 end
 
 -- The tabs other lanes fill, kept off the strip until their lane registers the id again with content.

@@ -119,13 +119,10 @@ describe("the addon's windows on the pixel grid", function()
 		mock.uninstall()
 	end)
 
-	it("snaps every texture on every page of the tour, its art filtered as drawn", function()
+	it("snaps every texture of Me's Set up, the first open", function()
 		local Onboarding = start(1440, 1)
-		assert.is_true(Onboarding.open(1))
-		for page = 1, 5 do
-			assert.are.same({}, unsnapped(state), "page " .. page)
-			Onboarding.next()
-		end
+		assert.is_true(Onboarding.open())
+		assert.are.same({}, unsnapped(state))
 	end)
 
 	it("snaps every texture in the Builds dialog", function()

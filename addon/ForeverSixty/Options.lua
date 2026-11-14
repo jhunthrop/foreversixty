@@ -45,7 +45,6 @@ require("OfficerTab")
 local LootCouncil = ns.LootCouncil or require("LootCouncil")
 local RaidDrops = ns.RaidDrops or require("RaidDrops")
 local SiteStatus = ns.SiteStatus or require("SiteStatus")
-local Panel = ns.Panel or require("Panel")
 local Sources = ns.Sources or require("Sources")
 local Onboarding = ns.Onboarding or require("Onboarding")
 
@@ -221,8 +220,8 @@ function Options.handle(input)
 	elseif command == "record" then
 		return Recorder.command(rest)
 	elseif command == "tour" then
-		-- The tour again, from page 1.
-		Onboarding.open(1)
+		-- Me's Set up again (spec 2026-11-13-addon-hub 4.1), after combat or outside an instance.
+		Onboarding.open()
 		return {}
 	elseif command == "help" then
 		-- The player's commands, printed; it never opens a window (spec 2026-11-13-addon-hub 10).
@@ -498,6 +497,8 @@ function Options.onEvent(_, event, ...)
 		-- X.3: after the export's own refresh (queued above), the one login line that is true
 		-- (X.5: told whether this is a login, a /reload or a loading screen, the event's own arguments).
 		SiteStatus.afterEnteringWorld(Options.data, ...)
+		-- The first open: Me's Set up on the first login of a new tour version (spec 4.1).
+		Hub.afterEnteringWorld(...)
 	end
 	if Options.REWARD_EVENTS[event] then
 		RewardMarks.onEvent(event, ...)
@@ -605,8 +606,6 @@ function Options.onEvent(_, event, ...)
 		SlotMarks.onItemInfo((...))
 		-- A reward label or a roll line waiting on this item redraws (L4.2); no work otherwise.
 		RewardMarks.onItemInfo((...))
-		-- The panel tab's targets waiting on this item redraw (L4.3); no work otherwise.
-		PanelTab.onItemInfo((...))
 		return
 	end
 	if event == "PLAYER_EQUIPMENT_CHANGED" then
@@ -692,14 +691,9 @@ function Options.register()
 	-- auto-loads that file from the addon's own folder with no TOC entry.
 	BINDING_HEADER_FOREVERSIXTY = L.bindingHeader
 	BINDING_NAME_FOREVERSIXTY_TOGGLE = L.bindingToggle
-	-- The keybind toggles the addon panel (design/specs/2026-11-08-addon-ux.md 4.2).
+	-- The key binding toggles the Forever Sixty window as /fs does (Hub.landing's tab, else the last; spec
+	-- 2026-11-13-addon-hub 10). Its name stays FOREVERSIXTY_TOGGLE so a key the player bound keeps working.
 	FOREVERSIXTY_TOGGLE_WINDOW = function()
-		Panel.data = Options.data
-		return Panel.toggle("key")
-	end
-	-- The second binding toggles the Forever Sixty window as /fs does (Hub.landing's tab, else the last).
-	BINDING_NAME_FOREVERSIXTY_HUB = L.bindingHub
-	FOREVERSIXTY_TOGGLE_HUB = function()
 		BuildDialog.data = Options.data
 		return Hub.toggle()
 	end
@@ -725,12 +719,7 @@ function Options.register()
 	-- The character-panel tab (L4.3): its button the first time a refresh finds the pane, its
 	-- flyout on the first click. Nothing on the pane is hooked.
 	PanelTab.data = Options.data
-	-- The addon panel (spec 4): built on its first open; the chip, the pane button, the keybind and
-	-- the compartment entry are its doors.
-	Panel.data = Options.data
-	Panel.register()
-	-- The first-run tour: its events now, its window on the first show.
-	Onboarding.data = Options.data
+	-- The first open (Me's Set up): its events and its hooks into the hub, Me and the item tooltip.
 	Onboarding.register()
 	-- The guild tab (L5.1): its button once the guild frame loads, its flyout on the first
 	-- click; it listens for the guild's snapshot! answers. Nothing on the guild frame is hooked.
@@ -762,7 +751,6 @@ function Options.register()
 	-- The gear source filter (Sources.lua): a change made on the Gear tab re-picks every surface at once.
 	Sources.listen("surfaces", function()
 		Options.refreshSurfaces(Options.data)
-		Panel.refresh()
 	end)
 	BuildDialog.data = Options.data
 	Hub.data = Options.data

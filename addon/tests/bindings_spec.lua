@@ -10,9 +10,8 @@ describe("the keybind", function()
 		assert.is_truthy(xml:find('name="FOREVERSIXTY_TOGGLE"', 1, true))
 		assert.is_truthy(xml:find('header="FOREVERSIXTY"', 1, true))
 		assert.is_truthy(xml:find("FOREVERSIXTY_TOGGLE_WINDOW()", 1, true))
-		-- The second binding toggles the Forever Sixty window (2026-11-13-addon-builds-window.md 5).
-		assert.is_truthy(xml:find('name="FOREVERSIXTY_HUB"', 1, true))
-		assert.is_truthy(xml:find("FOREVERSIXTY_TOGGLE_HUB()", 1, true))
+		-- One binding (spec 2026-11-13-addon-hub 10): the panel's second one went with the panel.
+		assert.is_nil(xml:find("FOREVERSIXTY_HUB", 1, true))
 	end)
 
 	describe("what Options.register wires up for it", function()
@@ -43,14 +42,12 @@ describe("the keybind", function()
 			Options.register()
 			assert.are.equal(L.bindingHeader, _G.BINDING_HEADER_FOREVERSIXTY)
 			assert.are.equal(L.bindingToggle, _G.BINDING_NAME_FOREVERSIXTY_TOGGLE)
-			assert.are.equal(L.bindingHub, _G.BINDING_NAME_FOREVERSIXTY_HUB)
 		end)
 
-		-- Spec 2026-11-13-addon-hub 10: the window's binding toggles it, as /fs does, and says so; the panel's
-		-- binding says it is the panel's until the panel folds into the window.
-		it("labels the window's binding as the toggle /fs is, and the panel's as the panel's", function()
-			assert.are.equal("Toggle the Forever Sixty window", L.bindingHub)
-			assert.are.equal("Toggle the Forever Sixty panel", L.bindingToggle)
+		-- Spec 2026-11-13-addon-hub 10: the binding toggles the window, as /fs does, and says so; it keeps the
+		-- name FOREVERSIXTY_TOGGLE so a key the player bound for the old panel opens the window.
+		it("toggles the window through the global the binding calls, labelled as the window's", function()
+			assert.are.equal("Toggle the Forever Sixty window", L.bindingToggle)
 			local Hub = require("Hub")
 			local toggled = 0
 			Hub.toggle = function(id)
@@ -58,20 +55,8 @@ describe("the keybind", function()
 				toggled = toggled + 1
 			end
 			Options.register()
-			_G.FOREVERSIXTY_TOGGLE_HUB()
-			assert.are.equal(1, toggled)
-			assert.is_nil(_G.BINDING_NAME_FOREVERSIXTY_HUB:find("Open", 1, true))
-		end)
-
-		-- design/specs/2026-11-08-addon-ux.md 4.2: the keybind toggles the addon panel.
-		it("toggles the addon panel through the global the binding calls", function()
-			local toggled = {}
-			require("Panel").toggle = function(from)
-				toggled[#toggled + 1] = from
-			end
-			Options.register()
 			_G.FOREVERSIXTY_TOGGLE_WINDOW()
-			assert.are.same({ "key" }, toggled)
+			assert.are.equal(1, toggled)
 		end)
 
 		it("leaves no binding globals behind for the next spec file", function()

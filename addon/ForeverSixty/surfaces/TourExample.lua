@@ -1,93 +1,122 @@
 -- addon/ForeverSixty/surfaces/TourExample.lua
--- The first-run tour's page 2 example (review 2026-11-10): the lines the item tooltip adds, on a
--- real item. The character's own first upgrade from the panel when it has one, else the data's
--- best-in-slot pick for the spec it follows (or its first path spec). Pure model plus one reader;
--- Onboarding draws it in the client's tooltip look.
+-- Set up's picture (design/specs/2026-11-13-addon-hub.md 4.1, board hub-me-setup.png): step 2 says "Hover an
+-- item you wear" and names one, and under the steps the client's own tooltip of that worn item shows with
+-- the line Forever Sixty adds to it, exactly as a hover would draw it. The item is the worn one Gear's top
+-- upgrade would replace (its tooltip names that upgrade), else the main hand, chest or legs, else any worn
+-- item. Pure choice plus one reader and one embedded tooltip.
 local _, ns = ...
 ns = type(ns) == "table" and ns or {}
-local L = ns.L or require("Locale")
 local Theme = ns.Theme or require("Theme")
 local Compat = ns.Compat or require("Compat")
-local Follow = ns.Follow or require("Follow")
-local Gear = ns.Gear or require("Gear")
+local Export = ns.Export or require("Export")
 local ItemTooltip = ns.ItemTooltip or require("ItemTooltip")
+local GearTab = ns.GearTab or require("GearTab")
 
 local TourExample = {}
 
---- The slots page 2's example reads from the data, in order, until one has a pick.
+TourExample.TOOLTIP_NAME = "ForeverSixtySetUpTooltip"
+--- The slots tried, in order, when no upgrade names a worn item.
 TourExample.EXAMPLE_SLOTS = { "main_hand", "chest", "legs" }
 
---- Page 2's tooltip example (review 2026-11-10): the lines the item tooltip adds, on a real item.
---- `input.upgrade` (the panel's first upgrade row: name, hex, gain, unit, detail) gives the arrow
---- and its figure over "<slot> · <source>"; else `input.pick` (a data pick: name, hex, band,
---- upcoming, after, and the decoded pick) gives the tooltip's own gold line, "Best for 40 to 49"
---- ("Best in slot at level 20" below the first band), over its source.
---- { name, hex, lines = { { text, colour }, ... } }, or nil. Pure.
-function TourExample.example(input)
-	local upgrade, pick = input.upgrade, input.pick
-	if type(upgrade) == "table" and type(upgrade.gain) == "number" and upgrade.name ~= nil then
-		return { name = upgrade.name, hex = upgrade.hex or Theme.HEX.strong, lines = {
-			{ Theme.arrowMarkup() .. ItemTooltip.figure(upgrade.gain, upgrade.unit), "tooltipGreen" },
-			{ upgrade.detail ~= "" and upgrade.detail or nil, "tooltipMuted" },
-		} }
-	end
-	if type(pick) == "table" and pick.name ~= nil then
-		local verdict = pick.upcoming and string.format(L.tooltipYourBisAt, pick.band)
-			or ItemTooltip.bestText(pick.band, pick.after)
-		return { name = pick.name, hex = pick.hex or Theme.HEX.strong, lines = {
-			{ verdict, "clientGold" }, { ItemTooltip.sourceLine(pick.pick), "tooltipMuted" },
-		} }
-	end
-	return nil
+local SLOT_IDS = {}
+for _, entry in ipairs(Export.INVENTORY_SLOTS) do
+	SLOT_IDS[entry.slot] = entry.id
 end
 
---- The data's pick for `spec` at `level` in the first of EXAMPLE_SLOTS that has one, from the band
---- the level is in, else the first band ahead of it (upcoming), with `after` the first later band
---- whose pick for the slot differs (the gold line's span). Pure on `data`.
-function TourExample.dataPick(data, spec, level, faction)
-	local specBis = type(data) == "table" and type(data.bis) == "table" and data.bis[spec] or nil
-	if specBis == nil or faction == nil then
-		return nil
-	end
-	local band = Gear.bandFor(specBis, level)
-	local upcoming = band == nil
-	band = band or Gear.firstBand(specBis, level)
-	if band == nil then
-		return nil
+--- The worn slot to show: the first upgrade row (GearTab.upgrades' order) over a worn item, else the first
+--- of EXAMPLE_SLOTS worn, else the first worn slot in the paper doll's order; nil with nothing worn. Pure on
+--- `equipped` (slot -> { itemId }) and `upgradeRows` (cells with `slot`).
+function TourExample.choose(equipped, upgradeRows)
+	equipped = equipped or {}
+	for _, cell in ipairs(upgradeRows or {}) do
+		if equipped[cell.slot] ~= nil then
+			return cell.slot
+		end
 	end
 	for _, slot in ipairs(TourExample.EXAMPLE_SLOTS) do
-		local pick = Gear.pick(spec, band, faction, slot, data)
-		if pick ~= nil then
-			local names = type(data.bisNames) == "table" and data.bisNames or {}
-			return { pick = pick, itemId = pick.item_id, band = band, upcoming = upcoming,
-				after = ItemTooltip.bandAfter(data, spec, faction, slot, band, pick.item_id), name = names[pick.item_id] }
+		if equipped[slot] ~= nil then
+			return slot
+		end
+	end
+	for _, entry in ipairs(Export.INVENTORY_SLOTS) do
+		if equipped[entry.slot] ~= nil then
+			return entry.slot
 		end
 	end
 	return nil
 end
 
---- Page 2's example from the client: the panel's first scored upgrade, else the data's pick for the
---- spec followed (or the first path spec), named and coloured as the client has the item.
-function TourExample.inputs(data, input)
-	local Panel = ns.Panel
-	if Panel ~= nil then
-		local ok, region = pcall(function()
-			return Panel.upgrades(Panel.inputs(data))
-		end)
-		for _, row in ipairs(ok and type(region) == "table" and region.rows or {}) do
-			if type(row.gain) == "number" and not row.bag then
-				return row, nil
-			end
-		end
+--- Gear's upgrade rows for the character's own band, or none without a spec or a list.
+local function upgradeRows(input)
+	if input.spec == nil then
+		return {}
 	end
-	local spec = Follow.currentSpec(data) or (input.specs[1] ~= nil and input.specs[1].slug or nil)
-	local pick = spec ~= nil and TourExample.dataPick(data, spec, input.level, input.faction) or nil
-	if pick ~= nil then
-		pick.name = Compat.itemName(pick.itemId) or pick.name
-		local quality = select(3, Compat.itemInfo(pick.itemId))
-		pick.hex = quality ~= nil and Theme.hexOf(Theme.qualityColor(quality)) or nil
+	local band = GearTab.ownBand(input)
+	if band == nil or not GearTab.hasList(input, band) then
+		return {}
 	end
-	return nil, pick
+	return GearTab.upgrades(GearTab.doll(input, band)).rows
+end
+
+--- The example from the client: { slot, slotId, itemId, name }, or nil with nothing worn or a read that
+--- failed (Set up then draws step 2 without its item).
+function TourExample.read(data)
+	local ok, input = pcall(GearTab.read, data)
+	if not ok or type(input) ~= "table" then
+		return nil
+	end
+	local scored, rows = pcall(upgradeRows, input)
+	local slot = TourExample.choose(input.equipped, scored and rows or {})
+	if slot == nil then
+		return nil
+	end
+	local itemId = input.equipped[slot].itemId
+	return { slot = slot, slotId = SLOT_IDS[slot], itemId = itemId, name = Compat.itemName(itemId) }
+end
+
+--- The embedded tooltip, once, in `parent`: the client's own GameTooltip look, on the window's strata,
+--- never opening a compare tooltip (ItemTooltip.embed).
+function TourExample.ensureTooltip(parent)
+	if TourExample.tooltip ~= nil then
+		return TourExample.tooltip
+	end
+	local tooltip = Theme.createFrame("GameTooltip", TourExample.TOOLTIP_NAME, parent, "gameTooltip")
+	tooltip:Hide()
+	ItemTooltip.embed(tooltip)
+	TourExample.tooltip = tooltip
+	return tooltip
+end
+
+--- Shows the worn item in `slotId` on `tooltip` at (`x`, `y`) in `parent`, at least `width` wide; the
+--- tooltip's height, 0 when the client has nothing in that slot.
+function TourExample.showTooltip(tooltip, parent, slotId, x, y, width)
+	if tooltip == nil or slotId == nil or type(tooltip.SetInventoryItem) ~= "function" then
+		return 0
+	end
+	tooltip:SetOwner(parent, "ANCHOR_NONE")
+	tooltip:ClearAllPoints()
+	-- Placed before it is filled: the item hook skips an unplaced ANCHOR_NONE tooltip as a scanner.
+	tooltip:SetPoint("TOPLEFT", parent, "TOPLEFT", x, -y)
+	if type(tooltip.SetFrameStrata) == "function" and type(parent.GetFrameStrata) == "function" then
+		tooltip:SetFrameStrata(parent:GetFrameStrata())
+	end
+	if type(tooltip.SetMinimumWidth) == "function" then
+		tooltip:SetMinimumWidth(width)
+	end
+	if not tooltip:SetInventoryItem("player", slotId) and type(tooltip.NumLines) == "function"
+		and tooltip:NumLines() == 0 then
+		tooltip:Hide()
+		return 0
+	end
+	tooltip:Show()
+	local height = type(tooltip.GetHeight) == "function" and tooltip:GetHeight() or 0
+	return type(height) == "number" and math.ceil(height) or 0
+end
+
+function TourExample.hideTooltip(tooltip)
+	if tooltip ~= nil then
+		tooltip:Hide()
+	end
 end
 
 ns.TourExample = TourExample
