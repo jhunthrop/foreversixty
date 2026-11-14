@@ -2,7 +2,8 @@
 <!-- Beside the paperdoll (design/specs/2026-11-09-directions.md, Paperdoll): a tank's or a healer's
      set figures (the frame's bar holds one number), What to stack (the top weights, what 1.00 is
      worth, the band's standing notes, and the sim's weights page for the rest: one job per page)
-     and Where to go (each stop of the itinerary below and its pieces). -->
+     and Where to go (each stop of the itinerary below and its pieces), then Install the addon, which
+     marks these picks on the player's own tooltips and bags in game. -->
 <script lang="ts">
   import Section from '../ui/Section.svelte';
   import Facts from '../ui/Facts.svelte';
@@ -10,6 +11,8 @@
   import type { BisBandModel } from '../../lib/bis/page-model';
   import type { ItineraryStop, StackView } from '../../lib/bis/frame-view';
   import { bisCopy } from '../../lib/bis/copy';
+  import { INSTALL_ADDON_LINK } from '../../lib/addon/install-link';
+  import ActionLink from '../ui/ActionLink.svelte';
 
   let {
     model,
@@ -101,6 +104,7 @@
         </p>{/if}
     </Section>
   {/if}
+  <ActionLink href={INSTALL_ADDON_LINK.href} data-testid="bis-install-addon">{INSTALL_ADDON_LINK.label}</ActionLink>
 </div>
 
 <style>
