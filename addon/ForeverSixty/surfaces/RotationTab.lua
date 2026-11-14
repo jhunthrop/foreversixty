@@ -23,6 +23,7 @@ local Gear = ns.Gear or require("Gear")
 local LastRaid = ns.LastRaid or require("LastRaid")
 local Rotation = ns.Rotation or require("Rotation")
 local Hub = ns.Hub or require("Hub")
+local HubPlates = ns.HubPlates or require("HubPlates")
 local BuildsWindow = ns.BuildsWindow or require("BuildsWindow")
 local StatWeights = ns.StatWeights or require("StatWeights")
 
@@ -33,7 +34,7 @@ local RotationTab = {}
 --- the level between them; the room between sections; the columns of the boss tables.
 RotationTab.LAYOUT = {
 	row = 36, rowLine = 15, number = 16, icon = 24, iconGap = 8,
-	tableRow = 18, tableHead = 16, step = 20, stepLevel = 64, stepGap = 4, sectionGap = 20,
+	tableRow = 18, tableHead = 16, step = 20, stepLevel = 64, stepGap = 4, sectionGap = Theme.SIZES.plateSectionGap,
 	boss = 136, followed = 56, cellGap = 8,
 }
 --- A condition wraps to at most this many lines (Rotation.plainCondition cuts the rest).
@@ -234,13 +235,6 @@ local function setHover(over, parent, y, width, height)
 end
 
 --- A column of the body: `x` from the body's left, `width` wide, from the body padding down.
-local function column(body, x, width)
-	local frame = Theme.createFrame("Frame", nil, body)
-	frame:SetPoint("TOPLEFT", body, "TOPLEFT", x, -Hub.LAYOUT.bodyPad)
-	frame:SetSize(width, 1)
-	return frame
-end
-
 --- Get row `index` from `pool`, made by `make(parent)` the first time.
 local function pooled(pool, index, make, parent)
 	pool[index] = pool[index] or make(parent)
@@ -485,35 +479,30 @@ local function drawRight(view, model)
 	return drawPlayed(view, played, y)
 end
 
---- The gold link to Me under the right column (spec 3.5: gold text for going somewhere).
+--- The link to Me under the right column (spec 3.5: link text for going somewhere).
 local function buildMeLink(parent)
 	local link = Theme.createFrame("Button", nil, parent)
-	link.label = text(parent, "gold")
+	link.label = text(parent, "link")
 	link:SetScript("OnClick", function()
 		Hub.open("me")
 	end)
 	link:SetScript("OnEnter", function()
-		link.label:SetTextColor(Theme.rgb(Theme.HEX.goldHover))
+		link.label:SetTextColor(Theme.rgb(Theme.HEX.linkHover))
 	end)
 	link:SetScript("OnLeave", function()
-		link.label:SetTextColor(Theme.rgb(Theme.HEX.gold))
+		link.label:SetTextColor(Theme.rgb(Theme.HEX.link))
 	end)
 	link:Hide()
 	return link
 end
 
---- The tab's body, once (Hub.register `build`): the two columns and the rule between them.
+--- The tab's body, once (Hub.register `build`): the two columns on their plates.
 function RotationTab.build(body)
 	local S = Theme.SIZES
-	local divider = Theme.texture(body, "ARTWORK", "border")
-	divider:SetWidth(Theme.wholePixels(divider, S.border))
-	local ruleX = S.padding + S.windowLeft + S.windowGutter / 2
-	divider:SetPoint("TOPLEFT", body, "TOPLEFT", ruleX, 0)
-	divider:SetPoint("BOTTOMLEFT", body, "BOTTOMLEFT", ruleX, 0)
 	local view = { body = body, lines = {}, bossRows = {}, lostRows = {} }
-	view.left = column(body, S.padding, S.windowLeft)
-	view.right = column(body, S.padding + S.windowLeft + S.windowGutter, S.windowRight)
+	view.left, view.right = Hub.columns(body)
 	view.priority = BuildsWindow.buildSection(view.left, S.windowLeft, DEPS, L.rotPriority, nil)
+	view.priority.plateLook = HubPlates.LEAD
 	view.stepper = buildStepper(view, view.left)
 	view.weights = StatWeights.build(view.left, S.windowLeft)
 	view.played = BuildsWindow.buildSection(view.right, S.windowRight, DEPS, L.rotPlayed, nil)

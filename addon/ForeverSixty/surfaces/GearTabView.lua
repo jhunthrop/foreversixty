@@ -20,6 +20,7 @@ local BuildsWindow = ns.BuildsWindow or require("BuildsWindow")
 local GearTab = ns.GearTab or require("GearTab")
 local StatWeights = ns.StatWeights or require("StatWeights")
 local GearEnchants = ns.GearEnchants or require("GearEnchants")
+local HubPlates = ns.HubPlates or require("HubPlates")
 
 local GearTabView = {}
 
@@ -33,7 +34,7 @@ GearTabView.LAYOUT = {
 	upgrade = 36, upgradeIcon = 24,
 	hitRow = 18, hitGap = 6,
 	sourceRow = 20, sourceGap = 16,
-	sectionGap = 20, under = 4,
+	sectionGap = Theme.SIZES.plateSectionGap, under = 4,
 }
 --- The most "More upgrades" rows under the doll (ranks after Upgrades' four).
 GearTabView.MORE_ROWS = 6
@@ -312,7 +313,7 @@ local function buildSources(parent, width)
 	section.off = text(parent, "muted")
 	section.default = Widgets.textButton(parent, L.sourcesDefault, function()
 		Sources.reset()
-	end, "gold")
+	end, "link")
 	return section
 end
 
@@ -339,17 +340,7 @@ function GearTabView.build(content)
 	local G = GearTabView.LAYOUT
 	local view = { content = content }
 	GearTabView.view = view
-	local rule = Theme.texture(content, "ARTWORK", "border")
-	rule:SetWidth(Theme.wholePixels(rule, S.border))
-	local ruleX = S.padding + S.windowLeft + S.windowGutter / 2
-	rule:SetPoint("TOPLEFT", content, "TOPLEFT", ruleX, 0)
-	rule:SetPoint("BOTTOMLEFT", content, "BOTTOMLEFT", ruleX, 0)
-	view.left = Theme.createFrame("Frame", nil, content)
-	view.left:SetPoint("TOPLEFT", content, "TOPLEFT", S.padding, -Hub.LAYOUT.bodyPad)
-	view.left:SetSize(S.windowLeft, 1)
-	view.right = Theme.createFrame("Frame", nil, content)
-	view.right:SetPoint("TOPLEFT", content, "TOPLEFT", S.padding + S.windowLeft + S.windowGutter, -Hub.LAYOUT.bodyPad)
-	view.right:SetSize(S.windowRight, 1)
+	view.left, view.right = Hub.columns(content)
 	view.levelLabel = text(view.left, "muted", G.controlLabel)
 	view.levelLabel:SetText(L.gearLevel)
 	view.bands = {}
@@ -363,6 +354,8 @@ function GearTabView.build(content)
 		view.bands[index] = button
 	end
 	place(view.levelLabel, view.left, 0, (G.control - textHeight(view.levelLabel)) / 2)
+	-- The slot list's plate, from the level row down, is the Gear tab's lead plate.
+	HubPlates.mark(view.left, view.levelLabel, 0, HubPlates.LEAD)
 	view.conditionsLabel = text(view.left, "muted", G.controlLabel)
 	view.conditionsLabel:SetText(L.gearConditions)
 	view.conditions = {}

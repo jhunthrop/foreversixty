@@ -26,12 +26,14 @@ enable-nolib-creation: no
 
 ignore:
   - .pkgmeta
+  - media/MANIFEST.json
 
 # media/ is inside this topdir, so the packager ships it with no entry of
 # its own. It holds the 32x32 minimap icon (addon/tools/make_minimap_icon.py)
-# and media/crests/ -- the nine class crests plus the one ring texture the
-# character header tints per class (addon/tools/make_class_crests.py) --
-# both scripts living outside this folder and therefore unpackaged themselves.
+# and every other texture, written
+# from the site's own art by web/scripts/gen-addon-icons.mjs (the crests, the
+# ring, the glyphs, the bands, the ground). Its MANIFEST.json is for the tests
+# and the generator's --check, so it stays out of the zip.
 
 manual-changelog:
   filename: CHANGELOG.md

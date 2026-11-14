@@ -3,7 +3,7 @@
 ## Notes: Gear upgrades, BiS, talents, rotation and raid sign-ups. A green arrow on gear that beats yours and your next talent marked. /fs opens it.
 ## Category: Class
 ## Author: foreversixty.gg
-## Version: 2.0.54
+## Version: 2.0.55
 ## IconTexture: Interface\AddOns\ForeverSixty\icon
 ## X-Curse-Project-ID: 1706689
 ## X-Wago-ID: XKqEdoKy
@@ -48,6 +48,7 @@ surfaces\TalentMarks.lua
 surfaces\BagAddons.lua
 surfaces\SlotMarks.lua
 surfaces\RewardMarks.lua
+surfaces\HubPlates.lua
 surfaces\BuildsPane.lua
 surfaces\BuildsWindow.lua
 surfaces\HubFrame.lua

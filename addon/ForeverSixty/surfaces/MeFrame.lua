@@ -16,6 +16,7 @@ local Export = ns.Export or require("Export")
 local Follow = ns.Follow or require("Follow")
 local HubFrame = ns.HubFrame or require("HubFrame")
 local Hub = ns.Hub or require("Hub")
+local HubPlates = ns.HubPlates or require("HubPlates")
 local BuildsWindow = ns.BuildsWindow or require("BuildsWindow")
 local BuildDialog = ns.BuildDialog or require("BuildDialog")
 local MeTab = ns.MeTab or require("MeTab")
@@ -29,7 +30,8 @@ local MeFrame = {}
 --- the room its tab link keeps; `gainIcon` and `gainRow` a gain's icon and row, `gainValue` its DPS column;
 --- `underHead` the room under a section heading; `cell` an icon's edge.
 MeFrame.LAYOUT = { line = 15, partRow = 18, partLabel = 86, trackMax = 130, track = 8, big = 30, bigSize = 24,
-	simSize = 14, bossRow = 18, sectionGap = 16, nowRow = 38, nowIcon = 20, nowGap = 8, nowLink = 64,
+	simSize = 14, bossRow = 18, sectionGap = Theme.SIZES.plateSectionGap, chevron = 10, chevronGap = 2,
+	nowRow = 38, nowIcon = 20, nowGap = 8, nowLink = 76,
 	gainIcon = 16, gainGap = 6, gainRow = 20, gainValue = 72, valueWidth = 70, reasonGap = 6, summaryGap = 6,
 	underHead = 4, cell = 1 }
 --- The last raid's columns (x, width, right-aligned) summing to the left column, 388 (spec 3.5).
@@ -67,23 +69,36 @@ local function hideAll(regions)
 	end
 end
 
---- A gold text link: the label in gold, lifted under the cursor, a click runs `onClick`.
-local function link(parent, label, onClick)
+--- A text link: the label in the link colour, white under the cursor, a click runs `onClick`. With
+--- `chevron`, the site's chevron after it says the row opens somewhere (spec 5: Right now).
+local function link(parent, label, onClick, chevron)
+	local G = MeFrame.LAYOUT
 	local button = Theme.createFrame("Button", nil, parent)
-	local region = text(button, "gold")
+	local region = text(button, "link")
 	region:SetPoint("LEFT", button, "LEFT", 0, 0)
 	button.foreverSixtyText = region
-	button:SetHeight(MeFrame.LAYOUT.line)
+	local glyph = chevron and Theme.glyph(button, "ARTWORK", "chevron-right", G.chevron, "link") or nil
+	if glyph ~= nil then
+		glyph:SetPoint("LEFT", region, "RIGHT", G.chevronGap, 0)
+	end
+	button:SetHeight(G.line)
 	button.SetLabel = function(self, value)
 		region:SetText(value or "")
 		local width = type(region.GetStringWidth) == "function" and region:GetStringWidth() or 0
-		self:SetWidth(math.max(1, math.ceil(width or 0)))
+		local extra = glyph ~= nil and G.chevronGap + G.chevron or 0
+		self:SetWidth(math.max(1, math.ceil((width or 0) + extra)))
+	end
+	local function paint(key)
+		region:SetTextColor(Theme.rgb(Theme.HEX[key]))
+		if glyph ~= nil then
+			Theme.tint(glyph, key)
+		end
 	end
 	button:SetScript("OnEnter", function()
-		region:SetTextColor(Theme.rgb(Theme.HEX.goldHover))
+		paint("linkHover")
 	end)
 	button:SetScript("OnLeave", function()
-		region:SetTextColor(Theme.rgb(Theme.HEX.gold))
+		paint("link")
 	end)
 	button:SetScript("OnClick", function(self, ...)
 		onClick(self, ...)
@@ -159,7 +174,8 @@ local function buildRaid(parent, width)
 		raid.heads[index] = head
 	end
 	for index = 1, MeTab.MAX_BOSSES do
-		local row = {}
+		-- Every other boss row on the zebra tint (spec 2.5).
+		local row = { zebra = index % 2 == 1 and Theme.texture(parent, "BACKGROUND", "zebra") or nil }
 		for _, column in ipairs(MeFrame.COLUMNS) do
 			row[column.key] = text(parent, column.key == "name" and "body" or "muted", column.width)
 			if column.right then
@@ -190,12 +206,17 @@ local function buildNow(parent, width)
 		row.line = text(parent, "body", room)
 		row.sub = text(parent, "muted", room)
 		row.link = link(parent, "", function()
+			MeFrame.stopPulse()
 			if row.tab ~= nil then
 				Hub.select(row.tab)
 			end
-		end)
+		end, true)
 		now.rows[index] = row
 	end
+	-- The next action's accent bar on the first row's plate edge (spec 9: it pulses, then holds).
+	now.bar = Theme.texture(parent, "ARTWORK", "accent")
+	now.bar:SetSize(Theme.SIZES.tabUnderline, G.nowRow - G.nowGap)
+	now.bar:Hide()
 	return now
 end
 
@@ -263,20 +284,10 @@ local function buildSite(parent, width)
 	end) }
 end
 
---- The tab's body, once, into the hub's content frame: the two columns and the rule between them.
+--- The tab's body, once, into the hub's content frame: the two columns on their plates.
 function MeFrame.build(content)
-	local S, H = Theme.SIZES, Hub.LAYOUT
-	local divider = Theme.texture(content, "ARTWORK", "border")
-	divider:SetWidth(Theme.wholePixels(divider, S.border))
-	local ruleX = S.padding + S.windowLeft + S.windowGutter / 2
-	divider:SetPoint("TOPLEFT", content, "TOPLEFT", ruleX, 0)
-	divider:SetPoint("BOTTOMLEFT", content, "BOTTOMLEFT", ruleX, 0)
-	local left = Theme.createFrame("Frame", nil, content)
-	left:SetPoint("TOPLEFT", content, "TOPLEFT", S.padding, -H.bodyPad)
-	left:SetSize(S.windowLeft, 1)
-	local right = Theme.createFrame("Frame", nil, content)
-	right:SetPoint("TOPLEFT", content, "TOPLEFT", S.padding + S.windowLeft + S.windowGutter, -H.bodyPad)
-	right:SetSize(S.windowRight, 1)
+	local S = Theme.SIZES
+	local left, right = Hub.columns(content)
 	MeFrame.parts = {
 		content = content, left = left, right = right,
 		score = buildScore(left, S.windowLeft), raid = buildRaid(left, S.windowLeft),
@@ -284,6 +295,8 @@ function MeFrame.build(content)
 		site = buildSite(left, S.windowLeft),
 		now = buildNow(right, S.windowRight), sim = buildSim(right, S.windowRight),
 	}
+	-- Right now is the tab's lead plate (spec 2.5).
+	MeFrame.parts.now.plateLook = HubPlates.LEAD
 	return content
 end
 
@@ -314,7 +327,7 @@ local function drawParts(score, parent, model, y)
 			part.track:SetSize(length, G.track)
 			place(part.track, parent, G.partLabel, top + (G.partRow - G.track) / 2)
 			local filled = math.floor(length * row.fill + 0.5)
-			Theme.paintRGB(part.fill, Theme.rgb(row.hex or Theme.HEX.body))
+			Theme.paint(part.fill, "accent")
 			Theme.setShown({ part.fill }, filled > 0)
 			if filled > 0 then
 				part.fill:SetSize(filled, G.track)
@@ -380,8 +393,14 @@ local function drawBossRows(raid, parent, rows, y)
 	for index, row in ipairs(raid.rows) do
 		local entry = rows[index]
 		if entry == nil then
-			hideAll({ row.name, row.parse, row.loss, row.died, row.consumables })
+			hideAll({ row.name, row.parse, row.loss, row.died, row.consumables, row.zebra })
 		else
+			if row.zebra ~= nil then
+				row.zebra:ClearAllPoints()
+				row.zebra:SetPoint("TOPLEFT", parent, "TOPLEFT", 0, -(y + (index - 1) * G.bossRow))
+				row.zebra:SetSize(Theme.SIZES.windowLeft, G.bossRow)
+				row.zebra:Show()
+			end
 			local top = y + (index - 1) * G.bossRow + (G.bossRow - G.line) / 2
 			for _, column in ipairs(MeFrame.COLUMNS) do
 				place(row[column.key], parent, column.x, top)
@@ -478,10 +497,37 @@ local function drawNow(now, parent, rows, y)
 			row.link:Show()
 		end
 	end
+	MeFrame.drawBar(now, parent, rows[1], y)
 	if #rows == 0 then
 		return y
 	end
 	return y + #rows * G.nowRow + G.sectionGap - (G.nowRow - 2 * G.line)
+end
+
+--- The first Right now row's accent bar at `y` (hidden with no row): it pulses on the window's first
+--- show in a session (Theme.pulseNext), with the dot of the tab the row leads to, then holds.
+function MeFrame.drawBar(now, parent, first, y)
+	if first == nil then
+		now.bar:Hide()
+		return nil
+	end
+	now.bar:ClearAllPoints()
+	now.bar:SetPoint("TOPLEFT", parent, "TOPLEFT", -Theme.SIZES.platePad, -y)
+	now.bar:Show()
+	if not MeFrame.pulsed then
+		MeFrame.pulsed = true
+		local strip = Hub.strip
+		local button = strip ~= nil and first.tab ~= nil and strip.buttons[first.tab] or nil
+		MeFrame.pulsing = { now.bar, button ~= nil and button.foreverSixtyDot or nil }
+		Theme.pulseNext(MeFrame.pulsing)
+	end
+	return now.bar
+end
+
+--- The pulse ends at once (the row clicked, the tab left): the bar and the dot at the steady alpha.
+function MeFrame.stopPulse()
+	Theme.stopNext(MeFrame.pulsing or {})
+	MeFrame.pulsing = nil
 end
 
 --- The item's name in its quality colour: the client's, else the shipped list's while the client loads it.
@@ -790,6 +836,7 @@ Hub.register({
 	label = L.hubTabMe,
 	build = MeFrame.build,
 	show = MeFrame.show,
+	hide = MeFrame.stopPulse,
 	figures = MeFrame.figures,
 	waiting = MeFrame.waiting,
 })

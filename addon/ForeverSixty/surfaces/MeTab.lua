@@ -103,7 +103,6 @@ function MeTab.score(input)
 	local parts = Score.parts(record)
 	local reason = MeTab.missedReason(input.lastRaid)
 	for _, part in ipairs(parts) do
-		part.hex = Score.tierHex(part.quality)
 		part.reason = part.key == "discipline" and reason or nil
 	end
 	return {

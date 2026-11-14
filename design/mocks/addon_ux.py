@@ -855,7 +855,18 @@ def icon_row(icon, title, text, source=None, extra=''):
             f'margin-top:1px">{text}</div>{extra}</div></div>')
 
 
-ARROW_ICON = tga_uri(ROOT / 'addon/ForeverSixty/media/arrow.tga')
+def tinted_uri(path: Path, hex_: str) -> str:
+    """A white generated glyph (addon/ForeverSixty/media/icons) tinted as the addon tints it."""
+    glyph = Image.open(path).convert('RGBA')
+    ink = Image.new('RGBA', glyph.size, hex_)
+    ink.putalpha(glyph.getchannel('A'))
+    buf = io.BytesIO()
+    ink.save(buf, 'PNG')
+    return 'data:image/png;base64,' + base64.b64encode(buf.getvalue()).decode()
+
+
+# The upgrade arrow: the site's upgrade glyph in the gain colour (Theme.arrowMarkup).
+ARROW_ICON = tinted_uri(ROOT / 'addon/ForeverSixty/media/icons/upgrade.tga', color('forever.gain'))
 
 
 def tooltip_card(name, quality, lines):

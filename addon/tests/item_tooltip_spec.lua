@@ -44,11 +44,11 @@ describe("ItemTooltip.verdictLine", function()
 		assert.are.equal(1, Progress.MIN_GAIN)
 		local line = ItemTooltip.verdictLine({ state = "behind", delta = -4.2 }, "dps", "Chausses of Westfall")
 		assert.are.equal(upLine(4.2), line.text)
-		assert.are.equal("tooltipGreen", line.color)
+		assert.are.equal("gain", line.color)
 		assert.is_true(line.upgrade)
 		assert.are.equal(4.2, line.gain)
-		assert.are.equal("1aff1a", Theme.HEX.tooltipGreen)
-		assert.is_truthy(line.text:find("|T" .. Theme.MEDIA.arrowInline, 1, true))
+		assert.are.equal(require("Tokens").color.forever.gain, Theme.HEX.gain)
+		assert.is_truthy(line.text:find("|T" .. Theme.glyphPath("upgrade"), 1, true))
 		assert.is_nil(line.text:find("Chausses", 1, true))
 	end)
 
@@ -258,21 +258,22 @@ describe("ItemTooltip.fitAlternatives", function()
 end)
 
 describe("ItemTooltip.attributionText", function()
-	it("names the spec and where the weights came from, Forever Sixty alone with no spec", function()
-		assert.are.equal(string.format(L.tooltipAttribution, string.format(L.tooltipAttrEstimate, "Arms")),
+	it("names the spec and the weights' source (the header names Forever Sixty), the name alone with none", function()
+		assert.are.equal(string.format(L.tooltipAttrEstimate, "Arms"),
 			ItemTooltip.attributionText("Arms", "default"))
-		assert.are.equal(string.format(L.tooltipAttribution, string.format(L.tooltipAttrEstimate, "Arms")),
+		assert.are.equal(string.format(L.tooltipAttrEstimate, "Arms"),
 			ItemTooltip.attributionText("Arms", nil))
-		assert.are.equal(string.format(L.tooltipAttribution, string.format(L.tooltipAttrSim, "Arms")),
+		assert.are.equal(string.format(L.tooltipAttrSim, "Arms"),
 			ItemTooltip.attributionText("Arms", "sim"))
-		assert.are.equal(string.format(L.tooltipAttribution, string.format(L.tooltipAttrBuild, "Arms")),
+		assert.are.equal(string.format(L.tooltipAttrBuild, "Arms"),
 			ItemTooltip.attributionText("Arms", "build"))
 		assert.are.equal(L.addonName, ItemTooltip.attributionText(nil, "sim"))
 		assert.are.equal("8a8a8a", Theme.HEX.tooltipDim)
 	end)
 
-	it("has no header any more", function()
-		assert.is_nil(ItemTooltip.headerText)
+	it("opens the block on one header line, the seal and the name (brand spec 7), never the old fitted one", function()
+		assert.are.equal(Theme.inlineIcon(Theme.MEDIA.seal, Theme.SIZES.tooltipSeal) .. " " .. L.addonName,
+			ItemTooltip.headerText())
 		assert.is_nil(ItemTooltip.fitHeader)
 		assert.is_nil(L.tooltipHeaderSep)
 	end)
@@ -603,7 +604,7 @@ describe("ItemTooltip.section", function()
 	it("scores a bag upgrade, then names the band's better pick on the support line", function()
 		local lines, target, pending, head = ItemTooltip.section(ctx())
 		assert.are.same({ upLine(6), BETTER_100 }, texts(lines))
-		assert.are.equal("tooltipGreen", lines[1].color)
+		assert.are.equal("gain", lines[1].color)
 		assert.are.equal("verdict", lines[1].role)
 		assert.are.equal("better", lines[2].kind)
 		assert.are.equal("support", lines[2].role)
@@ -933,7 +934,7 @@ describe("ItemTooltip.section", function()
 				assert.are.same({ ARROW .. string.format(L.tooltipUpgradePair, ItemTooltip.figure(14, "dps"),
 					"Goblin Hammer") }, texts(lines))
 				assert.are.equal("pair", lines[1].kind)
-				assert.are.equal("tooltipGreen", lines[1].color)
+				assert.are.equal("gain", lines[1].color)
 				assert.are.equal("verdict", lines[1].role)
 			end)
 
@@ -1114,7 +1115,7 @@ describe("ItemTooltip.section", function()
 		it("prints the label in the line's white, the name as coloured, the gain green", function()
 			local text = ItemTooltip.nextLine("|cff0070ddMutant Scale Breastplate|r", 1.8, "dps")
 			assert.are.equal(L.tooltipNextLabel .. " |cff0070ddMutant Scale Breastplate|r |cff"
-				.. Theme.HEX.tooltipGreen .. ItemTooltip.figure(1.8, "dps") .. "|r", text)
+				.. Theme.HEX.gain .. ItemTooltip.figure(1.8, "dps") .. "|r", text)
 		end)
 
 		it("nets a read enchant (no note) and notes one it could not read under Shift", function()
@@ -1365,14 +1366,14 @@ describe("ItemTooltip.section", function()
 					item = { itemId = 900, link = "item:900", itemClass = case.item[1], itemSubClass = case.item[2],
 						equipLocation = case.item[3], stats = { strength = 10 } } }))
 				if answer == "ok" then
-					assert.are.equal("tooltipGreen", lines[1].color)
+					assert.are.equal("gain", lines[1].color)
 				else
 					-- Case 5: grey; a "never" reason under Shift ("until" names its reason on the line).
 					assert.are.same({ text = ItemTooltip.untilLine(case.class, answer, unlock, reason), color = "muted" },
 						{ text = lines[1].text, color = lines[1].color })
 					assert.are.same({ ItemTooltip.refusalReason(case.class, answer, reason) }, shiftTexts(lines))
 					for _, line in ipairs(lines) do
-						assert.are_not.equal("tooltipGreen", line.color)
+						assert.are_not.equal("gain", line.color)
 					end
 				end
 			end)
@@ -1763,10 +1764,15 @@ describe("the item hook", function()
 	local saved = {}
 	local NAMES
 
+	--- A tooltip recording our lines after the block's blank row and header line (pinned above).
 	local function recording()
 		local calls = {}
 		return {
-			AddLine = function(_, text, r, g, b) calls[#calls + 1] = { text = text, r = r, g = g, b = b } end,
+			AddLine = function(_, text, r, g, b)
+				if text ~= ItemTooltip.headerText() and text ~= ItemTooltip.BLOCK_GAP then
+					calls[#calls + 1] = { text = text, r = r, g = g, b = b }
+				end
+			end,
 			AddDoubleLine = function(_, left, right, _, _, _, r, g, b)
 				calls[#calls + 1] = { text = left, right = right, r = r, g = g, b = b }
 			end,
@@ -1958,7 +1964,7 @@ describe("one floor for the chip and the tooltip", function()
 			local line = ItemTooltip.verdictLine(verdict, "dps", "Chausses")
 			assert.is_true(math.abs(-verdict.delta - case.gain) < 1e-9)
 			assert.are.equal(case.upgrade, #listed == 1)
-			assert.are.equal(case.upgrade, line.color == "tooltipGreen")
+			assert.are.equal(case.upgrade, line.color == "gain")
 		end)
 	end
 end)
@@ -2382,7 +2388,11 @@ describe("the hook's width contract and enchant wiring", function()
 		local tip = {
 			GetName = function() return NAME end,
 			NumLines = function() return #rows end,
-			AddLine = function(_, text, _, _, _, wrap) rows[#rows + 1] = { left = text, wrap = wrap } end,
+			AddLine = function(_, text, _, _, _, wrap)
+				if text ~= ItemTooltip.headerText() and text ~= ItemTooltip.BLOCK_GAP then
+					rows[#rows + 1] = { left = text, wrap = wrap }
+				end
+			end,
 			AddDoubleLine = function(_, left, right) rows[#rows + 1] = { left = left, right = right } end,
 			Show = function() end,
 		}
@@ -2512,7 +2522,8 @@ describe("the hook's width contract and enchant wiring", function()
 				assert.is_nil(index(rows, L.tooltipAlternativesLabel))
 				assert.is_nil(index(rows, "Defias"))
 				assert.is_not_nil(index(rows, L.tooltipNextLabel))
-				assert.is_not_nil(index(rows, L.addonName))
+				-- The attribution, the Shift block's last line, stays.
+				assert.are.equal(whole[#whole], rows[#rows])
 			end)
 		end)
 
@@ -2973,7 +2984,7 @@ describe("the Shift block", function()
 		local entry = ItemTooltip.bagSection({ link = "|Hitem:900|h[Bag Chest]|h", itemId = 900, delta = 3.5, unit = "dps" },
 			{ specWord = "Arms", tag = "sim", equipped = true }, "dps", function() return "1eff00" end)
 		assert.are.equal(ARROW .. string.format(L.tooltipInBags, "|cff1eff00Bag Chest|r",
-			"|cff" .. Theme.HEX.tooltipGreen .. ItemTooltip.figure(3.5, "dps") .. "|r"), entry.lines[1].text)
+			"|cff" .. Theme.HEX.gain .. ItemTooltip.figure(3.5, "dps") .. "|r"), entry.lines[1].text)
 		assert.are.equal("bag", entry.lines[1].kind)
 		assert.are.equal("verdict", entry.lines[1].role)
 		assert.are.equal("tooltipBody", entry.lines[1].color)

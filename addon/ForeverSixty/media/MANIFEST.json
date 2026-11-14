@@ -1,0 +1,266 @@
+{
+  "generator": {
+    "path": "web/scripts/gen-addon-icons.mjs",
+    "sha256": "533a0fec53d9c9437c3ab81d52c0471a28e66ae802374b7854dff6300533aee5"
+  },
+  "sources": {
+    "design/assets/icons/ui/bis.svg": "4869cc91379c3caa9525f822121d2dad297401a31041d9224628ee8a4f684906",
+    "design/assets/icons/ui/character.svg": "1e5fbe5feaeff039edd960ad1b3e1ed15fd8268a31f2e1d4f28b2e3830727028",
+    "design/assets/icons/ui/guild.svg": "85ee45232f5ca16ea9b3fbd9ff09f897be3f10aedea4a14d8c90d95138637ddd",
+    "design/assets/icons/ui/line/bolt.svg": "888e81c1180f4973d25d610b779e1fcff4e719a6073e46bb679891b8dce27c4e",
+    "design/assets/icons/ui/line/check.svg": "c5ff9d1c5d775631b8e14910717b6acce528407901dc1b79c4ecc225cad8cf57",
+    "design/assets/icons/ui/line/chevron-down.svg": "fbff5f99141fec550cf3a6466f8cb329610ab7bbbbb7662147dfe78d4fcfef44",
+    "design/assets/icons/ui/line/chevron-right.svg": "cf25eaa76b559615a229f6c7a64ea9c9e8416b92b7103eab542929289e095a2f",
+    "design/assets/icons/ui/line/close.svg": "bcfb97bbefa5947878abe17063c437dfd5b24b4b3e2947832bef452f2584f13e",
+    "design/assets/icons/ui/line/pin.svg": "6153192da5d70ea4c6055ad34a4937f46fdb9ce570db7549f677b687fb0a1da3",
+    "design/assets/icons/ui/line/refresh.svg": "add64bdba145ca64fb0cfe9935549522c5f94548aab4f9dc685ba48c850e646d",
+    "design/assets/icons/ui/line/skull.svg": "954f683c741beca13d82b053e9ef0faa0be8ab6768a13fe0ae71b489f0e9e0a7",
+    "design/assets/icons/ui/line/spinner.svg": "c76a5a9271b1e41804f79399f63fa22d5fbe20038dc1e239897559b8cc7874b7",
+    "design/assets/icons/ui/line/target.svg": "0b20393db3548bf09c47e10393a7f6237261b7bfa969464f367ce69df2671454",
+    "design/assets/icons/ui/line/upgrade.svg": "0e82ff75a32e0dc87a66faf9e54057b3738c1387daace6d1e8d54fcee6c8979a",
+    "design/assets/icons/ui/manage.svg": "a8414e99d0b9ac225dc9cd12eb438850c2db20a4cf7c4c8a65dc9e0cf52dc501",
+    "design/assets/icons/ui/planner.svg": "8fc8de21213ffbca25c12d8499f38ca6fd17535d2d8d60faf703ebe1d15ff924",
+    "design/assets/icons/ui/search.svg": "3e9f90fd3fa25d55e49238831d22bda3110f8ed1848a6cc390ab45bf10eb6b1e",
+    "design/assets/icons/ui/sim.svg": "a6c0c6cc4d5d4be3f9c261ff43eaa279960ccd0a9087e2731dae732dcef3a40d",
+    "design/assets/ornaments/corner-filigree.svg": "4a04b7b76ddb1a76463c390e58cc276214ce7aa1bd64073d655edecf92b56415",
+    "web/public/art/band-2400.webp": "6477dcaa662e4b376a500a118b96900f17920bc5287a8128a484598b8307ae23",
+    "web/public/art/cave-1600.webp": "dba7087ad06808f460a5bed34d46f4a640f2cc40f3f79a103370b9a16b6eed5a",
+    "web/public/art/ground.webp": "862bd8f441e173f18efa40db03754c4dac7b7323e431b9a73b85f97401e439c1",
+    "web/public/art/paperdoll-frame@2x.webp": "1291c8cdbd721abb349f3eb4c1b10e85654969fae03c6ad8a143ffb40668953b",
+    "web/public/art/seal-flat-small.svg": "e5cf57a78984ff570a63c443e14209fc110225beccf6e7688b4d0c5440ee84ab",
+    "web/public/icons/hd/crests/druid.webp": "50b8dbe7db440487850cb167a477baef4eb8ba8faabca487593e8ccb492957b4",
+    "web/public/icons/hd/crests/hunter.webp": "ed29400e69245ebeeaf9a969da1b652fa5ea2756c8eaadf051f8eaf1978cdc54",
+    "web/public/icons/hd/crests/mage.webp": "5f287a327f64de028859e92434c5ab494a736f5838b173ce8ee364c8cf779d62",
+    "web/public/icons/hd/crests/paladin.webp": "96db669232c13f94f6f1adb82a5c20c7df1b7d7a74365cffb19ac6a8e2ee493b",
+    "web/public/icons/hd/crests/priest.webp": "162126ec836d1ece74bc57177bf186b0e7f1531bb78adf9c09972152ca06da99",
+    "web/public/icons/hd/crests/rogue.webp": "96b961e25003e0abeb1a92595736284a9e8d04130b22c803e452e93a7b320b25",
+    "web/public/icons/hd/crests/shaman.webp": "f425908a332366af18a5df67d31b4624fe9ebac570ea2c4209b3cbf715ab5ade",
+    "web/public/icons/hd/crests/warlock.webp": "bbc2e5bf19418f4b08e2a7bc760da25725f1b1b66eacad3fab2b03fcdded1b69",
+    "web/public/icons/hd/crests/warrior.webp": "33b0af9e8d9ff932d1dedafa43ef8b6b4438ad941ccdd71ff9a50e281711dab0"
+  },
+  "files": {
+    "band-builds.tga": {
+      "width": 512,
+      "height": 64,
+      "bytes": 131090,
+      "sha256": "10201624335c1c31562361f7a2cd4b0df8fb562bcdf8befb340de4ef2c205862"
+    },
+    "band-cave.tga": {
+      "width": 512,
+      "height": 64,
+      "bytes": 131090,
+      "sha256": "b697e6d78dbf3db442dc5f6e8670caecb6c47a680f9c50f7f1360465449264bc"
+    },
+    "band-gear.tga": {
+      "width": 512,
+      "height": 64,
+      "bytes": 131090,
+      "sha256": "c271596c9c4b0ad19a6cd60d1ba041ca5741be6340b6f0a4607684a5310764b5"
+    },
+    "band-me.tga": {
+      "width": 512,
+      "height": 64,
+      "bytes": 131090,
+      "sha256": "57107315f307cb3dd4aa756c54325cf8aa9f99a0dec913c1a306e27a5b6d5bdb"
+    },
+    "band-rotation.tga": {
+      "width": 512,
+      "height": 64,
+      "bytes": 131090,
+      "sha256": "648f998318c4d92432aab19d09aeb6b020408e42b89100db0b0c6f704f842bce"
+    },
+    "cave.tga": {
+      "width": 256,
+      "height": 128,
+      "bytes": 131090,
+      "sha256": "58a9e523c8fe56bb5ea437f390bbc75cea170e8979aca0e1b1291dff5a91e599"
+    },
+    "crests/druid.tga": {
+      "width": 128,
+      "height": 128,
+      "bytes": 65554,
+      "sha256": "12c4da53819d6218c229576d5c84bdf3cd8a929f6d32aae2d52f1fe94f52afcf"
+    },
+    "crests/hunter.tga": {
+      "width": 128,
+      "height": 128,
+      "bytes": 65554,
+      "sha256": "79d28089f6374b3dab336dc541b0b198f1d8b4d1d2e57da7ab9a3c74bbb157e9"
+    },
+    "crests/mage.tga": {
+      "width": 128,
+      "height": 128,
+      "bytes": 65554,
+      "sha256": "8362ee057bed1900890531cec7b6db4d692e68a7aacd7d3df7d44cdf3bd766bc"
+    },
+    "crests/paladin.tga": {
+      "width": 128,
+      "height": 128,
+      "bytes": 65554,
+      "sha256": "105c127ba6d409ef76d93dc0927b3d3974d7a9b9b1f484029abc5ba91a57c3de"
+    },
+    "crests/priest.tga": {
+      "width": 128,
+      "height": 128,
+      "bytes": 65554,
+      "sha256": "9ecc16fb1ac8b7c5a54c7927ee3cf111dd5ec9a0510af18d02efb4e696f22294"
+    },
+    "crests/ring.tga": {
+      "width": 128,
+      "height": 128,
+      "bytes": 65554,
+      "sha256": "ccad41f3a05b7e92bcf68e653ad5b3b45e7ceeb16f796612a0dcfd6872e56156"
+    },
+    "crests/rogue.tga": {
+      "width": 128,
+      "height": 128,
+      "bytes": 65554,
+      "sha256": "fba492b2d6077321618571d45e9da33088316390a089eda8c8a862c492f2ad02"
+    },
+    "crests/shaman.tga": {
+      "width": 128,
+      "height": 128,
+      "bytes": 65554,
+      "sha256": "b03f5fb42a52404540b08d527f612e11e0ab6b450fe5658630be7b416915bfab"
+    },
+    "crests/warlock.tga": {
+      "width": 128,
+      "height": 128,
+      "bytes": 65554,
+      "sha256": "0699242caf2b344e359d5be1313ec8b529fba9fcfc977bb5e7f6cf32f338a0a4"
+    },
+    "crests/warrior.tga": {
+      "width": 128,
+      "height": 128,
+      "bytes": 65554,
+      "sha256": "0ea4df3b1430bdbb613b89d0c7995596b613c5631232a5af34da27ca8cc23e66"
+    },
+    "filigree.tga": {
+      "width": 64,
+      "height": 64,
+      "bytes": 16402,
+      "sha256": "7a04a60f14dd5015e32cc8bcfbe41c1499fe129ce7db59983290bf8211f6a4a0"
+    },
+    "ground.tga": {
+      "width": 256,
+      "height": 256,
+      "bytes": 262162,
+      "sha256": "25811dcc88bfb8fe6fe239663b5351a4b51f8275af584a3e6034221f650cd019"
+    },
+    "icons/bis.tga": {
+      "width": 32,
+      "height": 32,
+      "bytes": 4114,
+      "sha256": "8ceb0e3cee65b2595faf1c8f790b915cfc20fb048ad8a5af333f56bc3b5ddbbf"
+    },
+    "icons/bolt.tga": {
+      "width": 32,
+      "height": 32,
+      "bytes": 4114,
+      "sha256": "39e37dc6b0ddb27cd4c6c703446594c725eb58868bc6a7f7a7797c3bbc6f6688"
+    },
+    "icons/character.tga": {
+      "width": 32,
+      "height": 32,
+      "bytes": 4114,
+      "sha256": "53240c05dee62c3b6d1930325f3802cd37ae137f9c6d79d9d2fd564c13d71685"
+    },
+    "icons/check.tga": {
+      "width": 32,
+      "height": 32,
+      "bytes": 4114,
+      "sha256": "3039d69e30c248d713419c68f20fc7fb2d94484a56d632a5e2db0f648435cd54"
+    },
+    "icons/chevron-down.tga": {
+      "width": 32,
+      "height": 32,
+      "bytes": 4114,
+      "sha256": "eaef81f90d8c4d920b1cb779bbfd7e2e2329b7c6e02d29b11178dcb3a8b5820f"
+    },
+    "icons/chevron-right.tga": {
+      "width": 32,
+      "height": 32,
+      "bytes": 4114,
+      "sha256": "3c827ad92a1eb17aa51cf4e48dfb70786bfa121516cd2256c07f7a817f9d1a0a"
+    },
+    "icons/close.tga": {
+      "width": 32,
+      "height": 32,
+      "bytes": 4114,
+      "sha256": "1fd10a95c7410d72c0fe2eca60fff55c63b6a76a6a9d1c22cd11846636c9b597"
+    },
+    "icons/guild.tga": {
+      "width": 32,
+      "height": 32,
+      "bytes": 4114,
+      "sha256": "e9ec2d781e9c83adbc6058bd7b1892895f66e217b4ba1a269966b7640726e36b"
+    },
+    "icons/manage.tga": {
+      "width": 32,
+      "height": 32,
+      "bytes": 4114,
+      "sha256": "dcaa9af94e7242fe46684a5d53951a967ab68bfd5a12e80f1e20724ef23caff1"
+    },
+    "icons/pin.tga": {
+      "width": 32,
+      "height": 32,
+      "bytes": 4114,
+      "sha256": "9df76e9eeb9cb49299c5f75a8756b0ac8b2fc9890ebff5401667b573c8cbb56b"
+    },
+    "icons/planner.tga": {
+      "width": 32,
+      "height": 32,
+      "bytes": 4114,
+      "sha256": "70d078f9b027a17c76e8b05fd64c8704c315862ac0782df1172445c42b3f806f"
+    },
+    "icons/refresh.tga": {
+      "width": 32,
+      "height": 32,
+      "bytes": 4114,
+      "sha256": "b1a448bf3135ae718597371002710b932c3f6bcd4fe113ee369fe5ff6cfd262c"
+    },
+    "icons/search.tga": {
+      "width": 32,
+      "height": 32,
+      "bytes": 4114,
+      "sha256": "c360128c5ff81d7271f144f4b6f41174858975c5f19e5b111445cdee359fc549"
+    },
+    "icons/sim.tga": {
+      "width": 32,
+      "height": 32,
+      "bytes": 4114,
+      "sha256": "b4f35cb68bb33e5e4a72d56394760b1175fc879fe3314fc459c6be391efe04f4"
+    },
+    "icons/skull.tga": {
+      "width": 32,
+      "height": 32,
+      "bytes": 4114,
+      "sha256": "175f17a5cf16e6445f50b16debedea49bd38ac7799b25e3056e8a58c4d1f9fc2"
+    },
+    "icons/spinner.tga": {
+      "width": 32,
+      "height": 32,
+      "bytes": 4114,
+      "sha256": "ce02d95095ac26904933c6777363e7dfcff2996f0027207acb44ca737fd3d35c"
+    },
+    "icons/target.tga": {
+      "width": 32,
+      "height": 32,
+      "bytes": 4114,
+      "sha256": "cd353fb5f33fe1a9fd583bd6f9d56f0225fdef10c953dcc4e4b4c40c2c48e1c3"
+    },
+    "icons/upgrade.tga": {
+      "width": 32,
+      "height": 32,
+      "bytes": 4114,
+      "sha256": "20de0bddc98673e5bbe3ba8a518011ade4012dc683d0ad2a333906ff105da641"
+    },
+    "seal.tga": {
+      "width": 64,
+      "height": 64,
+      "bytes": 16402,
+      "sha256": "57f89d30f9f110d1cf897b49987ce0df5967b4877160394bb0e15a1e1a09fb6f"
+    }
+  },
+  "totalBytes": 1811098
+}

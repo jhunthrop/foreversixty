@@ -28,6 +28,7 @@ local BuildsPane = ns.BuildsPane or require("BuildsPane")
 local Comms = ns.Comms or require("Comms")
 local HubDraw = ns.HubDraw or require("HubDraw")
 local Hub = ns.Hub or require("Hub")
+local HubPlates = ns.HubPlates or require("HubPlates")
 
 local OfficerTab = {}
 
@@ -49,7 +50,8 @@ OfficerTab.LOOT_COLUMNS = {
 --- icon, the session item's icon, an item row's icon, the Give button's least width, the least and most
 --- roster rows, the room kept off the screen's height.
 OfficerTab.LAYOUT = {
-	row = 18, headRow = 16, colGap = 6, crest = 14, crestGap = 4, dot = 6, dotGap = 4, sectionGap = 20,
+	row = 18, headRow = 16, colGap = 6, crest = 14, crestGap = 4, dot = 6, dotGap = 4,
+	sectionGap = Theme.SIZES.plateSectionGap,
 	readyLabel = 84, readyCount = 48, readyGap = 6, buildIcon = 20, itemIcon = 32, listIcon = 20, giveWidth = 40,
 	minRows = 8, maxRows = 30, screenMargin = 160, iconGap = 8, wearsInset = 4,
 }
@@ -310,7 +312,7 @@ local function drawHeadings(view, parent, y)
 		local region = cell(view, parent, "rh." .. column.key, x, y, column.width, L.offColumns[column.key], "muted",
 			column.right)
 		local active = OfficerTab.sort ~= nil and OfficerTab.sort.key == column.key
-		region:SetTextColor(Theme.rgb(Theme.HEX[active and "gold" or "muted"]))
+		region:SetTextColor(Theme.rgb(Theme.HEX[active and "accent" or "muted"]))
 		local frame = hit(view, parent, "rh." .. column.key)
 		frame:ClearAllPoints()
 		frame:SetPoint("TOPLEFT", parent, "TOPLEFT", x, -y)
@@ -373,7 +375,7 @@ local function drawLinks(view, parent, parts, y)
 			x = x + (sep:GetStringWidth() or 8)
 		end
 		local _, region = textLine(view, parent, "lk." .. part.key, x, y, Theme.SIZES.windowLeft - x, part.text,
-			part.onClick ~= nil and "gold" or "muted")
+			part.onClick ~= nil and "link" or "muted")
 		local width = region:GetStringWidth() or 0
 		if part.onClick ~= nil then
 			local frame = hit(view, parent, "lk." .. part.key)
@@ -773,7 +775,7 @@ local function drawLootRow(view, parent, session, row, index, y)
 	give:ClearAllPoints()
 	give:SetPoint("TOPRIGHT", parent, "TOPRIGHT", 0, -(y + 2))
 	if row.planned and not row.armed then
-		local _, tag = textLine(view, parent, key .. ".p", 0, top, 60, L.offOnList, "gold")
+		local _, tag = textLine(view, parent, key .. ".p", 0, top, 60, L.offOnList, "accent")
 		tag:ClearAllPoints()
 		tag:SetPoint("RIGHT", give, "LEFT", -6, 0)
 	end
@@ -785,7 +787,7 @@ local function drawSession(view, session)
 	local parent, width = view.left, Theme.SIZES.windowLeft
 	local G, columns = OfficerTab.LAYOUT, OfficerTab.LOOT_COLUMNS
 	local note = string.format(L.offLootItemOf, session.index, session.count)
-	local headNote = Hub.officer() and Theme.inlineColor("gold", L.offRoster) .. Theme.inlineColor("muted", SEP .. note)
+	local headNote = Hub.officer() and Theme.inlineColor("link", L.offRoster) .. Theme.inlineColor("muted", SEP .. note)
 		or note
 	local y = heading(view, parent, "session", width, 0, L.offLoot, headNote)
 	if Hub.officer() then
@@ -948,7 +950,6 @@ function OfficerTab.draw()
 	end
 	HubDraw.sweep(view)
 	sweepButtons(view)
-	view.rule:SetHeight(math.max(left, right, 1))
 	hints(session)
 	Hub.fitHeight(math.max(left, right))
 	Hub.refresh()
@@ -964,6 +965,8 @@ end
 
 function OfficerTab.build(content)
 	local view = HubDraw.view(content)
+	-- The roster, and a loot session's head, are the tab's lead plate over the cave art (spec 2.5).
+	view.plateLooks = { roster = HubPlates.RAID_LEAD, session = HubPlates.RAID_LEAD }
 	view.dots, view.usedButtons, view.usedDots = {}, {}, {}
 	OfficerTab.view = view
 	return view

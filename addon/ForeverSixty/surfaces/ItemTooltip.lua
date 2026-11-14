@@ -79,7 +79,7 @@ local function colored(name, hex)
 end
 
 local function green(text)
-	return Theme.inlineColor("tooltipGreen", text)
+	return Theme.inlineColor("gain", text)
 end
 
 --- A signed figure: "+2.2 DPS", "−1.3 HPS", "+3 score". Pure.
@@ -122,7 +122,7 @@ function ItemTooltip.verdictLine(verdict, unit, wornName, opts)
 	local gain = Progress.roundedGain(-verdict.delta, unit == "score" and "score" or "dps")
 	if gain >= Progress.MIN_GAIN or (verdict.state == "empty" and gain > 0) then
 		local shown = ItemTooltip.figure(gain, unit)
-		local line = { color = "tooltipGreen", upgrade = true, gain = gain }
+		local line = { color = "gain", upgrade = true, gain = gain }
 		if type(opts.requiredLevel) == "number" and type(opts.level) == "number" and opts.requiredLevel > opts.level then
 			line.text = Theme.arrowMarkup() .. string.format(L.tooltipUpgradeAt, shown, opts.requiredLevel)
 		elseif opts.over and wornName ~= nil and verdict.state ~= "empty" then
@@ -532,15 +532,15 @@ function ItemTooltip.fitAlternatives(entries, measure, room)
 	end
 	return rows
 end
---- The last Shift line (spec 2.3 item 6), dimmer: "Forever Sixty · Beast Mastery estimate",
---- "Forever Sixty · Beast Mastery, your sim" (or "your build"); "Forever Sixty" alone with no
+--- The last Shift line (spec 2.3 item 6), dimmer: "Beast Mastery", "Beast Mastery, your sim" (or
+--- "your build"); the block's header line already names Forever Sixty, so it is the line alone with no
 --- spec. Pure.
 function ItemTooltip.attributionText(specWord, tag)
 	if specWord == nil then
 		return L.addonName
 	end
 	local format = tag == "sim" and L.tooltipAttrSim or tag == "build" and L.tooltipAttrBuild or L.tooltipAttrEstimate
-	return string.format(L.tooltipAttribution, string.format(format, specWord))
+	return string.format(format, specWord)
 end
 
 --- "dps", "hps" or "score": the unit Gear.currentWeights' answer counts in.
@@ -1133,7 +1133,7 @@ function ItemTooltip.judge(ctx, pending)
 				local function build(name)
 					return Theme.arrowMarkup() .. string.format(L.tooltipUpgradePair, shown, colored(name, hex))
 				end
-				pairLine = { kind = "pair", role = "verdict", color = "tooltipGreen", upgrade = true,
+				pairLine = { kind = "pair", role = "verdict", color = "gain", upgrade = true,
 					gain = pairVerdict.gain, partner = partnerId, text = build(partnerName),
 					fit = { name = partnerName, build = build }, breakdown = breakdownLine(partner) }
 			end
@@ -1901,14 +1901,28 @@ function ItemTooltip.mayShow(tooltip)
 		and type(owner.IsMouseOver) == "function" and owner:IsMouseOver() == true
 end
 
+--- The blank row that sets our block off from the item's own lines (wow-player, 2.0.55 build gate).
+ItemTooltip.BLOCK_GAP = " "
+
+--- The line that opens our block on a client tooltip (design/specs/2026-11-14-addon-brand.md section 7):
+--- the seal and "Forever Sixty", drawn in the accent by the caller. Pure.
+function ItemTooltip.headerText()
+	return Theme.inlineIcon(Theme.MEDIA.seal, Theme.SIZES.tooltipSeal) .. " " .. L.addonName
+end
+
 --- Draws a section (`entry`: { lines, target, pending, head }) directly after the lines
---- already on `tooltip`, with no blank row and no header (G1): each line whole in its colour and
---- wrapping inside the tooltip as the client's own lines do (2.0.43: a long item name or "where it
---- drops" was cut with an ellipsis), the Shift block only while Shift is held. Then the compare
---- tooltip for the entry's target, and the hover `redraw` re-runs once an item it waits for
+--- already on `tooltip`, after one blank row and ItemTooltip.headerText when it has a line: each
+--- line whole in its colour and wrapping inside the tooltip as the client's own lines do (2.0.43:
+--- a long item name or "where it drops" was cut with an ellipsis), the Shift block only while Shift
+--- is held. Then the compare tooltip for the entry's target, and the hover `redraw` re-runs once an item it waits for
 --- arrives (ItemTooltip.onItemInfoReceived).
 local function drawEntry(tooltip, entry, redraw)
-	for _, line in ipairs(ItemTooltip.visibleLines(entry.lines, Theme.shiftDown())) do
+	local lines = ItemTooltip.visibleLines(entry.lines, Theme.shiftDown())
+	if #lines > 0 then
+		tooltip:AddLine(ItemTooltip.BLOCK_GAP)
+		tooltip:AddLine(ItemTooltip.headerText(), Theme.rgb(Theme.HEX.accent))
+	end
+	for _, line in ipairs(lines) do
 		local r, g, b = opColor(line.color)
 		for _, text in ipairs(ItemTooltip.fitLine(line)) do
 			tooltip:AddLine(text, r, g, b, WRAP)
@@ -1968,8 +1982,8 @@ end
 
 --- `entry` with the Shift block's last line, the marks' one wording "Alt-click: open Gear", when the hover
 --- is on a mark an Alt-click opens the Gear tab from (spec 2026-11-13-addon-hub 2, 3.7, 5): paper-doll
---- `slot`'s own marked button, or (`slot` nil) bag item `link` under its own button carrying the arrow.
---- The entry itself otherwise.
+--- `slot`'s own marked button, or (`slot` nil) bag item `link` under its own button carrying the arrow,
+--- in the client tooltip's gold, as the site's tooltip writes its next step. The entry itself otherwise.
 local function withAltClick(entry, slot, owner, link)
 	if owner == nil then
 		return entry
@@ -1992,7 +2006,7 @@ local function withAltClick(entry, slot, owner, link)
 	for index, line in ipairs(entry.lines) do
 		lines[index] = line
 	end
-	lines[#lines + 1] = { kind = "altClick", role = "shift", color = "tooltipDim", text = L.markAltGear }
+	lines[#lines + 1] = { kind = "altClick", role = "shift", color = "clientGold", text = L.markAltGear }
 	copy.lines = lines
 	return copy
 end

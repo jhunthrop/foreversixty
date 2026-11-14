@@ -36,8 +36,6 @@ local Onboarding = {}
 Onboarding.TOUR_VERSION = 3
 --- The step icons Set up draws where the step has no item or spec of its own.
 Onboarding.ICONS = { app = "Interface\\Icons\\INV_Scroll_08" }
---- The client's own green tick (the ready check's), drawn over a done step's number.
-Onboarding.TICK = "Interface\\RaidFrame\\ReadyCheck-Ready"
 --- Pixel layout: the number's column, the tick's side, the row's two lines, the gap above the tooltip.
 Onboarding.LAYOUT = { number = 16, tick = 12, row = 38, tooltipGap = 6 }
 
@@ -196,10 +194,8 @@ local function build(parent, width)
 	for index = 1, 3 do
 		local row = {}
 		row.number = kit.text(parent, "muted", Onboarding.LAYOUT.number)
-		-- The tick whole, not cropped as an ability icon is.
-		row.tick = Theme.newTexture(parent, "OVERLAY")
-		row.tick:SetSize(Onboarding.LAYOUT.tick, Onboarding.LAYOUT.tick)
-		row.tick:SetTexture(Onboarding.TICK)
+		-- A done step's tick: the site's check glyph in the gain colour, over the step's number.
+		row.tick = Theme.glyph(parent, "OVERLAY", "check", Onboarding.LAYOUT.tick, "gain")
 		row.cell = kit.itemCell(parent, G.nowIcon)
 		row.crest, row.ring = Theme.buildCrest(parent, G.nowIcon)
 		row.line = kit.text(parent, "body", room)

@@ -17,6 +17,7 @@ local Talents = ns.Talents or require("Talents")
 local Follow = ns.Follow or require("Follow")
 local Progress = ns.Progress or require("Progress")
 local Chip = ns.Chip or require("Chip")
+local HubPlates = ns.HubPlates or require("HubPlates")
 
 local BuildsPane = {}
 
@@ -26,13 +27,14 @@ BuildsPane.KINDS = { "leveling", "raid" }
 BuildsPane.MAX_SPECS = 4
 BuildsPane.MAX_ROWS = BuildsPane.MAX_SPECS * #BuildsPane.KINDS
 --- Pixel layout (spec 1.1): the question's line over the list, the 16 px spec icon, the rows'
---- indent under the spec line, and the gaps between rows and between spec blocks.
+--- indent under the spec line, and the gaps between rows and between spec blocks (each block is a plate:
+--- the room after a block's last row and its gap is Theme.SIZES.plateSectionGap).
 --- A row's grounds reach groundLead px left of its text (a 2 px edge, then 4 px to the text); the
---- followed row lies on gold at followedAlpha; the next point's talent icon is nextIcon px.
+--- followed row lies on the selected ground with the accent edge; the next point's talent icon is nextIcon px.
 BuildsPane.LAYOUT = {
 	heading = 24, specLine = 18, specIcon = 16, indent = 22, playstyleGap = 6,
-	rowGap = 6, blockGap = 8, lineGap = 1, afterHeading = 4,
-	groundLead = 6, followedGround = "gold", followedAlpha = 0.08, pressedGround = "inset",
+	rowGap = 6, blockGap = Theme.SIZES.plateSectionGap - 6, lineGap = 1, afterHeading = 4,
+	groundLead = 6, followedGround = "selectedActive", followedEdge = "accent", pressedGround = "inset",
 	nextIcon = 14, nextIconGap = 4,
 }
 BuildsPane.ICON_ROOT = "Interface\\Icons\\"
@@ -284,7 +286,7 @@ local function buildSpecLine(content, deps)
 	return line
 end
 
---- A row's grounds: the hover and cursor ground and the gold one of the followed row, each reaching
+--- A row's grounds: the hover and cursor ground and the selected one of the followed row, each reaching
 --- G.groundLead px left of the text, and their 2 px edges at that left side.
 local function buildGrounds(row, deps)
 	local G = BuildsPane.LAYOUT
@@ -305,8 +307,8 @@ local function buildGrounds(row, deps)
 		texture:Hide()
 		return texture
 	end
-	row.followed = ground(G.followedGround, G.followedAlpha)
-	row.followedEdge = edge(G.followedGround)
+	row.followed = ground(G.followedGround)
+	row.followedEdge = edge(G.followedEdge)
 	row.highlight = ground(deps.hover)
 	row.edge = edge(deps.edge.token)
 end
@@ -332,7 +334,7 @@ local function buildRow(content, width, deps)
 	buildGrounds(row, deps)
 	row.label = noWrap(deps.text(row.frame, "body"))
 	row.label:SetPoint("TOPLEFT", row.frame, "TOPLEFT", 0, 0)
-	row.mark = deps.text(row.frame, "gold")
+	row.mark = deps.text(row.frame, "accent")
 	row.mark:SetText(L.dialogFollowingMark)
 	row.mark:SetJustifyH("RIGHT")
 	row.mark:SetPoint("TOPRIGHT", row.frame, "TOPRIGHT", 0, 0)
@@ -528,6 +530,7 @@ function BuildsPane.draw(pane, view, y, state)
 		BuildsPane.hide(pane)
 		return y
 	end
+	local top = y
 	y = drawHeading(pane, view, y)
 	local index, specs = 0, 0
 	for blockIndex, block in ipairs(view.blocks) do
@@ -536,7 +539,10 @@ function BuildsPane.draw(pane, view, y, state)
 			break
 		end
 		specs = blockIndex
-		y = drawSpecLine(pane, line, block, y + (blockIndex > 1 and BuildsPane.LAYOUT.blockGap or 0))
+		y = y + (blockIndex > 1 and BuildsPane.LAYOUT.blockGap or 0)
+		-- Each spec block is a plate; the first, with the question over it, is the tab's lead plate.
+		HubPlates.mark(pane.content, line.name, blockIndex == 1 and top or y, blockIndex == 1 and HubPlates.LEAD or nil)
+		y = drawSpecLine(pane, line, block, y)
 		for _, entry in ipairs(block.rows) do
 			index = index + 1
 			local row = pane.rows[index]

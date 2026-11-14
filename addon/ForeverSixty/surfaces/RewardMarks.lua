@@ -205,7 +205,7 @@ function RewardMarks.rollLine(judged)
 		return { text = paint("tooltipMuted", L.rollNotForYou) }
 	end
 	if judged.upgrade then
-		local text = paint("tooltipGreen", ItemTooltip.figure(judged.gain, judged.unit))
+		local text = paint("gain", ItemTooltip.figure(judged.gain, judged.unit))
 		if best ~= nil then
 			text = text .. paint("tooltipMuted", L.rollBestJoin) .. best
 		end

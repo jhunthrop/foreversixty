@@ -61,10 +61,16 @@ describe("Tooltip's slot hovers", function()
 
 	--- A plain tooltip double, for the item hook's own tests: records both
 	--- AddLine and AddDoubleLine calls in the order they happened.
+	--- A tooltip that records our lines after the block's header line (ItemTooltip.headerText).
 	local function recordingTooltip()
 		local calls = {}
+		local header, gap = require("ItemTooltip").headerText(), require("ItemTooltip").BLOCK_GAP
 		local tooltip = {
-			AddLine = function(_, text) calls[#calls + 1] = { kind = "line", text = text } end,
+			AddLine = function(_, text)
+				if text ~= header and text ~= gap then
+					calls[#calls + 1] = { kind = "line", text = text }
+				end
+			end,
 			AddDoubleLine = function(_, left, right)
 				calls[#calls + 1] = { kind = "doubleline", left = left, right = right }
 			end,
@@ -83,11 +89,12 @@ describe("Tooltip's slot hovers", function()
 		return nil
 	end
 
-	--- The texts GameTooltip was given through AddLine, in order.
+	--- The texts GameTooltip was given through AddLine, in order, but the block's blank row and header line.
 	local function addedLines()
 		local lines = {}
 		for _, call in ipairs(_G.GameTooltip.calls) do
-			if call.method == "AddLine" then
+			local ItemTooltip = require("ItemTooltip")
+			if call.method == "AddLine" and call[1] ~= ItemTooltip.headerText() and call[1] ~= ItemTooltip.BLOCK_GAP then
 				lines[#lines + 1] = call[1]
 			end
 		end
@@ -134,7 +141,7 @@ describe("Tooltip's slot hovers", function()
 	end)
 
 	describe("the item hook, for an equipped slot", function()
-		it("appends the verdict straight after the client's lines, with no blank row and no header", function()
+		it("appends the verdict after the client's lines, one blank row and the block's header", function()
 			start({
 				level = 20,
 				equipped = { [1] = "item:111:link" }, -- slot id 1 is head

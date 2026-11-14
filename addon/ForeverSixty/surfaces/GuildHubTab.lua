@@ -26,6 +26,7 @@ local RaidPrep = ns.RaidPrep or require("RaidPrep")
 local BuildsPane = ns.BuildsPane or require("BuildsPane")
 local HubDraw = ns.HubDraw or require("HubDraw")
 local Hub = ns.Hub or require("Hub")
+local HubPlates = ns.HubPlates or require("HubPlates")
 
 local GuildHubTab = {}
 
@@ -35,7 +36,8 @@ local GuildHubTab = {}
 --- Next raids' date and raid columns, the build icon of Officers sent, Your prep's label column, the
 --- least Follow width, the raid's name size.
 GuildHubTab.LAYOUT = {
-	sectionGap = 20, head = 18, line = 15, raidIcon = 32, iconGap = 8, answerWidth = 52, answerGap = 4,
+	sectionGap = Theme.SIZES.plateSectionGap, head = 18, line = 15, raidIcon = 32, iconGap = 8, answerWidth = 52,
+	answerGap = 4,
 	buttonsGap = 6, rankWidth = 18, specIcon = 14, specGap = 4, scoreWidth = 44, attendanceWidth = 40,
 	dateWidth = 112, raidWidth = 98, buildIcon = 20, prepLabel = 132, followWidth = 64, raidName = 14, ownGap = 4,
 }
@@ -494,7 +496,6 @@ local function drawRight(view, model)
 	if view.sentIcon ~= nil and model.sent == nil then
 		view.sentIcon:Hide()
 	end
-	Theme.setShown({ view.rule }, any)
 	return y
 end
 
@@ -511,7 +512,6 @@ function GuildHubTab.draw()
 	local left = drawLeft(view, model)
 	local right = drawRight(view, model)
 	HubDraw.sweep(view)
-	view.rule:SetHeight(math.max(left, right, 1))
 	local pending = model.tonight ~= nil and model.tonight.pending
 	Hub.setHints(nil, pending and L.guildSendsLater or nil)
 	Hub.fitHeight(math.max(left, right))
@@ -529,6 +529,8 @@ end
 --- The tab's body, once, into the hub's content frame: the two columns and the rule between them.
 function GuildHubTab.build(content)
 	GuildHubTab.view = HubDraw.view(content)
+	-- Tonight is the tab's lead plate over the cave art (spec 2.5).
+	GuildHubTab.view.plateLooks = { tonight = HubPlates.RAID_LEAD }
 	return GuildHubTab.view
 end
 

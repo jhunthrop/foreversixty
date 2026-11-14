@@ -111,7 +111,7 @@ describe("Tooltip", function()
 			assert.is_nil(Tooltip.itemLinkFrom({}))
 		end)
 
-		it("adds the verdict onto the tooltip directly, with no heading and no blank line", function()
+		it("adds the verdict under one blank row and the header line, the seal and the name", function()
 			startHook({
 				class = { name = "Paladin", token = "PALADIN" },
 				itemStats = {
@@ -119,16 +119,24 @@ describe("Tooltip", function()
 				},
 			})
 			Tooltip.data = DATA
-			local calls = {}
+			local calls, colors = {}, {}
 			local tooltip = {
-				AddLine = function(_, text) calls[#calls + 1] = text end,
+				AddLine = function(_, text, r, g, b)
+					calls[#calls + 1] = text
+					colors[#colors + 1] = { r, g, b }
+				end,
 				Show = function() end,
 			}
 			Tooltip.onTooltip(tooltip, "item:111")
+			-- The block opens on the seal and the name in the accent (brand spec section 7).
+			assert.are.equal(" ", calls[1])
+			assert.are.equal(Theme.inlineIcon(Theme.MEDIA.seal, Theme.SIZES.tooltipSeal) .. " " .. L.addonName, calls[2])
+			assert.are.same({ Theme.rgb(Theme.HEX.accent) }, { colors[2][1], colors[2][2], colors[2][3], 1 })
 			-- Nothing worn: it fills the slot, an upgrade behind the green arrow (spec 2.2 case 9).
 			assert.are.equal(Theme.arrowMarkup() .. string.format(L.tooltipUpgrade, Tooltip.figure(10, "score")),
-				calls[1])
-			for _, text in ipairs(calls) do
+				calls[3])
+			for index = 3, #calls do
+				local text = calls[index]
 				assert.is_nil(text:find(L.addonName, 1, true))
 				assert.are_not.equal(" ", text)
 			end

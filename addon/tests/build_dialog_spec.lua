@@ -644,7 +644,7 @@ describe("BuildDialog, paste mode's model", function()
 			assert.is_true(height <= BuildDialog.PREVIEW_MAX_HEIGHT, line .. " px lines: " .. height)
 			assert.are.equal(BuildDialog.GEAR_VISIBLE * BuildDialog.GEAR_PITCH, parts.gearRows)
 			-- The window's footer under the preview, its header over it (spec 3.1, 3.4).
-			assert.are.equal(Hub.LAYOUT.footer + Hub.LAYOUT.bodyPad, parts.bottom)
+			assert.are.equal(Hub.LAYOUT.footer + Hub.LAYOUT.bodyPadBottom, parts.bottom)
 			assert.are.equal(8, parts.aboveReplaces)
 			-- Fix 4, 9: the gaps the frame draws (S.gap / 2 between the header's lines).
 			assert.are.equal(math.max(S.dialogClassIcon, line * 3 + S.gap) + BuildDialog.LAYOUT.previewGap, parts.header)
@@ -1153,9 +1153,9 @@ describe("BuildDialog, the frame's pure rules", function()
 		assert.are.same({ rest = "gold", hover = "goldHover", pressed = "goldPressed" }, C.primary)
 		assert.are.equal(Theme.dimHex("gold", 0.85), Theme.HEX.goldPressed)
 		assert.are.same({ rest = "raised", hover = "hover", pressed = "inset" }, C.secondary)
-		assert.are.same({ label = "muted", hoverLabel = "body", hoverUnderline = "border", pressed = "inset" }, C.tab)
-		assert.are.same({ label = "body", edge = "border", hoverLabel = "strong", hoverGround = "hover", pressed = "inset" },
-			C.close)
+		assert.are.same({ label = "tabOff", hoverLabel = "strong", hover = "tabHover", activeLabel = "strong",
+			active = "tabActive", pressedAlpha = 0.8, underline = "accent" }, C.tab)
+		assert.are.same({ label = "tabOff", hoverLabel = "strong", hoverGround = "hover", pressed = "inset" }, C.close)
 		assert.are.equal(1, Theme.PRESSED_LABEL_DROP)
 		assert.are.equal(2, Theme.SIZES.tabUnderline)
 		assert.are.equal(20, Theme.SIZES.closeButton)

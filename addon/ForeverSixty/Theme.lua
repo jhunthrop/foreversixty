@@ -61,8 +61,6 @@ Theme.HEX = {
 	rareBright = C.rarity.rareText,
 	epicBright = C.rarity.epicText,
 	legendaryBright = C.rarity.legendary,
-	--- The client's own GREEN_FONT_COLOR: an upgrade line and every gain on the item tooltip.
-	tooltipGreen = C.addon.tooltipGreen,
 	--- The item tooltip's last Shift line (the attribution), one step dimmer than tooltipMuted.
 	tooltipDim = C.addon.tooltipDim,
 	--- The window's titles in cream in the title face, and the site's secondary button (blue in its blue
@@ -72,6 +70,77 @@ Theme.HEX = {
 	blueEdge = C.forever.blueEdge,
 	tealTop = C.forever.teal,
 	tealEdge = C.forever.tealEdge,
+	--- The buttons a step lighter under the cursor.
+	tealHover = C.addon.tealHover,
+	blueHover = C.addon.blueHover,
+	--- The site's chrome on the Forever Sixty window (design/specs/2026-11-14-addon-brand.md section 2):
+	--- the earth under everything, the nav bar under the tabs, the accent of every selected and current
+	--- mark (the active tab's underline, a selected row's bar, a link), the selected row's ground.
+	ground = C.forever.ground,
+	navBar = C.forever.navBar,
+	accent = C.forever.accent,
+	selected = C.base.selected,
+	selectedActive = C.addon.selectedActive,
+	--- The umber plates on the earth, their warm hairline edge, the rule under a plate's title, the
+	--- footer plate.
+	plate = C.addon.plate,
+	plateEdge = C.forever.panelEdge,
+	titleRule = C.addon.titleRule,
+	footer = C.addon.footer,
+	--- Rows on a plate: every other row of a dense table, and a row under the cursor.
+	zebra = C.addon.zebra,
+	rowHover = C.addon.rowHover,
+	--- The nav strip's tabs: a tab at rest, under the cursor, and the active one's ground.
+	tabOff = C.forever.tabOff,
+	tabHover = C.addon.tabHover,
+	tabActive = C.addon.tabActive,
+	--- The painted header band's veils (per mood), its left fade behind the crest, its figures line and
+	--- the hairline where it meets the strip.
+	veilBand = C.forever.veilBand,
+	veilNight = C.forever.veilNight,
+	veilCave = C.forever.veilCave,
+	headerFade = C.addon.headerFade,
+	headerNote = C.addon.headerNote,
+	headerJoin = C.addon.headerJoin,
+	--- The Officer tab's header join: the warm rule, so the two raid tabs that share the cave read apart.
+	ruleWarm = C.forever.ruleWarm,
+	--- The lead plate's filigree corners, and the raid lead plate's fill over its cave art.
+	corner = C.addon.corner,
+	caveFadeFrom = C.addon.caveFadeFrom,
+	caveFadeTo = C.addon.caveFadeTo,
+	--- A text link (going somewhere) and the link under the cursor: the site's accent, white on hover.
+	--- Gold is only for the waiting dot and the score (owner ruling, 2026-11-14).
+	link = C.forever.accent,
+	linkHover = C.base.strong,
+	--- A gain and a loss as the site writes them (the item tooltip's verdict, spec section 7).
+	gain = C.forever.gain,
+	loss = C.forever.warn,
+}
+
+--- The alpha each Theme.HEX key carries when its token is not opaque on the web (Tokens.alpha at the
+--- token's path): Theme.paint applies it unless a caller passes its own.
+local A = Tokens.alpha
+Theme.HEX_ALPHA = {
+	selected = A.base.selected,
+	selectedActive = A.addon.selectedActive,
+	plate = A.addon.plate,
+	plateEdge = A.forever.panelEdge,
+	titleRule = A.addon.titleRule,
+	footer = A.addon.footer,
+	zebra = A.addon.zebra,
+	rowHover = A.addon.rowHover,
+	tabOff = A.forever.tabOff,
+	tabHover = A.addon.tabHover,
+	tabActive = A.addon.tabActive,
+	veilBand = A.forever.veilBand,
+	veilNight = A.forever.veilNight,
+	veilCave = A.forever.veilCave,
+	headerFade = A.addon.headerFade,
+	headerNote = A.addon.headerNote,
+	headerJoin = A.addon.headerJoin,
+	corner = A.addon.corner,
+	caveFadeFrom = A.addon.caveFadeFrom,
+	caveFadeTo = A.addon.caveFadeTo,
 }
 
 Theme.ALPHA = {
@@ -132,7 +201,13 @@ Theme.SIZES = {
 	tabHeight = 24,
 	tabUnderline = 2,
 	closeButton = 20,
+	--- The close glyph inside it.
+	closeGlyph = 12,
 	tabWidth = 96,
+	--- A nav tab's glyph, the gap to its label, and the padding either side (spec 2.4).
+	tabGlyph = 14,
+	tabGlyphGap = 6,
+	tabPad = 10,
 	border = 1,
 	padding = 16,
 	gap = 4,
@@ -248,7 +323,30 @@ Theme.SIZES = {
 	windowLeft = 388,
 	windowGutter = 32,
 	windowRight = 288,
-	windowTitle = 16,
+	--- The window's plates (design/specs/2026-11-14-addon-brand.md section 2.2): the earth showing at the
+	--- window's sides (`hubSide`), above the first and below the last plate (`hubMargin`) and between
+	--- plates (`plateGap`); a plate's padding round its text (`platePadFirst` over a column's first
+	--- section, where the lead plate's corners sit); the room a tab leaves between two sections, so the
+	--- plates between them meet at `plateGap` (two paddings, two borders and the gap); the lead plate's
+	--- filigree corners and their inset.
+	hubSide = 11,
+	hubMargin = 6,
+	plateGap = 6,
+	platePad = 8,
+	platePadFirst = 15,
+	plateSectionGap = 24,
+	plateCorner = 20,
+	plateCornerInset = 0,
+	--- The painted earth tile repeats every `groundRepeat` px (its 256 px texture is the whole site tile,
+	--- drawn at the site's grain); the header's left fade behind the crest and the name is `headerFade`
+	--- wide (spec 2.3).
+	groundRepeat = 640,
+	headerFade = 260,
+	--- The seal at the head of our block on a client tooltip (spec section 7).
+	tooltipSeal = 12,
+	--- The player's crest at the head of our lines on a player's tooltip (owner ruling 2026-11-14).
+	tooltipCrest = 16,
+	windowTitle = 18,
 	windowSection = 14,
 	dialogText = 12,
 	dialogClose = 20,
@@ -387,30 +485,36 @@ Theme.TEMPLATES = {
 	gameTooltip = "GameTooltipTemplate",
 }
 
+--- The addon's own media folder: every texture under it is written by web/scripts/gen-addon-icons.mjs
+--- (media/MANIFEST.json) except the minimap seal and the inline arrow (addon/tools).
+local MEDIA_DIR = "Interface\\AddOns\\ForeverSixty\\media\\"
+
 Theme.MEDIA = {
-	minimapIcon = "Interface\\AddOns\\ForeverSixty\\media\\minimap",
-	--- The green upgrade arrow inlined in tooltip, reward and roll lines (addon/tools/make_arrow.py:
-	--- the slot marks' own glyph; the client's bags-greenarrow atlas draws a dot on 1.60).
-	arrowInline = "Interface\\AddOns\\ForeverSixty\\media\\arrow",
+	minimapIcon = MEDIA_DIR .. "minimap",
+	--- The site's art (design/specs/2026-11-14-addon-brand.md sections 2 to 5): the painted earth tile,
+	--- the flat seal, the lead plate's filigree corner, the raid plate's cave backdrop, and the header
+	--- band per mood (Hub.BANDS).
+	ground = MEDIA_DIR .. "ground",
+	seal = MEDIA_DIR .. "seal",
+	filigree = MEDIA_DIR .. "filigree",
+	cave = MEDIA_DIR .. "cave",
+	bands = {
+		me = MEDIA_DIR .. "band-me",
+		builds = MEDIA_DIR .. "band-builds",
+		gear = MEDIA_DIR .. "band-gear",
+		rotation = MEDIA_DIR .. "band-rotation",
+		cave = MEDIA_DIR .. "band-cave",
+	},
 	--- The character header's own class-colour ring (design section 2's
 	--- own crest bullet): one plain white ring, class-coloured at
 	--- runtime through SetVertexColor (Window.applyHeader), rather than
 	--- nine near-identical ring files.
-	crestRing = "Interface\\AddOns\\ForeverSixty\\media\\crests\\ring",
-	--- The Gear page's own green tick glyph (round-3 fix, section 4.5.4):
-	--- the client's own ready-check icon, already green, so this addon
-	--- ships no new art for it.
-	gearTick = "Interface\\RaidFrame\\ReadyCheck-Ready",
-	--- Its red twin, for a slot worn differently from the plan.
-	gearCross = "Interface\\RaidFrame\\ReadyCheck-NotReady",
+	crestRing = MEDIA_DIR .. "crests\\ring",
 	--- The minimap button's round crop and the client's own ring for it,
 	--- the same two textures every LibDBIcon button on the minimap uses.
 	minimapMask = "Interface\\CharacterFrame\\TempPortraitAlphaMask",
 	minimapRing = "Interface\\Minimap\\MiniMap-TrackingBorder",
 	minimapGround = "Interface\\Minimap\\UI-Minimap-Background",
-	--- The client's own round class icons (the target frame's), cut by
-	--- CLASS_ICON_TCOORDS: readable at 24 px where the crest art is not.
-	classIcons = "Interface\\TargetingFrame\\UI-Classes-Circles",
 	--- The client's own check mark, tinted dark on a switch's gold square (L3.5 ruling 2).
 	check = "Interface\\Buttons\\UI-CheckBox-Check",
 	--- The paper-doll and bag marks' corner arrow (spec section 4.4, L4.1) is drawn, the
@@ -423,6 +527,26 @@ Theme.MEDIA = {
 	sortArrow = "Interface\\Buttons\\UI-SortArrow",
 }
 
+--- A site glyph's texture (web/scripts/gen-addon-icons.mjs ADDON_ICONS: "character", "close" ...),
+--- white, for Theme.tint.
+function Theme.glyphPath(name)
+	return MEDIA_DIR .. "icons\\" .. name
+end
+
+--- The only client textures the addon draws, as path prefixes (design/specs/2026-11-14-addon-brand.md
+--- section 3): item and spell icons, the paper doll's empty slots, the client's check mark and sort
+--- arrow, the minimap's round crop, ring and ground. Everything else is the addon's own media
+--- (MANIFEST.json); tests/media_guard_spec.lua fails on any other Interface path in the addon.
+Theme.NATIVE_PATHS = {
+	"Interface\\Icons\\",
+	"Interface\\PaperDollInfoFrame\\UI-PaperDoll-Slot-",
+	"Interface\\Buttons\\UI-CheckBox-Check",
+	"Interface\\Buttons\\UI-SortArrow",
+	"Interface\\CharacterFrame\\TempPortraitAlphaMask",
+	"Interface\\Minimap\\MiniMap-TrackingBorder",
+	"Interface\\Minimap\\UI-Minimap-Background",
+}
+
 --- The sort arrow's texture coordinates: the art's left 9 of 16 pixels, upright for high to
 --- low (down), flipped for low to high (up), as the client's own headers cut it.
 Theme.SORT_COORDS = { descending = { 0, 0.5625, 0, 1 }, ascending = { 0, 0.5625, 1, 0 } }
@@ -433,7 +557,7 @@ Theme.SORT_COORDS = { descending = { 0, 0.5625, 0, 1 }, ascending = { 0, 0.5625,
 Theme.ARROW_FROM_ATLAS = false
 
 --- The nine classes this addon ships a crest for (addon/tools/
---- make_class_crests.py), keyed by UnitClass's own second return
+--- web/scripts/gen-addon-icons.mjs CLASSES), keyed by UnitClass's own second return
 --- ("WARRIOR", not "warrior") -- the same token Theme.classColor and
 --- Theme.SLOT_ICONS' neighbours already key by.
 Theme.CREST_CLASSES = {
@@ -446,7 +570,7 @@ Theme.CREST_CLASSES = {
 --- a test double with none) -- Theme.paintCrest falls back to the
 --- neutral tile rather than a blank space on nil, same as every other
 --- icon in this addon. The crest ships pre-cropped to a circular disc
---- (make_class_crests.py's own check of the source webp's corner alpha),
+--- (gen-addon-icons.mjs checks the source webp's corner alpha),
 --- so unlike Theme.icon this never needs a runtime circular-crop
 --- capability (MaskTexture) at all -- there is no square card left to
 --- crop once the file itself is round.
@@ -454,22 +578,7 @@ function Theme.crestPath(token)
 	if type(token) ~= "string" or not Theme.CREST_CLASSES[token] then
 		return nil
 	end
-	return "Interface\\AddOns\\ForeverSixty\\media\\crests\\" .. token:lower()
-end
-
---- The class's icon and its texture coords: the client's own round class
---- icon (Theme.MEDIA.classIcons, CLASS_ICON_TCOORDS) where the client has
---- the table, else the shipped crest, else the neutral tile.
-function Theme.classIcon(token)
-	local coords = type(CLASS_ICON_TCOORDS) == "table" and token ~= nil and CLASS_ICON_TCOORDS[token] or nil
-	if type(coords) == "table" and #coords == 4 then
-		return Theme.MEDIA.classIcons, { coords[1], coords[2], coords[3], coords[4] }
-	end
-	local crest = Theme.crestPath(token)
-	if crest ~= nil then
-		return crest, { 0, 1, 0, 1 }
-	end
-	return Theme.UNKNOWN_ICON, { Theme.ICON_CROP[1], Theme.ICON_CROP[2], Theme.ICON_CROP[3], Theme.ICON_CROP[4] }
+	return MEDIA_DIR .. "crests\\" .. token:lower()
 end
 
 --- A crest + ring texture pair, `size` square: the character header's
@@ -698,12 +807,15 @@ Theme.CONTROL_STATES = {
 	secondary = { rest = "raised", hover = "hover", pressed = "inset" },
 	--- A secondary button's label and 1 px border: at rest, and while it has acted and waits.
 	face = { label = "gold", edge = "border", waitingLabel = "muted", waitingEdge = "muted" },
-	tab = { label = "muted", hoverLabel = "body", hoverUnderline = "border", pressed = "inset" },
+	--- The nav strip's tab (spec 2.4): tab-off white at rest, white on the hover ground, the active one
+	--- white on the band's ground (pressed: the same ground stronger) over the accent underline.
+	tab = { label = "tabOff", hoverLabel = "strong", hover = "tabHover", activeLabel = "strong", active = "tabActive",
+		pressedAlpha = 0.8, underline = "accent" },
 	--- A sortable column header (the guild tab, L5.1 fix round 1, item 5): muted, brightened to
 	--- the text white under the cursor and on an inset ground while held; the sorted column
 	--- gold whatever the cursor does.
-	header = { label = "muted", hoverLabel = "body", active = "gold", pressed = "inset" },
-	close = { label = "body", edge = "border", hoverLabel = "strong", hoverGround = "hover", pressed = "inset" },
+	header = { label = "muted", hoverLabel = "body", active = "accent", pressed = "inset" },
+	close = { label = "tabOff", hoverLabel = "strong", hoverGround = "hover", pressed = "inset" },
 	--- The site's button recipes on the addon's own frames (Widgets.clientButton; web
 	--- lib/ui/button.ts): the secondary (blue, blue edge) at rest and the primary (teal, teal edge)
 	--- while selected, a white label on both; under the cursor the ground takes its edge colour.
@@ -712,11 +824,11 @@ Theme.CONTROL_STATES = {
 		rest = { ground = "blue", edge = "blueEdge", hover = "blueEdge" },
 		selected = { ground = "tealTop", edge = "tealEdge", hover = "tealEdge" },
 	},
-	--- A Settings switch (L3.5, fix round 1): on, a gold square (goldHover under the cursor,
-	--- goldPressed held) with the check in onGold; off, a 1 px outline in the muted-text grey,
+	--- A Settings switch (L3.5, fix round 1; the accent since the brand skin, 2026-11-14): on, an accent
+	--- square (lighter under the cursor, dimmer held) with a white check; off, a 1 px outline in the muted-text grey,
 	--- body under the cursor, an inset ground while held. The hint is muted body-size text (L10 review).
 	toggle = {
-		on = "gold", onHover = "goldHover", onPressed = "goldPressed", check = "onGold",
+		on = "accent", onHover = "accentHover", onPressed = "accentPressed", check = "strong",
 		edge = "muted", edgeHover = "body", offPressed = "inset", hint = "muted",
 	},
 }
@@ -791,6 +903,9 @@ end
 
 --- The primary button's pressed ground: its gold one step dimmer.
 Theme.HEX.goldPressed = Theme.dimHex("gold", 0.85)
+--- A switch's accent square under the cursor (the selected ground's colour lifted to the seal teal) and held.
+Theme.HEX.accentHover = Tokens.color.forever.seal
+Theme.HEX.accentPressed = Theme.dimHex("accent", 0.85)
 
 -- Contrast on the dark panel (L5.1 fix round 1, item 4) ---------------------------------------
 
@@ -1014,7 +1129,7 @@ end
 
 --- Colour a texture by one of Theme.HEX's own named keys.
 function Theme.paint(texture, hexKey, alpha)
-	return Theme.paintRGB(texture, Theme.rgb(Theme.HEX[hexKey], alpha))
+	return Theme.paintRGB(texture, Theme.rgb(Theme.HEX[hexKey], alpha or Theme.HEX_ALPHA[hexKey]))
 end
 
 --- The client draws a texture's corners where its anchors fall, blending across the pixels an edge
@@ -1091,7 +1206,19 @@ end
 function Theme.tinted(parent, layer, path, hexKey)
 	local texture = Theme.newTexture(parent, layer)
 	texture:SetTexture(path)
-	texture:SetVertexColor(Theme.rgb(Theme.HEX[hexKey]))
+	return Theme.tint(texture, hexKey)
+end
+
+--- Tint a white texture (a generated glyph, the filigree) with a Theme.HEX key and its alpha.
+function Theme.tint(texture, hexKey)
+	texture:SetVertexColor(Theme.rgb(Theme.HEX[hexKey], Theme.HEX_ALPHA[hexKey]))
+	return texture
+end
+
+--- One of the site's glyphs (Theme.glyphPath), `size` square, tinted `hexKey`.
+function Theme.glyph(parent, layer, name, size, hexKey)
+	local texture = Theme.tinted(parent, layer, Theme.glyphPath(name), hexKey)
+	texture:SetSize(size, size)
 	return texture
 end
 
@@ -1411,10 +1538,13 @@ function Theme.instanceName()
 end
 
 --- The green upgrade arrow as an inline texture escape at `size` px (12 by default), then a
---- space: it leads every green upgrade line (G3).
+--- space: it leads every green upgrade line (G3). The site's upgrade glyph in the gain colour, tinted
+--- by the escape's own colour fields (the whole 32 px texture, its red, green and blue 0 to 255).
 function Theme.arrowMarkup(size)
 	size = size or 12
-	return string.format("|T%s:%d:%d|t ", Theme.MEDIA.arrowInline, size, size)
+	local r, g, b = Theme.rgb(Theme.HEX.gain)
+	return string.format("|T%s:%d:%d:0:0:32:32:0:32:0:32:%d:%d:%d|t ", Theme.glyphPath("upgrade"), size, size,
+		math.floor(r * 255 + 0.5), math.floor(g * 255 + 0.5), math.floor(b * 255 + 0.5))
 end
 
 --- Whether Shift is held, for the chip's shift-drag; false where the client cannot say.
@@ -1682,6 +1812,51 @@ local function pulse(edges)
 			edge.foreverSixtyPulse:Play()
 		end
 	end
+end
+
+--- The one pulse that points at the next action (design/specs/2026-11-14-addon-brand.md section 9):
+--- alpha 1 to `low` and back, `seconds` each way, `cycles` times, then held at `steady`.
+Theme.NEXT_PULSE = { low = 0.35, seconds = 0.6, cycles = 4, steady = 0.6 }
+
+--- Pulse `regions` (Theme.NEXT_PULSE) and settle them at the steady alpha; a client without animations
+--- shows the steady alpha at once. Every step guarded, as the glow's.
+function Theme.pulseNext(regions)
+	local P = Theme.NEXT_PULSE
+	for _, region in ipairs(regions) do
+		region:SetAlpha(P.steady)
+		local group = type(region.CreateAnimationGroup) == "function" and region:CreateAnimationGroup() or nil
+		local fade = type(group) == "table" and type(group.CreateAnimation) == "function"
+			and group:CreateAnimation("Alpha") or nil
+		if type(fade) == "table" and type(fade.SetFromAlpha) == "function" then
+			region:SetAlpha(1)
+			fade:SetFromAlpha(1)
+			fade:SetToAlpha(P.low)
+			fade:SetDuration(P.seconds)
+			group:SetLooping("BOUNCE")
+			local loops = 0
+			group:SetScript("OnLoop", function(self)
+				loops = loops + 1
+				if loops >= P.cycles * 2 then
+					self:Stop()
+					region:SetAlpha(P.steady)
+				end
+			end)
+			region.foreverSixtyNext = group
+			group:Play()
+		end
+	end
+	return regions
+end
+
+--- End Theme.pulseNext on `regions` now: the animation stopped, each held at the steady alpha.
+function Theme.stopNext(regions)
+	for _, region in ipairs(regions) do
+		if region.foreverSixtyNext ~= nil then
+			region.foreverSixtyNext:Stop()
+		end
+		region:SetAlpha(Theme.NEXT_PULSE.steady)
+	end
+	return regions
 end
 
 local function stopPulse(edges)

@@ -24,6 +24,9 @@ import tempfile
 import addon_builds_window as bw
 import addon_hub as hub
 from addon_hub import ADDON, ROOT, esc, icon, item_icon
+from addon_tokens import color
+
+ACCENT = color("forever.accent")
 
 OUT = ROOT / 'design/reviews/2026-11-13-addon-hub/l2'
 SEP = ' · '
@@ -174,6 +177,7 @@ def score_html(m):
     out = section('Forever Score', SEP.join(note))
     out += (f'<div class="big"><span class="n" style="color:#{m["tierHex"]}">{m["total"]}</span>'
             f'<span style="color:#{m["tierHex"]}">{esc(m["tierLabel"])}</span><span class="m">· {esc(m["toNext"])}</span></div>')
+    # MeFrame paints every part's bar the accent (2.0.55): the tier colour is on the score itself.
     for p in m['parts']:
         length = round(LAYOUT['trackMax'] * p['track'])
         fill = round(length * p['fill'])
@@ -181,7 +185,7 @@ def score_html(m):
                   if p.get('reason') else '')
         out += (f'<div class="row"><span class="m" style="left:0">{esc(p["label"])}</span>'
                 f'<span class="trk" style="left:{LAYOUT["partLabel"]}px;width:{length}px"><i style="width:{fill}px;'
-                f'background:#{p["hex"]}"></i></span>{reason}'
+                f'background:{ACCENT}"></i></span>{reason}'
                 f'<span style="right:0;text-align:right">{p["points"]} <span class="m">of {p["max"]}</span></span></div>')
     return out + '<div class="gap"></div>'
 

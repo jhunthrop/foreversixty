@@ -1,0 +1,15 @@
+VERDICT: SHIP
+
+The skin now reads as the site: painted tile ground, blue header veil with the accent join, seal plus Marcellus wordmark, plates with hairline edges, accent active tab and links, gold only on the waiting dot, the Alt-click hint tooltip gold per the spec, crest on the window header. Rotation and Guild match the site's plate-on-ground layering closely. Two things still pull it away from the site.
+
+1. SHOULD. build-me.png, Forever Score block: the pillar bars are saturated pure lime (Experience, Attendance) and pure white (Parses, Preparation). Nothing on the site uses these; its bars are the accent teal on a dark track (see site/guide-1440.png Stat priority) and its gain is the muted forever.gain green. In a skinned window this is the one region that still looks like the default client. Fix: paint those fills from tokens (forever.accent for the filled value, forever.gain for a positive pillar, base.lineSoft for the track), in Theme.lua where the bar colour is set, not literal RGB. Check the same bars in side-by-side.png row 1.
+2. SHOULD. build-me.png, build-gear.png, build-builds.png, side-by-side.png and -2.png, top corners of each lead plate: the corner ornament renders as a loose bracket that sits outside the plate edge and breaks the left hairline (clipped line under the bracket on Right now, Gear slot list, Builds first block, Rotation Priority). The site's corner ornament (site/home-1440.png "First raids open") is seated flush on the frame. Fix: inset the corner texture by the plate border width in HubPlates.lua (token addon.corner at 0.8 is fine) so the hairline continues through it, or clip the texture to the plate rect.
+3. NICE. tooltip.png right: the "Forever Sixty" crest line sits tight under the client's last Use line with no gap, and the 2.0.52 blank row before Upgrade is gone, so our block is not separated from the client's text. One 4 px spacer line (not a blank row) before the crest line would match the site tooltip's section break in site/bis-tooltip-1440.png.
+4. NICE. side-by-side.png Builds: the "Following" label and Follow buttons use the primary teal, the site's Load this build uses the same; fine. The Marksmanship and Survival titles on the site are accent, in the addon they are cream. Consider accent for the followed spec only.
+
+Round 2 (re-rendered build)
+1. Resolved. build-me.png: all four score part fills are the accent teal on the soft track, painted by token (MeFrame.lua Theme.paint(part.fill, "accent")); the tier colour stays on the figure. Matches the site's bars.
+2. Resolved. build-me.png and build-gear.png: the corners sit flush on the plate edge (Theme.SIZES.plateCornerInset 0) and join the hairline.
+3. Resolved. tooltip.png: a blank row sets our block apart, one "Forever Sixty" crest line, no repeat in the attribution line. The player tooltip opens on the crest and the accent "Forever Sixty", with the score in the accent blue as on the site.
+4. NICE, carried: followed spec title in accent only. Not blocking.
+No BLOCKER or SHOULD remains.

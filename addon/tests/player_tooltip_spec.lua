@@ -81,21 +81,25 @@ describe("PlayerTooltip", function()
 		mock.uninstall()
 	end)
 
-	--- The lines AddLine and AddDoubleLine drew on a fresh tooltip for `unit`, in order:
-	--- { text, r, g, b } each, plus { right, rr, rg, rb } for a double line.
+	--- The lines AddLine and AddDoubleLine drew on a fresh tooltip for `unit` after the header line
+	--- (PlayerTooltip.headerText, pinned below), in order: { text, r, g, b } each, plus { right, rr, rg,
+	--- rb } for a double line; and the header line's text, nil when none was drawn.
 	local function hover(unit)
 		local tooltip = _G.CreateFrame("GameTooltip")
 		PlayerTooltip.onUnitTooltip(tooltip, unit or "mouseover")
-		local lines = {}
+		local lines, header = {}, nil
 		for _, call in ipairs(tooltip.calls) do
-			if call.method == "AddLine" then
+			if call.method == "AddLine" and header == nil and #lines == 0
+				and tostring(call[1]):sub(-#L.addonName) == L.addonName then
+				header = call[1]
+			elseif call.method == "AddLine" then
 				lines[#lines + 1] = { text = call[1], r = call[2], g = call[3], b = call[4] }
 			elseif call.method == "AddDoubleLine" then
 				lines[#lines + 1] = { text = call[1], right = call[2], r = call[3], g = call[4], b = call[5],
 					rr = call[6], rg = call[7], rb = call[8] }
 			end
 		end
-		return lines, tooltip
+		return lines, tooltip, header
 	end
 
 	local function rgbOf(hexKey)
@@ -104,6 +108,22 @@ describe("PlayerTooltip", function()
 	end
 
 	describe("a logged character", function()
+		it("opens on the player's crest and the name, in the accent (brand ruling 2026-11-14)", function()
+			start(record())
+			local _, tooltip, header = hover()
+			assert.is_not_nil(header)
+			local first = mock.firstCall(tooltip, "AddLine")
+			assert.are.same({ Theme.rgb(Theme.HEX.accent) }, { first[2], first[3], first[4], 1 })
+			assert.are.equal(PlayerTooltip.headerText(nil):gsub("^|T[^|]*|t", ""), header:gsub("^|T[^|]*|t", ""))
+		end)
+
+		it("draws the class's ringed crest, else the seal, at the head of its lines", function()
+			assert.are.equal(Theme.inlineIcon(Theme.crestPath("HUNTER"), Theme.SIZES.tooltipCrest) .. " " .. L.addonName,
+				PlayerTooltip.headerText("HUNTER"))
+			assert.are.equal(Theme.inlineIcon(Theme.MEDIA.seal, Theme.SIZES.tooltipCrest) .. " " .. L.addonName,
+				PlayerTooltip.headerText(nil))
+		end)
+
 		it("is one line, the score in the tier's colour, no tier word and no date while it is recent", function()
 			start(record())
 			local lines, tooltip = hover()
@@ -304,7 +324,7 @@ describe("PlayerTooltip", function()
 				return "Bow Jackzon", "mouseover"
 			end
 			hooked(tooltip)
-			assert.is_truthy(mock.firstCall(tooltip, "AddLine")[1]:find("Forever Score 1240", 1, true))
+			assert.is_truthy(mock.lastCall(tooltip, "AddLine")[1]:find("Forever Score 1240", 1, true))
 		end)
 
 		it("leaves the item tooltip's registration to items alone", function()

@@ -451,7 +451,6 @@ local L = {
 	-- A two-hander's figure is net of both worn hands.
 	tooltipCompared = "Compared with %s and %s",
 	-- The last Shift line, dimmer: where the weights came from.
-	tooltipAttribution = "Forever Sixty · %s",
 	tooltipAttrEstimate = "%s",
 	tooltipAttrSim = "%s, your sim",
 	tooltipAttrBuild = "%s, your build",

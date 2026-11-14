@@ -182,14 +182,51 @@ local Tokens = {
 			tooltipMuted = "b8b8b8",
 			--- Text on the client's tooltip that must read clearly ("Your sim").
 			tooltipText = "d0d0d0",
-			--- The client's GREEN_FONT_COLOR: an upgrade line and every gain on the item tooltip.
-			tooltipGreen = "1aff1a",
 			--- The item tooltip's last Shift line (the attribution), one step dimmer than tooltipMuted.
 			tooltipDim = "8a8a8a",
 			--- A label on the quest frame's parchment: the client gold washes out there.
 			parchmentGold = "7a5a0c",
 			--- A muted label on the quest frame's parchment.
 			parchmentMuted = "5c4f3c",
+			--- The primary (teal) button under the cursor in the addon's window: forever.teal lifted a step,
+			--- so the hover reads on the umber plate (design/specs/2026-11-14-addon-brand.md section 2.5).
+			tealHover = "12727a",
+			--- The secondary (blue) button under the cursor in the addon's window: forever.blue lifted a
+			--- step (design/specs/2026-11-14-addon-brand.md section 2.5).
+			blueHover = "17608a",
+			--- A plate in the addon's window: base.raised over the painted earth, open enough that the earth
+			--- warms it (spec 2.1, L5).
+			plate = "170e09",
+			--- The addon window's footer plate: forever.foot over the earth (spec 2.5).
+			footer = "170e09",
+			--- Every other row of a dense table on a plate (spec 2.5).
+			zebra = "ffffff",
+			--- A row under the cursor on a plate: base.hover, the plate showing through a little (spec 2.5).
+			rowHover = "241b15",
+			--- The selected row while it is the one in use (the followed build, an open detail):
+			--- base.selected a step stronger (spec 2.5).
+			selectedActive = "0093b2",
+			--- A nav-strip tab under the cursor (spec 2.4).
+			tabHover = "ffffff",
+			--- The active nav-strip tab's ground: forever.band over the nav bar (spec 2.4).
+			tabActive = "054562",
+			--- The left fade behind the header's crest and name, over the band art (spec 2.3).
+			headerFade = "0b0705",
+			--- The hairline where the header band meets the nav strip: forever.accent at half (spec 2.3).
+			headerJoin = "0093b2",
+			--- The lead plate's filigree corners: forever.cream at 0.8, as the site's panel.css draws them
+			--- (spec 2.5).
+			corner = "f3eee2",
+			--- The raid lead plate's fill over its cave art at the text side (Guild, Officer; spec 2.5).
+			caveFadeFrom = "170e09",
+			--- The raid lead plate's fill over its cave art at the right edge, where the cave glow shows
+			--- (spec 2.5).
+			caveFadeTo = "170e09",
+			--- The hairline under a plate's title in the addon's window (spec 2.5): the companion's white
+			--- rule.
+			titleRule = "ffffff",
+			--- The figures line under the name on the addon window's painted header band (spec 2.3).
+			headerNote = "ffffff",
 		},
 	},
 	font = {
@@ -379,6 +416,22 @@ local Tokens = {
 			veilBand = 0.38,
 			veilCave = 0.36,
 			tabOff = 0.82,
+		},
+		addon = {
+			plate = 0.84,
+			footer = 0.85,
+			zebra = 0.03,
+			rowHover = 0.9,
+			selectedActive = 0.24,
+			tabHover = 0.06,
+			tabActive = 0.55,
+			headerFade = 0.35,
+			headerJoin = 0.5,
+			corner = 0.8,
+			caveFadeFrom = 0.9,
+			caveFadeTo = 0.5,
+			titleRule = 0.09,
+			headerNote = 0.72,
 		},
 	},
 }

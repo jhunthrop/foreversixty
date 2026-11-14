@@ -79,6 +79,14 @@ function PlayerTooltip.section(record, shift, now)
 	end
 	return out
 end
+--- The line that opens our lines on a player's tooltip (owner ruling 2026-11-14, spec section 7): the
+--- player's ringed crest, where the addon ships one for the class, else the seal, then "Forever Sixty".
+--- Pure.
+function PlayerTooltip.headerText(classToken)
+	local crest = Theme.crestPath(classToken)
+	return Theme.inlineIcon(crest or Theme.MEDIA.seal, Theme.SIZES.tooltipCrest) .. " " .. L.addonName
+end
+
 --- A realm with its spaces and hyphens gone, the form addon-message senders carry.
 local function compact(realm)
 	return ((realm or ""):gsub("[%s%-]", ""))
@@ -135,6 +143,8 @@ local function addLines(tooltip, unit)
 	if #lines == 0 then
 		return
 	end
+	local classToken = type(UnitClass) == "function" and select(2, UnitClass(unit)) or nil
+	tooltip:AddLine(PlayerTooltip.headerText(classToken), Theme.rgb(Theme.HEX.accent))
 	for _, entry in ipairs(lines) do
 		if entry.right ~= nil then
 			tooltip:AddDoubleLine(entry.text, entry.right, entry.r, entry.g, entry.b, entry.rr, entry.rg, entry.rb)

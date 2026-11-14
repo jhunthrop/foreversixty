@@ -8,6 +8,7 @@ local L = ns.L or require("Locale")
 local Theme = ns.Theme or require("Theme")
 local Talents = ns.Talents or require("Talents")
 local Progress = ns.Progress or require("Progress")
+local HubPlates = ns.HubPlates or require("HubPlates")
 
 local BuildsWindow = {}
 
@@ -15,7 +16,7 @@ local BuildsWindow = {}
 --- line, the room under an explanation, the Up next rows (their pitch, icon and level column), the room
 --- between a box and the status line under it.
 BuildsWindow.LAYOUT = {
-	sectionGap = 20, sectionHead = 18, underWhat = 6,
+	sectionGap = Theme.SIZES.plateSectionGap, sectionHead = 18, underWhat = 6,
 	upNextRow = 18, upNextIcon = 16, upNextLevel = 92, upNextGap = 6, statusGap = 6,
 }
 --- The most Up next rows (a run of points on one talent is one row).
@@ -262,10 +263,12 @@ local function place(region, parent, x, y)
 end
 
 --- Draw a section's heading (and its note, cut to the room beside it) at `y`, then its explanation;
---- the y under them. `fit(region, raw, width)` cuts a line with an ellipsis.
+--- the y under them. `fit(region, raw, width)` cuts a line with an ellipsis. The section starts a plate
+--- there (HubPlates.mark; `section.plateLook` makes it the tab's lead plate).
 function BuildsWindow.drawSection(section, parent, width, y, note, fit, textHeight)
 	local G = BuildsWindow.LAYOUT
 	place(section.heading, parent, 0, y + (G.sectionHead - textHeight(section.heading)) / 2)
+	HubPlates.mark(parent, section.heading, y, section.plateLook)
 	if note ~= nil and note ~= "" then
 		local headingWidth = type(section.heading.GetStringWidth) == "function" and section.heading:GetStringWidth() or 0
 		local room = width - (headingWidth or 0) - Theme.SIZES.gap * 2

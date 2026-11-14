@@ -130,9 +130,9 @@ end
 --- the band took the click.
 Widgets.CLOSE_BUTTON_RAISE = 5
 
---- The X in the title bar: a body-coloured x in a 1 px hairline box, so it reads as a button at rest;
---- the strong white on a hover ground under the cursor (Theme.CONTROL_STATES.close), inset while pressed.
---- Always above its parent's other children (Widgets.CLOSE_BUTTON_RAISE).
+--- The close X: the site's close glyph, tab-off white at rest, the strong white on a hover ground under the
+--- cursor (Theme.CONTROL_STATES.close), inset while pressed. Always above its parent's other children
+--- (Widgets.CLOSE_BUTTON_RAISE).
 function Widgets.closeButton(parent, onClick)
 	local states = Theme.CONTROL_STATES.close
 	local button = Theme.createFrame("Button", nil, parent)
@@ -144,21 +144,19 @@ function Widgets.closeButton(parent, onClick)
 	ground:SetAllPoints(button)
 	ground:Hide()
 	button.foreverSixtyGround = ground
-	button.foreverSixtyEdges = Theme.outline(button, Theme.SIZES.border, states.edge)
-	local label = Widgets.label(button, "x", states.label)
-	label:SetJustifyH("CENTER")
-	label:SetPoint("CENTER", button, "CENTER", 0, 1)
-	button.foreverSixtyLabel = label
+	local glyph = Theme.glyph(button, "ARTWORK", "close", Theme.SIZES.closeGlyph, states.label)
+	glyph:SetPoint("CENTER", button, "CENTER", 0, 0)
+	button.foreverSixtyGlyph = glyph
 	button:SetScript("OnEnter", function(self)
 		Theme.paint(ground, states.hoverGround)
 		ground:Show()
-		self.foreverSixtyLabel:SetTextColor(Theme.rgb(Theme.HEX[states.hoverLabel]))
+		Theme.tint(self.foreverSixtyGlyph, states.hoverLabel)
 	end)
 	button:SetScript("OnLeave", function(self)
 		ground:Hide()
-		self.foreverSixtyLabel:SetTextColor(Theme.rgb(Theme.HEX[states.label]))
+		Theme.tint(self.foreverSixtyGlyph, states.label)
 	end)
-	Theme.pressable(button, label, function()
+	Theme.pressable(button, glyph, function()
 		Theme.paint(ground, states.pressed)
 		ground:Show()
 	end, function(_, over)
@@ -186,36 +184,44 @@ function Widgets.setEnabled(widget, enabled)
 	return enabled
 end
 
---- A tab is a label over a thin underline. The underline shows on the
---- active tab only; the label goes gold with it.
-function Widgets.tab(parent, text, onClick)
+--- A tab on the site's nav bar (design/specs/2026-11-14-addon-brand.md section 2.4): the site glyph
+--- `glyphName` (optional) and the label in tab-off white; under the cursor both white on the hover
+--- ground; the active tab white on the band's ground over the accent underline. The label keeps one
+--- weight in every state, so a tab never changes width.
+function Widgets.tab(parent, text, onClick, glyphName)
+	local S, states = Theme.SIZES, Theme.CONTROL_STATES.tab
 	local tab = Theme.createFrame("Button", nil, parent)
-	tab:SetSize(Theme.SIZES.tabWidth, Theme.SIZES.tabHeight)
-	local label = Widgets.label(tab, text, "muted", "small")
-	label:SetPoint("CENTER", tab, "CENTER", 0, 0)
-	tab.foreverSixtyLabel = label
-	local underline = Theme.texture(tab, "OVERLAY", "gold")
-	underline:SetPoint("BOTTOMLEFT", tab, "BOTTOMLEFT", 0, 0)
-	underline:SetPoint("BOTTOMRIGHT", tab, "BOTTOMRIGHT", 0, 0)
-	underline:SetHeight(Theme.SIZES.tabUnderline)
-	underline:Hide()
-	tab.foreverSixtyUnderline = underline
-	local states = Theme.CONTROL_STATES.tab
-	local ground = Theme.texture(tab, "BACKGROUND", states.pressed)
+	tab:SetSize(S.tabWidth, S.tabHeight)
+	local ground = Theme.texture(tab, "BACKGROUND", states.active)
 	ground:SetAllPoints(tab)
 	ground:Hide()
+	tab.foreverSixtyGround = ground
+	local label = Widgets.label(tab, text, states.label, "highlight")
+	tab.foreverSixtyLabel = label
+	if glyphName ~= nil then
+		local glyph = Theme.glyph(tab, "ARTWORK", glyphName, S.tabGlyph, states.label)
+		glyph:SetPoint("LEFT", tab, "LEFT", S.tabPad, 0)
+		label:SetPoint("LEFT", glyph, "RIGHT", S.tabGlyphGap, 0)
+		tab.foreverSixtyGlyph = glyph
+	else
+		label:SetPoint("CENTER", tab, "CENTER", 0, 0)
+	end
+	local underline = Theme.texture(tab, "OVERLAY", states.underline)
+	underline:SetPoint("BOTTOMLEFT", tab, "BOTTOMLEFT", 0, 0)
+	underline:SetPoint("BOTTOMRIGHT", tab, "BOTTOMRIGHT", 0, 0)
+	underline:SetHeight(S.tabUnderline)
+	underline:Hide()
+	tab.foreverSixtyUnderline = underline
 	tab:SetScript("OnEnter", function(self)
 		if not self.foreverSixtyActive then
-			-- An inactive tab under the cursor: body label over a 2 px border-colour underline.
-			self.foreverSixtyLabel:SetTextColor(Theme.rgb(Theme.HEX[states.hoverLabel]))
-			Theme.paint(underline, states.hoverUnderline)
-			underline:Show()
+			Widgets.paintTab(self, states.hoverLabel, states.hover)
 		end
 	end)
 	Theme.pressable(tab, label, function()
+		Theme.paint(ground, states.active, states.pressedAlpha)
 		ground:Show()
-	end, function()
-		ground:Hide()
+	end, function(self)
+		Widgets.setTabActive(self, self.foreverSixtyActive == true)
 	end)
 	tab:SetScript("OnLeave", function(self)
 		Widgets.setTabActive(self, self.foreverSixtyActive == true)
@@ -226,12 +232,35 @@ function Widgets.tab(parent, text, onClick)
 	return tab
 end
 
+--- A tab's label and glyph in `labelKey`, its ground in `groundKey` (hidden when nil).
+function Widgets.paintTab(tab, labelKey, groundKey)
+	tab.foreverSixtyLabel:SetTextColor(Theme.rgb(Theme.HEX[labelKey], Theme.HEX_ALPHA[labelKey]))
+	if tab.foreverSixtyGlyph ~= nil then
+		Theme.tint(tab.foreverSixtyGlyph, labelKey)
+	end
+	if groundKey ~= nil then
+		Theme.paint(tab.foreverSixtyGround, groundKey)
+		tab.foreverSixtyGround:Show()
+	else
+		tab.foreverSixtyGround:Hide()
+	end
+end
+
+--- The tab's natural width: its glyph, the gap, its label and the padding either side.
+function Widgets.tabWidth(tab)
+	local S = Theme.SIZES
+	local label = type(tab.foreverSixtyLabel.GetStringWidth) == "function" and tab.foreverSixtyLabel:GetStringWidth() or 0
+	local glyph = tab.foreverSixtyGlyph ~= nil and S.tabGlyph + S.tabGlyphGap or 0
+	return math.ceil(S.tabPad * 2 + glyph + (label or 0))
+end
+
 function Widgets.setTabActive(tab, active)
-	tab.foreverSixtyLabel:SetTextColor(Theme.rgb(Theme.HEX[active and "gold" or "muted"]))
+	local states = Theme.CONTROL_STATES.tab
 	if active then
-		Theme.paint(tab.foreverSixtyUnderline, "gold")
+		Widgets.paintTab(tab, states.activeLabel, states.active)
 		tab.foreverSixtyUnderline:Show()
 	else
+		Widgets.paintTab(tab, states.label, nil)
 		tab.foreverSixtyUnderline:Hide()
 	end
 	tab.foreverSixtyActive = active

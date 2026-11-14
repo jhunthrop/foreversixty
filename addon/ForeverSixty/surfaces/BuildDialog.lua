@@ -48,8 +48,9 @@ BuildDialog.COLLAPSED_TEXT = "muted"
 --- The gear rows' pitch: two lines, the item on its quality colour and under it where it comes from
 --- in full (never cut beside the name, which is what the first line gives way to).
 BuildDialog.GEAR_PITCH = 32
---- The tallest the preview may stand at its worst (px): the window grows to it, never past.
-BuildDialog.PREVIEW_MAX_HEIGHT = 400
+--- The tallest the preview may stand at its worst (px): the window grows to it, never past (the
+--- plates' padding over the body, 2026-11-14, added 10 to the 400 it was).
+BuildDialog.PREVIEW_MAX_HEIGHT = 410
 --- A zero-width space: a break point the export's display may wrap at where the client cannot
 --- break a run of characters itself. Never in the box's text, which Ctrl+C copies.
 BuildDialog.BREAK = "\226\128\139"
@@ -350,7 +351,7 @@ function BuildDialog.fitSourceText(text, measure, room)
 end
 
 --- What the preview shows for a build the codec loaded: the class token (for
---- Theme.classIcon), the name (Follow.buildName: the build's own, else its trees; escaped),
+--- its crest), the name (Follow.buildName: the build's own, else its trees; escaped),
 --- the line "Warrior · Arms 33 / Fury 16 · 51 points", "You can place 12 now." while points
 --- wait (Progress.unspentPoints; nil at 0), and the code's first three gear fields with their
 --- slot words under a heading ("Gear in this build · at 60" below 60). `context` =
@@ -568,7 +569,7 @@ function BuildDialog.previewLayout(line, contextLines, fromSite)
 		context = line * contextLines + S.gap / 2 * (contextLines - 1),
 		buttonGap = G.buttonGap,
 		button = S.buttonHeight + S.gap,
-		bottom = H.bodyPad + H.footer,
+		bottom = H.bodyPadBottom + H.footer,
 	}
 	local total = 0
 	for _, height in pairs(parts) do
@@ -1848,7 +1849,7 @@ local function column(parent, x, width, top, bottom)
 	area:SetPoint("TOPLEFT", parent, "TOPLEFT", x, -top)
 	area:SetPoint("BOTTOMLEFT", parent, "BOTTOMLEFT", x, bottom)
 	area:SetWidth(width)
-	return area
+	return Hub.plated(area, parent)
 end
 
 --- The window's text maker and line fitter, handed to BuildsPane and BuildsWindow.
@@ -1873,8 +1874,8 @@ end
 local function buildPaste(body, top, bottom)
 	local S = Theme.SIZES
 	local width = contentWidth()
-	local content = column(body, S.padding, width, top, bottom)
-	local right = column(body, S.padding + width + S.windowGutter, rightWidth(), top, bottom)
+	local content = column(body, Hub.columnX("left"), width, top, bottom)
+	local right = column(body, Hub.columnX("right"), rightWidth(), top, bottom)
 	local paste = { content = content, right = right, rows = {}, own = {} }
 	paste.following = text(content, "body", width)
 	if type(paste.following.SetWordWrap) == "function" then
@@ -2136,14 +2137,9 @@ end
 --- The Builds tab's body, built into the hub's content frame `body` on the window's first open: the
 --- two columns with a hairline between them (spec section 3).
 function BuildDialog.buildInto(body)
-	local S, H = Theme.SIZES, Hub.LAYOUT
+	local H = Hub.LAYOUT
 	BuildDialog.body, BuildDialog.frame = body, Hub.frame
-	local divider = Theme.texture(body, "ARTWORK", "border")
-	divider:SetWidth(Theme.wholePixels(divider, S.border))
-	local ruleX = S.padding + contentWidth() + S.windowGutter / 2
-	divider:SetPoint("TOPLEFT", body, "TOPLEFT", ruleX, 0)
-	divider:SetPoint("BOTTOMLEFT", body, "BOTTOMLEFT", ruleX, 0)
-	BuildDialog.paste = buildPaste(body, H.bodyPad, H.bodyPad)
+	BuildDialog.paste = buildPaste(body, H.bodyPad, H.bodyPadBottom)
 	BuildDialog.copyBox = buildCopy(BuildDialog.paste.right)
 	body:SetScript("OnEvent", onEvent)
 	Theme.registerEvent(body, "GET_ITEM_INFO_RECEIVED")

@@ -45,14 +45,29 @@ local Prefs = ns.Prefs or require("Prefs")
 local Compat = ns.Compat or require("Compat")
 local Talents = ns.Talents or require("Talents")
 local HubFrame = ns.HubFrame or require("HubFrame")
+local HubPlates = ns.HubPlates or require("HubPlates")
 
 local Hub = {}
 
 Hub.FRAME_NAME = "ForeverSixtyWindow"
 --- Pixel layout: the header band and its crest, the tab strip (only while two tabs or more show), the
---- body's padding top and bottom, the footer band, the gap between tabs, the tab dot and its gap.
-Hub.LAYOUT = { header = 56, crest = 32, crestGap = 10, strip = 28, bodyPad = 12, footer = 28, tabGap = 4,
-	dot = 6, dotGap = 4 }
+--- body's padding above the columns' text (the earth, the first plate's border and padding) and below
+--- it, the footer band, the gap between tabs, the tab dot and its gap; the strip's seal, the wordmark's
+--- size and the gaps either side of it (design/specs/2026-11-14-addon-brand.md section 2.4).
+Hub.LAYOUT = { header = 56, crest = 40, crestGap = 10, strip = 28, bodyPad = 22, bodyPadBottom = 15, footer = 28,
+	tabGap = 0, dot = 6, dotGap = 4, seal = 20, sealLeft = 8, wordmark = 15, wordmarkGap = 6, tabsGap = 14 }
+
+--- Each tab's header art (Theme.MEDIA.bands) and the veil over it (spec section 5): the site's band on Me,
+--- Builds and Rotation, the paperdoll's teal on Gear, the cave on the two raid tabs; Officer's join line
+--- is the warm rule, so the two read apart.
+Hub.BANDS = {
+	me = { art = "me", veil = "veilBand", join = "headerJoin" },
+	builds = { art = "builds", veil = "veilBand", join = "headerJoin" },
+	gear = { art = "gear", veil = "veilNight", join = "headerJoin" },
+	rotation = { art = "rotation", veil = "veilBand", join = "headerJoin" },
+	guild = { art = "cave", veil = "veilNight", join = "headerJoin" },
+	officer = { art = "cave", veil = "veilNight", join = "ruleWarm" },
+}
 --- The footer's hints: the muted token at this alpha, a step dimmer than the text.
 Hub.HINT_ALPHA = 0.75
 
@@ -192,10 +207,39 @@ local function passes(check)
 	return ok and answer == true
 end
 
---- The window's width: the Builds tab's two columns, the gutter between them, the padding.
+--- The window's width: the earth at both sides, the two columns on their plates and the gap between.
 function Hub.width()
 	local S = Theme.SIZES
-	return S.padding * 2 + S.windowLeft + S.windowGutter + S.windowRight
+	return S.hubSide * 2 + (S.platePad + S.border) * 4 + S.plateGap + S.windowLeft + S.windowRight
+end
+
+--- Where a column's text starts from the body's left: "left" or "right" (the right one past the left
+--- column's plate, the gap and its own plate's edge).
+function Hub.columnX(side)
+	local S = Theme.SIZES
+	local left = S.hubSide + S.border + S.platePad
+	if side == "right" then
+		return left + S.windowLeft + (S.platePad + S.border) * 2 + S.plateGap
+	end
+	return left
+end
+
+--- `column` on the tab body `content` gets plates (HubPlates), its text `Hub.LAYOUT.bodyPad` down.
+function Hub.plated(column, content)
+	return HubPlates.register(column, content, Hub.LAYOUT.bodyPad)
+end
+
+--- A tab body's two columns (spec 2.2): the left and the right column frame at Hub.columnX,
+--- Hub.LAYOUT.bodyPad down, each on its plates. A column frame is one px tall: text is placed on it.
+function Hub.columns(content)
+	local S = Theme.SIZES
+	local function column(side, width)
+		local frame = Theme.createFrame("Frame", nil, content)
+		frame:SetPoint("TOPLEFT", content, "TOPLEFT", Hub.columnX(side), -Hub.LAYOUT.bodyPad)
+		frame:SetSize(width, 1)
+		return Hub.plated(frame, content)
+	end
+	return column("left", S.windowLeft), column("right", S.windowRight)
 end
 
 -- The bodies' placement, defined with the frame below; a late registration reaches it at call time.
@@ -423,7 +467,8 @@ end
 --- The window's height for `body` px of content, never under Theme.SIZES.dialogHeight. Pure.
 function Hub.heightFor(body)
 	local G = Hub.LAYOUT
-	return math.max(Theme.SIZES.dialogHeight, math.ceil(Hub.bodyTop() + G.bodyPad * 2 + (body or 0) + G.footer))
+	return math.max(Theme.SIZES.dialogHeight,
+		math.ceil(Hub.bodyTop() + G.bodyPad + (body or 0) + G.bodyPadBottom + G.footer))
 end
 
 -- The frame ------------------------------------------------------------------------------------
@@ -446,13 +491,18 @@ local function drawStrip()
 			button:Hide()
 		end
 	end
+	local buttons = {}
+	for _, tab in ipairs(shown) do
+		buttons[#buttons + 1] = strip.buttons[tab.id]
+	end
+	HubFrame.stripLead(strip, buttons, Hub)
 	local previous
 	for _, tab in ipairs(shown) do
 		local button = strip.buttons[tab.id]
 		if button ~= nil then
 			button:ClearAllPoints()
 			if previous == nil then
-				button:SetPoint("BOTTOMLEFT", strip.frame, "BOTTOMLEFT", Theme.SIZES.padding, 0)
+				button:SetPoint("BOTTOMLEFT", strip.frame, "BOTTOMLEFT", strip.lead, 0)
 			else
 				button:SetPoint("LEFT", previous, "RIGHT", G.tabGap, 0)
 			end
@@ -483,14 +533,20 @@ function Hub.addTabFrames(tab)
 	local content = Theme.createFrame("Frame", nil, Hub.frame)
 	content:Hide()
 	Hub.contents[tab.id] = content
-	-- The tab's empty state: one muted line at the body's top left (Hub.select shows it).
-	local empty = line(content, "muted", Hub.width() - S.padding * 2)
+	-- The tab's empty state: one muted line on a plate across the body (Hub.select shows it).
+	local holder = Theme.createFrame("Frame", nil, content)
+	local width = Hub.columnX("right") + S.windowRight - Hub.columnX("left")
+	holder:SetPoint("TOPLEFT", content, "TOPLEFT", Hub.columnX("left"), -Hub.LAYOUT.bodyPad)
+	holder:SetSize(width, 1)
+	Hub.plated(holder, content)
+	local empty = line(holder, "muted", width)
 	if type(empty.SetWordWrap) == "function" then
 		empty:SetWordWrap(true)
 	end
-	empty:SetPoint("TOPLEFT", content, "TOPLEFT", S.padding, -Hub.LAYOUT.bodyPad)
+	empty:SetPoint("TOPLEFT", holder, "TOPLEFT", 0, 0)
 	empty:Hide()
 	Hub.empties[tab.id] = empty
+	Hub.emptyHolders[tab.id] = holder
 	HubFrame.tabButton(Hub.strip, tab, Hub)
 	if tab.build ~= nil then
 		tab.build(content)
@@ -506,6 +562,7 @@ function Hub.ensure()
 	end
 	local S = Theme.SIZES
 	local frame = Widgets.panel(UIParent, Hub.width(), S.dialogHeight, Hub.FRAME_NAME)
+	HubFrame.ground(frame)
 	frame:Hide()
 	frame:SetFrameStrata("DIALOG")
 	frame:SetClampedToScreen(true)
@@ -516,7 +573,7 @@ function Hub.ensure()
 	Hub.header = HubFrame.header(frame, Hub)
 	Hub.strip = HubFrame.strip(frame, Hub)
 	Hub.footer = HubFrame.footer(frame, Hub)
-	Hub.contents, Hub.empties, Hub.bodies = {}, {}, {}
+	Hub.contents, Hub.empties, Hub.emptyHolders, Hub.bodies = {}, {}, {}, {}
 	for _, tab in ipairs(Hub.tabs) do
 		Hub.addTabFrames(tab)
 	end
@@ -557,6 +614,7 @@ local function drawHeader(header)
 		parts.crest:Hide()
 		parts.ring:Hide()
 	end
+	HubFrame.paintBand(parts, Hub.BANDS[Hub.active or ""] or Hub.BANDS.me)
 	parts.title:SetText(header.title or L.addonName)
 	parts.noteLines = header.noteLines
 	parts.note:SetText(header.note or "")
@@ -606,9 +664,26 @@ function Hub.fitHeight(body)
 	if height ~= Hub.height then
 		Hub.height = height
 		Hub.frame:SetHeight(height)
+		HubFrame.fitGround(Hub.frame, Hub.width(), height)
 		Hub.place()
 	end
+	Hub.layoutPlates()
 	return height
+end
+
+--- The active tab's plates for the window's height: its empty line's plate while the empty state
+--- shows, else its columns' (HubPlates.layout).
+function Hub.layoutPlates()
+	local id = Hub.active or ""
+	local content, holder = Hub.contents[id], Hub.emptyHolders[id]
+	if content == nil then
+		return nil
+	end
+	local empty = Hub.empties[id] ~= nil and Hub.empties[id]:IsShown()
+	return HubPlates.layout(content, (Hub.height or Theme.SIZES.dialogHeight) - Hub.bodyTop() - Hub.LAYOUT.footer,
+		function(column)
+			return (column == holder) == (empty == true)
+		end)
 end
 
 -- Where it sits ----------------------------------------------------------------------------------

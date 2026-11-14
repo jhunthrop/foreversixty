@@ -368,26 +368,6 @@ describe("Chip.pathSpecs", function()
 	end)
 end)
 
-describe("Theme.classIcon", function()
-	after_each(function()
-		_G.CLASS_ICON_TCOORDS = nil
-	end)
-
-	it("uses the client's class icon where it has one", function()
-		_G.CLASS_ICON_TCOORDS = { ROGUE = { 0.5, 0.75, 0, 0.25 } }
-		local path, coords = Theme.classIcon("ROGUE")
-		assert.are.equal(Theme.MEDIA.classIcons, path)
-		assert.are.same({ 0.5, 0.75, 0, 0.25 }, coords)
-	end)
-
-	it("falls back to the crest, then to the neutral tile", function()
-		local path, coords = Theme.classIcon("ROGUE")
-		assert.are.equal(Theme.crestPath("ROGUE"), path)
-		assert.are.same({ 0, 1, 0, 1 }, coords)
-		assert.are.equal(Theme.UNKNOWN_ICON, (Theme.classIcon("NOBODY")))
-	end)
-end)
-
 -- Seen live on the 1.60 beta (16 Oct 2026, the CurseForge 2.0.2 build): the client has no
 -- ToggleTalentFrame, and TogglePlayerSpellsFrame() with no tab opens the window on whichever
 -- tab it last showed, so the chip landed on the spellbook. The talents tab is asked for.

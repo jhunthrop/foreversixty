@@ -86,7 +86,7 @@ export const ${exportName(icon.name)}: UiIconShape = ${shape};
 `;
 }
 
-function readIcons() {
+export function readIcons() {
   const custom = svgFiles(ICON_DIR).map(parseCustom);
   const line = svgFiles(LINE_DIR).map(parseLine);
   const clash = custom.find((icon) => line.some((other) => other.name === icon.name));
@@ -94,7 +94,7 @@ function readIcons() {
   return { custom, line, all: [...custom, ...line].sort((a, b) => a.name.localeCompare(b.name)) };
 }
 
-function parseCorner() {
+export function parseCorner() {
   const svg = readFileSync(CORNER_SVG, 'utf8');
   const viewBox = /viewBox="0 0 (\d+) (\d+)"/.exec(svg);
   const paths = [...svg.matchAll(/<path\b[^>]*\sd="([^"]+)"/g)];

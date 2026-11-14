@@ -1,5 +1,11 @@
 # Forever Sixty
 
+## 2.0.55
+
+- The Forever Sixty window now looks like the website: the painted blue header with your class crest, the site's nav bar with its icons, and each section on its own panel over the brown painted ground, with each tab's own header art (the cave on Guild and Officer).
+- Links, the active tab and the followed build use the site's blue; gold is kept for the waiting dot and your score.
+- Our lines on item tooltips start with the Forever Sixty seal, upgrades show in the site's green, and player tooltips start with the player's class crest.
+
 ## 2.0.54
 
 - The AddOns list says what Forever Sixty does: gear upgrades, BiS, talents, rotation and raid sign-ups, and /fs to open it.

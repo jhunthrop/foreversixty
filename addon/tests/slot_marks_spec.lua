@@ -642,7 +642,7 @@ describe("SlotMarks", function()
 			local chest, head = startAlt()
 			local entry = { lines = { { kind = "verdict", text = "x" } } }
 			local shown = ItemTooltip.withAltClick(entry, "chest", chest)
-			assert.are.same({ kind = "altClick", role = "shift", color = "tooltipDim", text = L.markAltGear },
+			assert.are.same({ kind = "altClick", role = "shift", color = "clientGold", text = L.markAltGear },
 				shown.lines[2])
 			assert.are.equal("Alt-click: open Gear", L.markAltGear)
 			assert.are.equal(1, #entry.lines)
@@ -1153,7 +1153,7 @@ describe("SlotMarks", function()
 			assert.are.equal("Equip Thin Leggings " .. Theme.inlineColor("success", ItemTooltip.figure(0.8, "dps")), chipLine())
 			local lines = ItemTooltip.section(ItemTooltip.contextFor(DATA, THIN_LEGS))
 			assert.are.same({ text = Theme.arrowMarkup() .. string.format(L.tooltipUpgrade, ItemTooltip.figure(0.8, "dps")),
-				color = "tooltipGreen" }, { text = lines[1].text, color = lines[1].color })
+				color = "gain" }, { text = lines[1].text, color = lines[1].color })
 			local marks = SlotMarks.compute(DATA)
 			assert.is_true(marks.arrows.legs)
 			assert.is_true(marks.links[THIN_LEGS])
@@ -1417,10 +1417,11 @@ describe("SlotMarks", function()
 			assert.is_true(targetOn(legs))
 		end)
 
+		--- Our lines after the block's blank row and header line (ItemTooltip.headerText), which tooltip_spec pins.
 		local function addedLines()
 			local lines = {}
 			for _, call in ipairs(_G.GameTooltip.calls) do
-				if call.method == "AddLine" then
+				if call.method == "AddLine" and call[1] ~= ItemTooltip.headerText() and call[1] ~= ItemTooltip.BLOCK_GAP then
 					lines[#lines + 1] = call[1]
 				end
 			end
@@ -1433,7 +1434,7 @@ describe("SlotMarks", function()
 			ItemTooltip.onSlotEnter("legs", legs)
 			local lines = addedLines()
 			local upgrade = { name = "Thin Leggings", hex = ItemTooltip.qualityHexOf(410), gain = 0.8, unit = "dps" }
-			-- One line, no blank row, no header (spec 2.2 case 15); the attribution waits for Shift.
+			-- One line under the block's header, no blank row (spec 2.2 case 15); the attribution waits for Shift.
 			assert.are.same({ ItemTooltip.bagItemText(upgrade) }, lines)
 			assert.are.equal(THIN_LEGS, mock.firstCall(Theme.compareTooltipFrame, "SetHyperlink")[1])
 		end)

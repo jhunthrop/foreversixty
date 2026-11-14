@@ -38,6 +38,8 @@ describe("the TOC", function()
 		-- The quest reward, roll and dungeon marks (L4.2): read the tooltip's own verdict.
 		"surfaces/RewardMarks.lua",
 		-- The build dialog (L3.4): built on its first open; Options opens it.
+		-- The window's plates (brand spec 2.5): before the sections that mark them.
+		"surfaces/HubPlates.lua",
 		"surfaces/BuildsPane.lua", "surfaces/BuildsWindow.lua", "surfaces/HubFrame.lua", "surfaces/Hub.lua",
 		"surfaces/HubDraw.lua",
 		"surfaces/BuildDialog.lua",
@@ -125,13 +127,13 @@ describe("the TOC", function()
 		for _, slug in ipairs(CLASSES) do
 			local path = "ForeverSixty/media/crests/" .. slug .. ".tga"
 			local file = io.open(path, "rb")
-			assert.is_not_nil(file, path .. " is missing; run addon/tools/make_class_crests.py")
+			assert.is_not_nil(file, path .. " is missing; run node web/scripts/gen-addon-icons.mjs")
 			if file ~= nil then
 				file:close()
 			end
 		end
 		local ring = io.open("ForeverSixty/media/crests/ring.tga", "rb")
-		assert.is_not_nil(ring, "media/crests/ring.tga is missing; run addon/tools/make_class_crests.py")
+		assert.is_not_nil(ring, "media/crests/ring.tga is missing; run node web/scripts/gen-addon-icons.mjs")
 		if ring ~= nil then
 			ring:close()
 		end

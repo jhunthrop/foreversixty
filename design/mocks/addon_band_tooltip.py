@@ -105,7 +105,7 @@ def figure(value: float) -> str:
 
 
 def attribution() -> str:
-    return locale('tooltipAttribution') % (locale('tooltipAttrEstimate') % SPEC_WORD)
+    return locale('tooltipAttrEstimate') % SPEC_WORD
 
 
 def crafted_source() -> str:

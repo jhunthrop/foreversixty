@@ -93,8 +93,8 @@ describe("the palette", function()
 			end
 		end
 		collect(Tokens.color)
-		-- The primary's pressed gold is worked out from the gold token (Theme.dimHex).
-		local derived = { goldPressed = true }
+		-- The primary's pressed gold and a switch's held accent are worked out from their tokens (Theme.dimHex).
+		local derived = { goldPressed = true, accentPressed = true }
 		for key, hex in pairs(Theme.HEX) do
 			assert.is_true(derived[key] == true or known[hex] == true, key .. " = " .. tostring(hex))
 		end

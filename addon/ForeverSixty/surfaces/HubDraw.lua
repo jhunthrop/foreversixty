@@ -11,27 +11,19 @@ local Theme = ns.Theme or require("Theme")
 local Compat = ns.Compat or require("Compat")
 local HubFrame = ns.HubFrame or require("HubFrame")
 local Hub = ns.Hub or require("Hub")
+local HubPlates = ns.HubPlates or require("HubPlates")
 
 local HubDraw = {}
 
 --- A section heading's line and a text line, in px.
 HubDraw.LAYOUT = { head = 18, line = 15 }
 
---- The tab's body, once, into the hub's content frame: the two columns and the rule between them, and
---- the pools a draw fills.
+--- The tab's body, once, into the hub's content frame: the two columns on their plates (Hub.columns),
+--- and the pools a draw fills.
 function HubDraw.view(content)
-	local S, G = Theme.SIZES, Hub.LAYOUT
 	local view = { texts = {}, hits = {}, icons = {}, crests = {}, buttons = {} }
 	HubDraw.begin(view)
-	view.left = Theme.createFrame("Frame", nil, content)
-	view.left:SetPoint("TOPLEFT", content, "TOPLEFT", S.padding, -G.bodyPad)
-	view.left:SetSize(S.windowLeft, 1)
-	view.right = Theme.createFrame("Frame", nil, content)
-	view.right:SetPoint("TOPLEFT", content, "TOPLEFT", S.padding + S.windowLeft + S.windowGutter, -G.bodyPad)
-	view.right:SetSize(S.windowRight, 1)
-	view.rule = Theme.texture(content, "ARTWORK", "border")
-	view.rule:SetWidth(Theme.wholePixels(view.rule, S.border))
-	view.rule:SetPoint("TOP", content, "TOPLEFT", S.padding + S.windowLeft + S.windowGutter / 2, 0)
+	view.left, view.right = Hub.columns(content)
 	return view
 end
 
@@ -217,7 +209,8 @@ function HubDraw.itemText(itemId, redraw)
 end
 
 --- A section's heading at `y` in the title face, its muted note right-aligned; the y under it. `note`
---- may be a function given the note's region (a link drawn into it).
+--- may be a function given the note's region (a link drawn into it). The section starts a plate there
+--- (HubPlates.mark; `view.plateLooks[key]` makes it the tab's lead plate).
 function HubDraw.heading(view, parent, key, width, y, text, note)
 	local G = HubDraw.LAYOUT
 	local head = view.texts[key .. ".h"]
@@ -228,6 +221,7 @@ function HubDraw.heading(view, parent, key, width, y, text, note)
 	view.used[key .. ".h"] = true
 	head:SetText(text)
 	HubDraw.place(head, parent, 0, y + (G.head - HubDraw.textHeight(head)) / 2)
+	HubPlates.mark(parent, head, y, view.plateLooks ~= nil and view.plateLooks[key] or nil)
 	if note ~= nil and note ~= "" then
 		local right = HubDraw.pooled(view, parent, key .. ".n")
 		right:SetTextColor(Theme.rgb(Theme.HEX.muted))
