@@ -1,5 +1,9 @@
 # Forever Sixty
 
+## 2.0.50
+
+- Fixes 2.0.48 and 2.0.49 not loading: the addon showed as enabled but did nothing.
+
 ## 2.0.49
 
 - Gear and Rotation show the same stat weights table, with attack power listed once. Gear's hit line says Ranged hit or Melee hit for your spec, and ranged hunters no longer see a spell hit line.
