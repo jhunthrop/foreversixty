@@ -1,5 +1,9 @@
 # Forever Sixty
 
+## 2.0.54
+
+- The AddOns list says what Forever Sixty does: gear upgrades, BiS, talents, rotation and raid sign-ups, and /fs to open it.
+
 ## 2.0.52
 
 - Gear sources: an item that needs a reputation standing (a quartermaster's goods included) shows only with Reputation on, and PvP rank and battleground faction items also need PvP on.

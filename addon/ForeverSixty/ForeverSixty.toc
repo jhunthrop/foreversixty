@@ -1,8 +1,9 @@
 ## Interface: 16001
 ## Title: Forever Sixty
-## Notes: Your build, in game. Import your character into the planner and follow a build you chose on the site.
+## Notes: Gear upgrades, BiS, talents, rotation and raid sign-ups. A green arrow on gear that beats yours and your next talent marked. /fs opens it.
+## Category: Class
 ## Author: foreversixty.gg
-## Version: 2.0.52
+## Version: 2.0.54
 ## IconTexture: Interface\AddOns\ForeverSixty\icon
 ## X-Curse-Project-ID: 1706689
 ## X-Wago-ID: XKqEdoKy
