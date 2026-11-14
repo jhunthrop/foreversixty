@@ -9,18 +9,28 @@ export type TierFaction = 'alliance' | 'horde';
 export interface ExpectedTierRow {
   entry: SpecCatalogRow;
   band: BisBandFile;
-  /** The sorted figure: damage taken per second for a tank, set DPS otherwise. */
+  /** The sorted figure: damage taken per second for a tank, the raid fight's HPS for a healer
+   *  once every healer band publishes it (set DPS until then), set DPS for damage. */
   metric: number;
 }
 
+/** A healer band's raid-fight figure (metrics.raid_fight), absent until the ranker publishes it. */
+const raidFightOf = (band: BisBandFile) =>
+  (band.metrics as { raid_fight?: { hps: number } } | null | undefined)?.raid_fight;
+
+function metricOf(role: TierRole, band: BisBandFile, healerOnRaid: boolean): number {
+  if (role === 'tank') return band.metrics!.dtps;
+  if (role === 'healer' && healerOnRaid) return raidFightOf(band)!.hps;
+  return band.set_dps!;
+}
+
 export function expectedRows(role: TierRole, faction: TierFaction): ExpectedTierRow[] {
-  const rows = readSpecCatalog()
+  const bands = readSpecCatalog()
     .filter((entry) => entry.role === role)
-    .map((entry) => {
-      const band = bisBand(entry.spec, faction, 60, 'raid');
-      const metric = role === 'tank' ? band.metrics!.dtps : band.set_dps!;
-      return { entry, band, metric };
-    });
+    .map((entry) => ({ entry, band: bisBand(entry.spec, faction, 60, 'raid') }));
+  // A healer list ranks on the raid fight only when every healer band carries it (bbc07527e).
+  const healerOnRaid = bands.every(({ band }) => raidFightOf(band) !== undefined);
+  const rows = bands.map(({ entry, band }) => ({ entry, band, metric: metricOf(role, band, healerOnRaid) }));
   const direction = role === 'tank' ? 1 : -1;
   return rows.sort((a, b) => direction * (a.metric - b.metric) || a.entry.name.localeCompare(b.entry.name));
 }
