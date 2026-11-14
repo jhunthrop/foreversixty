@@ -205,17 +205,38 @@ end
 
 --- What runs after the choice changes (the panel, the flyout, the Settings group and every surface
 --- that shows a pick redraw), by name: Sources.listen replaces a listener of the same name, so a
---- second registration never runs it twice.
+--- second registration never runs it twice. They run in the order first registered (the Gear tab
+--- before the other surfaces), each on its own: one that fails is reported and never keeps the rest
+--- from redrawing (2.0.52: the Gear tab's rows stayed on the old picks while the tooltips moved).
 Sources.listeners = {}
+local listenerOrder, ordered = {}, {}
 
 function Sources.listen(name, listener)
+	if not ordered[name] then
+		ordered[name] = true
+		listenerOrder[#listenerOrder + 1] = name
+	end
 	Sources.listeners[name] = listener
+end
+
+--- Where a failing listener's error goes: the client's error handler (shown, never thrown on).
+function Sources.reportError(err)
+	local handler = type(geterrorhandler) == "function" and geterrorhandler() or nil
+	if type(handler) == "function" then
+		handler(err)
+	end
 end
 
 local function changed()
 	Sources.version = Sources.version + 1
-	for _, listener in pairs(Sources.listeners) do
-		listener()
+	for _, name in ipairs(listenerOrder) do
+		local listener = Sources.listeners[name]
+		if listener ~= nil then
+			local ok, err = pcall(listener)
+			if not ok then
+				Sources.reportError(err)
+			end
+		end
 	end
 end
 
@@ -301,19 +322,35 @@ local function aboveCap(standing)
 	return (STANDING_RANK[standing or ""] or math.huge) > STANDING_RANK[Sources.REP_CAP]
 end
 
---- Whether an item of filter `kind` asking `standing` counts under `state` (doll-view.ts's capped: under
---- the cap a Reputation item with no known standing is out; any other kind only by a standing it names).
-function Sources.allows(state, kind, standing)
+--- The kinds a PvP gate (the packed tail's `^`: a PvP rank's or a battleground faction's item) also
+--- holds to PvP: buying it or earning it by standing; a drop of the same item is never gated.
+Sources.PVP_GATED = { vendor = true, rep = true }
+
+--- Whether the Reputation switch lets an item asking `standing` through: an item that asks any
+--- standing is a Reputation item whatever its own kind (a quartermaster's goods are), so it needs
+--- Reputation on; under the leveling default's cap only up to Friendly.
+local function repGateOpen(state, standing)
+	if standing == nil then
+		return true
+	end
+	return state.set.rep == true and (state.repCap == nil or not aboveCap(standing))
+end
+
+--- Whether an item of filter `kind` asking `standing` (and held to PvP when `pvp`) counts under `state`:
+--- every source class it needs is on. Its own kind; Reputation for any standing it asks (under the
+--- leveling default's cap a Reputation item with no known standing is out, as doll-view.ts's capped);
+--- PvP for a PvP-gated vendor or reputation item (Sources.PVP_GATED).
+function Sources.allows(state, kind, standing, pvp)
 	if not state.set[kind] then
 		return false
 	end
-	if state.repCap == nil then
-		return true
+	if kind == "rep" and standing == nil and state.repCap ~= nil then
+		return false
 	end
-	if kind == "rep" then
-		return not aboveCap(standing)
+	if pvp == true and Sources.PVP_GATED[kind] and not state.set.pvp then
+		return false
 	end
-	return standing == nil or not aboveCap(standing)
+	return repGateOpen(state, standing)
 end
 
 --- A decoded pick's own filter kinds (source-filter.ts's pickKinds): its head's, else its code's.
@@ -345,8 +382,9 @@ local function pickAllowed(pick, state)
 		-- A kind the filter does not know is never filtered out: nothing to judge it by.
 		return true
 	end
+	local pvp = pick.head ~= nil and pick.head.pvp == true
 	for _, kind in ipairs(kinds) do
-		if Sources.allows(state, kind, standings[kind]) then
+		if Sources.allows(state, kind, standings[kind], pvp) then
 			return true
 		end
 	end
@@ -354,7 +392,7 @@ local function pickAllowed(pick, state)
 end
 
 local function entryAllowed(entry, state, mateId)
-	return Sources.allows(state, entry.filterKind, entry.standing) and not blocks(entry.notWith, mateId)
+	return Sources.allows(state, entry.filterKind, entry.standing, entry.pvp) and not blocks(entry.notWith, mateId)
 end
 
 --- Re-picked answers, per entry and state: a hover never builds the same table twice. Weak keys:
@@ -398,14 +436,26 @@ local function asPick(pick, index, state, mateId)
 	return byState[cacheKey]
 end
 
---- The published pick with only the alternatives `state` allows (an alternative's kind is its code's;
---- under the cap a Reputation alternative, whose standing the data does not carry, is out). The pick
---- itself when it keeps them all.
+--- An alternative's gates (standing, pvp): the alternative carries none of its own, so they are the
+--- by-kind entry's for the same item and kind, where the tail lists one.
+local function alternativeGates(pick, itemId, kind)
+	for _, entry in ipairs(pick.byKind or {}) do
+		if entry.item_id == itemId and entry.filterKind == kind then
+			return entry.standing, entry.pvp
+		end
+	end
+	return nil, false
+end
+
+--- The published pick with only the alternatives `state` allows (an alternative's kind is its code's,
+--- its gates its by-kind entry's; under the cap a Reputation alternative with no known standing is
+--- out). The pick itself when it keeps them all.
 local function withAllowedAlternatives(pick, state)
 	local alternatives, dropped = {}, false
 	for _, alternative in ipairs(pick.alternatives or {}) do
 		local kind = Sources.KIND_OF_CODE[alternative.kind or ""]
-		if kind ~= nil and Sources.allows(state, kind, nil) then
+		local standing, pvp = alternativeGates(pick, alternative.item_id, kind)
+		if kind ~= nil and Sources.allows(state, kind, standing, pvp) then
 			alternatives[#alternatives + 1] = alternative
 		else
 			dropped = true

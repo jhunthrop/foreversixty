@@ -28,6 +28,7 @@ import json
 from pathlib import Path
 
 from pipeline.addonbis import build_bis_items, build_bis_sources, build_bis_tables
+from pipeline.addonenchants import build_enchant_plans
 from pipeline.addonrotation import build_ability_levels, build_rotations
 from pipeline.encounters import load_encounter_needs
 from pipeline.models import (
@@ -156,6 +157,7 @@ def build_addon_data(
     rotations = build_rotations(root, build, curated_dir=curated_dir)
     bis = build_bis_tables(root, build)
     bis_names, bis_dps = build_bis_items(root, build, bis.bare, bis.raid)
+    enchant_plans, enchant_records = build_enchant_plans(root, build, curated_dir, list(bis.bare))
     return AddonData(
         build=build,
         classes=classes,
@@ -173,6 +175,8 @@ def build_addon_data(
         bis_names=bis_names,
         bis_dps=bis_dps,
         bis_sources=build_bis_sources(bis.bare, bis.raid),
+        enchant_plans=enchant_plans,
+        enchant_records=enchant_records,
         bis_unconfirmed_skips=bis.skips,
     )
 

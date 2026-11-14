@@ -163,6 +163,8 @@ BIS_NOT_WITH_SEPARATOR = "+"
 #: is a digit or a letter, so `C!7000` never reads as another id.
 BIS_HEAD_MARK = "*"
 BIS_TWO_HAND_MARK = "!"
+#: The PvP gate mark: the item's vendor and reputation kinds also need PvP (Sources.PVP_GATED).
+BIS_PVP_MARK = "^"
 
 
 def _not_with(ids: list[int]) -> str:
@@ -170,8 +172,9 @@ def _not_with(ids: list[int]) -> str:
 
 
 def _pick_head(item) -> str:
-    """The tail's head entry, `*!RhVh,19513`: the two-hander mark, the pick's own filter
-    kinds each with the standing it asks, then the ids its pair mate must not hold. Empty
+    """The tail's head entry, `*!^RhVh,19513`: the two-hander mark, the PvP gate mark, the
+    pick's own filter kinds each with the standing it asks, then the ids its pair mate must
+    not hold. Empty
     when the pick's source_kind alone describes it. The decoder reads an entry with no
     kind letters as the pick's own code's kind."""
     own = FILTER_KIND_OF_SOURCE.get(item.source_kind)
@@ -185,7 +188,11 @@ def _pick_head(item) -> str:
         if item.kinds or gated
         else ""
     )
-    mark = (BIS_TWO_HAND_MARK if item.two_hand else "") + letters
+    mark = (
+        (BIS_TWO_HAND_MARK if item.two_hand else "")
+        + (BIS_PVP_MARK if item.pvp_gate else "")
+        + letters
+    )
     if not mark and not item.not_with:
         return ""
     head = BIS_HEAD_MARK + mark
@@ -195,14 +202,15 @@ def _pick_head(item) -> str:
 
 
 def _kind_entry(entry, source_index: dict[str, int]) -> str:
-    """`Dh!26686,12,1234+5678`: the kind letter, a standing letter, the two-hander mark,
-    the id; the place's 1-based bisSources index (empty for none); the ids the pair
+    """`Vh^!26686,12,1234+5678`: the kind letter, a standing letter, the PvP gate mark, the
+    two-hander mark, the id; the place's 1-based bisSources index (empty for none); the ids the pair
     mate must not hold, when any."""
     if entry.source and entry.source not in source_index:
         raise AddonBisError(f"bisSources does not list the by-kind place {entry.source!r}")
     fields = [
         _source_kind_code(entry.source_kind)
         + STANDING_CODES.get(entry.standing, "")
+        + (BIS_PVP_MARK if entry.pvp_gate else "")
         + (BIS_TWO_HAND_MARK if entry.two_hand else "")
         + str(entry.item_id),
         str(source_index[entry.source]) if entry.source else "",
@@ -436,6 +444,23 @@ def _bis_sources_lua(bis_sources: list[str]) -> list[str]:
     return lines
 
 
+def _enchants_lua(plans: dict[str, dict[str, int]], records: list[str]) -> list[str]:
+    """`enchantPlans[spec][key] = index` and `enchantRecords = { "id|name|...", ... }`
+    (pipeline.addonenchants): the enchant each spec's BiS picks wear, by slot. Both are left
+    out when there are none."""
+    if not plans:
+        return []
+    lines = ["\tenchantPlans = {"]
+    for spec in sorted(plans):
+        slots = ", ".join(f"{key} = {plans[spec][key]}" for key in sorted(plans[spec]))
+        lines.append(f'\t\t["{spec}"] = {{ {slots} }},')
+    lines.append("\t},")
+    lines.append("\tenchantRecords = {")
+    lines.extend(f"\t\t{_quote(record)}," for record in records)
+    lines.append("\t},")
+    return lines
+
+
 def _bis_items_lua(bis_names: dict, bis_dps: dict) -> list[str]:
     """`bisNames[itemId] = "name"` and `bisDps[itemId] = dps` (task L1.4):
     one entry per distinct pick or alternative id, so a name is stored once
@@ -613,6 +638,7 @@ def render_lua(data: AddonData) -> str:
     lines.extend(_bis_weights_lua(data.bis))
     lines.extend(_bis_items_lua(data.bis_names, data.bis_dps))
     lines.extend(_bis_sources_lua(data.bis_sources))
+    lines.extend(_enchants_lua(data.enchant_plans, data.enchant_records))
     lines.extend(default_builds)
     lines.extend(_spec_icons_lua(data.spec_icons))
     lines.extend(_dps_per_point_lua(data.dps_per_point))

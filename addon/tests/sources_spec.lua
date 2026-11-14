@@ -31,6 +31,15 @@ local DATA = {
 					finger2 = "19513|R|Warsong Outriders|||*Rh",
 				},
 			},
+			-- The owner's 46 hunter (2026-11-14): an Exalted reputation shoulder, then The League of
+			-- Arathor's Exalted Highlander's Chain Pauldrons from its quartermaster (a battleground
+			-- faction: PvP too), then a dungeon pair; and a rank vendor's gloves ahead of a drop.
+			[40] = {
+				alliance = {
+					shoulder = "271955|R|Theramore Expeditionary Force|||*Re;Ve^20055,3;D12927,5",
+					hands = "220829|V|Kelm Hargunth|||*^;D13255,5",
+				},
+			},
 		},
 	},
 }
@@ -118,7 +127,7 @@ describe("Sources, the model", function()
 			assert.are.equal("honored", pick.standing)
 			assert.are.equal(1, #pick.alternatives)
 			assert.are.equal(5, #pick.byKind)
-			assert.are.same({ item_id = 13097, kind = "B", filterKind = "world", twoHand = false,
+			assert.are.same({ item_id = 13097, kind = "B", filterKind = "world", pvp = false, twoHand = false,
 				source = "World drop", notWith = { 13097 } }, pick.byKind[1])
 			assert.are.equal("Kelm Hargunth", pick.byKind[3].source)
 			assert.are.equal("honored", pick.byKind[3].standing)
@@ -158,6 +167,39 @@ describe("Sources, the model", function()
 			assert.are.equal("Shadowfang Keep: Baron Silverlaine", repicked.source)
 			assert.are.equal(19513, repicked.unfiltered.item_id)
 			assert.are.same({ { item_id = 273032, kind = "W", source = "World drop" } }, repicked.alternatives)
+		end)
+
+		it("reads the PvP gate mark on the head and on an entry", function()
+			local shoulder = Gear.decodePick(DATA.bis["warrior-fury"][40].alliance.shoulder, PLACES)
+			assert.is_false(shoulder.head.pvp)
+			assert.are.same({ 20055, "vendor", "exalted", true }, { shoulder.byKind[1].item_id,
+				shoulder.byKind[1].filterKind, shoulder.byKind[1].standing, shoulder.byKind[1].pvp })
+			assert.is_false(shoulder.byKind[2].pvp)
+			assert.is_true(Gear.decodePick(DATA.bis["warrior-fury"][40].alliance.hands, PLACES).head.pvp)
+		end)
+
+		it("hides a reputation-gated vendor item while Reputation is off, Vendor on or not", function()
+			local mine = { "dungeon", "raid", "crafted", "vendor", "quest" }
+			local function at40(slot, on)
+				return Gear.pick("warrior-fury", 40, "alliance", slot, DATA, Sources.stateOf(on, 40, true))
+			end
+			assert.are.equal(12927, at40("shoulder", mine).item_id)
+			assert.are.equal(271955, at40("shoulder", { "dungeon", "rep" }).item_id)
+			-- Reputation on is not enough for a battleground faction's goods: PvP must be on too.
+			local repVendor = Sources.stateOf({ "dungeon", "vendor", "rep" }, 40, true)
+			assert.is_false(Sources.allows(repVendor, "vendor", "exalted", true))
+			assert.is_true(Sources.allows(repVendor, "vendor", "exalted", false))
+			assert.is_true(Sources.allows(Sources.stateOf({ "vendor", "rep", "pvp" }, 40, true), "vendor", "exalted", true))
+			assert.are.equal(12927, at40("shoulder", { "dungeon", "vendor", "pvp" }).item_id)
+			assert.is_false(Sources.allows(Sources.stateOf(mine, 40, true), "vendor", "exalted"))
+			assert.is_true(Sources.allows(Sources.stateOf(mine, 40, true), "vendor", nil))
+		end)
+
+		it("holds a PvP rank vendor's item to PvP", function()
+			assert.are.equal(13255, Gear.pick("warrior-fury", 40, "alliance", "hands", DATA,
+				Sources.stateOf({ "dungeon", "vendor" }, 40, true)).item_id)
+			assert.are.equal(220829, Gear.pick("warrior-fury", 40, "alliance", "hands", DATA,
+				Sources.stateOf({ "dungeon", "vendor", "pvp" }, 40, true)).item_id)
 		end)
 
 		it("keeps a reputation item at 60, where every kind is on", function()

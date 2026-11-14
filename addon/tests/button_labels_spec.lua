@@ -279,7 +279,7 @@ describe("every visible button draws its label", function()
 		GearTab.read = function()
 			return { data = { bis = { ["warrior-arms"] = { [20] = { horde = { chest = "1|D|Wailing Caverns: Mutanus",
 				legs = "2|Q|The Ravaged Caravan" } } } } }, spec = "warrior-arms", level = 13, faction = "horde",
-				current = { weights = { strength = 1 } }, equipped = {}, bagIds = {}, noEnchant = {},
+				current = { weights = { strength = 1 } }, equipped = {}, bagIds = {}, enchants = {},
 				isMissing = function()
 					return false
 				end }

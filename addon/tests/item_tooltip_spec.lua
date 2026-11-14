@@ -2084,7 +2084,8 @@ describe("the worn item's enchant", function()
 	it("reads 'Attack Power +4 and Armor +16' and nets 4 attack power", function()
 		local enchant = Gear.enchantOf({ { left = "Abomination Bones" }, { left = "Chest", right = "Mail" },
 			{ left = "Enchanted: Attack Power +4 and Armor +16" } }, words)
-		assert.are.same({ stats = { attack_power = 4, armor = 16 }, unparsed = false }, enchant)
+		assert.are.same({ stats = { attack_power = 4, armor = 16 }, unparsed = false,
+			text = "Attack Power +4 and Armor +16" }, enchant)
 		assert.are.equal(4, Gear.score(enchant.stats, arms))
 	end)
 
@@ -2099,7 +2100,7 @@ describe("the worn item's enchant", function()
 	end)
 
 	it("keeps the note for an enchant it cannot read, and has nothing to say with none", function()
-		assert.are.same({ stats = {}, unparsed = true },
+		assert.are.same({ stats = {}, unparsed = true, text = "Crusader" },
 			Gear.enchantOf({ { left = "Enchanted: Crusader" } }, words))
 		assert.is_nil(Gear.enchantOf({ { left = "Abomination Bones" } }, words))
 	end)

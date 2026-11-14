@@ -1154,7 +1154,11 @@ L.gearNoSpec = "Pick your spec on the Builds tab to see your gear."
 L.gearNothingBeats = "Nothing on this list beats what you wear."
 L.gearUpgrades = "Upgrades"
 L.gearMoreUpgrades = "More upgrades"
-L.gearNoEnchantSlots = "No enchant: %s"
+-- The enchant rows under the doll (EnchantPlan): the plan's enchant where the slot has none, or the
+-- plan's over a weaker one; the slot follows in muted words.
+L.gearWeakerEnchant = "Weaker enchant"
+L.gearEnchantNone = "No enchant: %s"
+L.gearEnchantBeats = "%s beats %s"
 L.gearInAll = "%s in all"
 L.gearWhere = "%s \194\183 %s"
 L.gearBestOf = "%d of %d best in slot"

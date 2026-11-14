@@ -178,6 +178,15 @@ PAIR_SECOND = {"finger2", "trinket2", "off_hand"}
 #: The reputation standings a gated item can ask, as leveling-bis spells them.
 STANDINGS = ("neutral", "friendly", "honored", "revered", "exalted")
 
+#: The battleground factions (loot.json's faction_id): The League of Arathor, The Defilers,
+#: Frostwolf Clan, Stormpike Guard, Warsong Outriders, Silverwing Sentinels. Their goods are
+#: PvP as well as Reputation in the addon's source filter.
+PVP_FACTION_IDS = frozenset({509, 510, 729, 730, 889, 890})
+
+#: The kinds a PvP gate holds to PvP as well (Sources.PVP_GATED in the addon): buying an item
+#: or earning it by standing; a drop of the same item is never gated.
+PVP_GATED_KINDS = frozenset({"vendor", "rep"})
+
 
 class AddonBisError(SystemExit):
     """A bis/<spec>.json says something the addon generator will not publish."""
@@ -293,6 +302,8 @@ class _ItemFacts:
     two_hand: set[int] = field(default_factory=set)
     #: (item id, source label) -> drop chance as a fraction (_drop_chances).
     chances: dict[tuple[int, str], float] = field(default_factory=dict)
+    #: Ids a PvP rank or a battleground faction gates (_pvp_gated).
+    pvp_gated: set[int] = field(default_factory=set)
 
 
 def _flat_items(root: Path, build: str) -> dict[int, dict]:
@@ -373,6 +384,20 @@ def _drop_chances(root: Path, build: str) -> dict[tuple[int, str], float]:
     return chances
 
 
+def _pvp_gated(root: Path, build: str) -> set[int]:
+    """Ids loot.json has a PvP rank give (a `pvp` source) or a battleground faction sell or
+    reward (a source whose faction_id is in PVP_FACTION_IDS): whoever buys or earns them
+    needs PvP, whatever kind leveling-bis files them under."""
+    path = root / build / "loot.json"
+    if not path.exists():
+        return set()
+    gated: set[int] = set()
+    for source in json.loads(path.read_text(encoding="utf-8")).get("sources", []):
+        if source.get("kind") == "pvp" or source.get("faction_id") in PVP_FACTION_IDS:
+            gated.update(source.get("items") or [])
+    return gated
+
+
 def _item_facts(root: Path, build: str) -> _ItemFacts:
     flat = _flat_items(root, build)
     two_hand: set[int] = set()
@@ -385,6 +410,7 @@ def _item_facts(root: Path, build: str) -> _ItemFacts:
         names={item_id: row["name"] for item_id, row in flat.items() if row.get("name")},
         two_hand=two_hand,
         chances=_drop_chances(root, build),
+        pvp_gated=_pvp_gated(root, build),
     )
 
 
@@ -530,6 +556,11 @@ def _faction_picks(
             kinds=kinds,
             standings=standings,
             two_hand=pick["item_id"] in facts.two_hand or bool(pick.get("two_hand")),
+            pvp_gate=_pvp_gate(
+                facts,
+                pick["item_id"],
+                kinds or [FILTER_KIND_OF_SOURCE.get(pick["source_kind"], "")],
+            ),
             not_with=list(pick.get("not_with") or []) if second else [],
             by_kind=[
                 entry for entry in _by_kind(row, facts, second) if entry.item_id != pick["item_id"]
@@ -565,6 +596,11 @@ def _pick_kinds(entry: dict) -> tuple[list[str], dict[str, str]]:
     return kinds, standings
 
 
+def _pvp_gate(facts: _ItemFacts, item_id: int, kinds: list[str]) -> bool:
+    """Whether the item, had from `kinds`, is held to PvP: PvP-gated and bought or earned."""
+    return item_id in facts.pvp_gated and not PVP_GATED_KINDS.isdisjoint(kinds)
+
+
 def _by_kind(entry: dict, facts: _ItemFacts, second: bool) -> list[AddonBisKindEntry]:
     """leveling-bis's `by_kind` (the best item of each kind, a chained `next` behind it),
     flattened and sorted by its own rank, best first, a tie to the kind the site lists
@@ -590,6 +626,7 @@ def _by_kind(entry: dict, facts: _ItemFacts, second: bool) -> list[AddonBisKindE
                             source_kind=source_kind,
                             source=node.get("source", ""),
                             standing=_standing(node.get("standing")),
+                            pvp_gate=_pvp_gate(facts, item_id, [kind]),
                             two_hand=bool(node.get("two_hand")) or item_id in facts.two_hand,
                             not_with=list(node.get("not_with") or []) if second else [],
                         ),

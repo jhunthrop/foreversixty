@@ -32,7 +32,7 @@ read_globals = {
 	"C_TooltipInfo", "TooltipUtil",
 	"GetProfessions", "GetProfessionInfo", "GetBuildInfo", "GetGuildInfo",
 	-- UI
-	"CreateFrame", "UIParent", "GameTooltip", "StaticPopupDialogs", "ITEM_QUALITY_COLORS",
+	"CreateFrame", "UIParent", "GameTooltip", "StaticPopupDialogs", "ITEM_QUALITY_COLORS", "geterrorhandler",
 	"TooltipDataProcessor", "Enum",
 	"InterfaceOptions_AddCategory", "Settings",
 	"NUM_BANKGENERIC_SLOTS", "NUM_BANKBAGSLOTS", "BANK_CONTAINER",
