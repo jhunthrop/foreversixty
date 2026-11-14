@@ -2104,13 +2104,24 @@ local function addLines(tooltip, itemLink)
 	end
 end
 
---- Whether `tooltip` is another addon's hidden scanning tooltip: owned with ANCHOR_NONE and placed
---- nowhere (a tooltip the client or an addon shows sits at a point, the default anchor included).
---- Found in game: Pawn read a looted robe through PawnPrivateTooltip1, the processor ran this hook
---- for it, and the section's compare tooltip opened beside GameTooltip on its own.
+--- The client's shared tooltips, the ones every addon shows an item hover on. Never a scanner: an
+--- addon list that draws its hover on GameTooltip owns it with ANCHOR_NONE, sets the item and only
+--- then places it (DungeonJournal's loot and search rows, OneForAll's dungeon loot rows), so at the
+--- hook it has no point yet.
+ItemTooltip.SHARED_TOOLTIPS = { "GameTooltip", "ItemRefTooltip" }
+
+--- Whether `tooltip` is another addon's hidden scanning tooltip: a private tooltip owned with
+--- ANCHOR_NONE and placed nowhere (a tooltip the client or an addon shows sits at a point, the default
+--- anchor included). Found in game: Pawn read a looted robe through PawnPrivateTooltip1, the processor
+--- ran this hook for it, and the section's compare tooltip opened beside GameTooltip on its own.
 function ItemTooltip.isScanner(tooltip)
 	if type(tooltip.GetAnchorType) ~= "function" or type(tooltip.GetNumPoints) ~= "function" then
 		return false
+	end
+	for _, name in ipairs(ItemTooltip.SHARED_TOOLTIPS) do
+		if rawget(_G, name) == tooltip then
+			return false
+		end
 	end
 	local ok, anchor, points = pcall(function()
 		return tooltip:GetAnchorType(), tooltip:GetNumPoints()

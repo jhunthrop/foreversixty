@@ -1887,6 +1887,23 @@ describe("the item hook", function()
 			assert.is_nil(ItemTooltip.activeHover)
 		end)
 
+		-- DungeonJournal's loot and search rows and OneForAll's dungeon loot rows: GameTooltip owned
+		-- with ANCHOR_NONE, the item set (SetHyperlink or SetItemByID, the hook runs), placed after.
+		for _, name in ipairs({ "GameTooltip", "ItemRefTooltip" }) do
+			it("draws on " .. name .. " owned with ANCHOR_NONE before another addon's list places it", function()
+				local tip, calls = recording()
+				tip.IsShown = function() return true end
+				tip.GetAnchorType = function() return "ANCHOR_NONE" end
+				tip.GetNumPoints = function() return 0 end
+				local saved = rawget(_G, name)
+				_G[name] = tip
+				local ok, err = pcall(ItemTooltip.onTooltip, tip, "item:50")
+				_G[name] = saved
+				assert.is_true(ok, tostring(err))
+				assert.is_not_nil(calls[1])
+			end)
+		end
+
 		it("still draws on a tooltip at the client's default anchor (ANCHOR_NONE with a point)", function()
 			local tip, calls = recording()
 			tip.IsShown = function() return true end
