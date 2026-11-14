@@ -7,7 +7,7 @@ pictures are the main listing's captures, served from foreversixty.gg/addon/.
 | Field | Value |
 |---|---|
 | Project name | **Forever Sixty Data** (rename from "ForeverSixtyData"; the folder stays `ForeverSixtyData`) |
-| One line (CurseForge summary, Wago tagline) | Forever Scores on player tooltips, score badges in chat and the guild tab's scores for the Forever Sixty addon, updated nightly. |
+| One line (CurseForge summary, Wago tagline) | Forever Scores on player tooltips, score badges in chat and the guild's scores in the Forever Sixty window, updated nightly. |
 | Categories | Data Export, Guild, Tooltip |
 | Game version | 1.60.1 (World of Warcraft: Forever) |
 | License | All Rights Reserved |
@@ -15,13 +15,13 @@ pictures are the main listing's captures, served from foreversixty.gg/addon/.
 | Source | https://github.com/jhunthrop/foreversixty |
 | Website | https://foreversixty.gg/ratings |
 | Relations | Forever Sixty (project 1706689; Wago XKqEdoKy): this pack is its required dependency |
-| Gallery | plates 7, 8 and 9 from the main listing's `gallery/`: the player tooltip, the chat badges, the guild tab |
+| Gallery | plates 10, 06 and 07 from the main listing's `gallery/`: the player tooltip, the Guild tab, the Officer tab |
 
 ## Description
 
 ## The Forever Score, in game
 
-Forever Sixty Data is the ratings pack the **[Forever Sixty](https://foreversixty.gg/setup)** addon reads. It carries every public character's Forever Score and every verified guild's standing from **[foreversixty.gg](https://foreversixty.gg)** into the game, so a player tooltip, a chat line, the guild tab and the group panel can show how someone performs.
+Forever Sixty Data is the ratings pack the **[Forever Sixty](https://foreversixty.gg/setup)** addon reads. It carries every public character's Forever Score and every verified guild's standing from **[foreversixty.gg](https://foreversixty.gg)** into the game, so a player tooltip, a chat line and the addon's Me, Guild and Officer tabs can show how someone performs.
 
 Data only. Install it beside Forever Sixty and the addon reads it; on its own it does nothing.
 
@@ -29,19 +29,17 @@ Data only. Install it beside Forever Sixty and the addon reads it; on its own it
 
 1. Install it with Forever Sixty. It is the addon's required dependency, so the CurseForge and Wago apps add it for you; by hand, the `ForeverSixtyData` folder goes in `Interface\AddOns` next to `ForeverSixty`.
 2. Keep it updating. A new version is published every night; your addon manager picks it up like any other addon.
-3. Nothing to configure. The Forever Sixty addon reads it at login, and the foot of its Settings page says whether the pack is current: "Player ratings (on player tooltips): current".
+3. Nothing to configure. The Forever Sixty addon reads it at login, and the foot of its Settings page says whether the pack is current: "Forever Scores: current".
 
 ### Where it shows up
 
-**On every player tooltip.** One line, "Forever Score 1240" in the tier's colour, dated once the record is over a week old; hold Shift for the five parts behind it. A player with no rated fights shows nothing, never a zero.
+**On every player tooltip.** One line, "Forever Score 1240" in the tier's colour, dated and greyed once the record is over three days old; hold Shift for the five parts behind it. A player with no rated fights shows nothing, never a zero.
 
 ![A guild chat line with the sender's FS badge in front of it](https://foreversixty.gg/addon/chat-badge-guild.jpg)
 
 **In chat.** "FS 1240 ·" before a sender's line in guild chat, Trade, LookingForGroup and whispers, muted once the record is more than three days old.
 
-![The guild frame's Forever Sixty roster](https://foreversixty.gg/addon/guild-tab.jpg)
-
-**On the guild tab and the group panel.** The guild tab's Gear, Score and Attendance columns and the group panel's Score column read this pack for every member who does not run the addon.
+**In the Forever Sixty window.** Me shows your own score and its five parts, Guild your guild's top five and your place, and Officer the score of every raider on the roster.
 
 ### What is in it
 

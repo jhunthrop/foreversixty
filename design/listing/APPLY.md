@@ -8,7 +8,8 @@ changed:
 node design/community/discord/build-assets.mjs   # Discord
 node design/listing/build-store.mjs              # store icons, feature graphic, store screenshots
 node design/listing/check-store-text.mjs         # store text limits and voice
-node design/listing/gen_gallery.mjs              # addon gallery (needs the in-game captures)
+python3 design/listing/gen_captures.py           # addon gallery captures, from the mocks
+node design/listing/gen_gallery.mjs              # addon gallery plates
 ```
 
 Each command prints one line per file and ends each line in `ok`.
@@ -33,7 +34,7 @@ The text is in `curseforge-description.md` (Forever Sixty) and `data-addon-descr
 - [ ] **Project icon and account avatar**, on both projects and both sites: upload `icons/listing-icon-400.png`.
 - [ ] **Summary or tagline:** paste the "One line" field from each file.
 - [ ] **Description.** For CurseForge, paste `curseforge-description.html` (or `data-addon-description.html`) into the editor's HTML source view. For Wago, paste the Markdown under "## Description".
-- [ ] **Gallery: wait.** It needs two things first. BA1 must have shipped the addon's new look, and the owner must take the twelve in-game shots in `RECAPTURE.md`. Then run `gen_gallery.mjs` and follow "Uploading the gallery". Delete the old navy plates from both dashboards when the new ones go up, not before.
+- [ ] **Gallery.** The ten plates in `gallery/` come from the addon's mocks (`RECAPTURE.md`); follow "Uploading the gallery" in `curseforge-description.md`, deleting the old plates first.
 
 ## Before the store screenshots go up
 

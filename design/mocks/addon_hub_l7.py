@@ -142,7 +142,8 @@ def signups(site=True):
     line = ('<span class="ok">11 In</span> · <span class="cg">1 Late</span> · 2 Bench · <span class="wa">1 Out</span>'
             ' · 16 not signed up')
     roles = ' · '.join(f'<span class="{"ok" if c >= w else "wa"}">{n} {c} of {w}</span>'
-                       for n, c, w in (('Tanks', 2, 4), ('Healers', 4, 10), ('Melee', 2, 12), ('Ranged', 4, 14)))
+                       for n, c, w in (('Tanks', 2, hub.WANTED['Tank']), ('Healers', 4, hub.WANTED['Healer']),
+                                       ('Melee', 2, hub.WANTED['Melee']), ('Ranged', 4, hub.WANTED['Ranged'])))
     queue = (f'<div class="row" style="margin-top:6px"><span class="m" style="flex:1">'
              f'{"3 approvals on the site" if site else ""}</span><span class="btn">Remind 16 in chat</span></div>')
     return section('Sign-ups', f'<div>{line}</div><div>{roles}</div>{queue}', '12 of 40 coming')

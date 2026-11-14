@@ -1,4 +1,4 @@
-# Gallery recapture: the twelve in-game shots the owner takes
+# Gallery captures: the addon's mocks, and the in-game shots that could replace them
 
 The store plates (`gen_gallery.mjs`, 3200x1800 PNG) draw each capture at most one capture pixel
 per plate pixel and never enlarge it. As of 2026-11-03 every plate's capture is one of the
@@ -8,10 +8,39 @@ with a visible seam. No lossless originals of them exist anywhere on disk. A sma
 1:1 looks small on the plate, and the old 1.5x enlargement made it blurry. The only real fix is
 new lossless captures from the game.
 
-As of 2026-11-13 the plate list follows addon 2.0.48: the addon is one window with tabs (Me,
-Builds, Gear, Rotation, Guild, Officer), which replaced the panel, the guild and group flyouts
-and the build dialog. Most plates have no capture yet and `gen_gallery.mjs` stops at the first
-one. Only `bag-arrow` and `chat-badge-guild` still have a JPEG stand-in.
+## As of 2026-11-13: the gallery comes from the addon's mocks
+
+The owner asked for the addon's mocks as the store screenshots. Every plate now comes from a mock, so
+no plate waits on the game. `gen_captures.py` renders the 2.0.48 review boards again, the ones each
+lane of the one-window release shipped against (`design/mocks/addon_hub_*.py` and
+`addon_builds_window.py`, every word and figure from the addon's own Locale.lua, Data.lua and
+models), hides the boards' review notes, cuts out the frame and writes `captures/<name>.png`.
+`gen_gallery.mjs` then puts each on its plate. Every character and guild in them is made up
+(Velisandre in Thornwake Company and her raid team). The script's store fixture makes the plates
+one evening of one character: one raid day, one sign-up, one last raid, one set of gains (its
+docstring lists what it aligns across the lanes).
+
+| # | Plate | Mock board |
+|---|---|---|
+| 1 | `chip` | `addon_hub_l6.py` `l6-hover`, the first scene: the line and its hover |
+| 2 | `window-me` | `addon_hub_me.py` `me-raid-day` |
+| 3 | `window-builds` | `addon_builds_window.py`'s window at 60, following the Beast Mastery raid build |
+| 4 | `window-gear` | `addon_hub_l3.py` `gear-hunter-60-raid`, the window only |
+| 5 | `window-rotation` | `addon_hub_rotation.py` `rotation-60` |
+| 6 | `window-guild` | `addon_hub_l5.py`'s raid day, signed up In |
+| 7 | `window-officer` | `addon_hub_l7.py` `l7-raid-day` |
+| 8 | `bag-arrow` | `addon_hub_l10.py` `l10-gear-marks`, without the bag item's tooltip |
+| 9 | `quest-reward-marks` | `addon_hub_l10.py` `l10-rewards`, without the "nothing helps" frame and the repeated roll |
+| 10 | `player-tooltip` | `addon_hub_l10.py` `l10-player`, the stale record and the Shift view |
+
+When a tab changes, fix its lane generator and rerun `gen_captures.py` and `gen_gallery.mjs`;
+never edit a capture by hand. Not in the gallery, because no mock draws them whole: the chat
+badges, the full talent window (the L10 board draws only the strip and two talents) and the
+Settings page (taller than a plate can show readably). The in-game shots below would add them, and
+a lossless shot of any plate's surface may replace its mock capture under the same name (take
+that name out of `gen_captures.py`'s `CAPTURES` too, or the next run draws over it).
+
+## In-game shots, optional
 
 Claude never drives the game client; the owner takes every screenshot.
 
@@ -51,7 +80,8 @@ frame each shot with some of the scene around the frame (the character, the mini
 world). That gives Claude room to crop wide.
 
 **Character.** Use a character with a pasted build that is partly followed, an upgrade in
-the bags, a Forever Score and a guild: Bow Jackzon or Obnoxious Yell. Stand somewhere with a
+the bags, a Forever Score and a guild. Other players' names in a shot must not be readable on a
+store plate, so shoot alone or crop them out. Stand somewhere with a
 calm, dark backdrop (an inn or a city at night) so the frames read clearly.
 
 | # | `<name>` | Frame | What must show |

@@ -69,7 +69,8 @@ def signups():
     line = ('<span class="ok">11 In</span> · <span class="cg">1 Late</span> · 2 Bench · <span class="wa">1 Out</span>'
             ' · 16 not signed up')
     roles = ' · '.join(f'<span class="{"ok" if c >= w else "wa"}">{n} {c} of {w}</span>'
-                       for n, c, w in (('Tanks', 2, 2), ('Healers', 4, 8), ('Melee', 2, 10), ('Ranged', 4, 20)))
+                       for n, c, w in (('Tanks', 2, hub.WANTED['Tank']), ('Healers', 4, hub.WANTED['Healer']),
+                                       ('Melee', 2, hub.WANTED['Melee']), ('Ranged', 4, hub.WANTED['Ranged'])))
     return section('Sign-ups', f'<div>{line}</div><div>{roles}</div>', '12 of 40 coming')
 
 

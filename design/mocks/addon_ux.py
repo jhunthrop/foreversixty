@@ -722,18 +722,21 @@ U = {'top': ADDON['raised'], 'ground': ADDON['raised'], 'edge': ADDON['line'], '
      'bone': ADDON['cream'], 'bone_dim': ADDON['muted'], 'ink': ADDON['body'], 'muted': ADDON['muted'],
      'brass': ADDON['gold'], 'alliance': color('faction.allianceBar'), 'horde': color('faction.hordeBar')}
 TITLE_FONT = b64((ROOT / 'apps/shared/fonts/Marcellus-Regular.ttf').read_bytes(), 'font/ttf')
-RING = tga_uri(ROOT / 'addon/ForeverSixty/media/medallion-ring.tga')
-NOTCH = tga_uri(ROOT / 'addon/ForeverSixty/media/medallion-notch.tga')
+# The tour's medallion media went with the tour in 2.0.48; only the old onboarding boards read them, so they are
+# read when one of those boards is drawn, never on import.
+MEDALLION_MEDIA = ROOT / 'addon/ForeverSixty/media'
 # Onboarding.ARROW_PARTS: { x, y, width, height } in a 16 x 10 box pointing right.
 ARROW_PARTS = [(0, 4, 10, 2), (10, 0, 2, 10), (12, 2, 2, 6), (14, 4, 2, 2)]
 
 
 def medallion(faction='alliance', size=44):
     inset = 6
+    ring = tga_uri(MEDALLION_MEDIA / 'medallion-ring.tga')
+    notch = tga_uri(MEDALLION_MEDIA / 'medallion-notch.tga')
     return (f'<div style="position:relative;width:{size}px;height:{size}px;flex:none">'
             f'<div style="position:absolute;inset:{inset}px;border-radius:50%;background:#000 url({CREST}) center/100%">'
-            f'</div><img src="{RING}" style="position:absolute;inset:0;width:100%;height:100%">'
-            f'<div style="position:absolute;inset:0;background:{U[faction]};-webkit-mask:url({NOTCH}) center/100%">'
+            f'</div><img src="{ring}" style="position:absolute;inset:0;width:100%;height:100%">'
+            f'<div style="position:absolute;inset:0;background:{U[faction]};-webkit-mask:url({notch}) center/100%">'
             f'</div></div>')
 
 

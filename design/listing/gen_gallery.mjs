@@ -50,20 +50,19 @@ const MIN_FILL = 0.6;
  */
 const MAX_PLATE_BYTES = 5 * 1024 * 1024;
 
-/** Capture file names in gallery order; titles and captions come from CAPTIONS_FILE. */
+/** Capture file names in gallery order (gen_captures.py renders each from the addon's mocks); titles and
+ * captions come from CAPTIONS_FILE. */
 const PLATES = [
-  'forever-sixty-line',
+  'chip',
   'window-me',
-  'item-tooltip-verdict',
-  'talent-window-marks',
+  'window-builds',
+  'window-gear',
+  'window-rotation',
+  'window-guild',
+  'window-officer',
   'bag-arrow',
   'quest-reward-marks',
   'player-tooltip',
-  'chat-badge-guild',
-  'window-guild',
-  'window-officer',
-  'window-builds',
-  'settings-page',
 ];
 
 /** Reads "N. **Title.** Caption." lines under "## Gallery captions". */
@@ -118,12 +117,12 @@ body::before{content:'';position:absolute;inset:0 0 auto;height:62%;background:u
 .stage{position:relative;height:${STAGE_HEIGHT}px}
 .frame{position:absolute;background:${INK.bg};border:1px solid ${INK.line};border-radius:6px;overflow:hidden}
 .shot{display:block}
-.foot{position:relative;display:grid;grid-template-columns:auto 1fr;gap:28px;align-items:center;margin-top:40px;padding-top:26px;border-top:1px solid ${INK.line}}
+.foot{position:relative;display:grid;grid-template-columns:auto 1fr;gap:28px;align-items:start;margin-top:40px;padding-top:26px;border-top:1px solid ${INK.line}}
 .mark{display:flex;align-items:center;gap:14px;font-family:Marcellus,serif;font-size:28px;color:${INK.cream};white-space:nowrap}
 .mark img{width:48px;height:48px}
 .text{min-width:0}
 h1{margin:0 0 6px;font-family:Marcellus,serif;font-weight:400;font-size:32px;line-height:1.1;color:${INK.cream}}
-p{margin:0;font-size:20px;line-height:1.4;color:${INK.mutedGround};max-width:1100px}
+p{margin:0;font-size:20px;line-height:1.4;color:${INK.mutedGround};max-width:1100px;min-height:calc(2 * 1.4em)}
 </style></head><body>
 <div class="stage"><div class="frame"><img class="shot" src="${shot}" alt=""></div></div>
 <div class="foot">
