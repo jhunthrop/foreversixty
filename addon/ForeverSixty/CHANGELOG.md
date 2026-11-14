@@ -1,5 +1,11 @@
 # Forever Sixty
 
+## 2.0.56
+
+- When a guildmate runs a newer Forever Sixty, one chat line a session says the new version is out and which one you have.
+- Upgrade lines now show on item hovers in DungeonJournal's and OneForAll's loot lists.
+- Gear's "in your bags" is plain text and the Guild tab's "Not signed up" is orange, so gold is left to the waiting dot and your score.
+
 ## 2.0.55
 
 - The Forever Sixty window now looks like the website: the painted blue header with your class crest, the site's nav bar with its icons, and each section on its own panel over the brown painted ground, with each tab's own header art (the cave on Guild and Officer).

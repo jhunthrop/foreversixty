@@ -3,7 +3,7 @@
 ## Notes: Gear upgrades, BiS, talents, rotation and raid sign-ups. A green arrow on gear that beats yours and your next talent marked. /fs opens it.
 ## Category: Class
 ## Author: foreversixty.gg
-## Version: 2.0.55
+## Version: 2.0.56
 ## IconTexture: Interface\AddOns\ForeverSixty\icon
 ## X-Curse-Project-ID: 1706689
 ## X-Wago-ID: XKqEdoKy
