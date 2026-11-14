@@ -1,0 +1,90 @@
+remote-test: d68e0615a55dcd59839edde0e1fe13f072bb800b -> forever-ci on 192.168.1.182 (run 20261114040206-d68e0615a-23019, in .): bash design/reviews/2026-11-13-sim-accuracy/warriors-70938/gates.sh
+remote-test: engine pinned to f0f90b5f9
+engine dir /home/ci/go/pkg/mod/github.com/jhunthrop/wowsims-forever@v1.0.15-0.20261114033918-f0f90b5f93fc
+### make simdb
+embedded data/builds/1.60.1.70938/simdb.bin (3310729 bytes)
+embedded data/builds/1.60.1.70938/enchants.json (86273 bytes)
+embedded data/builds/1.60.1.70938/spellranks.json (430138 bytes)
+### npm run lint --silent
+  npx wrangler r2 object put foreversixty-logs/runtime/duckdb/1.32.0/duckdb-mvp.wasm --file build/duckdb-runtime/1.32.0/duckdb-mvp.wasm --content-type application/wasm --remote
+sync-rankings: 3 encounters, 3 boards from https://api.foreversixty.gg
+- 0 warnings
+- 18 hints
+
+[2m Test Files [22m [1m[32m138 passed[39m[22m[90m (138)[39m
+### env ENGINE_DIR=/home/ci/go/pkg/mod/github.com/jhunthrop/wowsims-forever@v1.0.15-0.20261114033918-f0f90b5f93fc CURATED_APL_DIR=data/curated/apl CURATED_SPECS_JSON=data/curated/specs.json python3 tools/apl_check.py
+apl-check: druid-balance fork copy matches data/curated/apl/druid-balance.json
+apl-check: druid-balance site copy matches data/curated/apl/druid-balance.json
+apl-check: druid-feral fork copy matches data/curated/apl/druid-feral.json
+apl-check: druid-feral site copy matches data/curated/apl/druid-feral.json
+apl-check: druid-feral-bear fork copy matches data/curated/apl/druid-feral-bear.json
+apl-check: druid-feral-bear site copy matches data/curated/apl/druid-feral-bear.json
+apl-check: druid-restoration fork copy matches data/curated/apl/druid-restoration.json
+apl-check: druid-restoration site copy matches data/curated/apl/druid-restoration.json
+apl-check: hunter-beast-mastery fork copy matches data/curated/apl/hunter-beast-mastery.json
+apl-check: hunter-beast-mastery site copy matches data/curated/apl/hunter-beast-mastery.json
+apl-check: hunter-marksmanship fork copy matches data/curated/apl/hunter-marksmanship.json
+apl-check: hunter-marksmanship site copy matches data/curated/apl/hunter-marksmanship.json
+apl-check: hunter-survival fork copy matches data/curated/apl/hunter-survival.json
+apl-check: hunter-survival site copy matches data/curated/apl/hunter-survival.json
+apl-check: mage-arcane fork copy matches data/curated/apl/mage-arcane.json
+apl-check: mage-arcane site copy matches data/curated/apl/mage-arcane.json
+apl-check: mage-fire fork copy matches data/curated/apl/mage-fire.json
+apl-check: mage-fire site copy matches data/curated/apl/mage-fire.json
+apl-check: mage-frost fork copy matches data/curated/apl/mage-frost.json
+apl-check: mage-frost site copy matches data/curated/apl/mage-frost.json
+apl-check: paladin-holy fork copy matches data/curated/apl/paladin-holy.json
+apl-check: paladin-holy site copy matches data/curated/apl/paladin-holy.json
+apl-check: paladin-protection fork copy matches data/curated/apl/paladin-protection.json
+apl-check: paladin-protection site copy matches data/curated/apl/paladin-protection.json
+apl-check: paladin-retribution fork copy matches data/curated/apl/paladin-retribution.json
+apl-check: paladin-retribution site copy matches data/curated/apl/paladin-retribution.json
+apl-check: priest-discipline fork copy matches data/curated/apl/priest-discipline.json
+apl-check: priest-discipline site copy matches data/curated/apl/priest-discipline.json
+apl-check: priest-holy fork copy matches data/curated/apl/priest-holy.json
+apl-check: priest-holy site copy matches data/curated/apl/priest-holy.json
+apl-check: priest-shadow fork copy matches data/curated/apl/priest-shadow.json
+apl-check: priest-shadow site copy matches data/curated/apl/priest-shadow.json
+apl-check: rogue-assassination fork copy matches data/curated/apl/rogue-assassination.json
+apl-check: rogue-assassination site copy matches data/curated/apl/rogue-assassination.json
+apl-check: rogue-combat fork copy matches data/curated/apl/rogue-combat.json
+apl-check: rogue-combat site copy matches data/curated/apl/rogue-combat.json
+apl-check: rogue-subtlety fork copy matches data/curated/apl/rogue-subtlety.json
+apl-check: rogue-subtlety site copy matches data/curated/apl/rogue-subtlety.json
+apl-check: shaman-elemental fork copy matches data/curated/apl/shaman-elemental.json
+apl-check: shaman-elemental site copy matches data/curated/apl/shaman-elemental.json
+apl-check: shaman-enhancement fork copy matches data/curated/apl/shaman-enhancement.json
+apl-check: shaman-enhancement site copy matches data/curated/apl/shaman-enhancement.json
+apl-check: shaman-restoration fork copy matches data/curated/apl/shaman-restoration.json
+apl-check: shaman-restoration site copy matches data/curated/apl/shaman-restoration.json
+apl-check: warlock-affliction fork copy matches data/curated/apl/warlock-affliction.json
+apl-check: warlock-affliction site copy matches data/curated/apl/warlock-affliction.json
+apl-check: warlock-demonology fork copy matches data/curated/apl/warlock-demonology.json
+apl-check: warlock-demonology site copy matches data/curated/apl/warlock-demonology.json
+apl-check: warlock-destruction fork copy matches data/curated/apl/warlock-destruction.json
+apl-check: warlock-destruction site copy matches data/curated/apl/warlock-destruction.json
+apl-check: warrior-arms fork copy matches data/curated/apl/warrior-arms.json
+apl-check: warrior-arms site copy matches data/curated/apl/warrior-arms.json
+apl-check: warrior-fury fork copy matches data/curated/apl/warrior-fury.json
+apl-check: warrior-fury site copy matches data/curated/apl/warrior-fury.json
+apl-check: warrior-protection fork copy matches data/curated/apl/warrior-protection.json
+apl-check: warrior-protection site copy matches data/curated/apl/warrior-protection.json
+### go vet ./...
+ok  	github.com/jhunthrop/foreversixty/sim/request	33.356s
+### nice -n 15 env GOMAXPROCS=5 go test ./request/ -count=1
+ok  	github.com/jhunthrop/foreversixty/sim/request	56.180s
+### nice -n 15 env GOMAXPROCS=5 go test ./leveling/ ./rankchoices/ ./score/ ./adapter/ ./api/ ./combine/ ./cmd/spec-breakdown/ ./cmd/leveling-bis/ ./cmd/addon-builds/ ./cmd/talent-search/ -count=1
+ok  	github.com/jhunthrop/foreversixty/sim/leveling	3.016s
+ok  	github.com/jhunthrop/foreversixty/sim/rankchoices	0.004s
+ok  	github.com/jhunthrop/foreversixty/sim/score	0.005s
+ok  	github.com/jhunthrop/foreversixty/sim/adapter	0.014s
+ok  	github.com/jhunthrop/foreversixty/sim/api	0.007s
+ok  	github.com/jhunthrop/foreversixty/sim/combine	0.005s
+ok  	github.com/jhunthrop/foreversixty/sim/cmd/spec-breakdown	325.187s
+ok  	github.com/jhunthrop/foreversixty/sim/cmd/leveling-bis	11.029s
+ok  	github.com/jhunthrop/foreversixty/sim/cmd/addon-builds	0.084s
+ok  	github.com/jhunthrop/foreversixty/sim/cmd/talent-search	0.301s
+=====PATCH=====
+=====END=====
+gates status 0
+remote-test: exit 0 in 502s (d68e0615a55dcd59839edde0e1fe13f072bb800b)
