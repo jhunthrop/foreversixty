@@ -49196,6 +49196,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 1715,
+            "name": "Hamstring",
+            "condition": "with Windfury Totem up, target above 25%",
+            "icon": "ability_shockwave",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 284,
             "name": "Heroic Strike",
             "condition": "at 60 rage while the target is above 25%",
@@ -49219,6 +49226,13 @@
             "name": "Battle Shout",
             "condition": "when Battle Shout is down",
             "icon": "ability_warrior_battleshout",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1715,
+            "name": "Hamstring",
+            "condition": "with Windfury Totem up, target above 25%",
+            "icon": "ability_shockwave",
             "race_spell_ids": {}
           },
           {
@@ -49255,6 +49269,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 1715,
+            "name": "Hamstring",
+            "condition": "with Windfury Totem up, target above 25%",
+            "icon": "ability_shockwave",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 7384,
             "name": "Overpower",
             "condition": "the moment it lights up",
@@ -49288,6 +49309,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 1715,
+            "name": "Hamstring",
+            "condition": "with Windfury Totem up, target above 25%",
+            "icon": "ability_shockwave",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 7384,
             "name": "Overpower",
             "condition": "the moment it lights up",
@@ -49318,6 +49346,13 @@
             "name": "Battle Shout",
             "condition": "when Battle Shout is down",
             "icon": "ability_warrior_battleshout",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1715,
+            "name": "Hamstring",
+            "condition": "with Windfury Totem up, target above 25%",
+            "icon": "ability_shockwave",
             "race_spell_ids": {}
           },
           {
@@ -49361,6 +49396,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 1715,
+            "name": "Hamstring",
+            "condition": "with Windfury Totem up, target above 25%",
+            "icon": "ability_shockwave",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 7384,
             "name": "Overpower",
             "condition": "the moment it lights up",
@@ -49398,6 +49440,13 @@
             "name": "Execute",
             "condition": "when the target is below 20%",
             "icon": "inv_sword_48",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1715,
+            "name": "Hamstring",
+            "condition": "with Windfury Totem up, target above 25%",
+            "icon": "ability_shockwave",
             "race_spell_ids": {}
           },
           {
@@ -49445,6 +49494,13 @@
             "name": "Execute",
             "condition": "when the target is below 20%",
             "icon": "inv_sword_48",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 1715,
+            "name": "Hamstring",
+            "condition": "with Windfury Totem up, target above 25%",
+            "icon": "ability_shockwave",
             "race_spell_ids": {}
           },
           {
@@ -49502,6 +49558,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 1715,
+            "name": "Hamstring",
+            "condition": "with Windfury Totem up, target above 25%",
+            "icon": "ability_shockwave",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 7887,
             "name": "Overpower",
             "condition": "the moment it lights up",
@@ -49553,6 +49616,13 @@
             "name": "Reckless Swings",
             "condition": "on cooldown",
             "icon": "ability_warrior_bloodfrenzy",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 7372,
+            "name": "Hamstring",
+            "condition": "with Windfury Totem up, target above 25%",
+            "icon": "ability_shockwave",
             "race_spell_ids": {}
           },
           {
@@ -49617,6 +49687,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 7372,
+            "name": "Hamstring",
+            "condition": "with Windfury Totem up, target above 25%",
+            "icon": "ability_shockwave",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 18499,
             "name": "Berserker Rage",
             "condition": "on cooldown under 80 rage",
@@ -49675,6 +49752,13 @@
             "name": "Reckless Swings",
             "condition": "on cooldown, after Whirlwind",
             "icon": "ability_warrior_bloodfrenzy",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 7372,
+            "name": "Hamstring",
+            "condition": "with Windfury Totem up, target above 25%",
+            "icon": "ability_shockwave",
             "race_spell_ids": {}
           },
           {
@@ -49746,6 +49830,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 7372,
+            "name": "Hamstring",
+            "condition": "with Windfury Totem up, target above 25%",
+            "icon": "ability_shockwave",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 18499,
             "name": "Berserker Rage",
             "condition": "on cooldown under 80 rage",
@@ -49814,6 +49905,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 7372,
+            "name": "Hamstring",
+            "condition": "with Windfury Totem up, target above 25%",
+            "icon": "ability_shockwave",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 18499,
             "name": "Berserker Rage",
             "condition": "on cooldown under 80 rage",
@@ -49879,6 +49977,13 @@
             "name": "Reckless Swings",
             "condition": "on cooldown, after Whirlwind",
             "icon": "ability_warrior_bloodfrenzy",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 7372,
+            "name": "Hamstring",
+            "condition": "with Windfury Totem up, target above 25%",
+            "icon": "ability_shockwave",
             "race_spell_ids": {}
           },
           {
@@ -49957,6 +50062,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 7372,
+            "name": "Hamstring",
+            "condition": "with Windfury Totem up, target above 25%",
+            "icon": "ability_shockwave",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 18499,
             "name": "Berserker Rage",
             "condition": "on cooldown under 80 rage",
@@ -50029,6 +50141,13 @@
             "name": "Reckless Swings",
             "condition": "on cooldown, after Whirlwind",
             "icon": "ability_warrior_bloodfrenzy",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 7372,
+            "name": "Hamstring",
+            "condition": "with Windfury Totem up, target above 25%",
+            "icon": "ability_shockwave",
             "race_spell_ids": {}
           },
           {
@@ -50107,6 +50226,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 7373,
+            "name": "Hamstring",
+            "condition": "with Windfury Totem up, target above 25%",
+            "icon": "ability_shockwave",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 18499,
             "name": "Berserker Rage",
             "condition": "on cooldown under 80 rage",
@@ -50182,6 +50308,13 @@
             "race_spell_ids": {}
           },
           {
+            "spell_id": 7373,
+            "name": "Hamstring",
+            "condition": "with Windfury Totem up, target above 25%",
+            "icon": "ability_shockwave",
+            "race_spell_ids": {}
+          },
+          {
             "spell_id": 18499,
             "name": "Berserker Rage",
             "condition": "on cooldown under 80 rage",
@@ -50254,6 +50387,13 @@
             "name": "Reckless Swings",
             "condition": "on cooldown, after Whirlwind",
             "icon": "ability_warrior_bloodfrenzy",
+            "race_spell_ids": {}
+          },
+          {
+            "spell_id": 7373,
+            "name": "Hamstring",
+            "condition": "with Windfury Totem up, target above 25%",
+            "icon": "ability_shockwave",
             "race_spell_ids": {}
           },
           {
