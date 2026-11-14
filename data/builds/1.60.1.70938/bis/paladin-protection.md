@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat. An item's crit rating
 
 ### Band 20 (dwarf, 00000000000000000-15301100000000000-00000000000000000)
 
-Set DPS (verified): 26.3. Weights run: 5.3s. Verify run: 8.8s. 312 eligible items had no known source.
+Set DPS (verified): 26.3. Weights run: 7.0s. Verify run: 11.2s. 312 eligible items had no known source.
 
 Race sweep: human 52.9 ± 0.1, dwarf 52.6 ± 0.1 (threat_per_second); human beats the guide race dwarf by 0.4 (0.71%) ± 0.1, beyond error.
 
@@ -40,7 +40,7 @@ No-known-source sample (15 of 312, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (dwarf, 00000000000000000-15302102510001000-00000000000000000)
 
-Set DPS (verified): 54.1. Weights run: 5.5s. Verify run: 10.9s. 537 eligible items had no known source.
+Set DPS (verified): 54.1. Weights run: 7.1s. Verify run: 13.7s. 537 eligible items had no known source.
 
 Race sweep: human 127.1 ± 0.3, dwarf 126.8 ± 0.3 (threat_per_second); human beats the guide race dwarf by 0.3 (0.21%) ± 0.4, inside error.
 
@@ -72,7 +72,7 @@ No-known-source sample (15 of 537, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 40 (dwarf, 00000000000000000-15302102513501011-00000000000000000)
 
-Set DPS (verified): 111.7. Weights run: 5.1s. Verify run: 13.0s. 808 eligible items had no known source.
+Set DPS (verified): 111.7. Weights run: 6.4s. Verify run: 16.0s. 808 eligible items had no known source.
 
 Race sweep: human 276.4 ± 0.5, dwarf 275.6 ± 0.5 (threat_per_second); human beats the guide race dwarf by 0.8 (0.30%) ± 0.7, beyond error.
 
@@ -104,7 +104,7 @@ No-known-source sample (15 of 808, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (dwarf, 05003000000000000-15302102513501031-00000000000000000)
 
-Set DPS (verified): 157.1. Weights run: 5.2s. Verify run: 14.0s. 1050 eligible items had no known source.
+Set DPS (verified): 157.1. Weights run: 6.6s. Verify run: 17.5s. 1050 eligible items had no known source.
 
 Race sweep: human 401.7 ± 0.8, dwarf 400.3 ± 0.8 (threat_per_second); human beats the guide race dwarf by 1.4 (0.35%) ± 1.1, beyond error.
 
@@ -136,7 +136,7 @@ No-known-source sample (15 of 1050, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60 (dwarf, 05005000000000000-15302102513501031-50030000000000000)
 
-Set DPS (verified): 204.6. Weights run: 15.0s. Verify run: 112.7s. 2437 eligible items had no known source.
+Set DPS (verified): 204.6. Weights run: 20.0s. Verify run: 145.0s. 2437 eligible items had no known source.
 
 Race sweep: dwarf 535.6 ± 0.8, human 534.7 ± 0.8 (threat_per_second); the guide race dwarf is best.
 
@@ -168,33 +168,33 @@ No-known-source sample (15 of 2437, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60, raid preset (dwarf, 05005000000000000-15302102513501031-50030000000000000)
 
-Set DPS (verified): 487.0. Weights run: 14.4s. Verify run: 102.1s. 2437 eligible items had no known source.
+Set DPS (verified): 495.0. Weights run: 17.7s. Verify run: 124.3s. 2437 eligible items had no known source.
 
-Race sweep: dwarf 1159.6 ± 1.0, human 1157.2 ± 1.0 (threat_per_second); the guide race dwarf is best.
+Race sweep: dwarf 1161.5 ± 1.0, human 1159.9 ± 1.1 (threat_per_second); the guide race dwarf is best.
 
-Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.039, armor=0.046 ± 0.003, defense=1.340 ± 0.226 per rating point (1 rating = 1%, 1.340 per %), dodge=0.618 ± 0.047 per rating point (12 rating = 1%, 7.418 per %), parry=0.478 ± 0.036 per rating point (15 rating = 1%, 7.176 per %), block=not significant (0.217 ± 0.088) per rating point (5 rating = 1%, 1.084 per %), block_value=0.473 ± 0.035, strength=0.067 ± 0.002, agility=0.537 ± 0.030, attack_power=0.019 ± 0.000, hit=not significant (0.156 ± 0.044) per rating point (10 rating = 1%, 1.556 per %), crit=0.072 ± 0.002 per rating point (14 rating = 1%, 1.007 per %), expertise=6.674 ± 0.476
+Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.033, armor=0.048 ± 0.002, defense=1.323 ± 0.220 per rating point (1 rating = 1%, 1.323 per %), dodge=0.618 ± 0.048 per rating point (12 rating = 1%, 7.411 per %), parry=0.478 ± 0.037 per rating point (15 rating = 1%, 7.176 per %), block=not significant (0.201 ± 0.088) per rating point (5 rating = 1%, 1.005 per %), block_value=0.488 ± 0.023, strength=0.070 ± 0.001, agility=0.540 ± 0.029, attack_power=0.020 ± 0.000, hit=not significant (0.132 ± 0.043) per rating point (10 rating = 1%, 1.317 per %), crit=0.071 ± 0.002 per rating point (14 rating = 1%, 0.988 per %), expertise=6.572 ± 0.483
 
 | Slot | Item | Source | Score (stamina points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Enchanted Thorium Helm (12620) | Blacksmithing [crafted] | 62.0 stamina points (6652.75 DPS) | yes | Helm of Valor (16731, +0.00 DPS) [dungeon]; Field Marshal's Lamellar Helmet (231640, +0.00 DPS) [vendor]; Field Marshal's Lamellar Headguard (231648, +0.00 DPS) [vendor] |
-| neck | Medallion of Grand Marshal Morris (13091) | World drop [world_drop] | 20.4 stamina points (2190.32 DPS) | yes | Talisman of Evasion (13177, -69.37 DPS) [dungeon]; Verek's Collar (11755, -167.20 DPS) [dungeon]; Sentinel's Medallion (19538, -251.72 DPS) [rep] |
-| shoulder | Highlander's Plate Spaulders (20057) | The League of Arathor [rep] | 55.7 stamina points (5977.51 DPS) | yes | Field Marshal's Lamellar Pauldrons (231645, +0.00 DPS) [pvp]; Field Marshal's Lamellar Shoulders (231651, +0.00 DPS) [vendor]; Stockade Pauldrons (14552, -70.24 DPS) [world_drop] |
-| back | Bloodmoon Cloak (12967) | Blackrock Spire: The Beast [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | The Emperor's New Cape (11930, -87.54 DPS) [dungeon]; Shadow Prowler's Cloak (22269, -368.02 DPS) [dungeon]; Sergeant's Cape (16342, -431.62 DPS) [vendor] |
-| chest | Breastplate of the Chromatic Flight (12895) | Breastplate of the Chromatic Flight [quest] | 76.8 stamina points (8243.92 DPS) | yes | Field Marshal's Lamellar Chestplate (231641, +0.00 DPS) [pvp]; Field Marshal's Lamellar Breastplate (231649, +0.00 DPS) [vendor]; Enchanted Thorium Breastplate (12618, -1327.69 DPS, sim-verified) [crafted] |
-| wrist | Vigorsteel Vambraces (13951) | Scholomance: Darkmaster Gandling [dungeon] | 34.2 stamina points (3670.73 DPS) | yes | Marshal's Lamellar Armguards (16469, +0.00 DPS) [pvp]; Warder's Wristguards (250583, -202.69 DPS) [crafted]; Sentinel's Wristguards (250582, -547.69 DPS, sim-verified) [crafted] |
-| hands | Sentinel's Gloves (250552) | Blacksmithing [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Marshal's Lamellar Gloves (231643, +0.00 DPS) [pvp]; Marshal's Lamellar Gauntlets (231650, +0.00 DPS) [vendor]; Warder's Gloves (250553, -65.21 DPS) [crafted] |
-| waist | Deathbone Girdle (14620) | Scholomance [dungeon] | 43.5 stamina points (4665.94 DPS) | yes | Sentinel's Waistguard (250572, -36.51 DPS) [crafted]; Redeemer's Waistcord (272405, -87.58 DPS) [vendor]; Warder's Waistguard (250573, -130.70 DPS) [crafted] |
-| legs | Sentinel's Plate Legguards (237825) | Illiyana Moonblaze [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Marshal's Lamellar Legguards (231639, -38.89 DPS) [vendor]; Sentinel's Lamellar Legguards (237814, -195.62 DPS) [vendor]; Sentinel's Chain Leggings (237819, -1225.67 DPS) [vendor] |
-| feet | Boots of Valor (16734) | Scholomance: Kirtonos the Herald [dungeon] | 45.4 stamina points (4873.75 DPS) | yes | Marshal's Lamellar Greaves (231646, +0.00 DPS) [vendor]; Marshal's Lamellar Sabatons (231652, +0.00 DPS) [vendor]; Ribsteel Footguards (13259, -30.72 DPS) [dungeon] |
-| finger1 | Ring of Awareness (272409) | Pix Xizzix [vendor] | sim-verified (+229.0 DPS vs the runner-up, not corroborated against the finished set) | yes | Naglering (11669, -229.04 DPS, sim-verified) [dungeon]; Band of Flesh (13373, -492.15 DPS) [dungeon]; Cutthroat's Signet (272408, -593.27 DPS) [vendor] |
-| finger2 | Myrmidon's Signet (2246) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Band of Flesh (13373, -213.97 DPS, sim-verified) [dungeon]; Cutthroat's Signet (272408, -475.36 DPS) [vendor]; Innervating Band (18701, -477.38 DPS) [dungeon] |
-| trinket1 | Defender's Grip Stabilizer (272440) | Pix Xizzix [vendor] | sim-verified (+1812.8 DPS vs the runner-up, not corroborated against the finished set) | yes | Talisman of Arathor (20071, -581.91 DPS) [rep]; The Lion Horn of Stormwind (14557, -719.36 DPS) [world_drop] |
-| trinket2 | Stormpike Insignia Rank 6 (17904) | The Eye of Command [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Talisman of Arathor (20071, -304.43 DPS) [rep]; The Lion Horn of Stormwind (14557, -441.89 DPS) [world_drop] |
+| head | Enchanted Thorium Helm (12620) | Blacksmithing [crafted] | 63.2 stamina points (6665.06 DPS) | yes | Field Marshal's Lamellar Helmet (231640, +0.00 DPS) [vendor]; Field Marshal's Lamellar Headguard (231648, +0.00 DPS) [vendor]; Helm of Valor (16731, -899.16 DPS, sim-verified) [dungeon] |
+| neck | Talisman of Evasion (13177) | Blackrock Spire: War Master Voone [dungeon] | sim-verified (+291.0 DPS vs the runner-up, not corroborated against the finished set) | yes | Verek's Collar (11755, -91.49 DPS) [dungeon]; Sentinel's Medallion (19538, -165.80 DPS) [rep]; Medallion of Grand Marshal Morris (13091, -291.04 DPS, sim-verified) [world_drop] |
+| shoulder | Highlander's Plate Spaulders (20057) | The League of Arathor [rep] | 57.2 stamina points (6031.76 DPS) | yes | Field Marshal's Lamellar Pauldrons (231645, +0.00 DPS) [pvp]; Field Marshal's Lamellar Shoulders (231651, +0.00 DPS) [vendor]; Stockade Pauldrons (14552, -311.16 DPS, sim-verified) [world_drop] |
+| back | Bloodmoon Cloak (12967) | Blackrock Spire: The Beast [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | The Emperor's New Cape (11930, -78.82 DPS) [dungeon]; Shadow Prowler's Cloak (22269, -351.38 DPS) [dungeon]; Sergeant's Cape (16342, -418.79 DPS) [vendor] |
+| chest | Breastplate of the Chromatic Flight (12895) | Breastplate of the Chromatic Flight [quest] | 78.6 stamina points (8288.93 DPS) | yes | Field Marshal's Lamellar Chestplate (231641, +0.00 DPS) [pvp]; Field Marshal's Lamellar Breastplate (231649, +0.00 DPS) [vendor]; Enchanted Thorium Breastplate (12618, -1351.64 DPS, sim-verified) [crafted] |
+| wrist | Vigorsteel Vambraces (13951) | Scholomance: Darkmaster Gandling [dungeon] | 34.9 stamina points (3676.88 DPS) | yes | Marshal's Lamellar Armguards (16469, +0.00 DPS) [pvp]; Sentinel's Wristguards (250582, -177.19 DPS) [crafted]; Warder's Wristguards (250583, -221.73 DPS) [crafted] |
+| hands | Sentinel's Gloves (250552) | Blacksmithing [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Marshal's Lamellar Gloves (231643, +0.00 DPS) [pvp]; Marshal's Lamellar Gauntlets (231650, +0.00 DPS) [vendor]; Warder's Gloves (250553, -66.81 DPS) [crafted] |
+| waist | Deathbone Girdle (14620) | Scholomance [dungeon] | 44.2 stamina points (4664.36 DPS) | yes | Sentinel's Waistguard (250572, -42.79 DPS) [crafted]; Redeemer's Waistcord (272405, -65.11 DPS) [vendor]; Warder's Waistguard (250573, -139.28 DPS) [crafted] |
+| legs | Sentinel's Plate Legguards (237825) | Illiyana Moonblaze [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Marshal's Lamellar Legguards (231639, -36.61 DPS) [vendor]; Sentinel's Lamellar Legguards (237814, -200.42 DPS) [vendor]; Sentinel's Chain Leggings (237819, -1291.78 DPS) [vendor] |
+| feet | Boots of Valor (16734) | Scholomance: Kirtonos the Herald [dungeon] | 46.5 stamina points (4902.80 DPS) | yes | Marshal's Lamellar Greaves (231646, +0.00 DPS) [vendor]; Marshal's Lamellar Sabatons (231652, +0.00 DPS) [vendor]; Ribsteel Footguards (13259, -21.08 DPS) [dungeon] |
+| finger1 | Ring of Awareness (272409) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Naglering (11669, -280.66 DPS, sim-verified) [dungeon]; Band of Flesh (13373, -467.41 DPS) [dungeon]; Innervating Band (18701, -566.88 DPS) [dungeon] |
+| finger2 | Myrmidon's Signet (2246) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Naglering (11669, +0.00 DPS) [dungeon]; Band of Flesh (13373, -370.43 DPS) [dungeon]; Innervating Band (18701, -469.90 DPS) [dungeon] |
+| trinket1 | Defender's Grip Stabilizer (272440) | Pix Xizzix [vendor] | sim-verified (+2159.4 DPS vs the runner-up, not corroborated against the finished set) | yes | Talisman of Arathor (20071, -548.89 DPS) [rep]; The Lion Horn of Stormwind (14557, -697.98 DPS) [world_drop] |
+| trinket2 | Stormpike Insignia Rank 6 (17904) | The Eye of Command [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Talisman of Arathor (20071, -297.74 DPS) [rep]; The Lion Horn of Stormwind (14557, -446.83 DPS) [world_drop] |
 | main_hand | Hurley's Tankard (18044) | Blackrock Depths: Guzzler [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Grand Marshal's Warhammer (234576, +0.00 DPS) [vendor]; Grand Marshal's Swiftblade (234579, +0.00 DPS) [pvp]; Guerrilla's Jagged Mace (271936, +0.00 DPS) [rep] |
-| off_hand | The Immovable Object (19321) | Stormpike Guard [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Grand Marshal's Aegis (234588, +0.00 DPS) [pvp]; Grand Marshal's Barricade (235473, +0.00 DPS) [vendor]; Draconian Deflector (12602, -1618.89 DPS, sim-verified) [dungeon] |
+| off_hand | The Immovable Object (19321) | Stormpike Guard [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Grand Marshal's Aegis (234588, +0.00 DPS) [pvp]; Grand Marshal's Barricade (235473, +0.00 DPS) [vendor]; Draconian Deflector (12602, -1329.49 DPS, sim-verified) [dungeon] |
 | ranged | - | - |  |  |  |
 
-**New at 60:** head: Enchanted Thorium Helm; neck: Medallion of Grand Marshal Morris; shoulder: Highlander's Plate Spaulders; back: Bloodmoon Cloak; chest: Breastplate of the Chromatic Flight; wrist: Vigorsteel Vambraces; waist: Deathbone Girdle; legs: Sentinel's Plate Legguards; feet: Boots of Valor; finger1: Ring of Awareness; finger2: Myrmidon's Signet; trinket1: Defender's Grip Stabilizer; trinket2: Stormpike Insignia Rank 6; main_hand: Hurley's Tankard; off_hand: The Immovable Object
+**New at 60:** head: Enchanted Thorium Helm; neck: Talisman of Evasion; shoulder: Highlander's Plate Spaulders; back: Bloodmoon Cloak; chest: Breastplate of the Chromatic Flight; wrist: Vigorsteel Vambraces; waist: Deathbone Girdle; legs: Sentinel's Plate Legguards; feet: Boots of Valor; finger1: Ring of Awareness; finger2: Myrmidon's Signet; trinket1: Defender's Grip Stabilizer; trinket2: Stormpike Insignia Rank 6; main_hand: Hurley's Tankard; off_hand: The Immovable Object
 
 No-known-source sample (15 of 2437, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3579 Ornate Copper Shoulders; 4081 Blackforge Leggings; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4797 Fiery Cloak
 
@@ -202,7 +202,7 @@ No-known-source sample (15 of 2437, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 20 (undead, 00000000000000000-15301100000000000-00000000000000000)
 
-Set DPS (verified): 29.1. Weights run: 5.3s. Verify run: 8.7s. 299 eligible items had no known source.
+Set DPS (verified): 29.1. Weights run: 7.0s. Verify run: 11.1s. 299 eligible items had no known source.
 
 Race sweep: undead 56.0 ± 0.1 (threat_per_second); the guide race undead is best.
 
@@ -234,7 +234,7 @@ No-known-source sample (15 of 299, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (undead, 00000000000000000-15302102510001000-00000000000000000)
 
-Set DPS (verified): 58.0. Weights run: 5.5s. Verify run: 10.4s. 524 eligible items had no known source.
+Set DPS (verified): 58.0. Weights run: 7.1s. Verify run: 13.6s. 524 eligible items had no known source.
 
 Race sweep: undead 131.1 ± 0.3 (threat_per_second); the guide race undead is best.
 
@@ -266,7 +266,7 @@ No-known-source sample (15 of 524, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 40 (undead, 00000000000000000-15302102513501011-00000000000000000)
 
-Set DPS (verified): 116.5. Weights run: 5.1s. Verify run: 12.8s. 792 eligible items had no known source.
+Set DPS (verified): 116.5. Weights run: 6.4s. Verify run: 16.2s. 792 eligible items had no known source.
 
 Race sweep: undead 280.5 ± 0.5 (threat_per_second); the guide race undead is best.
 
@@ -298,7 +298,7 @@ No-known-source sample (15 of 792, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (undead, 05003000000000000-15302102513501031-00000000000000000)
 
-Set DPS (verified): 165.9. Weights run: 5.2s. Verify run: 17.0s. 1050 eligible items had no known source.
+Set DPS (verified): 165.9. Weights run: 6.6s. Verify run: 22.6s. 1050 eligible items had no known source.
 
 Race sweep: undead 409.1 ± 0.8 (threat_per_second); the guide race undead is best.
 
@@ -330,7 +330,7 @@ No-known-source sample (15 of 1050, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60 (undead, 05005000000000000-15302102513501031-50030000000000000)
 
-Set DPS (verified): 217.3. Weights run: 15.0s. Verify run: 104.6s. 2462 eligible items had no known source.
+Set DPS (verified): 217.3. Weights run: 20.0s. Verify run: 135.4s. 2462 eligible items had no known source.
 
 Race sweep: undead 557.0 ± 0.7 (threat_per_second); the guide race undead is best.
 
@@ -362,30 +362,30 @@ No-known-source sample (15 of 2462, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60, raid preset (undead, 05005000000000000-15302102513501031-50030000000000000)
 
-Set DPS (verified): 480.9. Weights run: 14.4s. Verify run: 96.9s. 2462 eligible items had no known source.
+Set DPS (verified): 486.8. Weights run: 17.7s. Verify run: 115.5s. 2462 eligible items had no known source.
 
-Race sweep: undead 1135.0 ± 1.0 (threat_per_second); the guide race undead is best.
+Race sweep: undead 1135.1 ± 1.1 (threat_per_second); the guide race undead is best.
 
-Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.039, armor=0.046 ± 0.003, defense=1.340 ± 0.226 per rating point (1 rating = 1%, 1.340 per %), dodge=0.618 ± 0.047 per rating point (12 rating = 1%, 7.418 per %), parry=0.478 ± 0.036 per rating point (15 rating = 1%, 7.176 per %), block=not significant (0.217 ± 0.088) per rating point (5 rating = 1%, 1.084 per %), block_value=0.473 ± 0.035, strength=0.067 ± 0.002, agility=0.537 ± 0.030, attack_power=0.019 ± 0.000, hit=not significant (0.156 ± 0.044) per rating point (10 rating = 1%, 1.556 per %), crit=0.072 ± 0.002 per rating point (14 rating = 1%, 1.007 per %), expertise=6.674 ± 0.476
+Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.033, armor=0.048 ± 0.002, defense=1.323 ± 0.220 per rating point (1 rating = 1%, 1.323 per %), dodge=0.618 ± 0.048 per rating point (12 rating = 1%, 7.411 per %), parry=0.478 ± 0.037 per rating point (15 rating = 1%, 7.176 per %), block=not significant (0.201 ± 0.088) per rating point (5 rating = 1%, 1.005 per %), block_value=0.488 ± 0.023, strength=0.070 ± 0.001, agility=0.540 ± 0.029, attack_power=0.020 ± 0.000, hit=not significant (0.132 ± 0.043) per rating point (10 rating = 1%, 1.317 per %), crit=0.071 ± 0.002 per rating point (14 rating = 1%, 0.988 per %), expertise=6.572 ± 0.483
 
 | Slot | Item | Source | Score (stamina points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Enchanted Thorium Helm (12620) | Blacksmithing [crafted] | 62.0 stamina points (6652.75 DPS) | yes | Helm of Narv (2245, -614.99 DPS) [world_drop]; Enriched Thorium Helm (250597, -620.95 DPS) [crafted]; Helm of Valor (16731, -637.19 DPS, sim-verified) [dungeon] |
-| neck | Medallion of Grand Marshal Morris (13091) | World drop [world_drop] | 20.4 stamina points (2190.32 DPS) | yes | Talisman of Evasion (13177, -69.37 DPS) [dungeon]; Verek's Collar (11755, -167.20 DPS) [dungeon]; Scout's Medallion (19534, -251.72 DPS) [rep] |
-| shoulder | Defiler's Plate Spaulders (20212) | The Defilers [rep] | 55.7 stamina points (5977.51 DPS) | yes | Stockade Pauldrons (14552, -70.24 DPS) [world_drop]; Darkspear Spaulders (272108, -163.94 DPS) [vendor]; Defiler's Lamellar Spaulders (20184, -536.85 DPS) [rep] |
-| back | Bloodmoon Cloak (12967) | Blackrock Spire: The Beast [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | The Emperor's New Cape (11930, -87.54 DPS) [dungeon]; Shadow Prowler's Cloak (22269, -368.02 DPS) [dungeon]; Sergeant's Cloak (18461, -431.62 DPS) [vendor] |
-| chest | Breastplate of the Chromatic Flight (12895) | Breastplate of the Chromatic Flight [quest] | 76.8 stamina points (8243.92 DPS) | yes | Deathbone Chestplate (14624, -947.59 DPS) [dungeon]; Enchanted Thorium Breastplate (12618, -1055.43 DPS, sim-verified) [crafted]; Enriched Thorium Breastplate (250595, -1083.07 DPS) [crafted] |
-| wrist | Vigorsteel Vambraces (13951) | Scholomance: Darkmaster Gandling [dungeon] | 34.2 stamina points (3670.73 DPS) | yes | Warder's Wristguards (250583, -202.69 DPS) [crafted]; Berserker Bracers (19578, -302.31 DPS) [rep]; Sentinel's Wristguards (250582, -672.44 DPS, sim-verified) [crafted] |
-| hands | Sentinel's Gloves (250552) | Blacksmithing [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Warder's Gloves (250553, -65.21 DPS) [crafted]; Stronghold Gauntlets (12639, -161.00 DPS) [crafted]; Stonegrip Gauntlets (13072, -206.16 DPS) [world_drop] |
-| waist | Deathbone Girdle (14620) | Scholomance [dungeon] | 43.5 stamina points (4665.94 DPS) | yes | Sentinel's Waistguard (250572, -36.51 DPS) [crafted]; Redeemer's Waistcord (272405, -87.58 DPS) [vendor]; Warder's Waistguard (250573, -130.70 DPS) [crafted] |
-| legs | Enriched Thorium Leggings (250596) | Blacksmithing [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Outrider's Plate Legguards (22651, -360.25 DPS) [rep]; Warmaster Legguards (12935, -373.30 DPS) [dungeon]; Deathbone Legguards (14623, -636.14 DPS, sim-verified) [dungeon] |
-| feet | Boots of Valor (16734) | Scholomance: Kirtonos the Herald [dungeon] | 45.4 stamina points (4873.75 DPS) | yes | Ribsteel Footguards (13259, -30.72 DPS) [dungeon]; Deathbone Sabatons (14621, -100.00 DPS) [dungeon]; Sentinel's Sabatons (250562, -247.09 DPS) [crafted] |
-| finger1 | Ring of Awareness (272409) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Naglering (11669, +0.00 DPS) [dungeon]; Band of Flesh (13373, -492.15 DPS) [dungeon]; Cutthroat's Signet (272408, -593.27 DPS) [vendor] |
-| finger2 | Myrmidon's Signet (2246) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Naglering (11669, +0.00 DPS) [dungeon]; Band of Flesh (13373, -374.24 DPS) [dungeon]; Cutthroat's Signet (272408, -475.36 DPS) [vendor] |
-| trinket1 | Defender's Grip Stabilizer (272440) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Defiler's Talisman (20072, -581.91 DPS) [rep]; The Lion Horn of Stormwind (14557, -719.36 DPS) [world_drop]; Adaptive Combat Assistant (272437, -720.09 DPS, sim-verified) [vendor] |
-| trinket2 | Frostwolf Insignia Rank 6 (17909) | The Eye of Command [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Defiler's Talisman (20072, -304.43 DPS) [rep]; The Lion Horn of Stormwind (14557, -441.89 DPS) [world_drop] |
-| main_hand | Hurley's Tankard (18044) | Blackrock Depths: Guzzler [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | High Warlord's Battle Mace (234551, +0.00 DPS) [vendor]; High Warlord's Quickblade (234553, +0.00 DPS) [pvp]; Darkspear Skirmisher's Bludgeon (272091, +0.00 DPS) [vendor] |
-| off_hand | The Immovable Object (19321) | Frostwolf Clan [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | High Warlord's Shield Wall (234562, +0.00 DPS) [pvp]; High Warlord's Barricade (235474, +0.00 DPS) [vendor]; Draconian Deflector (12602, -1860.67 DPS, sim-verified) [dungeon] |
+| head | Enchanted Thorium Helm (12620) | Blacksmithing [crafted] | 63.2 stamina points (6665.06 DPS) | yes | Helm of Valor (16731, -510.50 DPS) [dungeon]; Enriched Thorium Helm (250597, -609.82 DPS) [crafted]; Helm of Narv (2245, -642.81 DPS) [world_drop] |
+| neck | Medallion of Grand Marshal Morris (13091) | World drop [world_drop] | 20.2 stamina points (2134.36 DPS) | yes | Talisman of Evasion (13177, -59.34 DPS) [dungeon]; Verek's Collar (11755, -150.83 DPS) [dungeon]; Scout's Medallion (19534, -225.14 DPS) [rep] |
+| shoulder | Defiler's Plate Spaulders (20212) | The Defilers [rep] | 57.2 stamina points (6031.76 DPS) | yes | Stockade Pauldrons (14552, -119.00 DPS) [world_drop]; Darkspear Spaulders (272108, -170.22 DPS) [vendor]; Defiler's Lamellar Spaulders (20184, -527.44 DPS) [rep] |
+| back | Bloodmoon Cloak (12967) | Blackrock Spire: The Beast [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | The Emperor's New Cape (11930, -78.82 DPS) [dungeon]; Shadow Prowler's Cloak (22269, -351.38 DPS) [dungeon]; Sergeant's Cloak (18461, -418.79 DPS) [vendor] |
+| chest | Breastplate of the Chromatic Flight (12895) | Breastplate of the Chromatic Flight [quest] | 78.6 stamina points (8288.93 DPS) | yes | Enchanted Thorium Breastplate (12618, -850.32 DPS) [crafted]; Deathbone Chestplate (14624, -979.50 DPS) [dungeon]; Enriched Thorium Breastplate (250595, -1095.88 DPS) [crafted] |
+| wrist | Vigorsteel Vambraces (13951) | Scholomance: Darkmaster Gandling [dungeon] | 34.9 stamina points (3676.88 DPS) | yes | Sentinel's Wristguards (250582, -177.19 DPS) [crafted]; Warder's Wristguards (250583, -221.73 DPS) [crafted]; Berserker Bracers (19578, -272.63 DPS) [rep] |
+| hands | Sentinel's Gloves (250552) | Blacksmithing [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Warder's Gloves (250553, -66.81 DPS) [crafted]; Stronghold Gauntlets (12639, -122.21 DPS) [crafted]; Stonegrip Gauntlets (13072, -192.48 DPS) [world_drop] |
+| waist | Deathbone Girdle (14620) | Scholomance [dungeon] | 44.2 stamina points (4664.36 DPS) | yes | Sentinel's Waistguard (250572, -42.79 DPS) [crafted]; Redeemer's Waistcord (272405, -65.11 DPS) [vendor]; Warder's Waistguard (250573, -139.28 DPS) [crafted] |
+| legs | Enriched Thorium Leggings (250596) | Blacksmithing [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Deathbone Legguards (14623, -166.34 DPS) [dungeon]; Outrider's Plate Legguards (22651, -337.83 DPS) [rep]; Warmaster Legguards (12935, -348.33 DPS) [dungeon] |
+| feet | Boots of Valor (16734) | Scholomance: Kirtonos the Herald [dungeon] | 46.5 stamina points (4902.80 DPS) | yes | Ribsteel Footguards (13259, -21.08 DPS) [dungeon]; Deathbone Sabatons (14621, -112.82 DPS) [dungeon]; Sentinel's Sabatons (250562, -268.55 DPS) [crafted] |
+| finger1 | Ring of Awareness (272409) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Band of Flesh (13373, -467.41 DPS) [dungeon]; Innervating Band (18701, -566.88 DPS) [dungeon]; Cutthroat's Signet (272408, -590.37 DPS) [vendor] |
+| finger2 | Myrmidon's Signet (2246) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Band of Flesh (13373, -370.43 DPS) [dungeon]; Innervating Band (18701, -469.90 DPS) [dungeon]; Cutthroat's Signet (272408, -493.39 DPS) [vendor] |
+| trinket1 | Defender's Grip Stabilizer (272440) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Defiler's Talisman (20072, -548.89 DPS) [rep]; The Lion Horn of Stormwind (14557, -697.98 DPS) [world_drop] |
+| trinket2 | Frostwolf Insignia Rank 6 (17909) | The Eye of Command [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Defiler's Talisman (20072, -297.74 DPS) [rep]; The Lion Horn of Stormwind (14557, -446.83 DPS) [world_drop] |
+| main_hand | Hurley's Tankard (18044) | Blackrock Depths: Guzzler [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | High Warlord's Battle Mace (234551, +0.00 DPS) [vendor]; High Warlord's Quickblade (234553, +0.00 DPS) [pvp]; High Warlord's Hacker (235476, +0.00 DPS) [vendor] |
+| off_hand | The Immovable Object (19321) | Frostwolf Clan [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | High Warlord's Shield Wall (234562, +0.00 DPS) [pvp]; High Warlord's Barricade (235474, +0.00 DPS) [vendor]; Draconian Deflector (12602, -1333.14 DPS) [dungeon] |
 | ranged | - | - |  |  |  |
 
 **New at 60:** head: Enchanted Thorium Helm; neck: Medallion of Grand Marshal Morris; shoulder: Defiler's Plate Spaulders; back: Bloodmoon Cloak; chest: Breastplate of the Chromatic Flight; wrist: Vigorsteel Vambraces; hands: Sentinel's Gloves; waist: Deathbone Girdle; legs: Enriched Thorium Leggings; feet: Boots of Valor; finger1: Ring of Awareness; finger2: Myrmidon's Signet; trinket1: Defender's Grip Stabilizer; trinket2: Frostwolf Insignia Rank 6; main_hand: Hurley's Tankard; off_hand: The Immovable Object
