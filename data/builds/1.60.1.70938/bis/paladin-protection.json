@@ -1,8 +1,8 @@
 {
   "spec": "paladin-protection",
   "build": "1.60.1.70938",
-  "engine_version": "f0f90b5f9",
-  "generated_at": "2026-11-14T05:50:10Z",
+  "engine_version": "f9385b498",
+  "generated_at": "2026-11-14T07:43:07Z",
   "bands": [
     {
       "spec": "paladin-protection",
@@ -1357,8 +1357,8 @@
         "main_hand: Diamond Hammer",
         "off_hand: Redbeard Crest"
       ],
-      "weights_run_seconds": 7.003819669,
-      "verify_run_seconds": 11.248408377,
+      "weights_run_seconds": 4.903323799,
+      "verify_run_seconds": 7.711915677,
       "coverage": {
         "back": {
           "eligible": 104,
@@ -2793,8 +2793,8 @@
         "main_hand: Diamond Hammer",
         "off_hand: Redbeard Crest"
       ],
-      "weights_run_seconds": 7.003819669,
-      "verify_run_seconds": 11.089968552,
+      "weights_run_seconds": 4.903323799,
+      "verify_run_seconds": 7.592441717,
       "coverage": {
         "back": {
           "eligible": 105,
@@ -4340,8 +4340,8 @@
         "main_hand: Looming Gavel",
         "off_hand: Heart of Agamaggan"
       ],
-      "weights_run_seconds": 7.141500587,
-      "verify_run_seconds": 13.681382017,
+      "weights_run_seconds": 4.963616238,
+      "verify_run_seconds": 8.872134240000001,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -5872,8 +5872,8 @@
         "main_hand: Looming Gavel",
         "off_hand: Heart of Agamaggan"
       ],
-      "weights_run_seconds": 7.141500587,
-      "verify_run_seconds": 13.585128645,
+      "weights_run_seconds": 4.963616238,
+      "verify_run_seconds": 9.043582098,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -7544,8 +7544,8 @@
         "main_hand: Sword of Serenity",
         "off_hand: Aegis of the Scarlet Commander"
       ],
-      "weights_run_seconds": 6.430392801,
-      "verify_run_seconds": 15.969214132,
+      "weights_run_seconds": 4.498943868,
+      "verify_run_seconds": 11.233036555,
       "coverage": {
         "back": {
           "eligible": 257,
@@ -9166,8 +9166,8 @@
         "main_hand: Steelclaw Reaver",
         "off_hand: Aegis of the Scarlet Commander"
       ],
-      "weights_run_seconds": 6.430392801,
-      "verify_run_seconds": 16.225954141,
+      "weights_run_seconds": 4.498943868,
+      "verify_run_seconds": 11.047305067,
       "coverage": {
         "back": {
           "eligible": 259,
@@ -10936,8 +10936,8 @@
         "main_hand: Axe of Rin'ji",
         "off_hand: Wall of the Dead"
       ],
-      "weights_run_seconds": 6.635992393,
-      "verify_run_seconds": 17.47713771,
+      "weights_run_seconds": 4.589559695,
+      "verify_run_seconds": 11.719529347,
       "coverage": {
         "back": {
           "eligible": 330,
@@ -12697,8 +12697,8 @@
         "main_hand: Axe of Rin'ji",
         "off_hand: Wall of the Dead"
       ],
-      "weights_run_seconds": 6.635992393,
-      "verify_run_seconds": 22.641550455999997,
+      "weights_run_seconds": 4.589559695,
+      "verify_run_seconds": 14.963254167,
       "coverage": {
         "back": {
           "eligible": 335,
@@ -14507,8 +14507,8 @@
         "main_hand: Sageblade",
         "off_hand: The Immovable Object"
       ],
-      "weights_run_seconds": 19.966030599,
-      "verify_run_seconds": 145.033172283,
+      "weights_run_seconds": 12.928858185,
+      "verify_run_seconds": 94.403737959,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -16316,8 +16316,8 @@
         "main_hand: Sageblade",
         "off_hand: The Immovable Object"
       ],
-      "weights_run_seconds": 19.966030599,
-      "verify_run_seconds": 135.393478296,
+      "weights_run_seconds": 12.928858185,
+      "verify_run_seconds": 88.99295562500001,
       "coverage": {
         "back": {
           "eligible": 471,
@@ -18152,8 +18152,8 @@
         "main_hand: Hurley's Tankard",
         "off_hand: The Immovable Object"
       ],
-      "weights_run_seconds": 17.672474499,
-      "verify_run_seconds": 124.30067741900001,
+      "weights_run_seconds": 11.246128541,
+      "verify_run_seconds": 83.77011425399999,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -19885,8 +19885,8 @@
         "main_hand: Hurley's Tankard",
         "off_hand: The Immovable Object"
       ],
-      "weights_run_seconds": 17.672474499,
-      "verify_run_seconds": 115.47435598,
+      "weights_run_seconds": 11.246128541,
+      "verify_run_seconds": 78.889762766,
       "coverage": {
         "back": {
           "eligible": 471,

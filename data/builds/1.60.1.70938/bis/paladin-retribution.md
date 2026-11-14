@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat. An item's crit rating
 
 ### Band 20 (human, 00000000000000000-00000000000000000-05231000000000000)
 
-Set DPS (verified): 49.4. Weights run: 9.6s. Verify run: 22.5s. 312 eligible items had no known source.
+Set DPS (verified): 49.4. Weights run: 6.1s. Verify run: 14.5s. 312 eligible items had no known source.
 
 Race sweep: human 49.4 ± 0.0, dwarf 48.8 ± 0.0 (dps); the guide race human is best.
 
@@ -40,7 +40,7 @@ No-known-source sample (15 of 312, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (human, 00000000000000000-00000000000000000-05233201001300100)
 
-Set DPS (verified): 89.9. Weights run: 10.3s. Verify run: 25.4s. 537 eligible items had no known source.
+Set DPS (verified): 89.9. Weights run: 6.6s. Verify run: 16.7s. 537 eligible items had no known source.
 
 Race sweep: human 89.9 ± 0.1, dwarf 88.4 ± 0.1 (dps); the guide race human is best.
 
@@ -72,7 +72,7 @@ No-known-source sample (15 of 537, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 40 (human, 01000000000000000-00000000000000000-05233301001301350)
 
-Set DPS (verified): 144.3. Weights run: 10.0s. Verify run: 22.7s. 808 eligible items had no known source.
+Set DPS (verified): 144.3. Weights run: 6.6s. Verify run: 16.0s. 808 eligible items had no known source.
 
 Race sweep: human 144.3 ± 0.2, dwarf 141.5 ± 0.2 (dps); the guide race human is best.
 
@@ -104,7 +104,7 @@ No-known-source sample (15 of 808, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (human, 05024000000000000-00000000000000000-05233301001301350)
 
-Set DPS (verified): 209.2. Weights run: 10.0s. Verify run: 38.5s. 1050 eligible items had no known source.
+Set DPS (verified): 209.2. Weights run: 6.5s. Verify run: 25.3s. 1050 eligible items had no known source.
 
 Race sweep: human 209.2 ± 0.2, dwarf 206.5 ± 0.2 (dps); the guide race human is best.
 
@@ -136,7 +136,7 @@ No-known-source sample (15 of 1050, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60 (human, 05025000200000000-50200000000000000-05233301001301350)
 
-Set DPS (verified): 357.0. Weights run: 10.1s. Verify run: 121.5s. 2437 eligible items had no known source.
+Set DPS (verified): 357.0. Weights run: 6.5s. Verify run: 81.5s. 2437 eligible items had no known source.
 
 Race sweep: human 357.0 ± 0.3, dwarf 355.6 ± 0.3 (dps); the guide race human is best.
 
@@ -168,7 +168,7 @@ No-known-source sample (15 of 2437, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60, raid preset (human, 05005000200000000-50300000000000000-05233301001301351)
 
-Set DPS (verified): 834.5. Weights run: 10.2s. Verify run: 129.9s. 2437 eligible items had no known source.
+Set DPS (verified): 834.5. Weights run: 6.6s. Verify run: 84.2s. 2437 eligible items had no known source.
 
 Race sweep: human 834.5 ± 0.9, dwarf 827.4 ± 0.9 (dps); the guide race human is best.
 
@@ -202,7 +202,7 @@ No-known-source sample (15 of 2437, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 20 (undead, 00000000000000000-00000000000000000-05231000000000000)
 
-Set DPS (verified): 46.1. Weights run: 9.6s. Verify run: 23.0s. 299 eligible items had no known source.
+Set DPS (verified): 46.1. Weights run: 6.1s. Verify run: 14.9s. 299 eligible items had no known source.
 
 Race sweep: undead 46.1 ± 0.0 (dps); the guide race undead is best.
 
@@ -234,7 +234,7 @@ No-known-source sample (15 of 299, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (undead, 00000000000000000-00000000000000000-05233201001300100)
 
-Set DPS (verified): 90.5. Weights run: 10.3s. Verify run: 23.9s. 524 eligible items had no known source.
+Set DPS (verified): 90.5. Weights run: 6.6s. Verify run: 15.7s. 524 eligible items had no known source.
 
 Race sweep: undead 90.5 ± 0.1 (dps); the guide race undead is best.
 
@@ -266,7 +266,7 @@ No-known-source sample (15 of 524, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 40 (undead, 01000000000000000-00000000000000000-05233301001301350)
 
-Set DPS (verified): 143.0. Weights run: 10.0s. Verify run: 33.1s. 792 eligible items had no known source.
+Set DPS (verified): 143.0. Weights run: 6.6s. Verify run: 22.7s. 792 eligible items had no known source.
 
 Race sweep: undead 143.0 ± 0.2 (dps); the guide race undead is best.
 
@@ -298,7 +298,7 @@ No-known-source sample (15 of 792, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (undead, 05024000000000000-00000000000000000-05233301001301350)
 
-Set DPS (verified): 204.5. Weights run: 10.0s. Verify run: 33.2s. 1050 eligible items had no known source.
+Set DPS (verified): 204.5. Weights run: 6.5s. Verify run: 21.5s. 1050 eligible items had no known source.
 
 Race sweep: undead 204.5 ± 0.2 (dps); the guide race undead is best.
 
@@ -330,7 +330,7 @@ No-known-source sample (15 of 1050, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60 (undead, 05025000200000000-50200000000000000-05233301001301350)
 
-Set DPS (verified): 361.2. Weights run: 10.1s. Verify run: 116.5s. 2462 eligible items had no known source.
+Set DPS (verified): 361.2. Weights run: 6.5s. Verify run: 77.3s. 2462 eligible items had no known source.
 
 Race sweep: undead 361.2 ± 0.2 (dps); the guide race undead is best.
 
@@ -362,7 +362,7 @@ No-known-source sample (15 of 2462, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60, raid preset (undead, 05005000200000000-50300000000000000-05233301001301351)
 
-Set DPS (verified): 842.9. Weights run: 10.2s. Verify run: 130.7s. 2462 eligible items had no known source.
+Set DPS (verified): 842.9. Weights run: 6.6s. Verify run: 83.2s. 2462 eligible items had no known source.
 
 Race sweep: undead 842.9 ± 1.0 (dps); the guide race undead is best.
 
