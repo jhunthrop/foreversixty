@@ -19,33 +19,6 @@ describe("Widgets", function()
 		mock.uninstall()
 	end)
 
-	describe("visibleRange", function()
-		before_each(function() start() end)
-
-		it("shows nothing for an empty list", function()
-			local first, last, offset = Widgets.visibleRange(0, 12, 0)
-			assert.are.equal(0, first)
-			assert.are.equal(-1, last)
-			assert.are.equal(0, offset)
-		end)
-
-		it("shows everything when there are fewer items than rows", function()
-			assert.are.same({ 1, 3, 0 }, { Widgets.visibleRange(3, 12, 0) })
-		end)
-
-		it("pages down by the offset it is given", function()
-			assert.are.same({ 6, 17, 5 }, { Widgets.visibleRange(40, 12, 5) })
-		end)
-
-		it("clamps an offset past the end so the last page stays full", function()
-			assert.are.same({ 29, 40, 28 }, { Widgets.visibleRange(40, 12, 999) })
-		end)
-
-		it("clamps a negative offset to the top", function()
-			assert.are.same({ 1, 12, 0 }, { Widgets.visibleRange(40, 12, -4) })
-		end)
-	end)
-
 	it("builds no frame merely by being loaded", function()
 		start({ templates = {} })
 		assert.are.equal(0, #helper.builtFrames(state))
@@ -72,20 +45,11 @@ describe("Widgets", function()
 		assert.are.same({ Theme.rgb(Theme.HEX.gold) }, { call[1], call[2], call[3], call[4] })
 	end)
 
-	it("runs a button's handler when it is clicked", function()
-		start({ templates = {} })
-		local clicks = 0
-		local button = Widgets.button(_G.UIParent, "Copy", function() clicks = clicks + 1 end)
-		button:GetScript("OnClick")(button)
-		assert.are.equal(1, clicks)
-		assert.are.equal("Copy", button:GetText())
-	end)
-
 	-- Found in game: the stock templates gave a red button, gold tabs and a
 	-- one-line input, none of it the site's design.
 	it("draws its own button, tab and field even on a client with the stock templates", function()
 		start({ templates = ALL_TEMPLATES })
-		local button = Widgets.button(_G.UIParent, "Copy", function() end)
+		local button = Widgets.clientButton(_G.UIParent, "Copy", function() end)
 		local tab = Widgets.tab(_G.UIParent, "Export", function() end)
 		local box = Widgets.editBox(_G.UIParent, 300, 72, true)
 		assert.is_nil(button.template)
@@ -125,16 +89,16 @@ describe("Widgets", function()
 	it("ignores a click on a disabled button rather than acting on it", function()
 		start({ templates = {} })
 		local clicks = 0
-		local button = Widgets.button(_G.UIParent, "Equip", function() clicks = clicks + 1 end)
+		local button = Widgets.clientButton(_G.UIParent, "Equip", function() clicks = clicks + 1 end)
 		Widgets.setEnabled(button, false)
-		button:GetScript("OnClick")(button)
+		button.OnClick(button)
 		assert.are.equal(0, clicks)
 		assert.is_false(button:IsEnabled())
 	end)
 
 	it("dims a widget it turns off and brightens it again", function()
 		start({ templates = {} })
-		local button = Widgets.button(_G.UIParent, "Equip", function() end)
+		local button = Widgets.clientButton(_G.UIParent, "Equip", function() end)
 		Widgets.setEnabled(button, false)
 		assert.are.equal(Theme.ALPHA.disabled, mock.lastCall(button, "SetAlpha")[1])
 		Widgets.setEnabled(button, true)
@@ -196,68 +160,6 @@ describe("Widgets", function()
 		assert.is_nil(box:GetScript("OnTextChanged"))
 	end)
 
-	it("shows the first page of a list", function()
-		start({ templates = {} })
-		local list = Widgets.list(_G.UIParent, 400, 3)
-		list:SetRenderer(function(row, item) row.text:SetText(item.name) end)
-		list:SetItems({ { name = "a" }, { name = "b" }, { name = "c" }, { name = "d" } })
-		assert.are.equal("a", list.rows[1].text:GetText())
-		assert.are.equal("c", list.rows[3].text:GetText())
-	end)
-
-	it("scrolls the list down a row on the wheel", function()
-		start({ templates = {} })
-		local list = Widgets.list(_G.UIParent, 400, 3)
-		list:SetRenderer(function(row, item) row.text:SetText(item.name) end)
-		list:SetItems({ { name = "a" }, { name = "b" }, { name = "c" }, { name = "d" } })
-		list.frame:GetScript("OnMouseWheel")(list.frame, -1)
-		assert.are.equal(1, list.offset)
-		assert.are.equal("b", list.rows[1].text:GetText())
-		assert.are.equal("d", list.rows[3].text:GetText())
-	end)
-
-	it("hides the rows past the end of a short list", function()
-		start({ templates = {} })
-		local list = Widgets.list(_G.UIParent, 400, 3)
-		list:SetRenderer(function(row, item) row.text:SetText(item.name) end)
-		list:SetItems({ { name = "a" } })
-		assert.is_true(list.rows[1].frame:IsShown())
-		assert.is_false(list.rows[2].frame:IsShown())
-		assert.is_false(list.rows[3].frame:IsShown())
-	end)
-
-	it("hides every row for an empty list rather than showing stale text", function()
-		start({ templates = {} })
-		local list = Widgets.list(_G.UIParent, 400, 3)
-		list:SetRenderer(function(row, item) row.text:SetText(item.name) end)
-		list:SetItems({ { name = "a" } })
-		list:SetItems({})
-		for _, row in ipairs(list.rows) do
-			assert.is_false(row.frame:IsShown())
-		end
-	end)
-
-	it("forgets the item a recycled row was showing before", function()
-		start({ templates = {} })
-		local list = Widgets.list(_G.UIParent, 400, 2)
-		list:SetRenderer(function(row, item) row.itemId = item.itemId end)
-		list:SetItems({ { itemId = 11 }, { itemId = 22 } })
-		list:SetItems({ { itemId = 33 } })
-		assert.are.equal(33, list.rows[1].itemId)
-		assert.is_nil(list.rows[2].itemId)
-	end)
-
-	it("builds its rows from the row builder it was given", function()
-		start({ templates = {} })
-		local built = 0
-		local list = Widgets.list(_G.UIParent, 400, 3, function(parent, width)
-			built = built + 1
-			return { frame = Widgets.panel(parent, width, 10), equipped = true }
-		end)
-		assert.are.equal(3, built)
-		assert.is_true(list.rows[2].equipped)
-	end)
-
 	it("reports a toggle's new value to its handler", function()
 		start({ templates = {} })
 		local seen
@@ -278,28 +180,6 @@ describe("Widgets", function()
 		assert.is_true(toggle.tick:IsShown())
 	end)
 
-	it("shows the game tooltip on an item row and hides it again", function()
-		start({ templates = {} })
-		local row = Widgets.itemRow(_G.UIParent, 400)
-		row.itemId, row.link = 1234, "|Hitem:1234|h"
-		row.frame:GetScript("OnEnter")(row.frame)
-		assert.is_not_nil(mock.firstCall(_G.GameTooltip, "SetHyperlink"))
-		row.frame:GetScript("OnLeave")(row.frame)
-		assert.is_not_nil(mock.firstCall(_G.GameTooltip, "Hide"))
-	end)
-
-	it("shows nothing on an item row that has no item yet", function()
-		start({ templates = {} })
-		local row = Widgets.itemRow(_G.UIParent, 400)
-		row.frame:GetScript("OnEnter")(row.frame)
-		assert.is_nil(mock.firstCall(_G.GameTooltip, "SetHyperlink"))
-		assert.is_nil(mock.firstCall(_G.GameTooltip, "SetItemByID"))
-		-- Not even an empty tooltip: an owned, shown GameTooltip with no
-		-- lines in it is a grey box following the cursor.
-		assert.is_nil(mock.firstCall(_G.GameTooltip, "SetOwner"))
-		assert.is_nil(mock.firstCall(_G.GameTooltip, "Show"))
-	end)
-
 	it("runs a text button's handler when clicked and sizes itself to the text", function()
 		start({ templates = {} })
 		local clicks = 0
@@ -318,29 +198,6 @@ describe("Widgets", function()
 		button:Disable()
 		button:GetScript("OnClick")(button)
 		assert.are.equal(0, clicks)
-	end)
-
-	it("builds a rotation row with a number, an icon, a name, a rank and a condition", function()
-		start({ templates = {} })
-		local row = Widgets.rotationRow(_G.UIParent, 400)
-		row.number:SetText("1.")
-		row.name:SetText("Bloodrage")
-		row.rank:SetText("Rank 1")
-		row.condition:SetText("Bloodrage on cooldown.")
-		assert.are.equal("1.", row.number:GetText())
-		assert.are.equal("Bloodrage", row.name:GetText())
-		assert.are.equal("Rank 1", row.rank:GetText())
-		assert.are.equal("Bloodrage on cooldown.", row.condition:GetText())
-	end)
-
-	it("highlights a rotation row on hover", function()
-		start({ templates = {} })
-		local row = Widgets.rotationRow(_G.UIParent, 400)
-		local highlight = row.frame.regions[1]
-		row.frame:GetScript("OnEnter")(row.frame)
-		assert.is_true(highlight.shown)
-		row.frame:GetScript("OnLeave")(row.frame)
-		assert.is_false(highlight.shown)
 	end)
 
 	describe("keyboard focus", function()
@@ -454,8 +311,8 @@ describe("Widgets", function()
 		end)
 	end)
 
-	-- The site's frame chrome (the panel now, the onboarding next).
-	describe("the umber frame chrome", function()
+	-- The site's buttons on the Forever Sixty window.
+	describe("the site's buttons", function()
 		--- A texture's last colour, as six hex digits.
 		local function paintOf(texture)
 			local call = mock.lastCall(texture, "SetColorTexture")
@@ -498,7 +355,7 @@ describe("Widgets", function()
 		it("closes with the flat X, never the client's red one", function()
 			start({ templates = ALL_TEMPLATES })
 			local closed = 0
-			local close = Widgets.clientCloseButton(_G.UIParent, function()
+			local close = Widgets.closeButton(_G.UIParent, function()
 				closed = closed + 1
 			end)
 			assert.is_nil(close.template)
@@ -506,5 +363,23 @@ describe("Widgets", function()
 			assert.are.equal(1, closed)
 		end)
 
+	end)
+
+	-- Spec 2026-11-13-addon-hub 2: the Forever Sixty window is the addon's one framed window. No other file builds a
+	-- framed panel on the screen itself (the chip and the marks in the world are not panels).
+	it("leaves the window the only framed panel on the screen", function()
+		local makers = {}
+		for line in io.lines("ForeverSixty/ForeverSixty.toc") do
+			local path = line:match("^([%w\\_]+%.lua)$")
+			if path ~= nil and path ~= "Data.lua" then
+				local file = assert(io.open("ForeverSixty/" .. path:gsub("\\", "/"), "r"))
+				local text = file:read("a")
+				file:close()
+				if text:find("Widgets%.panel%(%s*_?G?%.?UIParent") ~= nil then
+					makers[#makers + 1] = path
+				end
+			end
+		end
+		assert.are.same({ "surfaces\\Hub.lua" }, makers)
 	end)
 end)

@@ -25,7 +25,7 @@ How to read a line:
 | Produces | Driven by | Week 1 |
 |---|---|---|
 | chip-l1-pick-a-path.jpg | 4.1, level-1 alt | captured: chip2-alt-screen-pick-a-path.jpg, chip2-alt-path-chip.jpg |
-| chip-l1-path-card.jpg | 4.1, click the chip | captured: chip2-alt-path-card.jpg, chip2-alt-screen-path-card.jpg |
+| chip-l1-click-opens-builds.jpg | hub spec 6, a click opens the window on Builds (the path card is gone) | owed: new in 2.0.48 |
 | chip-l1-path-tooltip.jpg | 4.1 hover | captured: chip2-alt-path-tooltip.jpg |
 | chip-l1-next-talent-line.jpg | 4.1 state 7, below level 10 the muted next-talent line | captured: chip3-alt-next-line.jpg, chip3-alt-tooltip.jpg |
 | chip-l20-point-to-spend.jpg | 4.1 state 1, ring and "+N" | captured: chip5-point-state.jpg, chip6-point-rank.jpg, chip-point.jpg (level 21 warrior) |
@@ -40,7 +40,7 @@ How to read a line:
 | chip-l20-idle-tooltip.jpg | 4.1 hover, headed by the build in force | captured: chip4-main-tooltip.jpg (level 21 warrior); hunter-11-chip-tooltip-build.jpg (level 24 hunter, build named) |
 | chip-l20-legend-tooltip.jpg | 4.4 marks' legend, two lines | captured: hunter-19-chip-legend.jpg, hunter-20-chip-legend.jpg, hunter-22-chip-legend-colours.jpg; off: hunter-21-chip-legend-off.jpg |
 | chip-l20-plus-n-badge-two-states.jpg | 4.1 "+N" badge when more than one state waits | captured: chip-point.jpg (level 21 warrior, "+1" with a bag upgrade also waiting) |
-| chip-l20-right-click-hide.jpg | 4.1 "Hide until next level" | captured: chip-hidden-after-right-click.jpg, chip2-hidden-chat-line.jpg, chip2-fs-chip-restore.jpg |
+| chip-l20-right-click-settings.jpg | hub spec 6, right-click opens Settings (hiding moved to the Settings switch) | owed: new in 2.0.48 |
 | chip-l20-shift-drag-move.jpg | 4.1 shift-drag | owed: the capture tool could not shift-drag (settings round 2 note); needs a real shift-drag |
 | chip-l20-stands-aside-talent-window.jpg | 4.1 / 4.2 chip stands aside while the window is open | captured: marks4-screen.jpg, marks4-chip-after-close.jpg, settings3-6-chip-hidden-under-talents.jpg, settings3-6-chip-back-after-close.jpg |
 | chip-l20-hidden-by-switch.jpg | 4.11 "Show the chip" off | captured: settings-4-chip-gone.jpg, settings-4-chip-back.jpg |
@@ -145,85 +145,31 @@ How to read a line:
 | badges-l60-guild-chat.jpg | 4.6 at level 60 | owed: needs a level-60 character |
 | badges-combat-chat.jpg | 4.6 badge while in combat | owed: needs a hostile mob and a speaking sender |
 
-## "Forever Sixty" character-panel tab (4.5)
+## The Forever Sixty window (2.0.48, design/specs/2026-11-13-addon-hub.md 3 and 4)
+
+The window replaces the panel, the character pane's flyout, the guild tab's flyout, the group panel, the build dialog and
+the first-run tour. Every line is new in 2.0.48 and owed until a week captures it. The approved boards are in
+`design/reviews/2026-11-13-addon-hub/` (`hub-*.png`); each capture is judged against its board at the same scale.
 
 | Produces | Driven by | Week 1 |
 |---|---|---|
-| tab-l1-flyout.jpg | 4.5 at level 1: only the regions that have content | owed: not shot; needs a session on the level-1 alt |
-| tab-l20-button.jpg | 4.5 button 112 by 24 under the pane; row 45 | captured: hunter-24-panel-button-screen.jpg, hunter-24-panel-button-crop.jpg |
-| tab-l20-button-hover.jpg | row 45 hover hint | captured: hunter-26-button-hover-hint-screen.jpg, hunter-26-button-hover-hint-crop.jpg |
-| tab-l20-button-open-state.jpg | row 45 label in body white while open | captured: hunter-26-button-open-state.jpg |
-| tab-l20-flyout.jpg | 4.5 targets, rotation, build; row 46 | captured: hunter-24-flyout-screen.jpg, hunter-26-flyout-crop.jpg |
-| tab-l20-target-row-hover.jpg | 4.5 next targets, item tooltip and compare | captured: hunter-24-flyout-row-hover.jpg, hunter-26-target-row-hover.jpg |
-| tab-l20-rotation-hover.jpg | 4.5 rotation condition tooltip, "at level N" rows | captured: hunter-26-rotation-hover.jpg, hunter-26-rapid-fire-hover.jpg |
-| tab-l20-off-plan-hover.jpg | 4.5 build region "3 off plan" | captured: hunter-26-offplan-hover.jpg |
-| tab-l20-build-dialogs.jpg | 4.5 "Use a different build", "Copy my character" | captured: hunter-25-build-paste-dialog-screen.jpg, hunter-25-copy-dialog-screen.jpg |
-| tab-l20-reopen.jpg | row 46 flyout survives close and reopen | captured: hunter-24-flyout-after-reopen.jpg, hunter-25-button-closed-flyout.jpg |
-| tab-l60-sim-last-raid.jpg | 4.5 Sim and Last raid regions; row 47 `[inbox]` | owed: needs a level-60 character |
-| tab-l60-sim-me-again.jpg | 4.5 "Sim me again" queues a request | owed: needs a level-60 character and the companion |
-| tab-combat-button.jpg | 4.5 / row 69 the button is never made in combat | owed: needs a hostile mob |
-
-## Guild tab (4.7)
-
-| Produces | Driven by | Week 1 |
-|---|---|---|
-| guild-l1-no-guild.jpg | 4.7 unguilded character | owed: needs a guildless character; not named in the note |
-| guild-l20-button.jpg | row 59 button under the guild frame | captured: hunter-29-guild-frame-button.jpg |
-| guild-l20-roster-online.jpg | 4.7 roster, online only; row 60 | captured: hunter-29-guild-flyout-online-crop.jpg, hunter-30-guild-flyout-default-crop.jpg, hunter-31-guild-default-crop.jpg |
-| guild-l20-roster-scored.jpg | 4.7 score tiers; row 60 `[data]` | captured: hunter-29-guild-flyout-scored-crop.jpg, hunter-30-guild-fixture-tiers-crop.jpg, hunter-30-guild-fixture-mixed-tiers.jpg |
-| guild-l20-roster-all-scrolled.jpg | 4.7 97 rows, scroll and count | captured: hunter-30-guild-roster-all.jpg, hunter-30-guild-roster-scrolled.jpg, hunter-31-guild-scrolled-count.jpg |
-| guild-l20-sorted.jpg | 4.7 sortable headers | captured: hunter-29-guild-roster-sorted-level.jpg, hunter-30-guild-sorted-spec.jpg, hunter-31-guild-score-desc-game-shot.jpg |
-| guild-l20-header-tooltips.jpg | 4.7 Gear, Gap and count line tooltips | captured: hunter-31-guild-gear-tooltip.jpg, hunter-31-guild-gap-tooltip.jpg, hunter-31-guild-live-tooltip.jpg |
-| guild-l20-live-row.jpg | 4.7 / 4.9 a member with the addon, live | owed: hunter-30-guild-live-row.jpg was seeded with `ForeverSixtyGuildTab.seedLive`, not a real guildmate; needs a real guildmate with the addon |
-| guild-l20-self-row-gap.jpg | 4.7 gap equals the tooltip's biggest upgrade | captured: hunter-33-guild-self-row-4dps.jpg |
-| guild-l20-officer-region.jpg | 4.7 officer region; row 61 | owed: needs the user's guild-master character and an inbox `guild` message |
-| guild-l20-push-confirm.jpg | 4.7 / 4.9 push confirm, Push and Cancel; row 62 | owed: needs the user's guild-master character |
-| guild-l60-roster.jpg | 4.7 at level 60 | owed: needs a level-60 character |
-| guild-combat-frame.jpg | 4.7 guild frame in combat | owed: needs a hostile mob |
-
-## Group panel and loot council (4.8, 4.9)
-
-| Produces | Driven by | Week 1 |
-|---|---|---|
-| group-l1-solo-flyout.jpg | 4.8 solo at level 1 | owed: not shot; needs a session on the level-1 alt |
-| group-l20-solo-button.jpg | row 64 button on the Raid tab | captured: hunter-35-group-button-raid-tab.jpg, hunter-37-1-raid-tab-flyout-hint.jpg |
-| group-l20-solo-flyout.jpg | row 64 "Not in a group." and the hint | captured: hunter-35-group-flyout-solo.jpg, hunter-38-1-solo-flyout-clear-of-tabs.jpg, hunter-39-1-solo-flyout-59-units.jpg |
-| group-l20-friends-tab-rests.jpg | row 64 button rests on other tabs | captured: hunter-37-2-friends-tab-no-button.jpg, hunter-37-4-open-on-friends.jpg, hunter-37-5-raid-tab-wake.jpg |
-| group-l20-party-of-two.jpg | 4.8 rows, headers, sort; row 65 | owed: needs the user's test group |
-| group-l20-inspect-no-addon.jpg | 4.8 inspect fills a member; row 68 | owed: needs the user's test group (a member without the addon in range) |
-| group-l20-ready-check-dry-run.jpg | row 66 `/fs ready` solo | captured: hunter-35-chip-ready-check.jpg, hunter-37-3-chip-ready-check.jpg |
-| group-l20-diag.jpg | rows 63, 64 `/fs diag` group line | captured: hunter-35-diag-group.jpg |
-| group-l60-ready-check-imbue.jpg | 4.8 ready check lists missing imbue; row 66 | owed: needs a level-60 character and a group |
-| group-l60-coverage.jpg | 4.8 Coverage list; row 67 | owed: needs a level-60 character in Molten Core, Onyxia's Lair or Blackwing Lair |
-| group-combat-inspect-paused.jpg | 4.8 "inspect paused" in combat; row 69 | owed: needs the user's test group and a hostile mob |
-| loot-l20-fs-loot-solo.jpg | 4.9 `/fs loot` on and off the list; rows 70 to 72 | captured: hunter-40-fs-loot-solo.jpg, hunter-41-fs-loot-uncached-and-planned.jpg |
-| loot-l20-drop-block.jpg | 4.9 master looter's "Drop:" region; row 74 | owed: needs the user's test group |
-| loot-l20-member-no-addon.jpg | 4.9 "waiting", "(inspect)", "no addon"; row 75 | owed: needs the user's test group |
-| loot-l20-second-drop-stack.jpg | 4.9 stacking, "and N more", 60 s clear; row 76 | owed: needs the user's test group |
-| loot-l60-drop-block.jpg | 4.9 at level 60 | owed: needs a level-60 character and the user's test group |
-| loot-combat-drop.jpg | 4.9 a drop that arrives in combat | owed: needs the user's test group and a hostile mob |
-
-## Build dialog (4.10)
-
-| Produces | Driven by | Week 1 |
-|---|---|---|
-| dialog-l1-paste-empty.jpg | 4.10 empty, at level 1 | owed: not shot; needs a session on the level-1 alt |
-| dialog-l20-paste-empty.jpg | 4.10 "Following", "Next talent", paste box | captured: dialog3-1-empty.jpg, dialog2-1-empty.jpg, hunter-25-build-paste-dialog-screen.jpg |
-| dialog-l20-paste-preview.jpg | 4.10 good code, preview, "Use this build" | captured: dialog3-2-preview.jpg, dialog2-2-preview.jpg |
-| dialog-l20-site-row.jpg | 4.10 site build row, gold edge | captured: dialog7-1-row.jpg, dialog7-2-row-preview.jpg, dialog6-1-row.jpg, dialog6-2-row-preview.jpg |
-| dialog-l20-use-pressed.jpg | 4.10 Use hover and pressed | owed: dialog5-3-use-hover.jpg and dialog5-3-use-pressed.jpg show no visible change under the capture tool; needs a human hover and press |
-| dialog-l20-use-result.jpg | 4.10 "Now following ..." and the chip | captured: dialog-3-chat.jpg, dialog-3-chip.jpg, dialog-7-use-chat.jpg |
-| dialog-l20-refused.jpg | 4.10 bad code, advice line | captured: dialog4-4-refused-advice.jpg, dialog3-4-wrong-class.jpg, dialog-4-refused.jpg |
-| dialog-l20-copy.jpg | 4.10 Copy my character, selected export | captured: dialog7-5-copy.jpg, dialog5-5-copy.jpg, hunter-42-copy-dialog-hunter.jpg |
-| dialog-l20-copied.jpg | 4.10 green "You copied ..." | captured: dialog6-5-copied.jpg, dialog5-5-copied.jpg, dialog3-5-copied.jpg |
-| dialog-l20-ack-states.jpg | 4.10 "Seen by the site", "Yours is newer", "Waiting for the site" | captured: dialog-6-seen.jpg, dialog6-5-copy.jpg, dialog7-5-copy.jpg |
-| dialog-l20-sim-line.jpg | 4.10 "Sim queued for ..." / "Sim done ..." | captured: dialog8-5-sim-line.jpg, dialog5-5-copy.jpg |
-| dialog-l20-no-companion.jpg | 4.10 "No companion found" | captured: hunter-42-copy-dialog-hunter.jpg, hunter-25-copy-dialog-screen.jpg |
-| dialog-l20-tabs-escape.jpg | 4.10 Tab switches, Escape goes back then closes | captured: dialog7-tabs-paste.jpg, dialog7-escape-empty.jpg, dialog-10-tab-paste.jpg |
-| dialog-l20-waiting-badge.jpg | 4.10 "1 waiting" in its own slot | captured: dialog7-1-row.jpg, dialog6-5-copy.jpg |
-| dialog-l20-keyboard-free.jpg | row 24 movement keys after Escape | owed: the notes say keys were free (round 1 facts) but name no capture |
-| dialog-l60-copy-sim-done.jpg | 4.10 "Sim done from the ... copy" at 60; row 47 | owed: needs a level-60 character |
-| dialog-combat-open.jpg | 4.10 opening `/fs` in combat | owed: needs a hostile mob |
+| hub-l1-first-open.jpg | 4.1 first open: Me with Set up on a fresh install, the window opening 5 s after login | owed: new in 2.0.48 |
+| hub-l20-first-open-reinstall.jpg | 4.1 first open after deleting and reinstalling the addon (SavedVariables kept) | owed: new in 2.0.48 |
+| hub-l20-first-open-instance.jpg | 4.1 first login inside a dungeon: nothing opens until the zone changes | owed: new in 2.0.48 |
+| hub-l20-fs-tour.jpg | 10 `/fs tour` brings Set up back; a done step ticked and muted | owed: new in 2.0.48 |
+| hub-l20-setup-tooltip.jpg | 4.1 step 2's worn item in the client's own tooltip with our line under it | owed: new in 2.0.48 |
+| hub-l20-me.jpg | 4.1 Me: score, last raid `[inbox]`, Right now, Your sim | owed: new in 2.0.48 |
+| hub-l20-builds.jpg | 4.2 Builds tab: own builds, next points, paste and copy | owed: new in 2.0.48 |
+| hub-l20-gear.jpg | 4.3 Gear: the doll, upgrades, stat weights, sources | owed: new in 2.0.48 |
+| hub-l20-rotation.jpg | 4.4 Rotation: the priority and the level stepper | owed: new in 2.0.48 |
+| hub-l20-guild.jpg | 4.5 Guild: tonight, sign-up answers, next raids `[inbox]` | owed: new in 2.0.48 |
+| hub-l60-officer.jpg | 4.6 Officer: roster, readiness, push a build (an officer rank) | owed: needs a level-60 character with officer-note rights |
+| hub-l60-officer-loot.jpg | 4.6 master loot session, two-click Give | owed: needs the user's test group |
+| hub-l20-strip-dots.jpg | 3.3 the tab dots and the window landing on the first unseen item | owed: new in 2.0.48 |
+| hub-l20-pane-door.jpg | 7 the character pane's button opens Gear | owed: new in 2.0.48 |
+| hub-l20-guild-frame-door.jpg | 7 the guild frame's button opens Guild (Officer for an officer) | owed: new in 2.0.48 |
+| hub-l20-keybind.jpg | 10 Key Bindings: "Toggle the Forever Sixty window" toggles it | owed: new in 2.0.48 |
+| hub-combat-closes.jpg | 3.1 the window closes as combat starts and stays closed | owed: needs a hostile mob |
 
 ## Settings (4.11)
 
@@ -249,11 +195,11 @@ How to read a line:
 | launcher-l1-minimap-button.jpg | 4.11 minimap button at level 1 | owed: not shot; needs a session on the level-1 alt |
 | launcher-l20-minimap-tooltip.jpg | 4.11 minimap button hover; row 26 | captured: settings-6-minimap-tooltip.jpg, settings2-2-minimap-hint-glyph.jpg |
 | launcher-l20-minimap-moved.jpg | 4.11 drag and reset | captured: settings2-7-button-moved.jpg, settings2-7-button-back.jpg |
-| launcher-l20-left-click-dialog.jpg | 4.11 left click opens the build dialog | owed: no file named; needs a left click on the button |
+| launcher-l20-left-click-window.jpg | hub spec 6 left click opens the window on the chip's line's tab | owed: new in 2.0.48 |
 | launcher-l20-right-click-settings.jpg | 4.11 right click opens the Settings page | captured: settings-1-screen.jpg, settings2-1-screen.jpg |
 | launcher-l20-fs-options.jpg | 4.11 `/fs options` | captured: settings2-8-fs-options.jpg |
 | launcher-l20-compartment-entry.jpg | 4.11 addon compartment entry; row 26 | owed: no file named; needs the compartment menu open |
-| launcher-l20-keybind.jpg | row 27 "Toggle Forever Sixty" in Key Bindings | owed: no file named |
+| launcher-l20-keybind.jpg | hub spec 10 "Toggle the Forever Sixty window" in Key Bindings | owed: new in 2.0.48 |
 | launcher-l20-addons-list-icon.jpg | row 28 LX seal in the AddOns list | owed: no file named |
 | launcher-l60-minimap-button.jpg | 4.11 at level 60 | owed: needs a level-60 character |
 | launcher-combat-minimap-button.jpg | 4.11 minimap button in combat | owed: needs a hostile mob |

@@ -49,9 +49,6 @@ Theme.HEX = {
 	tooltipText = C.addon.tooltipText,
 	--- The client's own tooltip body white: the addon's plain lines on a player's tooltip (A.2).
 	tooltipBody = C.base.strong,
-	--- The tooltip ground and edge, for the tour's drawn example of a tooltip.
-	tooltipGround = C.forever.tooltip,
-	tooltipEdge = C.forever.tooltipEdge,
 	--- The client's own tooltip gold (its item-set and "Requires" lines).
 	clientGold = C.forever.tooltipYellow,
 	body = C.base.text,
@@ -68,26 +65,13 @@ Theme.HEX = {
 	tooltipGreen = C.addon.tooltipGreen,
 	--- The item tooltip's last Shift line (the attribution), one step dimmer than tooltipMuted.
 	tooltipDim = C.addon.tooltipDim,
-	--- The addon's own frames (the panel, the onboarding) as the site's plates: the raised ground
-	--- inside one hairline, cream titles in the title face, text and muted details as the site sets
-	--- them, the site's secondary button (blue in its blue edge) and its one primary (teal in the
-	--- teal edge), each with a white label.
-	umber = C.base.raised,
-	umberTop = C.base.raised,
-	umberEdge = C.base.line,
+	--- The window's titles in cream in the title face, and the site's secondary button (blue in its blue
+	--- edge) and its one primary (teal in the teal edge), each with a white label.
 	bone = C.forever.cream,
-	boneDim = C.base.muted,
-	ink = C.base.text,
-	umberMuted = C.base.muted,
-	brass = C.base.gold,
 	blue = C.forever.blue,
 	blueEdge = C.forever.blueEdge,
 	tealTop = C.forever.teal,
-	tealBottom = C.forever.teal,
 	tealEdge = C.forever.tealEdge,
-	--- The medallion's faction notch (media/medallion-notch, tinted at runtime).
-	notchAlliance = C.faction.allianceBar,
-	notchHorde = C.faction.hordeBar,
 }
 
 Theme.ALPHA = {
@@ -353,22 +337,7 @@ Theme.SIZES = {
 	lootPlannedWidth = 76,
 	lootColumnGap = 6,
 	lootMaxRows = 8,
-	--- The addon's own frames' title band (Widgets.titleBand): its height, the medallion's side,
-	--- the crest's inset inside the ring (13 % of the side, the mock's), the gap after the
-	--- medallion, the band's side padding (the right one clears the close button), the title's,
-	--- and a section heading's sizes in the title font (the right-hand number is a figure, set in
-	--- the body face's large role), and the height of a small client button (the panel's rows).
-	titleBand = 64,
-	medallion = 44,
-	medallionInset = 6,
-	medallionGap = 12,
-	titleBandPad = 12,
-	titleBandPadRight = 42,
-	--- The number's top on the title's line, and the room kept for its unit until the unit is measured.
-	titleBandNumberTop = 14,
-	titleBandUnitRoom = 36,
-	titleText = Tokens.type.addon.title.size,
-	headingText = Tokens.type.addon.heading.size,
+	--- The height of a client button (Widgets.clientButton).
 	clientButtonHeight = 20,
 }
 
@@ -428,10 +397,6 @@ Theme.MEDIA = {
 	--- runtime through SetVertexColor (Window.applyHeader), rather than
 	--- nine near-identical ring files.
 	crestRing = "Interface\\AddOns\\ForeverSixty\\media\\crests\\ring",
-	--- The title band's medallion (addon/tools/make_medallion.py): the bronze ring with its
-	--- brass rims, and the white faction notch at one o'clock tinted per faction.
-	medallionRing = "Interface\\AddOns\\ForeverSixty\\media\\medallion-ring",
-	medallionNotch = "Interface\\AddOns\\ForeverSixty\\media\\medallion-notch",
 	--- The Gear page's own green tick glyph (round-3 fix, section 4.5.4):
 	--- the client's own ready-check icon, already green, so this addon
 	--- ships no new art for it.

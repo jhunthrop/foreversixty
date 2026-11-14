@@ -135,15 +135,4 @@ describe("the TOC", function()
 		end
 	end)
 
-	-- The title band's medallion (Widgets.medallion): the bronze ring and the faction notch.
-	it("ships the medallion ring and notch inside the packaged folder", function()
-		for _, name in ipairs({ "medallion-ring", "medallion-notch" }) do
-			local path = "ForeverSixty/media/" .. name .. ".tga"
-			local file = io.open(path, "rb")
-			assert.is_not_nil(file, path .. " is missing; run addon/tools/make_medallion.py")
-			if file ~= nil then
-				file:close()
-			end
-		end
-	end)
 end)

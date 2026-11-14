@@ -233,11 +233,11 @@ Run on one character per role and tick here:
       few seconds, and clicking it prints the command list; it does not appear mid-combat and
       shows once combat ends.
 - [ ] The tracker's thin bar fills as points are spent.
-- [ ] The minimap tooltip lists build progress and upgrades waiting and ends with the two click
-      hints; the addon appears in the addon compartment on a client that has one, and its entry
-      opens the dialog on a left click and the Settings page on a right click.
+- [ ] The minimap button's hover is the chip's (everything waiting and the three hints); the addon
+      appears in the addon compartment on a client that has one, and its entry opens the window on a
+      left click and the Settings page on a right click.
 - [ ] Each Settings switch takes effect without a reload; Reset positions moves the chip, the
-      minimap button and the build dialog back at once, and the button reads "Positions reset" for
+      minimap button and the Forever Sixty window back at once, and the button reads "Positions reset" for
       2 s, in readable grey inside a grey 1 px border.
 - [ ] The Settings page opens at the top; a hint that wraps to two lines pushes the next row down
       a line; the minimap hint reads "Options > AddOns".
@@ -248,25 +248,18 @@ Run on one character per role and tick here:
       under it, with and without the line under the title.
 - [ ] `/fs options` opens the Settings page; "Marks on the talent window" off leaves the talent
       window bare, and the chip stays beside the minimap while the window is open.
-- [ ] The keybind (Key Bindings > AddOns > Forever Sixty), a chip click, the character pane's
-      button and the addon compartment entry each open the panel (design/specs/2026-11-08-addon-ux.md
-      section 4); it never opens in combat, closes when combat starts, closes on Escape, and a dragged
-      spot is kept until Reset positions.
-- [ ] The panel is on the umber ground with a bronze edge; its top is the title band: the class
-      crest in the bronze ring, the name in bone in the title font, "Level 24 Hunter" muted under it
-      on one line (no guild), "1240 score" on the right (the number in its tier colour, nothing for a
-      character with no score), and the client's red close X top right. Headings are bone, buttons
-      the client's own red ones.
-- [ ] The faction notch shows on the medallion at one o'clock: blue on an Alliance character, red
-      on a Horde one.
-- [ ] With the raid_signup fixture and `accepts = { "raid_answer" }`: In, Late, Bench and Out show
-      in the client's style while unanswered; after pressing In the answer reads "In, not sent yet",
-      the four buttons stay and In is teal; pressing Bench makes Bench teal and queues it instead.
-      The line under the raid name reads the role alone ("Damage"), the job reads "Job: <label>".
-- [ ] None of these lines show: "Your other slots are best for your level.", "your sim",
-      "hover for the full rule", "you can change it later", "Sends when the companion app runs";
-      the Talents row has no "1 of 5", only the build name under the talent, with Change and
-      Talents side by side on the right.
+- [ ] The key binding ("Toggle the Forever Sixty window"), `/fs`, a chip click and the addon compartment
+      entry each open the Forever Sixty window on the tab that matters now; the character pane's button
+      opens Gear and the guild frame's opens Guild (design/specs/2026-11-13-addon-hub.md 3, 6, 7). It never
+      opens in combat, closes when combat starts, closes on Escape, and a dragged spot is kept until
+      Reset positions.
+- [ ] A fresh install (and a reinstall that kept SavedVariables from 2.0.47 or older) opens the window on
+      Me five seconds after login with Set up in place of Right now: three steps linking Builds, Gear and
+      foreversixty.gg/app, the worn item's own tooltip under them. Logging in inside a dungeon opens
+      nothing until you leave it; `/fs tour` brings Set up back any time (spec 4.1).
+- [ ] With the raid_signup fixture and `accepts = { "raid_answer" }`: the Guild tab shows In, Late,
+      Bench and Out while unanswered; pressing In makes it teal and the footer reads "Sends when the
+      companion runs"; pressing Bench makes Bench teal and queues it instead.
 - [ ] `/fs help` prints the command list, and `/fs help all` adds the two muted testers' lines.
 - [ ] With the data addon installed, a logged player's tooltip ends with "Forever Score <n>" in its
       tier colour (the date in brackets once the record is over a week old) and nothing else; Shift

@@ -36,13 +36,6 @@ local L = {
 	},
 	-- How a printed line is prefixed with the addon's name.
 	chatLine = "%s: %s",
-	tabOverview = "Overview",
-	tabExport = "Export",
-	tabFollow = "Talents",
-	tabGear = "Gear",
-	tabSettings = "Settings",
-	headerRealmLevel = "%s · level %d",
-	headerNoSpec = "No spec yet",
 	diagHeading = "Not working:",
 	-- L4.1 fix round 5: the surfaces' status lines under their own heading, never under the above.
 	diagWorkingHeading = "Working:",
@@ -91,8 +84,6 @@ local L = {
 	talentStripDoneNext = "Build complete · next point at level %d",
 	talentStripDone = "Build complete",
 	talentStripOffPlan = "%d off plan",
-	-- L3.2 fix round 4: the strip's leading segment, the talent and its rank: "Improved Heroic Strike (1 of 3)".
-	talentStripNextTalent = "%s",
 	-- A run of the plan's points at a cell, en dash: a badge names the next
 	-- run ("8–11", then "36"), the node tooltip lists every one.
 	talentBadgeRange = "%d–%d",
@@ -105,30 +96,8 @@ local L = {
 	talentNodeLineOne = "Your build: point %d",
 	talentNodeOffPlan = "Not in your build",
 
-	-- Export
-	exportTitle = "Send your character to the site",
-	exportHint = "The planner and the simulator read this code: talents, gear, bags and professions.",
-	exportSteps = {
-		"Press Copy code, then Ctrl+C.",
-		"Open " .. SITE .. "/planner or " .. SITE .. "/sim.",
-		"Paste it into the box marked Import from addon.",
-	},
-	exportContents = "What is in it",
-	-- exportNoTalents is deleted with the refusal it belonged to
-	-- (controller ruling 5); this is the summary's line, not an error.
-	exportNoPoints = "No talent points yet",
-	exportCopy = "Copy code",
-	exportCopied = "Selected. Press Ctrl+C",
 	-- "<tree> <points>", joined by exportTreeSeparator: "Arms 0 · Fury 0 · Protection 0".
-	exportTree = "%s %d",
 	exportTreeSeparator = " · ",
-	exportSlots = "%d of %d slots",
-	exportBags = "%d in your bags, %d in the bank",
-	exportProfessions = "Professions: %s",
-	exportProfessionSeparator = ", ",
-	exportNoProfessions = "No professions yet",
-	exportSavedAt = "Last saved on logout: %s",
-	exportNotYet = "Not yet",
 
 	-- Codec refusals. Each names what is wrong, never a generic failure.
 	-- Note: the `|` -> `||` doubling that escapes a refused fragment against
@@ -170,28 +139,14 @@ local L = {
 	codecUnknownClass = "That code is for a %s; this addon carries no tree for that class.",
 
 	-- Follow
-	followTitle = "Next point",
 	followNone = "No build loaded. Paste a build code above and press Load.",
 	-- The Follow tab's empty state, named: a player with more than one
 	-- character wants to know whose build it would load before pasting one.
-	followNoneNamed = "No build loaded for %s. Paste a build code below.",
-	followPasteFirst = "Paste a build code first.",
 	followDone = "This build is finished; every point is spent.",
 	followNext = "%s (%s, tier %d)",
-	followLoaded = "Loaded %s: %d points.",
 	-- A talent this addon's data has no name for, named by its position
 	-- instead, so the player can still find the cell.
 	followUnknownCell = "%d:%d",
-	followPasteHint = "Plan it at " .. SITE .. "/planner, copy the addon code, paste it here and press Load build.",
-	--- Appended to the progress line when the character has points the
-	--- plan never asked for.
-	followOffPlan = "%d off plan",
-	--- The rank cell on the row to take next, and on a finished row.
-	followNextTag = "Next · %s",
-	followLoadButton = "Load build",
-	followLoadTitle = "Load a build",
-	followForget = "Forget build",
-	followProgress = "%d of %d points",
 	-- Controller ruling 2: neither code format carries a build name, so a
 	-- pasted code is named after its class.
 	followBuildName = "%s build",
@@ -201,16 +156,6 @@ local L = {
 	followKindWord = { leveling = "level 60", raid = "raid" },
 	-- Between the two trees an unnamed build is named after: "Arms / Fury build".
 	followSplitSeparator = " / ",
-	-- One row of the order: tier, then the talent's name.
-	followRow = "%d  %s",
-	-- The same row once the player has matched it. The mark is a plain
-	-- Unicode tick; a client font without the glyph draws a box, which is
-	-- a cosmetic loss on an already-dimmed row.
-	followRowDone = "%s  %d  %s",
-	followDoneMark = "✓",
-	followRank = "%d/%d",
-	followInbox = "A build arrived from the companion",
-	followInboxLoad = "Load it",
 
 	-- Named build slots (design section 1). "slot" .. Follow.SLOTS[n],
 	-- title-cased, is the lookup Follow.slotsFor uses, so a new slot id
@@ -219,49 +164,18 @@ local L = {
 	slotLeveling = "Leveling",
 	slotPvp = "PvP",
 
-	-- The Overview's "build arrived" banner (design section 1): a
-	-- one-time note the first time a login finds a companion build queued
-	-- for this character that the player has not addressed yet.
-	buildArrivedTitle = "A build arrived for %s.",
-	buildArrivedLoad = "Load it",
-	buildArrivedDismiss = "Dismiss",
 	-- The diff summary under the title: how this compares to what is
 	-- already loaded in the active slot.
 	buildArrivedFirst = "This is the first build queued for this character.",
 	buildArrivedSame = "It matches your current build point for point.",
 	buildArrivedDiff = "%d talent points differ from your current build.",
 
-	-- Gear
-	gearTitle = "Upgrades",
 	-- What finishes "Not for you: ..." when a carried piece asks for more than the character has
 	-- (Gear.restriction): the line, the Gear page and /fs loot all read these.
 	gearRequiresLevel = "requires level %d",
 	gearClassOnly = "%s only",
 	gearClassOr = " or ",
-	gearPlanned = "Planned",
-	gearEquipped = "Equipped",
-	gearMatches = "As planned",
 	gearEmptySlot = "Empty",
-	gearYoursBetter = "Yours is better (%+.0f)",
-	gearDiffers = "Different from the plan",
-	gearBagUpgrades = "Upgrades in your bags",
-	gearEquipButton = "Equip",
-	gearInCombat = "In combat",
-	gearLoadABuild = "Load a build on the Talents page to compare your gear with the plan.",
-	gearOpenFollow = "Open the Talents page",
-	-- "<slot>  <name>" for an upgrade row.
-	gearSlotRow = "%s  %s",
-	gearUpgradeRow = "%+.0f",
-	gearItemUnknown = "Item %d",
-	--- An item the client has not sent yet; the row redraws when it has.
-	gearItemLoading = "Loading item...",
-	--- What the "+N" on this page is counted in: the spec's reference stat.
-	gearScoreNote = "Scored by %s weights · 1 point = 1 %s",
-	gearScoreNoteNoReference = "Scored by %s weights",
-	-- Round-2 ruling: a slot the build never planned, with something
-	-- worn there anyway -- never a false "Different from the plan", and
-	-- never the silence this read as before the ruling.
-	gearNoPlanForSlot = "No plan for this slot",
 	-- Round-3 fix (§4.5.4): the slot-label column, the client's own slot
 	-- vocabulary -- one entry per Export.INVENTORY_SLOTS. A table value
 	-- here, like exportSteps above, not seventeen near-duplicate keys.
@@ -271,9 +185,6 @@ local L = {
 		finger1 = "Finger", finger2 = "Finger", trinket1 = "Trinket", trinket2 = "Trinket",
 		main_hand = "Main Hand", off_hand = "Off Hand", ranged = "Ranged",
 	},
-	-- The tick glyph's own hover tooltip (round-3 fix): the words it used
-	-- to spell out as row text, moved here rather than lost.
-	gearPlannedTickTooltip = "As planned",
 
 	-- Inbox
 	inboxEmpty = "No builds waiting. Send one from " .. SITE .. ".",
@@ -366,39 +277,12 @@ local L = {
 		.. ".",
 	diagSettingsDrawn = "The Settings page drew %d of its %d controls.",
 	diagSettingsNoOpen = "This client did not open the Settings page; right-click prints the commands instead.",
-	-- The Overview page.
-	overviewBuildEyebrow = "Your build",
-	overviewBuildNone = "No build loaded",
-	overviewBuildNoneHint = "Plan a build on the site and load its code on the Talents page.",
-	overviewBuildProgress = "%d of %d points taken",
-	overviewBuildOpen = "Open talents",
-	overviewBuildLoad = "Load a build",
-	overviewGearEyebrow = "Gear",
-	overviewGearNoBuild = "No build loaded",
-	overviewGearSlots = "%d of %d slots filled",
-	overviewGearNeedsBuild = "Load a build to compare what you wear with what you planned, "
-		.. "and to score what is in your bags.",
-	overviewGearUpgrades = "%d upgrades waiting in your bags.",
-	overviewGearNoUpgrades = "Nothing in your bags beats what you are wearing.",
-	overviewGearMatched = "%d of %d planned pieces equipped",
-	overviewGearOpen = "See gear",
-	overviewTreesEyebrow = "Talent points",
-	overviewTreesNone = "No points spent yet. Talents open at level 10.",
-	overviewSyncEyebrow = "Send to the site",
-	overviewSyncNothing = "There is nothing to send yet.",
 	-- Round-2 owner fix: there is always something to send -- the
 	-- character itself -- so the card leads with the crest, the name
 	-- and the level rather than the generic title above, which now
 	-- shows only on Export.string's genuine class-unknown refusal.
-	overviewSyncLevel = "Level %d",
-	overviewSyncCopy = "Copy code",
-	overviewSyncCopied = "Selected. Press Ctrl+C",
 	siteName = SITE,
-	headerLevelLine = "Level %d %s %s",
-	headerSpecSeparator = "  ·  ",
-	statusOutOfDate = "Data out of date",
 	addonVersion = "v%s",
-	addonVersionDev = "dev",
 
 	-- Outside the window (premium pass, 2026-09-21): item tooltips, the
 	-- minimap's tooltip
@@ -407,14 +291,9 @@ local L = {
 	-- own edits to this file costs one diff hunk, not a rebase through
 	-- every key.
 	diagTooltipHookFailed = "The item tooltip hook failed once and turned itself off: %s",
-	-- The Overview's rotation card (section 6 Wave B).
-	overviewRotationEyebrow = "Your rotation",
-	overviewRotationNone = "No curated rotation for this spec yet.",
-	overviewRotationNoBuild = "Load a build to see your rotation.",
 	-- The Follow tab's own Top Gear upgrade queue reuses this line for its
 	-- overflow hint (FollowView.lua); the Overview's rotation card has its
 	-- own expand-in-place affordance now (overviewRotationMoreCount).
-	overviewRotationMore = "Turn on advanced detail in Settings to see the rest.",
 	bindingHeader = "Forever Sixty",
 	bindingToggle = "Toggle the Forever Sixty window",
 	diagNoTooltipHook = "This client has no tooltip hook API; item tooltips will not show Forever Sixty's lines.",
@@ -430,8 +309,6 @@ local L = {
 	scoreAsOf = "as of %s",
 	-- "Forever Score 1830 · Epic · as of 4 Nov": the score, its tier, its date.
 	scoreLine = "Forever Score %d",
-	-- A character the record does not have, or with no logs: never a zero (spec section 4.6).
-	scoreNoLogs = "Forever Score: no logs yet",
 	-- The player tooltip's score line when the record is older than a week (spec 2.5):
 	-- "Forever Score 1240 (13 Oct)".
 	scoreDated = "Forever Score %d (%s)",
@@ -454,39 +331,8 @@ local L = {
 	-- The fifth part: flask, food and enchants. Not "Discipline", which is a Priest tree; the
 	-- key and the record field `discipline` stay.
 	scoreDiscipline = "Preparation",
-	overviewRating = "Your rating on the site: %d, over %d fights",
-	-- The Overview's personal rating card (design section 3): always
-	-- shown, its detail widened by the advanced-detail toggle.
-	overviewRatingEyebrow = "Personal rating",
-	overviewRatingHeadline = "Rating %d, over %d fights",
-	-- "<label> <score>" for one component in the advanced breakdown,
-	-- joined with exportTreeSeparator: "Output 82 · Survival 91".
-	overviewRatingComponent = "%s %d",
-	-- Round-2 owner fix: the empty state says what produces a rating,
-	-- with a link, not a bare "no rating yet" dead end -- replaces
-	-- ratingsNotRated ("No rating yet for this character."), now
-	-- deleted, in this card's own empty state.
-	overviewRatingNone = "Upload a log or run the companion to get one.",
-	overviewRatingSetup = "Get set up",
 	-- The Guild page.
-	tabGuild = "Guild",
-	guildNone = "Not in a guild",
-	guildNoneHint = "Join a guild and the addon shows its standing here.",
-	guildRank = "%s",
 	guildNights = "%d raid nights logged",
-	guildRoster = "%d on the roster",
-	guildRosterTitle = "Roster by rating",
-	guildUnrated = "No rating yet",
-	guildNotOnSite = "This guild has no logs on " .. SITE .. " yet. "
-		.. "Upload a raid night and it appears here the next day.",
-	-- The member standing line (wave-1 scope item 4, shown first, ahead
-	-- of the roster): the rank half is never invented -- the data addon
-	-- carries no item level or spec per guild member yet -- the gap half
-	-- is this addon's own gear plan, real the instant a build loads.
-	guildStandingNoRank = "Your item-level rank among guildmates is not available yet.",
-	guildStandingGap = "Your biggest gear gap: %s, +%.0f.",
-	guildStandingGapNone = "Nothing in your gear is behind your plan right now.",
-	guildStandingGapNoBuild = "Load a build on the Talents page to see your gear gap.",
 
 	-- Wave C additions (docs/superpowers/specs/2026-09-28-addon-character-
 	-- aware-design.md §3, §4, §6): the typed inbox messages -- upgrade,
@@ -496,48 +342,10 @@ local L = {
 	-- file at the same time for Wave B, and an appended block is the
 	-- smallest surface for the controller to merge.
 	tooltipCapped = "%s capped: more is wasted",
-	-- Wave-1 scope item 5, wired into OverviewView: the companion inbox's
-	-- own "upgrade" message. Extended with the DPS unit and the sim's own
-	-- date (the whole inbox's `generated_at` stamp -- the message itself
-	-- carries none) when this key was first added but never wired to a
-	-- surface.
-	inboxUpgradeLine = "Your top upgrade: %s for %s, +%.0f DPS, from your sim (%s)",
-	inboxWeightsLine = "Weights updated for %s",
-	inboxGuildLine = "Guild news: %s",
-
-	-- Lane inbox-wire (2026-09-28): wiring Codec.inboxMessages into the
-	-- Follow tab and the tooltip hook (the weights message now reaches the
-	-- item tooltip through Gear.currentWeights, L3.3)
-	-- (docs/superpowers/specs/2026-09-28-addon-character-aware-design.md
-	-- section 3 item 2, section 4). Appended after the Wave C block above
-	-- for the same reason it gives: the smallest surface for another
-	-- lane's concurrent edit to merge.
-	followUpgradesTitle = "Upgrades waiting",
-	-- "<slot>: <item name>" for one upgrade row's top line.
-	followUpgradeItem = "%s: %s",
-	-- The row's second line: where the item drops.
-	followUpgradeSource = "from %s",
-	followUpgradeDelta = "+%.0f",
-
-	-- Lane addon-premium (2026-09-28): the addon to the standard of the
-	-- best WoW addon ever made (docs/tenets.md) -- the rotation card's
-	-- redesign and header strip, and the Top Gear upgrade row's icon. (The
-	-- old empty-slot hover's strings went with it in L4.1.)
-	-- The rotation card's header strip: "<spec> · Level <band>+ · updated <build>".
-	overviewRotationHeaderStrip = "%s · Level %d+ · updated %s",
-	-- The expand-in-place affordance, replacing the old "turn on advanced
-	-- detail in Settings" hint for this one card.
-	overviewRotationMoreCount = "+%d more",
-	overviewRotationLess = "Show fewer",
-	-- Advanced detail's extra line under a rotation row's rank: the
-	-- spell id, and its cooldown when it has one worth naming.
-	overviewRotationDetail = "%s · #%d",
-	overviewRotationDetailCooldown = "%s · #%d · %ds cooldown",
 
 	-- Lane addon-v2 L2.1 (2026-10-11): the rules engine's two refusal
 	-- lines. The first %s is Rules.canEquip's reason ("mail armor"), the
 	-- %d the level it opens at.
-	rulesUntilLevel = "Not for you until %d: %s",
 	rulesNever = "Not for you: %s",
 
 	-- Lane addon-v2 L2.2 (2026-10-11): the level a talent point is taken
@@ -738,8 +546,6 @@ local L = {
 	ordinal = "%d%s",
 	ordinalSuffixes = { "st", "nd", "rd" },
 	ordinalOther = "th",
-	-- The tour's picture of the raid-day line: the raid's start on the client's clock, then the raid.
-	chipTonight = "Tonight %s: %s",
 	-- The chip (design/specs/2026-11-13-addon-hub.md 6): the count of the other things waiting, muted
 	-- after the line ("+2"); the line in combat; the hover's hints after every item waiting.
 	chipMore = "+%d",
@@ -937,7 +743,6 @@ L.dialogSourceCraftable = "%s · you can craft this"
 -- Above "Use this build", muted: what it replaces and where the two orders first differ (or
 -- "same point order"), and the next talent the candidate gives, alone.
 -- "%s" the followed build's name, then its size ("51 points"): two builds can share a name.
-L.dialogReplaces = "Replaces %s (%s)"
 L.dialogReplacesSameAll = "Replaces %s (%s) · same points and gear · nothing changes"
 L.dialogReplacesSameOrder = "Replaces %s (%s) · same points, different gear list"
 L.dialogReplacesDiffers = "Replaces %s (%s) · first differs at point %d: %s"
@@ -1062,9 +867,6 @@ L.guildTabLabel = L.addonName
 L.guildTabHint = {
 	"Tonight's raid, your sign-up and job, and your guild's standings.",
 }
--- A gap whose biggest gain is a weapon priced from the data alone (the client's stats not here yet)
--- is a lower bound: "≥ 4 DPS" (the group panel's row).
-L.gapAtLeast = "\226\137\165 %s"
 -- /fs diag: "Guild button: yes, officer no" (the button made; the hub's officer gate).
 L.diagGuildTab = "Guild button: %s, officer %s"
 L.diagGuildTabYes = "yes"
@@ -1267,7 +1069,6 @@ L.diagPanelState = "Window: %s"
 -- The chip's hover with nothing waiting and no tab to name.
 L.chipHintOpen = "Click: open Forever Sixty"
 -- After a row's source when the item asks for a higher level: " · level 27".
-L.homePicksStart = "Picks start at level %d"
 L.panelTalentAt = "Level %d: %s"
 L.panelSpendNow = "Spend %d now"
 -- The spec question (Follow.specQuestion, spec section 6.2): asked wherever a spec is needed and the
@@ -1282,7 +1083,6 @@ L.pathAskOr = " or "
 -- (Follow.defaultNext), under the tour's tiles, on the panel's Pick rows and at the right of the
 -- Builds dialog's own rows.
 L.pathSplit = "%d %s"
-L.pathNext = "%s next"
 
 -- The gear source filter (Sources.lua, design/specs/2026-11-13-addon-source-filter.md): the web BiS
 -- page's eight kinds and words (web/src/lib/bis/source-choice.ts), the panel's foot line, the Sources
@@ -1374,8 +1174,6 @@ L.markClick = "Click"
 L.markAltGear = string.format(L.markOpens, L.markAltClick, L.hubTabGear)
 L.markClickBuilds = string.format(L.markOpens, L.markClick, L.hubTabBuilds)
 L.gearEquipLine = "Equip %s %s"
-L.gearGainBare = "+%.1f"
-L.gearGainScoreBare = "+%d"
 
 -- /fs drops (RaidDrops.lua): the raid nights the loot window recorded for the export's drops=.
 L.dropsNone = "No raid drops recorded on this character yet. Open a boss corpse in a raid."

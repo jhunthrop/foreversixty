@@ -54,10 +54,10 @@ describe("score-labels.json", function()
 		assert.is_truthy(text:find(needle, 1, true), "score-labels.json is missing " .. needle)
 	end
 
-	it("carries the score line, the date and the no-logs line exactly as Locale has them", function()
+	-- The fixture's noLogs line is the web's; the addon prints Me's own "No logs yet." (spec 8) and carries none.
+	it("carries the score line and the date exactly as Locale has them", function()
 		has(quoted("line", L.scoreLine))
 		has(quoted("asOf", L.scoreAsOf))
-		has(quoted("noLogs", L.scoreNoLogs))
 	end)
 
 	it("lists the five components with Locale's labels, in Score.COMPONENTS order", function()

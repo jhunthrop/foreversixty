@@ -1,5 +1,14 @@
 # Forever Sixty
 
+## 2.0.48
+
+- Forever Sixty is now one window with tabs: Me, Builds, Gear, Rotation, Guild and Officer. /fs, the line by your minimap, the minimap button and the key binding all open it on the tab with something for you right now, and a gold dot marks any other tab that has something new. /fs gear, /fs guild and the rest open a tab directly.
+- What moved where. Your Forever Score, your last raid boss by boss and your sim are on Me, with what to do next. Your builds and next talent points are on Builds. Your gear as a paper doll, your best upgrades, stat weights and where your gear comes from are on Gear. Your rotation for your level is on Rotation. Tonight's raid, your sign-up, your job and your prep are on Guild. The roster, tonight's readiness, pushing a build and master loot are on Officer, for officers (and for the master looter during a session).
+- The panel, the pop-outs on the guild and Social windows and the old welcome tour are gone. The button on your character pane opens Gear, and the one on the guild window opens Guild.
+- On your first login after installing (or reinstalling) the addon, the window opens on Me with three Set up steps: pick your spec, see what the addon adds to an item you wear, get the companion app. Never in combat or inside a dungeon. /fs tour brings them back.
+- The line by your minimap shows the most urgent thing and a click opens that tab. Right-click it for Settings.
+- One key binding, "Toggle the Forever Sixty window". A key you had bound to the old panel opens the window now.
+
 ## 2.0.47
 
 - Builds now has its own bigger window. Your class's builds are on the left with one-click Follow, and the window stays open so you see the change at once. On the right: your next talent points by level, the box for pasting a build from the site, and your character code to copy for the site, each with a line on what it is for. Open it with /fs, the minimap button, Change on the panel, or the new "Open the Forever Sixty window" key binding.

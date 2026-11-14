@@ -53,16 +53,16 @@ const MAX_PLATE_BYTES = 5 * 1024 * 1024;
 /** Capture file names in gallery order; titles and captions come from CAPTIONS_FILE. */
 const PLATES = [
   'forever-sixty-line',
-  'addon-panel',
+  'window-me',
   'item-tooltip-verdict',
   'talent-window-marks',
   'bag-arrow',
   'quest-reward-marks',
   'player-tooltip',
   'chat-badge-guild',
-  'guild-tab',
-  'group-panel',
-  'build-dialog-builds',
+  'window-guild',
+  'window-officer',
+  'window-builds',
   'settings-page',
 ];
 
