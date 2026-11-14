@@ -14,7 +14,9 @@ the built code's own rules, not the approved boards':
   Score.isStale (3 days, Score.STALE_AFTER_SECONDS), the rule the chat badge and the Me tab already use.
 - Paper-doll slot and bag item: surfaces/SlotMarks.lua and ItemTooltip.withAltClick. The slot's hover leads with the bag
   fact (ItemTooltip.bagSection); under Shift the attribution, then the marks' one wording "Alt-click: open Gear"
-  (L.markAltGear). The gain is the hub board's own (+2.6 DPS, hub-chip.png).
+  (L.markAltGear). Velisandre is the Gear lane's (addon_hub_l3.velisandre, Raid-ready): the doll shows what she wears,
+  the bag item is her list's Hands pick and the gain is that tab's, so the marks and the Gear tab agree. Her other bag
+  items are a raid night's consumables, icons from simbuffs.json.
 - Talent strip: surfaces/TalentMarks.lua; its hover is the one line L.markClickBuilds, "Click: open Builds", dim.
 - Settings: surfaces/Settings.lua's layout (padding 16, title 24, line 18, row 44 at least, the 20 px client button,
   foot pad 12) inside the client's Settings canvas, 600 wide; the page scrolls past 560, drawn here whole.
@@ -26,6 +28,7 @@ import os
 import sys
 
 import addon_hub as hub
+import addon_hub_l3 as gear_lane
 import addon_ux as ux
 from addon_hub import ADDON, CLIENT_GOLD, QUALITY, esc
 from addon_ux import C, ROOT, arrow, img, l, tooltip
@@ -54,10 +57,13 @@ CSS = f'''
 .rf .timer {{ position: absolute; left: 10px; right: 10px; bottom: 4px; height: 4px; background: #2a1d0c; }}
 .rf .timer i {{ display: block; width: 62%; height: 100%; background: linear-gradient(#e0b23a, #a87a16); }}
 .rf .lb {{ font-family: Site, sans-serif; font-size: 10px; line-height: 13px; white-space: nowrap; {SHADOW} }}
-.pane {{ width: 220px; padding: 10px; display: flex; flex-direction: column; gap: 6px; }}
+.pane {{ width: max-content; padding: 10px; display: flex; flex-direction: column; gap: 6px; }}
 .slot {{ position: relative; width: 40px; height: 40px; }}
 .slot .mk {{ position: absolute; top: -4px; right: -5px; }}
 .bags {{ display: grid; grid-template-columns: repeat(4, 40px); gap: 4px; padding: 10px; }}
+.slot .ct {{ position: absolute; right: 2px; bottom: 1px; font-size: 12px; line-height: 12px; color: #fff;
+  text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000; }}
+.half {{ font-family: Site, sans-serif; font-size: 13px; color: {ADDON['muted']}; }}
 .tw {{ position: relative; width: 384px; height: 150px; padding: 0; overflow: visible;
   background: linear-gradient(#1b1d24, #101218); }}
 .tstrip {{ position: absolute; left: 12px; bottom: 10px; height: 26px; display: flex; align-items: center;
@@ -151,8 +157,22 @@ def roll_frame(item_id, line_html, marked=True, items=None):
             f'<div style="display:flex;gap:6px">{buttons}</div></div>')
 
 
-def board_rewards():
+def velisandre():
+    return gear_lane.velisandre('raid')
+
+
+def gain_over_worn(ch, item_id, slot):
+    """The Gear lane's gain rule (Progress.slotGain) for an item against what the character wears there."""
+    return round((ch.score(item_id, slot) - ch.score(ch.worn[slot], slot)) * ch.pp['dps'], 1)
+
+
+ROLL_ITEM, ROLL_NOT_FOR_YOU = 17069, 16867  # Striker's Mark and Legplates of Might, both Molten Core
+
+
+def board_rewards(labels=False):
+    """With labels, each half names whose moment it is: Aldrenna leveling at 21, Velisandre at 60."""
     gain = ux.tunic_gain()
+    roll_gain = gain_over_worn(velisandre(), ROLL_ITEM, 'ranged')
     best = 'Best for 20 to 29'
     quest = quest_frame([reward(2041, best, marked=True), reward(6087, unusable=True), reward(2042)])
     hover = tooltip(ux.tunic_of_westfall() + [
@@ -160,20 +180,23 @@ def board_rewards():
         l(best, color=CLIENT_GOLD),
     ], width=250)
     none = quest_frame([reward(2041), reward(6087, unusable=True), reward(2042, 'Sells for most', label_color=GREY)])
-    roll_pick = roll_frame(17069, f'<span style="color:{C["green"]}">+5.8 DPS</span>'
+    roll_pick = roll_frame(ROLL_ITEM, f'<span style="color:{C["green"]}">+{roll_gain} DPS</span>'
                                   f'<span style="color:{GREY}"> · </span>'
                                   f'<span style="color:{CLIENT_GOLD}">Best at level 60</span>')
-    roll_up = roll_frame(17069, f'<span style="color:{C["green"]}">+5.8 DPS</span>')
-    roll_no = roll_frame(16867, f'<span style="color:{GREY}">Not for you</span>', marked=False, items=WARRIOR)
+    roll_up = roll_frame(ROLL_ITEM, f'<span style="color:{C["green"]}">+{roll_gain} DPS</span>')
+    roll_no = roll_frame(ROLL_NOT_FOR_YOU, f'<span style="color:{GREY}">Not for you</span>', marked=False, items=WARRIOR)
+    half = (lambda text: f'<div class="half">{text}</div>') if labels else (lambda text: '')
     html = row(
-        col(note('<b>Aldrenna, level 21 hunter, hands in The Defias Brotherhood.</b> The arrow sits on the reward '
+        col(half('Aldrenna, level 21'),
+            note('<b>Aldrenna, level 21 hunter, hands in The Defias Brotherhood.</b> The arrow sits on the reward '
                  'with the biggest gain; the band\'s pick names itself in the item tooltip\'s own gold line, '
                  'word for word, so the label and the hover never disagree.'),
             row(quest, hover, gap=12),
             note('<b>Nothing here helps her</b> (the same quest, wearing better): one grey label on the reward that '
                  'sells for the most.'),
             none),
-        col(note('<b>Velisandre, level 60, at a group loot roll.</b> One short line beside the item: the gain, '
+        col(half('Velisandre, level 60'),
+            note('<b>Velisandre, level 60, at a group loot roll.</b> One short line beside the item: the gain, '
                  'then the pick\'s own words in the client gold.'),
             roll_pick, note('An upgrade that is not the pick'), roll_up, note('Plate a hunter cannot wear'),
             roll_no),
@@ -214,6 +237,25 @@ def board_player():
 
 # --- Paper doll and bags --------------------------------------------------------------------------------
 
+# The rest of her bags on raid night, (icon, stack): the client's hearthstone, then simbuffs.json's consumables.
+BAG_STOCK = [
+    ('inv_misc_rune_01', 1),    # Hearthstone
+    ('inv_potion_54', 5),       # Major Healing Potion
+    ('inv_potion_76', 5),       # Major Mana Potion
+    ('inv_potion_32', 4),       # Elixir of the Mongoose
+    ('inv_potion_24', 2),       # Greater Fire Protection Potion, for Onyxia
+    ('inv_potion_45', 3),       # Mageblood Potion
+    ('inv_misc_fish_13', 10),   # Grilled Squid
+    ('inv_drink_04', 5),        # Rumsey Rum Black Label
+    ('inv_misc_food_47', 20),   # Tender Wolf Steak, her pet's
+    ('inv_misc_fish_20', 8),    # Smoked Sagefish
+    ('inv_stone_04', 1),        # Major Healthstone
+]
+BAG_SLOTS = 16
+PANE_SLOTS = ('chest', 'hands', 'ranged')
+EMPTY_SLOT = '<div class="slot" style="background:#0d0f14;box-shadow:inset 0 0 0 1px #2a2d36"></div>'
+
+
 def slot_cell(item_id, marked):
     it = ux.item(item_id)
     mark = f'<div class="mk">{arrow(14)}</div>' if marked else ''
@@ -221,42 +263,64 @@ def slot_cell(item_id, marked):
             f'{mark}</div>')
 
 
+def stock_cell(icon, count):
+    stack = f'<div class="ct">{count}</div>' if count > 1 else ''
+    return f'<div class="slot">{img(icon, 40, "box-shadow:0 0 0 1px #000")}{stack}</div>'
+
+
+# items/<class>.json carries no durability: the client's figure for each item drawn here.
+DURABILITY = {13255: 40, 867: 40}
+STAT_WORDS = {'agility': 'Agility', 'strength': 'Strength', 'stamina': 'Stamina', 'intellect': 'Intellect',
+              'spirit': 'Spirit'}
+
+
+def equip_lines(it):
+    """The client's green Equip lines for the item's ratings and attack power; its own effect as Use."""
+    stats, out = it['stats'], []
+    if stats.get('hit'):
+        out.append(f'Equip: Improves your chance to hit by {stats["hit"] / gear_lane.RATING_PER_PERCENT["hit"]:g}%.')
+    if stats.get('crit'):
+        out.append('Equip: Improves your chance to get a critical strike by '
+                   f'{stats["crit"] / gear_lane.RATING_PER_PERCENT["crit"]:g}%.')
+    if stats.get('attack_power'):
+        out.append(f'Equip: +{stats["attack_power"]} Attack Power.')
+    if it['effect_text']:
+        out.append(f'Use: {it["effect_text"]}')
+    return [l(esc(text), color=C['green']) for text in out]
+
+
+def item_lines(it):
+    """The client's tooltip head for a piece of armour from items/<class>.json."""
+    bind = 'Binds when picked up' if it['bonding'] == 'pickup' else 'Binds when equipped'
+    primaries = [l(f'+{it["stats"][k]} {word}') for k, word in STAT_WORDS.items() if it['stats'].get(k)]
+    return [f'<div class="t" style="color:{QUALITY[it["quality"]]}">{esc(it["name"])}</div>', l(bind),
+            l(gear_lane.SLOT_WORD[it['slot']], it['armor_type'].capitalize()), l(f'{it["armor"]} Armor'),
+            *primaries, l(f'Durability {DURABILITY[it["id"]]} / {DURABILITY[it["id"]]}'),
+            l(f'Requires Level {it["required_level"]}'), *equip_lines(it)]
+
+
 def board_gear():
-    gloves, worn = 16676, 13255
-    g = ux.item(gloves)
-    bag_line = (f'{arrow()}In your bags: <span style="color:{QUALITY[g["quality"]]}">{esc(g["name"])}</span> '
-                f'<span style="color:{C["green"]}">+2.6 DPS</span>')
+    ch = velisandre()
+    hands = ch.doll()['hands']
+    bag, worn, gain = hands['pick']['item_id'], hands['worn'], hands['gain']
+    g, w = ux.item(bag), ux.item(worn)
     attribution = 'Forever Sixty · Beast Mastery, your sim'
-    w = ux.item(worn)
-    slot_tip = tooltip([
-        f'<div class="t" style="color:{QUALITY[w["quality"]]}">{esc(w["name"])}</div>', l('Binds when picked up'),
-        l('Hands', 'Mail'), l(f'{w["armor"]} Armor'), l('Durability 40 / 40'), l('Requires Level 54'),
-        l('Equip: Improves your chance to hit by 0.3%.', color=C['green']),
-        '<div class="gap"></div>', l(bag_line), dim(attribution), dim('Alt-click: open Gear'),
-    ], width=330)
-    bag_tip = tooltip([
-        f'<div class="t" style="color:{QUALITY[g["quality"]]}">{esc(g["name"])}</div>', l('Binds when equipped'),
-        l('Hands', 'Mail'), l(f'{g["armor"]} Armor'), l('+14 Agility'), l('+10 Stamina'), l('+10 Intellect'),
-        l('+10 Spirit'), l('Durability 40 / 40'), l('Classes: Hunter'), l('Requires Level 54'),
-        l(f'Beaststalker\'s Garb (0/8)', color=CLIENT_GOLD),
-        *[l(f'  {n}', color='#808080') for n in ("Beaststalker's Cap", "Beaststalker's Mantle", "Beaststalker's Tunic",
-                                                 "Beaststalker's Bindings", "Beaststalker's Gloves", "Beaststalker's Belt",
-                                                 "Beaststalker's Pants", "Beaststalker's Boots")],
-        l('(2) Set: +200 Armor.', color='#808080'),
-        '<div class="gap"></div>',
-        l(f'{arrow()}Upgrade +2.6 DPS over {esc(w["name"])}', color=C['green']),
-        dim(attribution), dim('Alt-click: open Gear'),
-    ], width=330)
+    bag_line = (f'{arrow()}In your bags: <span style="color:{QUALITY[g["quality"]]}">{esc(g["name"])}</span> '
+                f'<span style="color:{C["green"]}">+{gain} DPS</span>')
+    slot_tip = tooltip(item_lines(w) + ['<div class="gap"></div>', l(bag_line), dim(attribution),
+                                        dim('Alt-click: open Gear')], width=330)
+    bag_tip = tooltip(item_lines(g) + ['<div class="gap"></div>',
+                                       l(f'{arrow()}Upgrade +{gain} DPS over {esc(w["name"])}', color=C['green']),
+                                       dim(attribution), dim('Alt-click: open Gear')], width=330)
     pane = (f'<div class="frame pane"><div class="small" style="color:{CLIENT_GOLD}">Character</div>'
-            f'{slot_cell(16466, False)}{slot_cell(worn, True)}{slot_cell(17069, False)}</div>')
-    bags = (f'<div class="frame bags">{slot_cell(gloves, True)}' + ''.join(
-        f'<div class="slot" style="background:#0d0f14;box-shadow:inset 0 0 0 1px #2a2d36"></div>' for _ in range(7))
-        + '</div>')
+            + ''.join(slot_cell(ch.worn[s], s == 'hands') for s in PANE_SLOTS) + '</div>')
+    cells = [slot_cell(bag, True)] + [stock_cell(icon, count) for icon, count in BAG_STOCK]
+    bags = f'<div class="frame bags">{"".join(cells)}{EMPTY_SLOT * (BAG_SLOTS - len(cells))}</div>'
     html = col(
-        note('<b>Velisandre bought Beaststalker\'s Gloves on the auction house.</b> The arrow is on the gloves in her bags and on her Hands '
-             'slot. Shift on either hover ends with the marks\' one wording; an Alt-click on either opens the Gear tab '
-             'on Hands, after the client\'s own click. In combat, or on an unmarked slot, Alt-click stays the '
-             'client\'s.'),
+        note(f'<b>Velisandre bought {esc(g["name"])} on the auction house.</b> The arrow is on the gloves in her bags '
+             'and on her Hands slot. Shift on either hover ends with the marks\' one wording; an Alt-click on either '
+             'opens the Gear tab on Hands, after the client\'s own click. In combat, or on an unmarked slot, Alt-click '
+             'stays the client\'s.'),
         row(col(note('The Hands slot, Shift held'), row(pane, slot_tip, gap=12)),
             col(note('The bag item, Shift held'), row(bags, bag_tip, gap=12))),
     )

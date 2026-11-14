@@ -483,13 +483,18 @@ def conditions_tips(ch):
 
 
 def velisandre(condition='bare'):
-    # Level 60 Night Elf hunter: the bare list's picks but for a few older pieces, the list's gloves in her bags.
+    # Level 60 Night Elf hunter: the bare list's picks but for a few older pieces, the list's gloves (its Hands pick
+    # under this condition) in her bags.
     worn = {s: p['item_id'] for s, p in Character('hunter', 'hunter-beast-mastery', 60, 'alliance', {}, set(),
                                                      set(), condition='bare').picks().items()}
     worn.update({'back': 22269, 'neck': 22403, 'wrist': 13211, 'hands': 13255, 'feet': 14616, 'finger2': 13098,
                  'main_hand': 13052})
-    return Character('hunter', 'hunter-beast-mastery', 60, 'alliance', worn, {271948}, {'chest', 'feet'},
-                     condition=condition)
+
+    def wearing(bags):
+        return Character('hunter', 'hunter-beast-mastery', 60, 'alliance', worn, bags, {'chest', 'feet'},
+                         condition=condition)
+
+    return wearing({wearing(set()).picks()['hands']['item_id']})
 
 
 def torvald(condition):

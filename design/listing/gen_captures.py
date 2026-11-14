@@ -15,9 +15,12 @@ a sign-up, a raid date). The store fixture below makes one evening of one charac
 - Thu 17 Dec 2026 is raid day (Onyxia's Lair at 20:00, 3 h 12 min away) and she signed up In. Her last raid
   is Molten Core on Tue 15 Dec, after the raids opened on 9 Dec, with the Rotation lane's boss results (the
   site's loss phrases; it measures no per-spell lateness).
-- Her gear is the Gear lane's model (Raid-ready at 60): Beaststalker's Gloves in her bags beat her Trueaim
-  Gauntlets by 2.6 DPS (the marks lane's figure); her sim's biggest gains are the Gear tab's top three; her
-  gap on the Officer roster is the Gear tab's total.
+- Her gear is the Gear lane's model (Raid-ready at 60): her list's Hands pick, Gloves of Holy Might, is in her
+  bags, and its gain over her Trueaim Gauntlets is the Gear tab's own, on every plate that names it (Gear, the
+  bag marks, Me, the line). The bag marks draw her worn pieces and the Molten Core roll's gain from the same
+  model; her sim's biggest gains are the Gear tab's top three; her gap on the Officer roster is the tab's total.
+- The quest reward and roll plate keeps two characters, each half labelled: Aldrenna at 21 at a quest reward,
+  Velisandre at 60 at a roll.
 - Builds shows her at 60 following the Beast Mastery raid build, every point placed, as Me says; with no
   builds from the site there, the line's hover leaves that item out.
 - The guild's wanted roles are one table (addon_hub.WANTED) on Guild and Officer.
@@ -62,8 +65,9 @@ HIDE_NOTES = '.cap, .cap2, .note { display: none !important; }'
 # Board dates moved a week on, so the last raid falls after the raids opened (9 Dec). Longest first.
 DATES = [('Tue 15 Dec 19:30', 'Tue 22 Dec 19:30'), ('Thu 10 Dec', 'Thu 17 Dec'), ('Sun 13 Dec', 'Sun 20 Dec')]
 LAST_RAID_ISO, RECORD_ISO, SIM_ISO = '2026-12-15', '2026-12-16', '2026-12-14T20:55:00Z'
-BAG_ITEM, BAG_GAIN = 16676, 2.6  # Beaststalker's Gloves over the worn Trueaim Gauntlets (l10-gear-marks)
 GEAR = gear.velisandre('raid')
+HANDS = GEAR.doll()['hands']
+BAG_ITEM, BAG_GAIN = HANDS['pick']['item_id'], HANDS['gain']  # her list's Hands pick, in her bags
 GEAR_CELLS = [c for c in GEAR.doll().values() if c.get('pick') and not c.get('holds') and c.get('gain', 0) > 0]
 GEAR_TOTAL = round(sum(c['gain'] for c in GEAR_CELLS), 1)
 GEAR_TOP = sorted(GEAR_CELLS, key=lambda c: -c['gain'])[:3]
@@ -168,10 +172,12 @@ CAPTURES = {
     # The Hands slot with its tooltip and the bags with the arrow; the bag item's tooltip repeats the gain.
     'bag-arrow': (marks.board_gear, '#board',
                   '#board .row > .col:nth-child(2) .tt { display: none !important; }', MARK_MAX_SCALE),
-    # The upgrade reward and two rolls: the "nothing helps" quest frame and the repeated Striker's Mark go.
-    'quest-reward-marks': (marks.board_rewards, '#board',
+    # The upgrade reward and two rolls under their labels: the "nothing helps" quest frame goes, and of the two
+    # Striker's Marks the one naming itself the band's pick (her list's Ranged is the Eaglehorn Long Bow she
+    # wears, Best in slot on Gear), so the plain upgrade stays. Second column: label, note, pick, note, upgrade.
+    'quest-reward-marks': (lambda: marks.board_rewards(labels=True), '#board',
                            '#board .row > .col:first-child > .qf:last-child, '
-                           '#board .row > .col:nth-child(2) > .rf:nth-of-type(4) { display: none !important; }',
+                           '#board .row > .col:nth-child(2) > .rf:nth-of-type(3) { display: none !important; }',
                            MARK_MAX_SCALE),
     # The stale record and the Shift view; the fresh one is the Shift view's own first lines.
     'player-tooltip': (marks.board_player, '#board',
