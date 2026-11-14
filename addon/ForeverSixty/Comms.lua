@@ -662,8 +662,8 @@ local function versionParts(version)
 		return nil
 	end
 	local parts = {}
-	for number in version:gmatch("%d+") do
-		parts[#parts + 1] = tonumber(number)
+	for digits in version:gmatch("%d+") do
+		parts[#parts + 1] = tonumber(digits)
 	end
 	return parts
 end

@@ -1895,10 +1895,10 @@ describe("the item hook", function()
 				tip.IsShown = function() return true end
 				tip.GetAnchorType = function() return "ANCHOR_NONE" end
 				tip.GetNumPoints = function() return 0 end
-				local saved = rawget(_G, name)
+				local shared = rawget(_G, name)
 				_G[name] = tip
 				local ok, err = pcall(ItemTooltip.onTooltip, tip, "item:50")
-				_G[name] = saved
+				_G[name] = shared
 				assert.is_true(ok, tostring(err))
 				assert.is_not_nil(calls[1])
 			end)
