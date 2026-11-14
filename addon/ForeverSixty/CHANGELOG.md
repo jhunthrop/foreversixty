@@ -2,12 +2,12 @@
 
 ## 2.0.48
 
-- Forever Sixty is now one window with tabs: Me, Builds, Gear, Rotation, Guild and Officer. /fs, the line by your minimap, the minimap button and the key binding all open it on the tab with something for you right now, and a gold dot marks any other tab that has something new. /fs gear, /fs guild and the rest open a tab directly.
-- What moved where. Your Forever Score, your last raid boss by boss and your sim are on Me, with what to do next. Your builds and next talent points are on Builds. Your gear as a paper doll, your best upgrades, stat weights and where your gear comes from are on Gear. Your rotation for your level is on Rotation. Tonight's raid, your sign-up, your job and your prep are on Guild. The roster, tonight's readiness, pushing a build and master loot are on Officer, for officers (and for the master looter during a session).
-- The panel, the pop-outs on the guild and Social windows and the old welcome tour are gone. The button on your character pane opens Gear, and the one on the guild window opens Guild.
-- On your first login after installing (or reinstalling) the addon, the window opens on Me with three Set up steps: pick your spec, see what the addon adds to an item you wear, get the companion app. Never in combat or inside a dungeon. /fs tour brings them back.
-- The line by your minimap shows the most urgent thing and a click opens that tab. Right-click it for Settings.
-- One key binding, "Toggle the Forever Sixty window". A key you had bound to the old panel opens the window now.
+- Forever Sixty is now one window with tabs: Me, Builds, Gear (from level 10), Rotation, Guild and Officer (in a guild), a gold dot on any tab with news. /fs, the line by your minimap and the key binding open it where something is waiting; /fs gear, /fs guild and the other tab names open a tab.
+- What moved where: your score, last raid and sim are on Me. Upgrades, stat weights and the gear sources are on Gear. Rotation shows your priority and how closely you followed it on each boss. Tonight's raid, your sign-up and your job are on Guild. The roster, readiness and master loot are on Officer, for officers. The panel, the guild and group pop-outs and the welcome tour are gone. The button on your character pane opens Gear.
+- A click on the line by your minimap opens the tab it names; right-click it for Settings, where the "Show the Forever Sixty line" switch now hides it.
+- After a fresh install or a reinstall, the window opens on Me with three setup steps, never in combat or an instance. /fs tour shows them again.
+- One key binding, "Toggle the Forever Sixty window". A key bound to the old panel opens it; a key bound to 2.0.47's window binding needs binding again.
+- Gone: /fs panel, /fs group, /fs floor, /fs job, /fs jobs, /fs chip and /fs welcome.
 
 ## 2.0.47
 

@@ -26,17 +26,17 @@ the current surface.
 
 ## Gallery captions
 
-1. **The Forever Sixty line.** One line by the minimap with your next step, such as "Next talent at 25", or tonight's raid and its start time on raid day; a click opens the Forever Sixty window on that tab.
-2. **The Forever Sixty window.** One window with tabs: Me, Builds, Gear, Rotation, Guild and Officer. Me has your Forever Score, your last raid boss by boss, what to do now and your sim.
+1. **The Forever Sixty line.** One line by the minimap with the thing waiting, such as "Spend 1 point: Intimidation" or "Onyxia's Lair 20:00 · In"; a click opens the Forever Sixty window on that tab.
+2. **The Forever Sixty window.** One window with tabs: Me, Builds, Gear, Rotation, Guild and Officer. Me has your Forever Score, your last raid boss by boss, what waits on the other tabs and your sim.
 3. **Item tooltips.** One line says what the item means for you, "+2.2 DPS", "Best in slot" or "Sidegrade", and Shift shows the rest.
 4. **The talent window.** Numbers on the points you still have to take, the next one ringed in gold, and "Next at 25: Lethal Attacks · 12 of 15 · 3 off plan" under the trees.
 5. **Bags and paperdoll.** A green arrow on the slot and on the bag item that beats it, a gold corner on a slot with an upgrade to chase.
 6. **Quest rewards and rolls.** The green arrow on the reward or roll that is an upgrade, and "Sells for most" on the reward to vendor when none is.
 7. **The player tooltip.** Just "Forever Score 1240" in the tier's colour, with the five parts on Shift.
 8. **Chat badges.** "FS 1240 ·" before a sender's line in guild chat, Trade, LookingForGroup and whispers.
-9. **The Guild tab.** Tonight's raid with your sign-up and job, your prep, the sign-ups, the next raids and where you stand in the guild.
-10. **The Officer tab.** The roster with scores and sign-ups, tonight's readiness, a build to push to the guild, and the master loot session ranked by each raider's own gain.
-11. **The Builds tab.** Your class's builds with one-click Follow, builds you pick on the site, a code from the planner, and your character to copy back to the site.
+9. **The Guild tab.** Tonight's raid with your sign-up and job, your prep, the sign-ups, the next raids and your place in the guild's top scores.
+10. **The Officer tab.** The roster with scores and sign-ups, tonight's readiness, a build to push to the guild, and master loot ranked by gain.
+11. **The Builds tab.** Your class's builds with one-click Follow, the box for pasting a build, and your character code to copy for the site.
 12. **Settings.** "Tooltips only" and one switch per surface, on the game's own Settings page.
 
 ## Uploading the gallery
