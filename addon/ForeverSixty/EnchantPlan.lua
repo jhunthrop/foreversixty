@@ -18,13 +18,13 @@ local EnchantPlan = {}
 EnchantPlan.MIN_EDGE = 0.01
 
 --- The plan key a worn item in `slot` takes (enchants.go's enchantPlanKeys): a two-hander's main hand
---- is two_hand, a shield's off hand shield, a held-in-off-hand none. Pure.
+--- is two_hand, a shield's off hand shield, a held-in-off-hand or a thrown weapon none. Pure.
 function EnchantPlan.keyFor(slot, equipLoc)
 	if slot == "main_hand" and equipLoc == "INVTYPE_2HWEAPON" then
 		return "two_hand"
 	elseif slot == "off_hand" and equipLoc == "INVTYPE_SHIELD" then
 		return "shield"
-	elseif slot == "off_hand" and equipLoc == "INVTYPE_HOLDABLE" then
+	elseif (slot == "off_hand" and equipLoc == "INVTYPE_HOLDABLE") or equipLoc == "INVTYPE_THROWN" then
 		return nil
 	end
 	return slot

@@ -35,6 +35,7 @@ describe("EnchantPlan", function()
 		assert.are.equal("main_hand", EnchantPlan.keyFor("main_hand", "INVTYPE_WEAPON"))
 		assert.are.equal("shield", EnchantPlan.keyFor("off_hand", "INVTYPE_SHIELD"))
 		assert.is_nil(EnchantPlan.keyFor("off_hand", "INVTYPE_HOLDABLE"))
+		assert.is_nil(EnchantPlan.keyFor("ranged", "INVTYPE_THROWN"))
 		assert.are.equal("chest", EnchantPlan.keyFor("chest", "INVTYPE_ROBE"))
 	end)
 
