@@ -191,6 +191,7 @@ describe("the Gear tab's model (GearTab)", function()
 		assert.are.equal(whole, GearTab.fullWhere(doll.cells.head))
 		-- The Me tab's rows name the item, so their line is the source alone.
 		assert.are.equal("Scarlet Monastery · Herod · 20% drop", GearTab.sourceWhere(doll.cells.head))
+		assert.are.equal("Scarlet Monastery · Herod", GearTab.sourceWhere(doll.cells.head, true))
 		assert.are.equal("Brawler's Leather…", GearTab.wordCut("Brawler's Leather Leggings", function(text)
 			return #text <= #"Brawler's Leather…"
 		end))

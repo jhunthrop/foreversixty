@@ -435,13 +435,18 @@ local function drawRaid(raid, parent, model, y)
 	return y + G.summaryGap + G.line + G.sectionGap
 end
 
+--- A section's heading at `y` while it has a model (the y under it), else the heading hidden and `y`.
+local function headingIf(section, parent, width, y, model, note)
+	if model == nil then
+		hideSection(section)
+		return y
+	end
+	return heading(section, parent, width, y, note)
+end
+
 local function drawNow(now, parent, rows, y)
 	local G, width = MeFrame.LAYOUT, Theme.SIZES.windowRight
-	if #rows == 0 then
-		hideSection(now)
-	else
-		y = heading(now, parent, width, y, nil)
-	end
+	y = headingIf(now, parent, width, y, #rows > 0 and rows or nil, nil)
 	for index, row in ipairs(now.rows) do
 		local entry = rows[index]
 		row.tab = entry ~= nil and entry.tab or nil
@@ -597,13 +602,8 @@ end
 
 --- Where you stand at `y`; the y under it.
 local function drawStanding(standing, parent, model, y)
-	local G = MeFrame.LAYOUT
-	local rows = model ~= nil and model.rows or {}
-	if model == nil then
-		hideSection(standing)
-	else
-		y = heading(standing, parent, Theme.SIZES.windowLeft, y, nil)
-	end
+	local G, rows = MeFrame.LAYOUT, model ~= nil and model.rows or {}
+	y = headingIf(standing, parent, Theme.SIZES.windowLeft, y, model, nil)
 	for index, row in ipairs(standing.rows) do
 		if rows[index] == nil then
 			hideAll({ row.label, row.value, row.note, row.track, row.fill, row.cell })
@@ -616,13 +616,8 @@ end
 
 --- Gear at `y` in `parent`, `width` wide: the upgrades, then the enchant rows or the empty line; the y under it.
 local function drawLocalGear(gear, parent, model, y, width)
-	local G = MeFrame.LAYOUT
-	local rows = model ~= nil and model.rows or {}
-	if model == nil then
-		hideSection(gear)
-	else
-		y = heading(gear, parent, width, y, model.note)
-	end
+	local G, rows = MeFrame.LAYOUT, model ~= nil and model.rows or {}
+	y = headingIf(gear, parent, width, y, model, model ~= nil and model.note or nil)
 	for index, row in ipairs(gear.rows) do
 		local entry, top = rows[index], y + (index - 1) * G.nowRow
 		if entry == nil then
@@ -634,7 +629,11 @@ local function drawLocalGear(gear, parent, model, y, width)
 			fit(row.name, name, width - G.nowIcon - G.nowGap - G.gainValue)
 			row.name:SetTextColor(Theme.rgb(hex))
 			place(row.name, parent, G.nowIcon + G.nowGap, top)
+			-- The drop chance goes first when the source does not fit; the boss stays whole.
 			fit(row.where, entry.where or "", width - G.nowIcon - G.nowGap)
+			if (row.where:GetStringWidth() or 0) > width - G.nowIcon - G.nowGap then
+				row.where:SetText(entry.whereShort or entry.where)
+			end
 			place(row.where, parent, G.nowIcon + G.nowGap, top + G.line)
 			row.text:SetText(entry.gain)
 			place(row.text, parent, width - G.gainValue, top)
@@ -682,14 +681,14 @@ function MeFrame.draw(model)
 	elseif MeFrame.setup ~= nil then
 		MeFrame.setup.hide()
 	end
-	-- Gear (no site activity yet) joins the shorter column, the sim counted, so neither stands empty beside
-	-- the other; the sim is placed again under it on the right (moved, never hidden).
-	local simmed = drawSim(parts.sim, parts.right, model.sim, right)
-	if left < simmed then
-		left, right = drawLocalGear(parts.gear, parts.left, model.gear, left, Theme.SIZES.windowLeft), simmed
+	-- Gear (no site activity yet) sits on the right above the sim, unless the left column is shorter by more
+	-- than a row with it: measured where it is drawn, then moved (never hidden) when it goes left.
+	local geared = drawLocalGear(parts.gear, parts.right, model.gear, right, Theme.SIZES.windowRight)
+	local sim = drawSim(parts.sim, parts.right, model.sim, right) - right
+	if math.max(left + geared - right, right + sim) + G.nowRow < math.max(left, geared + sim) then
+		left, right = drawLocalGear(parts.gear, parts.left, model.gear, left, Theme.SIZES.windowLeft), right + sim
 	else
-		right = drawLocalGear(parts.gear, parts.right, model.gear, right, Theme.SIZES.windowRight)
-		right = drawSim(parts.sim, parts.right, model.sim, right)
+		right = drawSim(parts.sim, parts.right, model.sim, geared)
 	end
 	left = drawSite(parts.site, parts.left, model.site, left)
 	-- Every section ends in its gap to the next; the last one's is not body.

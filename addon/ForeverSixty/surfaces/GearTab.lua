@@ -387,12 +387,13 @@ end
 
 --- The source half of that line, without the slot ("Scholomance · Kirtonos the Herald · 12% drop", "In your
 --- bags" in the client gold), or nil with no source (the Me tab's upgrade rows, where the item names its
---- slot). Pure.
-function GearTab.sourceWhere(cell)
+--- slot); `noChance` leaves the drop chance out, for a row too narrow for it. Pure.
+function GearTab.sourceWhere(cell, noChance)
 	if cell.inBags then
 		return Theme.inlineColor("clientGold", L.gearInBagsLead)
 	end
-	return ItemTooltip.sourceText(sourceParts(cell.pick))
+	local first, second, percent = sourceParts(cell.pick)
+	return ItemTooltip.sourceText(first, second, not noChance and percent or nil)
 end
 
 --- `text` cut at a word: the most whole words that fit with the ellipsis after them, or nil when not

@@ -654,7 +654,7 @@ local function readGear(data)
 	local upgrades = {}
 	for _, cell in ipairs(GearTab.upgrades(doll).rows) do
 		upgrades[#upgrades + 1] = { itemId = cell.pick.item_id, gain = ItemTooltip.figure(cell.gain, doll.unit),
-			where = GearTab.sourceWhere(cell) }
+			where = GearTab.sourceWhere(cell), whereShort = GearTab.sourceWhere(cell, true) }
 	end
 	return { band = band, best = tally.best, scored = tally.scored, upgrades = upgrades,
 		enchants = GearTab.enchantRows(doll) }

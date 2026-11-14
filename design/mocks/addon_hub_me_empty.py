@@ -44,12 +44,12 @@ SLOTS = {'head': 'Head', 'neck': 'Neck', 'shoulder': 'Shoulder', 'back': 'Back',
 KIND_WORDS = {'crafted': 'Crafted', 'quest': None, 'world_drop': None, 'vendor': None, 'rep': None}
 
 
-def where(slot, s):
+def where(slot, s, chance_room=True):
     """GearTab.sourceWhere's words: the source as the tooltip says it (ItemTooltip.sourceParts), no slot."""
     source, kind, chance = s.get('source') or '', s.get('source_kind'), s.get('chance')
     if kind in ('dungeon', 'raid') and ': ' in source:
         place, boss = source.split(': ', 1)
-        text = f'{place} · {boss}' + (f' · {round(chance * 100)}% drop' if chance else '')
+        text = f'{place} · {boss}' + (f' · {round(chance * 100)}% drop' if chance and chance_room else '')
     elif kind == 'crafted':
         text = f'Crafted · {source}'
     else:
@@ -64,7 +64,8 @@ def band_rows(band, faction='alliance'):
     for s in spec['slots']:
         alts = s.get('alternatives') or []
         if s.get('item_id') and alts:
-            rows.append({'itemId': s['item_id'], 'gain': -alts[-1]['dps_delta'], 'where': where(s['slot'], s)})
+            rows.append({'itemId': s['item_id'], 'gain': -alts[-1]['dps_delta'], 'where': where(s['slot'], s),
+                         'whereShort': where(s['slot'], s, False)})
     return rows
 
 
@@ -79,7 +80,8 @@ def gear20():
     rows = sorted(band_rows(20), key=lambda r: -r['gain'])[:6]
     return {'band': 20, 'best': 8, 'scored': 14,
             'enchants': [enchant('chest', 'Enchant Chest - Minor Stats'), enchant('wrist', 'Enchant Bracer - Minor Agility')],
-            'upgrades': [{'itemId': r['itemId'], 'gain': f'+{r["gain"]:.1f} DPS', 'where': r['where']} for r in rows]}
+            'upgrades': [{'itemId': r['itemId'], 'gain': f'+{r["gain"]:.1f} DPS', 'where': r['where'],
+                         'whereShort': r['whereShort']} for r in rows]}
 
 
 def gear60():
@@ -168,6 +170,12 @@ def short_words(e):
     return f'{SLOTS[e["slot"]]}: {name}'
 
 
+def fit_where(g, width):
+    """MeFrame: the drop chance goes first when the source does not fit the row (about 6.3 px a character)."""
+    where = g.get('where') or ''
+    return g.get('whereShort') or where if len(where) * 6.3 > width - G['nowIcon'] - G['nowGap'] else where
+
+
 def gear_html(m, width):
     """Each upgrade as a Right now row (MeFrame drawLocalGear, `width` wide), then GearEnchants' rows."""
     if not m:
@@ -176,7 +184,7 @@ def gear_html(m, width):
     out += ''.join(f'<div class="now"><span class="ni">{item_icon(g["itemId"], G["nowIcon"])}</span>'
                    f'<div class="tx" style="width:{width - G["nowIcon"] - G["nowGap"]}px"><div style="width:'
                    f'{width - G["nowIcon"] - G["nowGap"] - G["gainValue"]}px">{hub.item_name(g["itemId"])}</div>'
-                   f'<div class="m">{me.wow(g.get("where") or "")}</div></div>'
+                   f'<div class="m">{me.wow(fit_where(g, width))}</div></div>'
                    f'<span class="lk ok">{esc(g["gain"])}</span></div>' for g in m['rows'])
     if m['rows']:
         out += f'<div style="height:{4 - (G["nowRow"] - 2 * G["line"])}px"></div>'
@@ -199,16 +207,21 @@ def board(name, caption, model, level, dots, tabs):
     figures = me.SEP.join([f'Level {level} Hunter'] + model['figures'])
     left = standing_html(model.get('standing'))
     right = (l8.setup_html(model['setup']) if model.get('setup') else me.now_html(model.get('rightNow')))
-    # MeFrame.draw: Gear joins the shorter column, the sim counted (heights as the frame lays them out).
+    # MeFrame.draw: Gear on the right above the sim unless the left is shorter by more than a row with it
+    # (heights as the frame lays them out).
     rows, now, sim = len((model.get('standing') or {}).get('rows', [])), len(model.get('rightNow') or []), model.get('sim')
+    gear = model.get('gear') or {}
     left_h = 26 + rows * G['partRow'] + G['sectionGap'] if rows else 0
-    right_h = (26 + now * G['nowRow'] + G['sectionGap'] - (G['nowRow'] - 2 * G['line']) if now else 0) + (62 if sim else 0)
-    if left_h < right_h:
-        left += gear_html(model.get('gear'), 388)
+    right_h = 26 + now * G['nowRow'] + G['sectionGap'] - (G['nowRow'] - 2 * G['line']) if now else 0
+    sim_h = 62 if sim else 0
+    gear_h = (26 + len(gear.get('rows', [])) * G['nowRow'] - (G['nowRow'] - 2 * G['line'])
+              + (4 + 18 * len(gear.get('enchants') or []) if gear.get('enchants') else 0) + G['sectionGap']) if gear else 0
+    if max(left_h + gear_h, right_h + sim_h) + G['nowRow'] < max(left_h, right_h + gear_h + sim_h):
+        left += gear_html(gear or None, 388)
     else:
-        right += gear_html(model.get('gear'), 288)
-    left += site_html(model.get('site'))
+        right += gear_html(gear or None, 288)
     right += me.sim_html(sim)
+    left += site_html(model.get('site'))
     saved = bw.TABS
     bw.TABS = tabs
     try:
