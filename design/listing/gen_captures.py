@@ -19,7 +19,7 @@ a sign-up, a raid date). The store fixture below makes one evening of one charac
   is Molten Core on Tue 15 Dec, after the raids opened on 9 Dec, with the Rotation lane's boss results (the
   site's loss phrases; it measures no per-spell lateness).
 - Her gear is the Gear lane's model (Raid-ready at 60): her list's Hands pick, Gloves of Holy Might, is in her
-  bags, and its gain over her Trueaim Gauntlets is the Gear tab's own, on every plate that names it (Gear, the
+  bags, and its gain over her Savage Gladiator Grips is the Gear tab's own, on every plate that names it (Gear, the
   bag marks, Me, the line). The bag marks draw her worn pieces and the Molten Core roll's gain from the same
   model; her sim's biggest gains are the Gear tab's top three; her gap on the Officer roster is the tab's total.
 - The quest reward and roll plate keeps two characters, each half labelled: Aldrenna at 21 at a quest reward,

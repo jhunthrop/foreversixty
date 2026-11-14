@@ -270,19 +270,20 @@ def stock_cell(icon, count):
 
 
 # items/<class>.json carries no durability: the client's figure for each item drawn here.
-DURABILITY = {13255: 40, 867: 40}
+DURABILITY = {11730: 40, 867: 40}
 STAT_WORDS = {'agility': 'Agility', 'strength': 'Strength', 'stamina': 'Stamina', 'intellect': 'Intellect',
               'spirit': 'Spirit'}
 
 
 def equip_lines(it):
-    """The client's green Equip lines for the item's ratings and attack power; its own effect as Use."""
+    """The client's green Equip lines for the item's hit, crit and attack power; its own effect as Use. A percent
+    prints as the client's TOOLTIP_ITEM_STAT_*_PERCENT_INCREASE does, "%.1f%%" (Trueaim Gauntlets' "3.0%")."""
     stats, out = it['stats'], []
     if stats.get('hit'):
-        out.append(f'Equip: Improves your chance to hit by {stats["hit"] / gear_lane.RATING_PER_PERCENT["hit"]:g}%.')
+        out.append(f'Equip: Improves your chance to hit by {gear_lane.stat_percent(it, "hit"):.1f}%.')
     if stats.get('crit'):
         out.append('Equip: Improves your chance to get a critical strike by '
-                   f'{stats["crit"] / gear_lane.RATING_PER_PERCENT["crit"]:g}%.')
+                   f'{gear_lane.stat_percent(it, "crit"):.1f}%.')
     if stats.get('attack_power'):
         out.append(f'Equip: +{stats["attack_power"]} Attack Power.')
     if it['effect_text']:

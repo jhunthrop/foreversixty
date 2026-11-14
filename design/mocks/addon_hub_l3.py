@@ -42,6 +42,17 @@ DATA_LUA = (ROOT / 'addon/ForeverSixty/Data.lua').read_text()
 
 RATING_PER_PERCENT = {'hit': 10, 'crit': 14, 'expertise': 10, 'dodge': 12, 'parry': 15, 'block': 5, 'defense': 1,
                       'haste': 10}
+
+
+def stat_percent(it, key):
+    """A rating-family stat of an item in percent, the items.json contract (pipeline.models.GearItem
+    percent_stats): the part an on-equip spell states as a literal percent (Trueaim Gauntlets' 3% hit) stays as
+    it is, the rest is rating points over RATING_PER_PERCENT. Any other stat is its amount."""
+    value = it['stats'].get(key, 0)
+    literal = it.get('percent_stats', {}).get(key, 0)
+    return (value - literal) / RATING_PER_PERCENT.get(key, 1) + literal
+
+
 KINDS = [('dungeon', 'Dungeon'), ('raid', 'Raid'), ('world', 'World / BoE'), ('quest', 'Quest'),
          ('crafted', 'Crafted'), ('rep', 'Reputation'), ('vendor', 'Vendor'), ('pvp', 'PvP')]
 KIND_OF_CODE = {'D': 'dungeon', 'A': 'raid', 'W': 'world', 'B': 'world', 'Q': 'quest', 'C': 'crafted', 'R': 'rep',
@@ -230,7 +241,7 @@ class Character:
 
     def score(self, item_id, slot):
         it = self.items[item_id]
-        total = sum(v / RATING_PER_PERCENT.get(k, 1) * self.weights.get(k, 0) for k, v in it['stats'].items())
+        total = sum(stat_percent(it, k) * self.weights.get(k, 0) for k in it['stats'])
         weapon_slot = 'ranged' if self.pp['reference'] == 'ranged_attack_power' else 'main_hand'
         if slot == weapon_slot and it['dps']:
             total += it['dps'] * self.pp['weaponDps'] / self.pp['dps']
@@ -484,10 +495,11 @@ def conditions_tips(ch):
 
 def velisandre(condition='bare'):
     # Level 60 Night Elf hunter: the bare list's picks but for a few older pieces, the list's gloves (its Hands pick
-    # under this condition) in her bags.
+    # under this condition) in her bags. Her worn gloves are Savage Gladiator Grips, which the list's pick beats on
+    # the Gear tab's rule (Trueaim Gauntlets' 3% hit, read as the percent it is, would beat it there).
     worn = {s: p['item_id'] for s, p in Character('hunter', 'hunter-beast-mastery', 60, 'alliance', {}, set(),
                                                      set(), condition='bare').picks().items()}
-    worn.update({'back': 22269, 'neck': 22403, 'wrist': 13211, 'hands': 13255, 'feet': 14616, 'finger2': 13098,
+    worn.update({'back': 22269, 'neck': 22403, 'wrist': 13211, 'hands': 11730, 'feet': 14616, 'finger2': 13098,
                  'main_hand': 13052})
 
     def wearing(bags):
