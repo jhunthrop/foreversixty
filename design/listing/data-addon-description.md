@@ -35,8 +35,6 @@ Data only. Install it beside Forever Sixty and the addon reads it; on its own it
 
 **On every player tooltip.** One line, "Forever Score 1240" in the tier's colour, dated and greyed once the record is over three days old; hold Shift for the five parts behind it. A player with no rated fights shows nothing, never a zero.
 
-![A guild chat line with the sender's FS badge in front of it](https://foreversixty.gg/addon/chat-badge-guild.jpg)
-
 **In chat.** "FS 1240 ·" before a sender's line in guild chat, Trade, LookingForGroup and whispers, muted once the record is more than three days old.
 
 **In the Forever Sixty window.** Me shows your own score and its five parts, Guild your guild's top five and your place, and Officer the score of every raider on the roster.

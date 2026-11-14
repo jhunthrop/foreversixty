@@ -135,8 +135,6 @@ A number on every point of your build you still have to take, the next talent ri
 
 ### The Forever Score
 
-![A guild chat line with the sender's FS badge in front of it](https://foreversixty.gg/addon/chat-badge-guild.jpg)
-
 Rated every night from public logs on foreversixty.gg and carried in by the Forever Sixty Data pack. Hover a player and their tooltip carries one line, "Forever Score 1240" in the tier's colour, dated and greyed once the record is over three days old. Hold Shift for the five parts: Gear, Experience, Parses, Attendance and Preparation. In guild chat, Trade, LookingForGroup and whispers, a sender with a score gets "FS 1240 ·" before their line. A player with no rated fights shows nothing. `/fs link` on your target copies their page on the site.
 
 ### The window
