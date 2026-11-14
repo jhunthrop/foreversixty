@@ -2,7 +2,7 @@
   "spec": "mage-fire",
   "build": "1.60.1.70938",
   "engine_version": "f9385b498",
-  "generated_at": "2026-11-14T07:17:51Z",
+  "generated_at": "2026-11-14T13:55:54Z",
   "bands": [
     {
       "spec": "mage-fire",
@@ -1209,8 +1209,8 @@
         "off_hand: Antipodean Rod",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.406485618,
-      "verify_run_seconds": 2.173667902,
+      "weights_run_seconds": 2.465179355,
+      "verify_run_seconds": 2.253275738,
       "coverage": {
         "back": {
           "eligible": 104,
@@ -2517,8 +2517,8 @@
         "off_hand: Antipodean Rod",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.406485618,
-      "verify_run_seconds": 3.2319361779999998,
+      "weights_run_seconds": 2.465179355,
+      "verify_run_seconds": 3.267621088,
       "coverage": {
         "back": {
           "eligible": 105,
@@ -3930,8 +3930,8 @@
         "off_hand: Rod of Molten Fire",
         "ranged: Scorching Wand"
       ],
-      "weights_run_seconds": 2.786282944,
-      "verify_run_seconds": 3.920370293,
+      "weights_run_seconds": 2.769429378,
+      "verify_run_seconds": 4.054522553,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -5322,8 +5322,8 @@
         "off_hand: Rod of Molten Fire",
         "ranged: Scorching Wand"
       ],
-      "weights_run_seconds": 2.786282944,
-      "verify_run_seconds": 4.738821809,
+      "weights_run_seconds": 2.769429378,
+      "verify_run_seconds": 4.877308515,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -6728,8 +6728,8 @@
         "main_hand: Staff of Jordan",
         "ranged: Ragefire Wand"
       ],
-      "weights_run_seconds": 3.007567179,
-      "verify_run_seconds": 5.2441546809999995,
+      "weights_run_seconds": 3.045154609,
+      "verify_run_seconds": 5.292357505,
       "coverage": {
         "back": {
           "eligible": 257,
@@ -8140,8 +8140,8 @@
         "main_hand: Staff of Jordan",
         "ranged: Ragefire Wand"
       ],
-      "weights_run_seconds": 3.007567179,
-      "verify_run_seconds": 5.398296245,
+      "weights_run_seconds": 3.045154609,
+      "verify_run_seconds": 5.59035377,
       "coverage": {
         "back": {
           "eligible": 259,
@@ -9825,8 +9825,8 @@
         "off_hand: Truesilver Conduit",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 3.074485201,
-      "verify_run_seconds": 4.236561067,
+      "weights_run_seconds": 3.122146191,
+      "verify_run_seconds": 4.266855886,
       "coverage": {
         "back": {
           "eligible": 330,
@@ -11532,8 +11532,8 @@
         "off_hand: Truesilver Conduit",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 3.074485201,
-      "verify_run_seconds": 4.347960873,
+      "weights_run_seconds": 3.122146191,
+      "verify_run_seconds": 4.350053774,
       "coverage": {
         "back": {
           "eligible": 335,
@@ -13307,8 +13307,8 @@
         "off_hand: Tome of Fiery Arcana",
         "ranged: Oblivion's Touch"
       ],
-      "weights_run_seconds": 3.480122632,
-      "verify_run_seconds": 24.505693076,
+      "weights_run_seconds": 3.544538063,
+      "verify_run_seconds": 24.965559561000003,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -15066,8 +15066,8 @@
         "off_hand: Tome of Fiery Arcana",
         "ranged: Bonecreeper Stylus"
       ],
-      "weights_run_seconds": 3.480122632,
-      "verify_run_seconds": 24.976811879,
+      "weights_run_seconds": 3.544538063,
+      "verify_run_seconds": 25.47454071,
       "coverage": {
         "back": {
           "eligible": 472,
@@ -16830,8 +16830,8 @@
         "main_hand: Ironbark Staff",
         "ranged: Bonecreeper Stylus"
       ],
-      "weights_run_seconds": 3.805472115,
-      "verify_run_seconds": 18.289623838,
+      "weights_run_seconds": 3.859315295,
+      "verify_run_seconds": 19.056606175,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -18530,8 +18530,8 @@
         "main_hand: Ironbark Staff",
         "ranged: Bonecreeper Stylus"
       ],
-      "weights_run_seconds": 3.805472115,
-      "verify_run_seconds": 19.994280426,
+      "weights_run_seconds": 3.859315295,
+      "verify_run_seconds": 20.599682962,
       "coverage": {
         "back": {
           "eligible": 472,
