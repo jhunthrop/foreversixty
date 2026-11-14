@@ -569,11 +569,11 @@ const DiscordPickChoice = "{Name} · {Level} {Class}"
 // DiscordPickClaimed is discord.pick.claimed: You picked {Name}. Sign in with Battle.net to confirm it is yours.
 const DiscordPickClaimed = "You picked {Name}. Sign in with Battle.net to confirm it is yours."
 
-// DiscordPickTaken is discord.pick.taken: {Name} is already claimed by another account. If it is yours, ask an officer to free it, or sign in with Battle.net.
-const DiscordPickTaken = "{Name} is already claimed by another account. If it is yours, ask an officer to free it, or sign in with Battle.net."
+// DiscordPickTaken is discord.pick.taken: {Name} is claimed by another account. Ask an officer to remove it, or sign in with Battle.net.
+const DiscordPickTaken = "{Name} is claimed by another account. Ask an officer to remove it, or sign in with Battle.net."
 
-// DiscordPickTooMany is discord.pick.tooMany: You have picked {n} characters already. Ask an officer to free one, or sign in with Battle.net.
-const DiscordPickTooMany = "You have picked {n} characters already. Ask an officer to free one, or sign in with Battle.net."
+// DiscordPickTooMany is discord.pick.tooMany: You have picked {n} characters already. Ask an officer to remove one, or sign in with Battle.net.
+const DiscordPickTooMany = "You have picked {n} characters already. Ask an officer to remove one, or sign in with Battle.net."
 
 // DiscordPickOwnAccount is discord.pick.ownAccount: You are signed in with Battle.net. Pick one of your own characters under **character**.
 const DiscordPickOwnAccount = "You are signed in with Battle.net. Pick one of your own characters under **character**."

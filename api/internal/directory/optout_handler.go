@@ -14,10 +14,12 @@ import (
 // optOutPerMinute bounds each opt-out route per IP: a code start can cost a Blizzard call.
 const optOutPerMinute = 10
 
-// optOutBody is every opt-out route's request: the character's region and full name.
+// optOutBody is every opt-out route's request: the character's region and full name, and for
+// status the code the page was given.
 type optOutBody struct {
 	Region string `json:"region"`
 	Name   string `json:"name"`
+	Code   string `json:"code"`
 }
 
 // MountOptOuts serves the "Remove my character" page's three calls.
@@ -62,7 +64,7 @@ func (h optOutHandler) status(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		return
 	}
-	state, err := h.o.Status(r.Context(), body.Region, body.Name)
+	state, err := h.o.Status(r.Context(), body.Region, body.Name, body.Code)
 	if err != nil {
 		h.fail(w, r, "status", err)
 		return
@@ -89,8 +91,6 @@ func (h optOutHandler) fail(w http.ResponseWriter, r *http.Request, op string, e
 	case errors.Is(err, ErrBadCharacter):
 		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "enter a region and the character's full name",
 			map[string]string{"name": "invalid"})
-	case errors.Is(err, ErrNoSuchCharacter):
-		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no public character has that name", nil)
 	case errors.Is(err, ErrNotYours):
 		httpx.WriteError(w, r, http.StatusForbidden, "not_yours", "that character is not on your Battle.net account", nil)
 	default:

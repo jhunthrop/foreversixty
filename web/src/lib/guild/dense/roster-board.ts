@@ -54,6 +54,8 @@ export interface BoardRow {
   short: number | null;
   /** Whole days since the last export; null without one. */
   seenDays: number | null;
+  /** The picker's Discord name for a character picked on Discord, not yet confirmed (officers only). */
+  pickedBy: string | null;
 }
 
 export interface BoardGroup {
@@ -135,6 +137,7 @@ function boardRow(
         ? null
         : missingCount(ready, readinessShortfalls(ready, { attunement: true }, false)),
     seenDays: daysSince(row.logged_at, inputs.now),
+    pickedBy: row.discord_picked_by ?? null,
   };
 }
 

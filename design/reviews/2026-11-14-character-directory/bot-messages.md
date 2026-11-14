@@ -54,7 +54,7 @@ Presses on the post work like any member's: one character, no select.
 
 ## 5. Someone else picks the same character
 
-> Vela Thornbrook is already claimed by another account. If it is yours, ask an officer to free it, or sign in with Battle.net.
+> Vela Thornbrook is claimed by another account. Ask an officer to remove it, or sign in with Battle.net.
 
 ## 6. A Discord-only account that has not picked anything presses a button
 
@@ -62,7 +62,7 @@ Presses on the post work like any member's: one character, no select.
 
 ## 6b. A Discord-only account already holding 3 picks picks another
 
-> You have picked 3 characters already. Ask an officer to free one, or sign in with Battle.net.
+> You have picked 3 characters already. Ask an officer to remove one, or sign in with Battle.net.
 
 ## 7. Someone signed in with Battle.net tries a roster pick
 
@@ -70,13 +70,15 @@ Presses on the post work like any member's: one character, no select.
 
 ## 8. What officers see
 
-On the raid page roster (web), under the character's row, officers only:
+Officers only, one shared mark (web/src/components/guild/DiscordPickMark.svelte) on the raid page
+roster, the Roster board and the account table under "Ranks, accounts and removals": a
+`Picked on Discord` tag and `by raider#name` on one line under the character's name, its
+accessible name and title the whole sentence:
 
 > Picked on Discord by raider#name, not confirmed by Battle.net yet
 
-On the guild page roster the character is listed with a `Picked on Discord` tag (tooltip: the
-same sentence), and the officer's Remove frees it: the pick and its sign-ups for coming raids
-go, so the real owner can pick it or sign in.
+The account table's Remove frees it: the pick and its sign-ups for coming raids go, so the real
+owner can pick it or sign in. A member's raid view carries no picker names (guilds.hidePickers).
 
 When the owner signs in with Battle.net, the character, its roster row and its
 sign-ups move to the owner's account, the mark goes, and nothing is duplicated; if the Discord

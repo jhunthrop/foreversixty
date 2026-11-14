@@ -21,7 +21,7 @@
   import CharacterName from '../ui/CharacterName.svelte';
   import Crest from '../ui/Crest.svelte';
   import Tag from '../ui/Tag.svelte';
-  import { raidCopy } from '../../lib/guild/raid-copy';
+  import DiscordPickMark from './DiscordPickMark.svelte';
   import SupporterChip from '../SupporterChip.svelte';
   import GuildRosterHandoff from '../GuildRosterHandoff.svelte';
   import type { CharacterPath } from '../../lib/characters';
@@ -622,11 +622,11 @@
                             testid="guild-roster-name"
                           />
                           {#if row.supporter === true}<SupporterChip />{/if}
-                          {#if row.discord_picked_by}<span
-                              title={raidCopy.discordClaim(row.discord_picked_by)}
-                              ><Tag testid="guild-roster-discord-claim">{raidCopy.discordPicked}</Tag></span
-                            >{/if}
                         </span>
+                        {#if row.discord_picked_by}<DiscordPickMark
+                            who={row.discord_picked_by}
+                            testid="guild-roster-discord-claim"
+                          />{/if}
                         <!-- One line per part at lg ("Beast Mastery Hunter in game", then "Survival on the site"), each
                  ellipsised to the 240 px block, so the disagreeing record is never the part cut off; one
                  wrapping run, parts joined by a dot, below lg. -->

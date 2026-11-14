@@ -40,8 +40,9 @@ const (
 var codePattern = regexp.MustCompile(`^FS-[A-HJ-NP-Z2-9]{6}$`)
 
 var (
-	// ErrNoSuchCharacter is a name neither the directory nor Blizzard's public profile knows.
-	ErrNoSuchCharacter = errors.New("directory: no such character")
+	// errNoSuchCharacter is a name neither the directory nor Blizzard's public profile knows. It
+	// never leaves the package: the signed-out routes answer the same for it as for a held name.
+	errNoSuchCharacter = errors.New("directory: no such character")
 	// ErrNotYours is an account asking to remove a character it does not hold.
 	ErrNotYours = errors.New("directory: not a character of this account")
 	// ErrBadCharacter is a region or name that cannot be a Forever character.
@@ -87,7 +88,7 @@ func parseTarget(region, name string) (target, error) {
 }
 
 // resolve is the Blizzard character id behind a region and name: the directory's, else the
-// public profile's (one call). ErrNoSuchCharacter when neither knows it.
+// public profile's (one call). errNoSuchCharacter when neither knows it.
 func (o *OptOuts) resolve(ctx context.Context, region, name string) (target, error) {
 	t, err := parseTarget(region, name)
 	if err != nil {
@@ -106,11 +107,11 @@ func (o *OptOuts) resolve(ctx context.Context, region, name string) (target, err
 		return target{}, fmt.Errorf("directory: resolve %s/%s: %w", region, slug, err)
 	}
 	if o.Client == nil {
-		return target{}, ErrNoSuchCharacter
+		return target{}, errNoSuchCharacter
 	}
 	profile, _, err := o.Client.Character(ctx, region, "", slug)
 	if isGone(err) {
-		return target{}, ErrNoSuchCharacter
+		return target{}, errNoSuchCharacter
 	}
 	if err != nil {
 		return target{}, fmt.Errorf("directory: resolve %s/%s: %w", region, slug, err)
@@ -121,16 +122,22 @@ func (o *OptOuts) resolve(ctx context.Context, region, name string) (target, err
 
 // StartCode gives a code for the character, replacing any earlier one. The character is
 // removed once its public guild note carries the code (VerifyNoteCodes).
+//
+// A name no one knows gets a code too, never saved: the answer must not tell a stranger whether
+// a character exists (the page shows no character's data but the name the visitor typed).
 func (o *OptOuts) StartCode(ctx context.Context, region, name string) (Code, error) {
 	t, err := o.resolve(ctx, region, name)
-	if err != nil {
+	if err != nil && !errors.Is(err, errNoSuchCharacter) {
 		return Code{}, err
 	}
-	code, err := newCode()
-	if err != nil {
-		return Code{}, err
+	code, codeErr := newCode()
+	if codeErr != nil {
+		return Code{}, codeErr
 	}
 	c := Code{Code: code, ExpiresAt: time.Now().Add(optOutCodeLife).UTC().Truncate(time.Second)}
+	if err != nil {
+		return c, nil
+	}
 	_, err = o.Pool.Exec(ctx,
 		`insert into directory_optout_codes (region, bnet_character_id, slug, code, expires_at)
 		 values ($1, $2, $3, $4, $5)
@@ -143,27 +150,29 @@ func (o *OptOuts) StartCode(ctx context.Context, region, name string) (Code, err
 	return c, nil
 }
 
-// Status is where the character's opt-out stands: removed, waiting on its code, or none.
-func (o *OptOuts) Status(ctx context.Context, region, name string) (string, error) {
-	t, err := o.resolve(ctx, region, name)
-	if errors.Is(err, ErrNoSuchCharacter) {
-		return OptOutNone, nil
-	}
+// Status is where the opt-out a code started stands: removed, waiting on the note, or none. It
+// answers only the code's holder, so a stranger who types a name learns nothing about it (not
+// whether it exists, nor whether its player asked to be left out), and it makes no Blizzard call.
+func (o *OptOuts) Status(ctx context.Context, region, name, code string) (string, error) {
+	t, err := parseTarget(region, name)
 	if err != nil {
 		return "", err
 	}
-	var removed, waiting bool
-	err = o.Pool.QueryRow(ctx,
-		`select exists (select 1 from directory_optouts where region = $1 and bnet_character_id = $2),
-		        exists (select 1 from directory_optout_codes where region = $1 and bnet_character_id = $2
-		                  and verified_at is null and expires_at > now())`, t.region, t.id).Scan(&removed, &waiting)
-	if err != nil {
-		return "", fmt.Errorf("directory: opt-out status: %w", err)
+	if !ValidCode(code) {
+		return OptOutNone, nil
 	}
+	var verified, live bool
+	err = o.Pool.QueryRow(ctx,
+		`select verified_at is not null, expires_at > now() from directory_optout_codes
+		  where region = $1 and slug = $2 and code = $3`, t.region, t.slug, code).Scan(&verified, &live)
 	switch {
-	case removed:
+	case errors.Is(err, pgx.ErrNoRows):
+		return OptOutNone, nil
+	case err != nil:
+		return "", fmt.Errorf("directory: opt-out status: %w", err)
+	case verified:
 		return OptOutRemoved, nil
-	case waiting:
+	case live:
 		return OptOutWaiting, nil
 	}
 	return OptOutNone, nil

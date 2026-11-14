@@ -37,10 +37,27 @@ func (s *Service) fillOverview(ctx context.Context, guildID, viewerID int64, vie
 		views[i].CompTarget = compTargetOf(zoneOf(views[i].Zone), own)
 	}
 	officer, err := s.seesEveryAttendanceRow(ctx, guildID, viewerID)
-	if err != nil || !officer {
+	if err != nil {
 		return err
 	}
+	if !officer {
+		hidePickers(views)
+		return nil
+	}
 	return s.fillOfficerOverview(ctx, guildID, views, ids)
+}
+
+// hidePickers drops the Discord names of who picked each character: they are for officers, who
+// free a wrong pick, as on the guild roster (home.go).
+func hidePickers(views []RaidView) {
+	for i := range views {
+		for j := range views[i].Signups {
+			views[i].Signups[j].DiscordPickedBy = ""
+		}
+		for j := range views[i].NotSigned {
+			views[i].NotSigned[j].DiscordPickedBy = ""
+		}
+	}
 }
 
 // fillOfficerOverview is fillOverview's officer half.

@@ -149,7 +149,10 @@ const PAGE_ISLAND_BUDGETS = [
   // the same source read 17,144: hashed chunk names alone move it by ~8), so the line had no headroom.
   // The Guild tab adds +4 raw / +6 gzipped to the shell (a longer chunk name in the preload map); nothing
   // in the shell itself changed. 32 bytes covers the hash jitter, not a new feature.
-  { component: 'GuildShell', limitBytes: 16 * 1024 + 800, closureLimitBytes: 141532 },
+  // +32 bytes (character directory review, 2026-11-14): 17,190 against 17,184 once the officer's Discord
+  // pick mark became one shared component (guild/DiscordPickMark) on the raid roster, the Roster board
+  // and the account table: its chunk name joins the shell's preload map; the shell itself is unchanged.
+  { component: 'GuildShell', limitBytes: 16 * 1024 + 832, closureLimitBytes: 141532 },
   // Lane bis-tooltip-host (2026-09-29): one BisTooltipHost per /bis/<class>/<spec> page
   // replaces roughly 840 per-row ItemHover islands with delegated document-level listeners
   // plus the same lazy-loaded ItemTooltip.svelte panel ItemHover already used -- no data,

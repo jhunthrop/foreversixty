@@ -30,8 +30,12 @@ func TestOptOutByGuildNoteCode(t *testing.T) {
 	if err != nil || !ValidCode(code.Code) {
 		t.Fatalf("code = %+v, %v", code, err)
 	}
-	if state, _ := o.Status(ctx, "us", "vela thornbrook"); state != OptOutWaiting {
+	if state, _ := o.Status(ctx, "us", "vela thornbrook", code.Code); state != OptOutWaiting {
 		t.Fatalf("state = %q, want waiting", state)
+	}
+	// Without the code a stranger learns nothing.
+	if state, _ := o.Status(ctx, "us", "Vela Thornbrook", "FS-ABCDEF"); state != OptOutNone {
+		t.Fatalf("state without the code = %q, want none", state)
 	}
 	// Another guild's addon, or a wrong name, removes nothing.
 	if n, err := o.VerifyNoteCodes(ctx, "us", "Other Guild", []NoteCode{{Name: "Vela Thornbrook", Code: code.Code}}); err != nil || n != 0 {
@@ -46,8 +50,11 @@ func TestOptOutByGuildNoteCode(t *testing.T) {
 	if _, ok := readRow(t, s, 101); ok {
 		t.Fatal("the character stayed in the directory")
 	}
-	if state, _ := o.Status(ctx, "us", "Vela Thornbrook"); state != OptOutRemoved {
+	if state, _ := o.Status(ctx, "us", "Vela Thornbrook", code.Code); state != OptOutRemoved {
 		t.Fatalf("state = %q, want removed", state)
+	}
+	if state, _ := o.Status(ctx, "us", "Vela Thornbrook", ""); state != OptOutNone {
+		t.Fatalf("removed state without the code = %q, want none", state)
 	}
 
 	seedGuildRow(t, s, "Ember Wardens", "pvp")
@@ -106,8 +113,13 @@ func TestOptOutCodeForANameTheDirectoryLacks(t *testing.T) {
 	if _, err := o.StartCode(ctx, "us", "Sel Duskwater"); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := o.StartCode(ctx, "us", "Nobody Here"); !errors.Is(err, ErrNoSuchCharacter) {
-		t.Fatalf("unknown name: %v, want ErrNoSuchCharacter", err)
+	// An unknown name is answered like a held one (no existence probe), and nothing is saved.
+	if c, err := o.StartCode(ctx, "us", "Nobody Here"); err != nil || !ValidCode(c.Code) {
+		t.Fatalf("unknown name: %+v, %v, want a code", c, err)
+	}
+	var saved int
+	if err := pool.QueryRow(ctx, `select count(*) from directory_optout_codes where slug = 'nobody-here'`).Scan(&saved); err != nil || saved != 0 {
+		t.Fatalf("unknown name saved %d codes (%v)", saved, err)
 	}
 	if _, err := o.StartCode(ctx, "kr", "Sel Duskwater"); !errors.Is(err, ErrBadCharacter) {
 		t.Fatalf("kr: %v, want ErrBadCharacter", err)

@@ -93,8 +93,10 @@ export const raidCopy = {
   also: (parts: readonly string[]): string => `Also: ${parts.join('; ')}`,
   /** An officer's mark on a character picked on Discord, until its Battle.net sign-in. */
   discordClaim: (who: string): string => `Picked on Discord by ${who}, not confirmed by Battle.net yet`,
-  /** The roster's tag on the same character; discordClaim is its tooltip. */
+  /** The mark's tag on the same character (DiscordPickMark); discordClaim is its accessible name. */
   discordPicked: 'Picked on Discord',
+  /** The picker beside the tag: `by brightfeather`. */
+  discordPickedBy: (who: string): string => `by ${who}`,
   /** One character of the Also line: `Rootbound (Restoration Druid, Bench)`. */
   alsoPart: (name: string, specClass: string, state: string): string => `${name} (${specClass}, ${state})`,
   /** The strip's one spec picker (raid comp spec 3.2, 7). */

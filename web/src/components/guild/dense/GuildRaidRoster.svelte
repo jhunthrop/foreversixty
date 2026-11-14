@@ -10,6 +10,7 @@
   import CharacterName from '../../ui/CharacterName.svelte';
   import { onMount, type ComponentProps } from 'svelte';
   import GuildRosterTable from '../GuildRosterTable.svelte';
+  import DiscordPickMark from '../DiscordPickMark.svelte';
   import Disclosure from '../../ui/Disclosure.svelte';
   import type { GuildRaidGroup, GuildReadinessPage, GuildRosterRow } from '../../../lib/guild/api';
   import { fetchGuildReadiness } from '../../../lib/guild/api';
@@ -344,6 +345,8 @@
                         >{seenText(row.seenDays)}</span
                       >{/if}</span
                   ></span
+                >{/if}{#if row.pickedBy !== null}<span class="block pt-0.5"
+                  ><DiscordPickMark who={row.pickedBy} testid="guild-raid-roster-discord-claim" /></span
                 >{/if}{/snippet}
             {#snippet meter()}<AttendanceStrip cells={row.cells} />{/snippet}
           </StatRow>

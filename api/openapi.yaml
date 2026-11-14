@@ -1584,6 +1584,13 @@ components:
       properties:
         region: { type: string, enum: [us, eu] }
         name: { type: string, description: "The character's full name, first name and surname", example: Vela Thornbrook }
+    DirectoryOptOutStatusInput:
+      type: object
+      required: [region, name, code]
+      properties:
+        region: { type: string, enum: [us, eu] }
+        name: { type: string, description: "The character's full name, first name and surname", example: Vela Thornbrook }
+        code: { type: string, description: The code /code gave for this character, example: FS-7K2QXM }
     AppTesterInput:
       type: object
       required: [email, platform]
@@ -11088,7 +11095,8 @@ paths:
         and full name; a name the directory does not hold is looked up on Blizzard's public
         profile, so it is kept out from now on. The code (FS- and six letters or digits) removes
         the character once its public guild note carries it and a guildmate's addon sends it.
-        A new code replaces the last. 10 a minute per IP.
+        A new code replaces the last. A name no one knows gets a code too, never saved, so the
+        answer never says whether a character exists. 10 a minute per IP.
       requestBody:
         required: true
         content: { application/json: { schema: { $ref: '#/components/schemas/DirectoryOptOutInput' } } }
@@ -11111,9 +11119,6 @@ paths:
         '400':
           description: Not JSON, or not a region (us, eu) and a character name
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
-        '404':
-          description: No public character has that name, and the directory holds none
-          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
         '429':
           description: This address's minute budget is spent
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
@@ -11121,10 +11126,13 @@ paths:
     post:
       summary: Where a character's directory opt-out stands
       operationId: directoryOptOutStatus
-      description: No auth. removed, waiting (a code is out and unexpired) or none. 10 a minute per IP.
+      description: >-
+        No auth. Where the opt-out the given code started stands: removed, waiting (unexpired, not
+        yet seen in the guild note) or none. Without that character's code the answer is none, so a
+        stranger learns nothing about a name. 10 a minute per IP.
       requestBody:
         required: true
-        content: { application/json: { schema: { $ref: '#/components/schemas/DirectoryOptOutInput' } } }
+        content: { application/json: { schema: { $ref: '#/components/schemas/DirectoryOptOutStatusInput' } } }
       responses:
         '200':
           description: The state

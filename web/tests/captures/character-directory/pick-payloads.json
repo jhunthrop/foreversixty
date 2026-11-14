@@ -1,0 +1,157 @@
+[
+ {
+  "id": "pick-1-press-not-linked",
+  "row": "Pick",
+  "title": "1. No account presses In",
+  "surface": "ephemeral",
+  "clock": "2026-11-15T06:52:00Z",
+  "message": {
+   "content": "Run /signup and pick your character under **character**. You are signed up when you send it. Or link Discord to use your Battle.net characters.",
+   "components": [
+    {
+     "type": 1,
+     "components": [
+      {
+       "type": 2,
+       "style": 5,
+       "label": "Link Discord",
+       "url": "https://api.test/v1/discord/link/start"
+      }
+     ]
+    }
+   ],
+   "flags": 64,
+   "allowed_mentions": {
+    "parse": []
+   }
+  }
+ },
+ {
+  "id": "pick-3-claimed-no-spec",
+  "row": "Pick",
+  "title": "3. First pick, no spec known",
+  "surface": "ephemeral",
+  "clock": "2026-11-15T06:52:00Z",
+  "message": {
+   "content": "You picked Vela Thornbrook. Sign in with Battle.net to confirm it is yours.",
+   "embeds": [
+    {
+     "title": "Which spec tonight?",
+     "description": "The pick signs **Vela Thornbrook** up as In for Onyxia's Lair, Mon 16 Nov.",
+     "footer": {
+      "text": "Forever Sixty",
+      "icon_url": "https://site.test/seal-400.png"
+     },
+     "thumbnail": {
+      "url": "https://api.test/v1/discord/tiles/crest/hunter.png"
+     },
+     "timestamp": "2026-11-14T04:52:37Z",
+     "color": 11195250
+    }
+   ],
+   "components": [
+    {
+     "type": 1,
+     "components": [
+      {
+       "type": 3,
+       "custom_id": "gspc:1:pick:19:in:us/normal/vela-thornbrook",
+       "placeholder": "Choose a spec",
+       "options": [
+        {
+         "label": "Beast Mastery",
+         "value": "hunter-beast-mastery",
+         "description": "DPS"
+        },
+        {
+         "label": "Marksmanship",
+         "value": "hunter-marksmanship",
+         "description": "DPS"
+        },
+        {
+         "label": "Survival",
+         "value": "hunter-survival",
+         "description": "DPS"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "flags": 64,
+   "allowed_mentions": {
+    "parse": []
+   }
+  }
+ },
+ {
+  "id": "pick-4-press-out",
+  "row": "Pick",
+  "title": "4. Later press Out",
+  "surface": "ephemeral",
+  "clock": "2026-11-15T06:52:00Z",
+  "message": {
+   "content": "Vela Thornbrook is Out for Onyxia's Lair, Mon 16 Nov.",
+   "flags": 64,
+   "allowed_mentions": {
+    "parse": []
+   }
+  }
+ },
+ {
+  "id": "pick-5-taken",
+  "row": "Pick",
+  "title": "5. Someone else picks the same character",
+  "surface": "ephemeral",
+  "clock": "2026-11-15T06:52:00Z",
+  "message": {
+   "content": "Vela Thornbrook is claimed by another account. Ask an officer to remove it, or sign in with Battle.net.",
+   "flags": 64,
+   "allowed_mentions": {
+    "parse": []
+   }
+  }
+ },
+ {
+  "id": "pick-6-pick-first",
+  "row": "Pick",
+  "title": "6. Discord-only, nothing picked, presses",
+  "surface": "ephemeral",
+  "clock": "2026-11-15T06:52:00Z",
+  "message": {
+   "content": "Pick your character first: run /signup and choose it under **character**.",
+   "flags": 64,
+   "allowed_mentions": {
+    "parse": []
+   }
+  }
+ },
+ {
+  "id": "pick-6b-too-many",
+  "row": "Pick",
+  "title": "6b. Fourth pick",
+  "surface": "ephemeral",
+  "clock": "2026-11-15T06:52:00Z",
+  "message": {
+   "content": "You have picked 3 characters already. Ask an officer to remove one, or sign in with Battle.net.",
+   "flags": 64,
+   "allowed_mentions": {
+    "parse": []
+   }
+  }
+ },
+ {
+  "id": "pick-7-own-account",
+  "row": "Pick",
+  "title": "7. Battle.net account tries a roster pick",
+  "surface": "ephemeral",
+  "clock": "2026-11-15T06:52:00Z",
+  "message": {
+   "content": "You are signed in with Battle.net. Pick one of your own characters under **character**.",
+   "flags": 64,
+   "allowed_mentions": {
+    "parse": []
+   }
+  }
+ }
+]

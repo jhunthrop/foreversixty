@@ -18,10 +18,15 @@ export interface OptOutCode {
 
 const BASE = '/v1/directory/opt-out';
 
-async function post<T>(path: string, who: OptOutCharacter, apiBase: string): Promise<T> {
+async function post<T>(
+  path: string,
+  who: OptOutCharacter,
+  apiBase: string,
+  extra: Record<string, string> = {},
+): Promise<T> {
   const { data } = await requestEnvelope<T>(`${BASE}/${path}`, apiBase, {
     method: 'POST',
-    body: { region: who.region, name: who.name.trim() },
+    body: { region: who.region, name: who.name.trim(), ...extra },
   });
   if (data === null) throw new Error(`opt-out ${path}: no data`);
   return data;
@@ -32,12 +37,13 @@ export function startOptOutCode(who: OptOutCharacter, apiBase: string = API_BASE
   return post<OptOutCode>('code', who, apiBase);
 }
 
-/** Where the character's opt-out stands. */
+/** Where the opt-out the code started stands; the API answers only the code's holder. */
 export async function optOutStatus(
   who: OptOutCharacter,
+  code: string,
   apiBase: string = API_BASE_URL,
 ): Promise<OptOutState> {
-  return (await post<{ state: OptOutState }>('status', who, apiBase)).state;
+  return (await post<{ state: OptOutState }>('status', who, apiBase, { code })).state;
 }
 
 /** Removes one of the signed-in account's own Battle.net characters at once. */

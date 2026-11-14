@@ -6,6 +6,7 @@
      While a change saves the control shows it pressed; a refusal reverts it. From 1024 the row
      also carries its figures (PlannerFacts) in fixed columns under the roster's one head line. -->
 <script lang="ts">
+  import DiscordPickMark from '../DiscordPickMark.svelte';
   import { raidCopy } from '../../../lib/guild/raid-copy';
   import type { GuildSignupState } from '../../../lib/guild/api';
   import { rowSub, stateTag } from '../../../lib/guild/raid-planner-view';
@@ -81,11 +82,11 @@
         >{/if}
       {#if row.also !== null}<span class="block break-words" data-testid="raid-roster-also">{row.also}</span
         >{/if}
-      {#if officer && row.discord_picked_by}<span class="block" data-testid="raid-roster-discord-claim"
-          >{raidCopy.discordClaim(row.discord_picked_by)}</span
-        >{/if}
       {#if row.note !== ''}<span class="text-text block break-words" data-testid="raid-roster-note"
           >{row.note}</span
+        >{/if}
+      {#if officer && row.discord_picked_by}<span class="block pt-0.5"
+          ><DiscordPickMark who={row.discord_picked_by} testid="raid-roster-discord-claim" /></span
         >{/if}
       {#if refusal !== null}<span class="text-wipe block" role="alert" data-testid="raid-roster-refusal"
           >{refusal}</span
