@@ -139803,16 +139803,16 @@
         },
         "weights": {
           "stamina": 1.0,
-          "armor": 0.213,
-          "defense": 1.269,
-          "dodge": 0.576,
-          "strength": 0.103,
-          "agility": 0.546,
-          "attack_power": 0.047,
-          "feral_attack_power": 0.047,
-          "hit": 0.212,
+          "armor": 0.215,
+          "defense": 1.319,
+          "dodge": 0.594,
+          "strength": 0.106,
+          "agility": 0.56,
+          "attack_power": 0.048,
+          "feral_attack_power": 0.048,
+          "hit": 0.215,
           "crit": 0.098,
-          "expertise": 7.826
+          "expertise": 8.252
         },
         "hit_to_cap": {
           "alliance": {
@@ -139913,9 +139913,9 @@
                   "source": "Blackrock Depths: High Interrogator Gerstahn "
                 },
                 {
-                  "item_id": 20073,
-                  "source_kind": "rep",
-                  "source": "The League of Arathor"
+                  "item_id": 272414,
+                  "source_kind": "vendor",
+                  "source": "Pix Xizzix"
                 }
               ]
             },
@@ -140003,9 +140003,9 @@
                   "source": "PvP rank 12 · Marshal · Alliance"
                 },
                 {
-                  "item_id": 15065,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
+                  "item_id": 227178,
+                  "source_kind": "vendor",
+                  "source": "PvP rank 8 · Knight-Captain · Alliance"
                 }
               ]
             },
@@ -140070,14 +140070,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 11815,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths: Emperor Dagran Thaurissan"
+                },
+                {
                   "item_id": 13382,
                   "source_kind": "dungeon",
                   "source": "Stratholme: Cannon Master Willey"
-                },
-                {
-                  "item_id": 249469,
-                  "source_kind": "crafted",
-                  "source": "Enchanting"
                 }
               ]
             },
@@ -140144,9 +140144,9 @@
                   "source": "PvP rank 13 · Warlord · Horde"
                 },
                 {
-                  "item_id": 227174,
-                  "source_kind": "pvp",
-                  "source": "PvP rank 10 · Champion · Horde"
+                  "item_id": 231687,
+                  "source_kind": "vendor",
+                  "source": "PvP rank 13 · Warlord · Horde"
                 }
               ]
             },
@@ -140198,9 +140198,9 @@
                   "source": "Blackrock Depths: High Interrogator Gerstahn "
                 },
                 {
-                  "item_id": 20068,
-                  "source_kind": "rep",
-                  "source": "The Defilers"
+                  "item_id": 272414,
+                  "source_kind": "vendor",
+                  "source": "Pix Xizzix"
                 }
               ]
             },
@@ -140319,9 +140319,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 19510,
-                  "source_kind": "rep",
-                  "source": "Warsong Outriders"
+                  "item_id": 272408,
+                  "source_kind": "vendor",
+                  "source": "Pix Xizzix"
                 },
                 {
                   "item_id": 22255,
@@ -140331,15 +140331,15 @@
               ]
             },
             "finger2": {
-              "item_id": 272408,
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
+              "item_id": 19510,
+              "source_kind": "rep",
+              "source": "Warsong Outriders",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 19510,
-                  "source_kind": "rep",
-                  "source": "Warsong Outriders"
+                  "item_id": 272408,
+                  "source_kind": "vendor",
+                  "source": "Pix Xizzix"
                 },
                 {
                   "item_id": 22255,
@@ -140355,14 +140355,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 11815,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Depths: Emperor Dagran Thaurissan"
-                },
-                {
                   "item_id": 13213,
                   "source_kind": "dungeon",
                   "source": "Blackrock Spire: Mother Smolderweb"
+                },
+                {
+                  "item_id": 249469,
+                  "source_kind": "crafted",
+                  "source": "Enchanting"
                 }
               ]
             },
@@ -140407,7 +140407,13 @@
               "source_kind": "dungeon",
               "source": "The Temple of Atal'Hakkar: Hazzas",
               "chance": null,
-              "alternatives": []
+              "alternatives": [
+                {
+                  "item_id": 22397,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths: Lord Roccor"
+                }
+              ]
             }
           }
         },
@@ -140442,7 +140448,7 @@
             15065,
             12553,
             19325,
-            272408,
+            19510,
             13965,
             19120,
             19323,
@@ -140453,10 +140459,10 @@
           "attack_power": 1.0,
           "feral_attack_power": 1.0,
           "strength": 2.42,
-          "agility": 2.514,
-          "crit": 1.837,
-          "hit": 1.718,
-          "melee_haste": 23.648
+          "agility": 2.489,
+          "crit": 1.8,
+          "hit": 1.855,
+          "melee_haste": 7.75
         },
         "hit_to_cap": {
           "alliance": {
@@ -140473,12 +140479,12 @@
           },
           "horde": {
             "hit": [
-              1.8,
+              2.8,
               9.0
             ],
             "white": null,
             "spell": [
-              8.8,
+              9.8,
               16.0
             ],
             "school": null
@@ -175777,8 +175783,8 @@
     "227168": "Champion's Mail Skullcap",
     "227169": "Blood Guard's Mail Gloves",
     "227171": "Legionnaire's Mail Chestguard",
-    "227174": "Champion's Dragonhide Headguard",
     "227177": "Legionnaire's Dragonhide Leggings",
+    "227178": "Knight-Captain's Dragonhide Leggings",
     "227181": "Blood Guard's Dragonhide Treads",
     "227182": "Knight-Lieutenant's Dragonhide Treads",
     "227184": "Champion's Dragonhide Spaulders",

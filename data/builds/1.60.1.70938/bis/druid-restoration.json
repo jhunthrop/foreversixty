@@ -1,8 +1,8 @@
 {
   "spec": "druid-restoration",
   "build": "1.60.1.70938",
-  "engine_version": "037798db1",
-  "generated_at": "2026-11-14T02:57:24Z",
+  "engine_version": "f0f90b5f9",
+  "generated_at": "2026-11-14T05:38:41Z",
   "bands": [
     {
       "spec": "druid-restoration",
@@ -1094,8 +1094,8 @@
         "finger2: Band of Purification",
         "main_hand: Staff of Westfall"
       ],
-      "weights_run_seconds": 7.824744537,
-      "verify_run_seconds": 59.919532088000004,
+      "weights_run_seconds": 7.786939307,
+      "verify_run_seconds": 60.485460761,
       "coverage": {
         "back": {
           "eligible": 104,
@@ -2302,8 +2302,8 @@
         "finger2: Band of Purification",
         "main_hand: Living Root"
       ],
-      "weights_run_seconds": 7.824744537,
-      "verify_run_seconds": 62.260838439,
+      "weights_run_seconds": 7.786939307,
+      "verify_run_seconds": 61.89837271,
       "coverage": {
         "back": {
           "eligible": 105,
@@ -3609,8 +3609,8 @@
         "finger2: Electrocutioner Lagnut",
         "main_hand: Staff of the Friar"
       ],
-      "weights_run_seconds": 11.192019932000001,
-      "verify_run_seconds": 112.145461858,
+      "weights_run_seconds": 11.196374308,
+      "verify_run_seconds": 112.231786032,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -4905,8 +4905,8 @@
         "finger2: Electrocutioner Lagnut",
         "main_hand: Staff of the Friar"
       ],
-      "weights_run_seconds": 11.192019932000001,
-      "verify_run_seconds": 112.803314582,
+      "weights_run_seconds": 11.196374308,
+      "verify_run_seconds": 112.513982221,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -6323,8 +6323,8 @@
         "main_hand: Hand of Righteousness",
         "off_hand: Beacon of Hope"
       ],
-      "weights_run_seconds": 11.070854751,
-      "verify_run_seconds": 97.047252562,
+      "weights_run_seconds": 10.907253834,
+      "verify_run_seconds": 96.92916572600001,
       "coverage": {
         "back": {
           "eligible": 257,
@@ -7726,8 +7726,8 @@
         "main_hand: Hand of Righteousness",
         "off_hand: Beacon of Hope"
       ],
-      "weights_run_seconds": 11.070854751,
-      "verify_run_seconds": 101.524426068,
+      "weights_run_seconds": 10.907253834,
+      "verify_run_seconds": 101.360664683,
       "coverage": {
         "back": {
           "eligible": 259,
@@ -9298,8 +9298,8 @@
         "trinket2: Evonice's Landin' Pilla",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 9.214827461,
-      "verify_run_seconds": 88.576428465,
+      "weights_run_seconds": 9.079086692,
+      "verify_run_seconds": 86.981564226,
       "coverage": {
         "back": {
           "eligible": 330,
@@ -10844,8 +10844,8 @@
         "trinket2: Evonice's Landin' Pilla",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 9.214827461,
-      "verify_run_seconds": 87.217709757,
+      "weights_run_seconds": 9.079086692,
+      "verify_run_seconds": 86.717780902,
       "coverage": {
         "back": {
           "eligible": 335,
@@ -12569,8 +12569,8 @@
         "main_hand: Staff of Metanoia",
         "ranged: Idol of Synthesis"
       ],
-      "weights_run_seconds": 9.895987113,
-      "verify_run_seconds": 347.27287309900004,
+      "weights_run_seconds": 9.837187214,
+      "verify_run_seconds": 345.164222872,
       "coverage": {
         "back": {
           "eligible": 467,
@@ -14281,8 +14281,8 @@
         "main_hand: Staff of Metanoia",
         "ranged: Idol of Synthesis"
       ],
-      "weights_run_seconds": 9.895987113,
-      "verify_run_seconds": 348.733127227,
+      "weights_run_seconds": 9.837187214,
+      "verify_run_seconds": 346.082485818,
       "coverage": {
         "back": {
           "eligible": 473,
@@ -16027,8 +16027,8 @@
         "trinket2: Burst of Knowledge",
         "ranged: Idol of Synthesis"
       ],
-      "weights_run_seconds": 9.230591178,
-      "verify_run_seconds": 307.55418059299996,
+      "weights_run_seconds": 9.167264811,
+      "verify_run_seconds": 306.874927897,
       "coverage": {
         "back": {
           "eligible": 467,
@@ -17770,8 +17770,8 @@
         "trinket2: Dormant Heart of the Mountain",
         "ranged: Idol of Synthesis"
       ],
-      "weights_run_seconds": 9.230591178,
-      "verify_run_seconds": 309.222534973,
+      "weights_run_seconds": 9.167264811,
+      "verify_run_seconds": 308.254814878,
       "coverage": {
         "back": {
           "eligible": 473,
