@@ -40,7 +40,7 @@
   import type { ItemTooltipModel } from '../lib/items/tooltip';
   import { positionTooltipPanel } from '../lib/items/tooltip-position';
   import type { GameTipModel } from '../lib/tooltips/game-tip';
-  import { BIS_TOOLTIP_MODELS_ID, readTooltipModels } from '../lib/bis/page-registry';
+  import { BIS_TOOLTIP_MODELS_ID, lateTooltipModel, readTooltipModels } from '../lib/bis/page-registry';
 
   let {
     build,
@@ -109,6 +109,11 @@
     models = new Map(readTooltipModels(undefined, modelsElementId));
   }
 
+  /** The page's model for an item: inlined, or taken with the page's full data after mount. */
+  function modelFor(itemId: number): ItemTooltipModel | undefined {
+    return models.get(itemId) ?? lateTooltipModel(itemId);
+  }
+
   /** A trigger, unless it sits in a surface that shows its item's tooltip in place
    *  (`data-inline-tip`: the paperdoll frame's centre). */
   function hostFor(target: EventTarget | null): HTMLElement | null {
@@ -126,7 +131,7 @@
   /** Whether this host has a model, or a way to fetch one, for `host`. */
   function canOpen(host: HTMLElement): boolean {
     if (host.dataset.gameTip !== undefined) return resolveTip !== undefined;
-    return resolve !== undefined || models.has(Number(host.dataset.bisItem));
+    return resolve !== undefined || modelFor(Number(host.dataset.bisItem)) !== undefined;
   }
 
   /** True when this host acts on `event` for `host`: it can open it and no other host has. */
@@ -191,7 +196,7 @@
       return;
     }
     const itemId = Number(host.dataset.bisItem);
-    const known = models.get(itemId);
+    const known = modelFor(itemId);
     if (known === undefined && resolve === undefined) return; // no build-time model for this id -- nothing to show
     if (activeHost === host) return; // already open, or already opening, this exact host
     const token = beginOpen(host);

@@ -22,7 +22,7 @@ import { bisSeoCopy } from '../../lib/bis/seo-copy';
 import { bisBandPath, bisSpecPath } from '../../lib/bis/band-path';
 import { PRE_RAID_SLUG } from '../../lib/bis/pre-raid';
 import { readSpecCatalog } from '../../lib/bis/load';
-import { bisPreRaid, bisServerPage, defaultSlice } from '../../lib/bis/page-server';
+import { bisPreRaid, bisServerPage, defaultSlice, sliceTooltips } from '../../lib/bis/page-server';
 import {
   BIS_PAGE_DATA_ID,
   BIS_TOOLTIP_MODELS_ID,
@@ -106,8 +106,10 @@ const jsonLd =
 // hydration matches it); the island fetches the rest from the JSON endpoint after mount.
 const inlineData = server === undefined ? undefined : defaultSlice(server.data, band);
 if (inlineData !== undefined) registerBisPageData(inlineData);
-if (server !== undefined) registerBisTooltips(specEntry.spec, server.tooltips);
-const tooltipModelsJson = JSON.stringify(server?.tooltips ?? {}).replace(/</g, '\\u003c');
+// The slice's tooltips alone, the same way; the rest come with the full data.
+const inlineTooltips = server === undefined || inlineData === undefined ? {} : sliceTooltips(server.tooltips, inlineData);
+registerBisTooltips(specEntry.spec, inlineTooltips);
+const tooltipModelsJson = JSON.stringify(inlineTooltips).replace(/</g, '\\u003c');
 
 const specOptions: ControlOption[] = readSpecCatalog()
   .filter((s) => s.class_slug === classSlug)

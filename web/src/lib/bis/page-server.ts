@@ -8,6 +8,7 @@ import { loadTalentFile } from '../guides/build-tree';
 import { indexTalents } from '../planner/rules';
 import { loadBisFile } from './load';
 import { buildBisPageData, type BisServerPage } from './page-data';
+import type { ItemTooltipModel } from '../items/tooltip';
 import { bandModelKey } from './model-key';
 import { modelItemIds, type BisPageData } from './page-model';
 import { presetsOffered } from './page-context';
@@ -62,4 +63,14 @@ export function defaultSlice(data: BisPageData, band: number | undefined = data.
   const ids = modelItemIds(Object.values(models));
   const items = Object.fromEntries(Object.entries(data.items).filter(([id]) => ids.has(Number(id))));
   return { ...data, models, items, partial: true };
+}
+
+/** The tooltips of a slice's items alone (2026-11-13, page weight): the page inlines these and the
+ *  island takes the rest with the full data (lib/bis/page-registry.ts addTooltipModels). Every
+ *  band's tooltips inline were 167 KB of a feral page's 585 KB. */
+export function sliceTooltips(
+  tooltips: Readonly<Record<number, ItemTooltipModel>>,
+  slice: BisPageData,
+): Record<number, ItemTooltipModel> {
+  return Object.fromEntries(Object.entries(tooltips).filter(([id]) => id in slice.items));
 }

@@ -14,6 +14,20 @@ export type TooltipModels = ReadonlyMap<number, ItemTooltipModel>;
 
 const registry = new Map<string, BisPageData>();
 const tooltipRegistry = new Map<string, TooltipModels>();
+/** In the browser: the tooltips the BiS island took with the full data after mount. One module
+ *  instance serves every island on the page, so BisTooltipHost sees them too. */
+const lateTooltips = new Map<number, ItemTooltipModel>();
+
+/** Adds tooltip models a page learned after its first paint (the BiS island's full data). */
+export function addTooltipModels(models: Readonly<Record<string, ItemTooltipModel>>): TooltipModels {
+  for (const [id, model] of toModelMap(models)) lateTooltips.set(id, model);
+  return lateTooltips;
+}
+
+/** A tooltip model added after the first paint, or undefined. */
+export function lateTooltipModel(id: number): ItemTooltipModel | undefined {
+  return lateTooltips.get(id);
+}
 
 export function registerBisPageData(data: BisPageData): void {
   registry.set(data.spec, data);

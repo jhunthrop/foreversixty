@@ -20,8 +20,10 @@
   import BisSlotLines from './BisSlotLines.svelte';
   import BisSide from './BisSide.svelte';
   import BisItinerary from './BisItinerary.svelte';
-  import { readBisPageData, readTooltipModels } from '../../lib/bis/page-registry';
+  import { addTooltipModels, readBisPageData, readTooltipModels } from '../../lib/bis/page-registry';
   import { bandModelKey } from '../../lib/bis/model-key';
+  import type { BisFullData } from '../../lib/bis/page-model';
+  import type { ItemTooltipModel } from '../../lib/items/tooltip';
   import {
     defaultSources,
     isDefaultState,
@@ -89,7 +91,8 @@
   } = $props();
 
   const inline = readBisPageData(spec);
-  const tooltips = readTooltipModels(spec);
+  const inlineTooltips = readTooltipModels(spec);
+  let lateTooltips = $state.raw<ReadonlyMap<number, ItemTooltipModel>>(new Map());
   let data = $state.raw(inline);
   const context = $derived(bisContext(data, raceOptions, pathBand, pathPreRaid));
   /** A band's own page: the spec's path for its first band, else /bis/<class>/<spec>/<band>. */
@@ -104,7 +107,9 @@
     if (!inline.partial) return;
     const response = await fetch(dataHref);
     if (!response.ok) throw new Error(`${dataHref} answered ${response.status}`);
-    data = (await response.json()) as typeof inline;
+    const { tooltips: more, ...full } = (await response.json()) as BisFullData;
+    lateTooltips = new Map(addTooltipModels(more));
+    data = full;
   }
 
   /** Runs a state change once the full data is in; a failed load keeps the default state shown. */
@@ -314,7 +319,7 @@
 
 {#snippet centre(cell: DollCell | undefined, form: 'frame' | 'list')}
   {@const shown = cell?.item ?? cell?.coveredBy}
-  {@const tip = shown ? tooltips.get(shown.id) : undefined}
+  {@const tip = shown ? (inlineTooltips.get(shown.id) ?? lateTooltips.get(shown.id)) : undefined}
   {#if form === 'frame' && character?.render}
     <p class="bis-who" style:--c={crestColor} data-testid="bis-who">
       <b>{character.name}</b>

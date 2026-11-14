@@ -7,6 +7,7 @@
 // no network request (R2). Every field the nightly adds later (`by_kind`, `ranking`, `run`,
 // `filtered_set_dps`, `set_dps_error`) is read when present and absent otherwise.
 import { oneDecimal } from '../format/number';
+import type { ItemTooltipModel } from '../items/tooltip';
 import { bisCopy } from './copy';
 import type { HealerSetView } from './heal-view';
 import type { HitCapLine } from './hit-cap';
@@ -161,6 +162,12 @@ export interface BisPageData {
   items: Record<number, BisItem>;
   /** The inlined default slice: the full set is the page's JSON endpoint. */
   partial?: boolean;
+}
+
+/** The page's JSON endpoint: every model and item, and every item's tooltip (the page inlines only
+ *  its slice's tooltips). */
+export interface BisFullData extends BisPageData {
+  tooltips: Record<number, ItemTooltipModel>;
 }
 
 export { bandModelKey };
