@@ -40481,21 +40481,21 @@
           {
             "spell_id": 8050,
             "name": "Flame Shock",
-            "condition": "at 5 Maelstrom Weapon stacks",
+            "condition": "when it is off the target, above a third of your mana",
             "icon": "spell_fire_flameshock",
             "race_spell_ids": {}
           },
           {
             "spell_id": 3599,
             "name": "Searing Totem",
-            "condition": "on a Clearcasting proc",
+            "condition": "when Searing Totem is down and the fight has 20+ s left",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8044,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above about a sixth: once you have Stormstrike it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "on cooldown, above about a sixth of your mana",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -40514,21 +40514,21 @@
           {
             "spell_id": 8050,
             "name": "Flame Shock",
-            "condition": "at 5 Maelstrom Weapon stacks",
+            "condition": "when it is off the target, above a third of your mana",
             "icon": "spell_fire_flameshock",
             "race_spell_ids": {}
           },
           {
             "spell_id": 3599,
             "name": "Searing Totem",
-            "condition": "on a Clearcasting proc",
+            "condition": "when Searing Totem is down and the fight has 20+ s left",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8045,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above about a sixth: once you have Stormstrike it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "on cooldown, above about a sixth of your mana",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -40547,21 +40547,21 @@
           {
             "spell_id": 8052,
             "name": "Flame Shock",
-            "condition": "at 5 Maelstrom Weapon stacks",
+            "condition": "when it is off the target, above a third of your mana",
             "icon": "spell_fire_flameshock",
             "race_spell_ids": {}
           },
           {
             "spell_id": 3599,
             "name": "Searing Totem",
-            "condition": "on a Clearcasting proc",
+            "condition": "when Searing Totem is down and the fight has 20+ s left",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8045,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above about a sixth: once you have Stormstrike it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "on cooldown, above about a sixth of your mana",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -40580,21 +40580,21 @@
           {
             "spell_id": 8052,
             "name": "Flame Shock",
-            "condition": "at 5 Maelstrom Weapon stacks",
+            "condition": "when it is off the target, above a third of your mana",
             "icon": "spell_fire_flameshock",
             "race_spell_ids": {}
           },
           {
             "spell_id": 6363,
             "name": "Searing Totem",
-            "condition": "on a Clearcasting proc",
+            "condition": "when Searing Totem is down and the fight has 20+ s left",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8045,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above about a sixth: once you have Stormstrike it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "on cooldown, above about a sixth of your mana",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -40613,21 +40613,21 @@
           {
             "spell_id": 8052,
             "name": "Flame Shock",
-            "condition": "at 5 Maelstrom Weapon stacks",
+            "condition": "when it is off the target, above a third of your mana",
             "icon": "spell_fire_flameshock",
             "race_spell_ids": {}
           },
           {
             "spell_id": 6363,
             "name": "Searing Totem",
-            "condition": "on a Clearcasting proc",
+            "condition": "when Searing Totem is down and the fight has 20+ s left",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8046,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above about a sixth: once you have Stormstrike it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "on cooldown, above about a sixth of your mana",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -40653,21 +40653,21 @@
           {
             "spell_id": 8052,
             "name": "Flame Shock",
-            "condition": "at 5 Maelstrom Weapon stacks",
+            "condition": "when it is off the target, above a third of your mana",
             "icon": "spell_fire_flameshock",
             "race_spell_ids": {}
           },
           {
             "spell_id": 6363,
             "name": "Searing Totem",
-            "condition": "on a Clearcasting proc",
+            "condition": "when Searing Totem is down and the fight has 20+ s left",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8046,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above about a sixth: once you have Stormstrike it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "on cooldown, above about a sixth of your mana",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -40693,21 +40693,21 @@
           {
             "spell_id": 8053,
             "name": "Flame Shock",
-            "condition": "at 5 Maelstrom Weapon stacks",
+            "condition": "when it is off the target, above a third of your mana",
             "icon": "spell_fire_flameshock",
             "race_spell_ids": {}
           },
           {
             "spell_id": 6363,
             "name": "Searing Totem",
-            "condition": "on a Clearcasting proc",
+            "condition": "when Searing Totem is down and the fight has 20+ s left",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8046,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above about a sixth: once you have Stormstrike it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "on cooldown, above about a sixth of your mana",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -40733,21 +40733,21 @@
           {
             "spell_id": 8053,
             "name": "Flame Shock",
-            "condition": "at 5 Maelstrom Weapon stacks",
+            "condition": "when it is off the target, above a third of your mana",
             "icon": "spell_fire_flameshock",
             "race_spell_ids": {}
           },
           {
             "spell_id": 6364,
             "name": "Searing Totem",
-            "condition": "on a Clearcasting proc",
+            "condition": "when Searing Totem is down and the fight has 20+ s left",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8046,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above about a sixth: once you have Stormstrike it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "on cooldown, above about a sixth of your mana",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -40773,28 +40773,28 @@
           {
             "spell_id": 8053,
             "name": "Flame Shock",
-            "condition": "at 5 Maelstrom Weapon stacks",
+            "condition": "when it is off the target, above a third of your mana",
             "icon": "spell_fire_flameshock",
             "race_spell_ids": {}
           },
           {
             "spell_id": 6041,
             "name": "Lightning Bolt",
-            "condition": "when Searing Totem is down and the fight has 20+ s left",
+            "condition": "at 5 Maelstrom Weapon stacks",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
           {
             "spell_id": 6364,
             "name": "Searing Totem",
-            "condition": "on a Clearcasting proc",
+            "condition": "when Searing Totem is down and the fight has 20+ s left",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
           {
             "spell_id": 8046,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above about a sixth: once you have Stormstrike it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "on cooldown, above about a sixth of your mana",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -40820,28 +40820,28 @@
           {
             "spell_id": 8053,
             "name": "Flame Shock",
-            "condition": "at 5 Maelstrom Weapon stacks",
+            "condition": "when it is off the target, above a third of your mana",
             "icon": "spell_fire_flameshock",
             "race_spell_ids": {}
           },
           {
             "spell_id": 6041,
             "name": "Lightning Bolt",
-            "condition": "when Searing Totem is down and the fight has 20+ s left",
+            "condition": "at 5 Maelstrom Weapon stacks",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
           {
             "spell_id": 6364,
             "name": "Searing Totem",
-            "condition": "on a Clearcasting proc",
+            "condition": "when Searing Totem is down and the fight has 20+ s left",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10412,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above about a sixth: once you have Stormstrike it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "on cooldown, above about a sixth of your mana",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -40867,28 +40867,28 @@
           {
             "spell_id": 8053,
             "name": "Flame Shock",
-            "condition": "at 5 Maelstrom Weapon stacks",
+            "condition": "when it is off the target, above a third of your mana",
             "icon": "spell_fire_flameshock",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10391,
             "name": "Lightning Bolt",
-            "condition": "when Searing Totem is down and the fight has 20+ s left",
+            "condition": "at 5 Maelstrom Weapon stacks",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
           {
             "spell_id": 6364,
             "name": "Searing Totem",
-            "condition": "on a Clearcasting proc",
+            "condition": "when Searing Totem is down and the fight has 20+ s left",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10412,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above about a sixth: once you have Stormstrike it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "on cooldown, above about a sixth of your mana",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -40914,28 +40914,28 @@
           {
             "spell_id": 10447,
             "name": "Flame Shock",
-            "condition": "at 5 Maelstrom Weapon stacks",
+            "condition": "when it is off the target, above a third of your mana",
             "icon": "spell_fire_flameshock",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10391,
             "name": "Lightning Bolt",
-            "condition": "when Searing Totem is down and the fight has 20+ s left",
+            "condition": "at 5 Maelstrom Weapon stacks",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
           {
             "spell_id": 6365,
             "name": "Searing Totem",
-            "condition": "on a Clearcasting proc",
+            "condition": "when Searing Totem is down and the fight has 20+ s left",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10412,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above about a sixth: once you have Stormstrike it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "on cooldown, above about a sixth of your mana",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -40968,28 +40968,28 @@
           {
             "spell_id": 10447,
             "name": "Flame Shock",
-            "condition": "at 5 Maelstrom Weapon stacks",
+            "condition": "when it is off the target, above a third of your mana",
             "icon": "spell_fire_flameshock",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10391,
             "name": "Lightning Bolt",
-            "condition": "when Searing Totem is down and the fight has 20+ s left",
+            "condition": "at 5 Maelstrom Weapon stacks",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
           {
             "spell_id": 6365,
             "name": "Searing Totem",
-            "condition": "on a Clearcasting proc",
+            "condition": "when Searing Totem is down and the fight has 20+ s left",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10412,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above about a sixth: once you have Stormstrike it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "on cooldown, above about a sixth of your mana",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -41022,28 +41022,28 @@
           {
             "spell_id": 10447,
             "name": "Flame Shock",
-            "condition": "at 5 Maelstrom Weapon stacks",
+            "condition": "when it is off the target, above a third of your mana",
             "icon": "spell_fire_flameshock",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10392,
             "name": "Lightning Bolt",
-            "condition": "when Searing Totem is down and the fight has 20+ s left",
+            "condition": "at 5 Maelstrom Weapon stacks",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
           {
             "spell_id": 6365,
             "name": "Searing Totem",
-            "condition": "on a Clearcasting proc",
+            "condition": "when Searing Totem is down and the fight has 20+ s left",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10412,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above about a sixth: once you have Stormstrike it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "on cooldown, above about a sixth of your mana",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -41076,28 +41076,28 @@
           {
             "spell_id": 10447,
             "name": "Flame Shock",
-            "condition": "at 5 Maelstrom Weapon stacks",
+            "condition": "when it is off the target, above a third of your mana",
             "icon": "spell_fire_flameshock",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10392,
             "name": "Lightning Bolt",
-            "condition": "when Searing Totem is down and the fight has 20+ s left",
+            "condition": "at 5 Maelstrom Weapon stacks",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
           {
             "spell_id": 6365,
             "name": "Searing Totem",
-            "condition": "on a Clearcasting proc",
+            "condition": "when Searing Totem is down and the fight has 20+ s left",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10413,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above about a sixth: once you have Stormstrike it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "on cooldown, above about a sixth of your mana",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -41130,28 +41130,28 @@
           {
             "spell_id": 10447,
             "name": "Flame Shock",
-            "condition": "at 5 Maelstrom Weapon stacks",
+            "condition": "when it is off the target, above a third of your mana",
             "icon": "spell_fire_flameshock",
             "race_spell_ids": {}
           },
           {
             "spell_id": 15207,
             "name": "Lightning Bolt",
-            "condition": "when Searing Totem is down and the fight has 20+ s left",
+            "condition": "at 5 Maelstrom Weapon stacks",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10437,
             "name": "Searing Totem",
-            "condition": "on a Clearcasting proc",
+            "condition": "when Searing Totem is down and the fight has 20+ s left",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10413,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above about a sixth: once you have Stormstrike it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "on cooldown, above about a sixth of your mana",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -41184,28 +41184,28 @@
           {
             "spell_id": 10448,
             "name": "Flame Shock",
-            "condition": "at 5 Maelstrom Weapon stacks",
+            "condition": "when it is off the target, above a third of your mana",
             "icon": "spell_fire_flameshock",
             "race_spell_ids": {}
           },
           {
             "spell_id": 15207,
             "name": "Lightning Bolt",
-            "condition": "when Searing Totem is down and the fight has 20+ s left",
+            "condition": "at 5 Maelstrom Weapon stacks",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10437,
             "name": "Searing Totem",
-            "condition": "on a Clearcasting proc",
+            "condition": "when Searing Totem is down and the fight has 20+ s left",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10413,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above about a sixth: once you have Stormstrike it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "on cooldown, above about a sixth of your mana",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -41238,28 +41238,28 @@
           {
             "spell_id": 10448,
             "name": "Flame Shock",
-            "condition": "at 5 Maelstrom Weapon stacks",
+            "condition": "when it is off the target, above a third of your mana",
             "icon": "spell_fire_flameshock",
             "race_spell_ids": {}
           },
           {
             "spell_id": 15208,
             "name": "Lightning Bolt",
-            "condition": "when Searing Totem is down and the fight has 20+ s left",
+            "condition": "at 5 Maelstrom Weapon stacks",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10437,
             "name": "Searing Totem",
-            "condition": "on a Clearcasting proc",
+            "condition": "when Searing Totem is down and the fight has 20+ s left",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10413,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above about a sixth: once you have Stormstrike it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "on cooldown, above about a sixth of your mana",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
@@ -41292,35 +41292,35 @@
           {
             "spell_id": 29228,
             "name": "Flame Shock",
-            "condition": "at 5 Maelstrom Weapon stacks",
+            "condition": "when it is off the target, above a third of your mana",
             "icon": "spell_fire_flameshock",
             "race_spell_ids": {}
           },
           {
             "spell_id": 15208,
             "name": "Lightning Bolt",
-            "condition": "when Searing Totem is down and the fight has 20+ s left",
+            "condition": "at 5 Maelstrom Weapon stacks",
             "icon": "spell_nature_lightning",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10438,
             "name": "Searing Totem",
-            "condition": "on a Clearcasting proc",
+            "condition": "when Searing Totem is down and the fight has 20+ s left",
             "icon": "spell_fire_searingtotem",
             "race_spell_ids": {}
           },
           {
             "spell_id": 408345,
             "name": "Fire Nova",
-            "condition": "on cooldown, above about a sixth of your mana",
+            "condition": "on a Clearcasting proc",
             "icon": "spell_fire_sealoffire",
             "race_spell_ids": {}
           },
           {
             "spell_id": 10414,
             "name": "Earth Shock",
-            "condition": "Earth Shock on cooldown while your mana is above about a sixth: once you have Stormstrike it takes Stormstrike's 20% when no bolt is ready.",
+            "condition": "on cooldown, above about a sixth of your mana",
             "icon": "spell_nature_earthshock",
             "race_spell_ids": {}
           }
