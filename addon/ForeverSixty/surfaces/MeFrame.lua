@@ -1,6 +1,7 @@
 -- addon/ForeverSixty/surfaces/MeFrame.lua
 -- The Me tab's frame (design/specs/2026-11-13-addon-hub.md 4.1, board hub-me.png): draws MeTab.model into
--- the hub's two columns, left 388 (the score, the last raid), right 288 (Right now, the sim), and registers
+-- the hub's two columns, left 388 (the score, the last raid; with no site activity yet Where you stand and the
+-- site line, 2026-11-14-me-empty.md), right 288 (Right now, the sim; or Gear at the band), and registers
 -- the tab. Every region is built once on the first open and reused on every draw; sections are a heading
 -- and rows, no boxes. Items show their icon in the quality edge with the client's tooltip and shift-click
 -- links them; every Right now line and every gold link goes somewhere.
@@ -220,6 +221,47 @@ local function buildSim(parent, width)
 	return sim
 end
 
+--- Where you stand (no site activity yet): a row each of label, track and fill, icon, value and note.
+local function buildStanding(parent, width)
+	local G = MeFrame.LAYOUT
+	local standing = BuildsWindow.buildSection(parent, width, { text = text }, L.meStanding, nil)
+	standing.rows = {}
+	for index = 1, MeTab.MAX_STANDING do
+		local row = { label = text(parent, "muted", G.partLabel), value = text(parent, "body"),
+			note = text(parent, "muted", G.valueWidth), track = Theme.texture(parent, "ARTWORK", "track"),
+			fill = Theme.texture(parent, "OVERLAY", "body"), cell = itemCell(parent, G.gainIcon) }
+		row.note:SetJustifyH("RIGHT")
+		standing.rows[index] = row
+	end
+	return standing
+end
+
+--- Gear at the band (no site activity yet): the upgrades as Your sim's gains, the enchant row, the empty line.
+local function buildGear(parent, width)
+	local G = MeFrame.LAYOUT
+	local gear = BuildsWindow.buildSection(parent, width, { text = text }, L.meGear, nil)
+	gear.rows = {}
+	for index = 1, MeTab.MAX_LOCAL_GAINS do
+		local value = text(parent, "success", G.gainValue)
+		value:SetJustifyH("RIGHT")
+		gear.rows[index] = { cell = itemCell(parent, G.gainIcon),
+			name = text(parent, "body", width - G.gainIcon - G.gainGap * 2 - G.gainValue), text = value }
+	end
+	gear.enchants = text(parent, "warning")
+	gear.slots = text(parent, "muted")
+	gear.empty = text(parent, "muted", width)
+	return gear
+end
+
+--- The one line for what the site adds, and the companion app's address under it.
+local function buildSite(parent, width)
+	local line = text(parent, "muted", width)
+	if line.SetWordWrap then line:SetWordWrap(true) end
+	return { line = line, link = link(parent, L.meAppLink, function()
+		MeFrame.openApp()
+	end) }
+end
+
 --- The tab's body, once, into the hub's content frame: the two columns and the rule between them.
 function MeFrame.build(content)
 	local S, H = Theme.SIZES, Hub.LAYOUT
@@ -237,6 +279,8 @@ function MeFrame.build(content)
 	MeFrame.parts = {
 		content = content, left = left, right = right,
 		score = buildScore(left, S.windowLeft), raid = buildRaid(left, S.windowLeft),
+		standing = buildStanding(left, S.windowLeft), gear = buildGear(right, S.windowRight),
+		site = buildSite(left, S.windowLeft),
 		now = buildNow(right, S.windowRight), sim = buildSim(right, S.windowRight),
 	}
 	return content
@@ -512,6 +556,123 @@ local function drawSim(sim, parent, model, y)
 	return y + G.sectionGap
 end
 
+-- No site activity yet -------------------------------------------------------------------------------------
+
+--- One Where you stand row at `top`: the label, then the experience track or the icon and value, the note.
+local function drawStandingRow(row, parent, entry, top)
+	local G, width = MeFrame.LAYOUT, Theme.SIZES.windowLeft
+	local mid = top + (G.partRow - G.line) / 2
+	place(row.label, parent, 0, mid)
+	row.label:SetText(entry.label)
+	local x = G.partLabel
+	Theme.setShown({ row.track, row.fill }, entry.fill ~= nil)
+	if entry.fill ~= nil then
+		row.track:SetSize(G.trackMax, G.track)
+		place(row.track, parent, x, top + (G.partRow - G.track) / 2)
+		local filled = math.floor(G.trackMax * entry.fill + 0.5)
+		Theme.setShown({ row.fill }, filled > 0)
+		row.fill:SetSize(math.max(filled, 1), G.track)
+		row.fill:ClearAllPoints()
+		row.fill:SetPoint("TOPLEFT", parent, "TOPLEFT", x, -(top + (G.partRow - G.track) / 2))
+		x = x + G.trackMax + G.reasonGap
+	end
+	Theme.setShown({ row.cell }, entry.icon ~= nil)
+	if entry.icon ~= nil then
+		paintCell(row.cell, nil, entry.icon)
+		place(row.cell, parent, x, top + (G.partRow - G.gainIcon) / 2)
+		x = x + G.gainIcon + G.gainGap
+	end
+	fit(row.value, entry.value, width - x - G.valueWidth - G.reasonGap)
+	row.value:SetTextColor(Theme.rgb(Theme.HEX[entry.muted and "muted" or "body"]))
+	place(row.value, parent, x, mid)
+	Theme.setShown({ row.note }, entry.note ~= nil)
+	if entry.note ~= nil then
+		row.note:SetText(entry.note)
+		place(row.note, parent, width - G.valueWidth, mid)
+	end
+end
+
+--- Where you stand at `y`; the y under it.
+local function drawStanding(standing, parent, model, y)
+	local G = MeFrame.LAYOUT
+	local rows = model ~= nil and model.rows or {}
+	if model == nil then
+		hideSection(standing)
+	else
+		y = heading(standing, parent, Theme.SIZES.windowLeft, y, nil)
+	end
+	for index, row in ipairs(standing.rows) do
+		if rows[index] == nil then
+			hideAll({ row.label, row.value, row.note, row.track, row.fill, row.cell })
+		else
+			drawStandingRow(row, parent, rows[index], y + (index - 1) * G.partRow)
+		end
+	end
+	return model == nil and y or y + #rows * G.partRow + G.sectionGap
+end
+
+--- Gear at `y`: the upgrades, then the enchant row or the empty line; the y under it.
+local function drawLocalGear(gear, parent, model, y)
+	local G, width = MeFrame.LAYOUT, Theme.SIZES.windowRight
+	local rows = model ~= nil and model.rows or {}
+	if model == nil then
+		hideSection(gear)
+	else
+		y = heading(gear, parent, width, y, model.note)
+	end
+	for index, row in ipairs(gear.rows) do
+		local entry = rows[index]
+		if entry == nil then
+			hideAll({ row.cell, row.name, row.text })
+		else
+			local top = y + (index - 1) * G.gainRow
+			paintCell(row.cell, entry.itemId)
+			place(row.cell, parent, 0, top + (G.gainRow - G.gainIcon) / 2)
+			local name, hex = itemName(entry.itemId)
+			fit(row.name, name, width - G.gainIcon - G.gainGap * 2 - G.gainValue)
+			row.name:SetTextColor(Theme.rgb(hex))
+			place(row.name, parent, G.gainIcon + G.gainGap, top + (G.gainRow - G.line) / 2)
+			row.text:SetText(entry.gain)
+			place(row.text, parent, width - G.gainValue, top + (G.gainRow - G.line) / 2)
+		end
+	end
+	y = y + #rows * G.gainRow
+	local enchants, empty = model ~= nil and model.enchants, model ~= nil and model.empty
+	Theme.setShown({ gear.enchants, gear.slots }, enchants and true or false)
+	Theme.setShown({ gear.empty }, empty and true or false)
+	if enchants then
+		gear.enchants:SetText(enchants)
+		place(gear.enchants, parent, 0, y + (G.gainRow - G.line) / 2)
+		local x = math.ceil(gear.enchants:GetStringWidth() or 0) + G.reasonGap
+		fit(gear.slots, model.slots or "", width - x)
+		place(gear.slots, parent, x, y + (G.gainRow - G.line) / 2)
+		y = y + G.gainRow
+	elseif empty then
+		gear.empty:SetText(empty)
+		place(gear.empty, parent, 0, y + 2)
+		y = y + 2 + G.line
+	end
+	return model == nil and y or y + G.sectionGap
+end
+
+--- The site line at `y` and the app's address under it; the y under them.
+local function drawSite(site, parent, model, y)
+	local G = MeFrame.LAYOUT
+	Theme.setShown({ site.line }, model ~= nil)
+	Theme.setShown({ site.link }, model ~= nil and model.link ~= nil)
+	if model == nil then
+		return y
+	end
+	site.line:SetText(model.line)
+	place(site.line, parent, 0, y)
+	y = y + textHeight(site.line)
+	if model.link ~= nil then
+		place(site.link, parent, 0, y + 4)
+		y = y + 4 + G.line
+	end
+	return y + G.sectionGap
+end
+
 --- Draw `model` (MeTab.model): the columns, the footer's line, the window's height. The body's height.
 function MeFrame.draw(model)
 	local parts = MeFrame.parts
@@ -521,12 +682,15 @@ function MeFrame.draw(model)
 	local G = MeFrame.LAYOUT
 	local left = drawScore(parts.score, parts.left, model.score, 0)
 	left = drawRaid(parts.raid, parts.left, model.lastRaid, left)
+	left = drawStanding(parts.standing, parts.left, model.standing, left)
+	left = drawSite(parts.site, parts.left, model.site, left)
 	local right = drawNow(parts.now, parts.right, model.rightNow, 0)
 	if model.setup ~= nil and MeFrame.setup ~= nil then
 		right = MeFrame.setup.draw(parts.right, Theme.SIZES.windowRight, model.setup, right)
 	elseif MeFrame.setup ~= nil then
 		MeFrame.setup.hide()
 	end
+	right = drawLocalGear(parts.gear, parts.right, model.gear, right)
 	right = drawSim(parts.sim, parts.right, model.sim, right)
 	-- Every section ends in its gap to the next; the last one's is not body.
 	local body = math.max(0, math.max(left, right) - G.sectionGap)

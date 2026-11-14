@@ -444,6 +444,13 @@ end
 --- The slots missing an enchant, in doll order, as the line under the doll says them ("Chest, Feet"), or
 --- nil with none. Pure.
 function GearTab.unenchantedLine(doll)
+	local names = GearTab.unenchantedSlots(doll)
+	return names ~= nil and string.format(L.gearNoEnchantSlots, names) or nil
+end
+
+--- The slots missing an enchant, in doll order, joined ("Chest, Feet"), or nil with none (the Me tab's
+--- enchant row reads it too). Pure.
+function GearTab.unenchantedSlots(doll)
 	local names = {}
 	for _, cells in ipairs({ doll.left, doll.right }) do
 		for _, cell in ipairs(cells) do
@@ -452,7 +459,7 @@ function GearTab.unenchantedLine(doll)
 			end
 		end
 	end
-	return #names > 0 and string.format(L.gearNoEnchantSlots, table.concat(names, L.sourcesListSeparator)) or nil
+	return #names > 0 and table.concat(names, L.sourcesListSeparator) or nil
 end
 
 -- Sources ----------------------------------------------------------------------------------------
