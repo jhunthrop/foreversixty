@@ -1,5 +1,11 @@
 # Forever Sixty
 
+## 2.0.57
+
+- Gear whose hit or crit is an Equip percent, like Trueaim Gauntlets' 3% hit or tier set crit, now counts that percent in upgrade gains on tooltips, the Gear tab and the bag arrows. Before, those percents counted as nothing.
+- Your job on the Guild tab is white, so gold is left to the waiting dot and your score.
+- CurseForge now lists Forever Sixty Data as a required download beside the addon.
+
 ## 2.0.56
 
 - When a guildmate runs a newer Forever Sixty, one chat line a session says the new version is out and which one you have.
