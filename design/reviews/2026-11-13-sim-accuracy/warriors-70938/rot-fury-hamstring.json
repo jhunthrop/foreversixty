@@ -1,0 +1,385 @@
+{
+ "rotation": {
+  "type": "TypeAPL",
+  "prepullActions": [
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 2687
+      }
+     }
+    },
+    "doAtValue": {
+     "const": {
+      "val": "-2.5s"
+     }
+    }
+   },
+   {
+    "action": {
+     "condition": {
+      "not": {
+       "val": {
+        "auraIsActive": {
+         "auraId": {
+          "spellId": 11551,
+          "rank": 6
+         }
+        }
+       }
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 11551,
+       "rank": 6
+      }
+     }
+    },
+    "doAtValue": {
+     "const": {
+      "val": "-1.5s"
+     }
+    }
+   }
+  ],
+  "priorityList": [
+   {
+    "action": {
+     "autocastOtherCooldowns": {}
+    }
+   },
+   {
+    "notes": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute. With Improved Bloodrage both are a quarter more at 1/2 and half more at 2/2, to 15 and 15.",
+    "action": {
+     "condition": {
+      "cmp": {
+       "op": "OpLt",
+       "lhs": {
+        "currentRage": {}
+       },
+       "rhs": {
+        "const": {
+         "val": "80"
+        }
+       }
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 2687
+      }
+     }
+    }
+   },
+   {
+    "notes": "At the pull when a second one still fits, otherwise in the Execute phase, or in the last 30 seconds when that phase is shorter than the buff.",
+    "action": {
+     "condition": {
+      "or": {
+       "vals": [
+        {
+         "cmp": {
+          "op": "OpGe",
+          "lhs": {
+           "remainingTime": {}
+          },
+          "rhs": {
+           "const": {
+            "val": "210s"
+           }
+          }
+         }
+        },
+        {
+         "isExecutePhase": {
+          "threshold": "E20"
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpLe",
+          "lhs": {
+           "remainingTime": {}
+          },
+          "rhs": {
+           "const": {
+            "val": "30s"
+           }
+          }
+         }
+        }
+       ]
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 12328
+      }
+     }
+    }
+   },
+   {
+    "notes": "In the Execute phase, or in the last 15 seconds when that phase is short. It is a once-a-fight button.",
+    "action": {
+     "condition": {
+      "or": {
+       "vals": [
+        {
+         "isExecutePhase": {
+          "threshold": "E20"
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpLe",
+          "lhs": {
+           "remainingTime": {}
+          },
+          "rhs": {
+           "const": {
+            "val": "15s"
+           }
+          }
+         }
+        }
+       ]
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 1719
+      }
+     }
+    }
+   },
+   {
+    "notes": "Whenever it drops: 10 rage for the melee attack power of every party and raid member within 20 yards.",
+    "action": {
+     "condition": {
+      "not": {
+       "val": {
+        "auraIsActive": {
+         "auraId": {
+          "spellId": 11551,
+          "rank": 6
+         }
+        }
+       }
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 11551,
+       "rank": 6
+      }
+     }
+    }
+   },
+   {
+    "notes": "First, in the Execute phase: it takes every point of rage you hold, and from 40 it goes ahead of Bloodthirst too.",
+    "action": {
+     "condition": {
+      "isExecutePhase": {
+       "threshold": "E20"
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 20662,
+       "rank": 5
+      }
+     }
+    }
+   },
+   {
+    "notes": "On cooldown: the button you lose the most by delaying.",
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 23894,
+       "rank": 4
+      }
+     }
+    }
+   },
+   {
+    "notes": "On cooldown: it hits up to four targets with both weapons, and from 40 it sits right behind Bloodthirst.",
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 1680
+      }
+     }
+    }
+   },
+   {
+    "notes": "On cooldown, right behind Whirlwind once you have it: your next four white swings that land within 8 seconds each bring 5 more rage, and it costs a quarter of your base health, which the healers cover.",
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 1329555
+      }
+     }
+    }
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "rank": 3,
+       "spellId": 7373
+      }
+     },
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "auraIsKnown": {
+          "auraId": {
+           "spellId": 10610
+          }
+         }
+        },
+        {
+         "not": {
+          "val": {
+           "isExecutePhase": {
+            "threshold": "E25"
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    }
+   },
+   {
+    "notes": "From 36, on cooldown under 80 rage, except hold it for the fears on Magmadar, Onyxia and Nefarian: rage from the hits you take, and 5 rage at once with Improved Berserker Rage 1/2 or 10 with 2/2.",
+    "action": {
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "cmp": {
+          "op": "OpGe",
+          "lhs": {
+           "currentLevel": {}
+          },
+          "rhs": {
+           "const": {
+            "val": "36"
+           }
+          }
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpLt",
+          "lhs": {
+           "currentRage": {}
+          },
+          "rhs": {
+           "const": {
+            "val": "80"
+           }
+          }
+         }
+        }
+       ]
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 18499
+      }
+     }
+    }
+   },
+   {
+    "notes": "Only before level 36, while you still fight in Battle Stance. Once Whirlwind is trained you live in Berserker Stance and it never comes up.",
+    "action": {
+     "condition": {
+      "cmp": {
+       "op": "OpLt",
+       "lhs": {
+        "currentLevel": {}
+       },
+       "rhs": {
+        "const": {
+         "val": "36"
+        }
+       }
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 11585,
+       "rank": 4
+      }
+     }
+    }
+   },
+   {
+    "notes": "Only above 60 rage, and, once you have Execute, never from 25% down: hold that rage for it. It is queued on your next swing and costs no global cooldown.",
+    "action": {
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "cmp": {
+          "op": "OpGe",
+          "lhs": {
+           "currentRage": {}
+          },
+          "rhs": {
+           "const": {
+            "val": "60"
+           }
+          }
+         }
+        },
+        {
+         "or": {
+          "vals": [
+           {
+            "not": {
+             "val": {
+              "isExecutePhase": {
+               "threshold": "E25"
+              }
+             }
+            }
+           },
+           {
+            "not": {
+             "val": {
+              "spellIsKnown": {
+               "spellId": {
+                "spellId": 20662,
+                "rank": 5
+               }
+              }
+             }
+            }
+           }
+          ]
+         }
+        }
+       ]
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 11567,
+       "rank": 8,
+       "tag": 1
+      }
+     }
+    }
+   }
+  ]
+ }
+}

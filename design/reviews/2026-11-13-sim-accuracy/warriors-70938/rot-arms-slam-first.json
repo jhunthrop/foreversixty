@@ -1,0 +1,329 @@
+{
+ "rotation": {
+  "type": "TypeAPL",
+  "prepullActions": [
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 11578,
+       "rank": 3
+      }
+     }
+    },
+    "doAtValue": {
+     "const": {
+      "val": "0s"
+     }
+    }
+   },
+   {
+    "action": {
+     "condition": {
+      "not": {
+       "val": {
+        "auraIsActive": {
+         "auraId": {
+          "spellId": 11551,
+          "rank": 6
+         }
+        }
+       }
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 11551,
+       "rank": 6
+      }
+     }
+    },
+    "doAtValue": {
+     "const": {
+      "val": "0s"
+     }
+    }
+   }
+  ],
+  "priorityList": [
+   {
+    "action": {
+     "autocastOtherCooldowns": {}
+    }
+   },
+   {
+    "notes": "From 50, below 20% and once your first Execute has emptied the bar: swap to Berserker Stance and press Recklessness. Improved Tactical Mastery keeps 25 rage through the swap. Mortal Strike and Execute still work there, Overpower and Rend do not.",
+    "action": {
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "isExecutePhase": {
+          "threshold": "E20"
+         }
+        },
+        {
+         "spellIsKnown": {
+          "spellId": {
+           "spellId": 1719
+          }
+         }
+        },
+        {
+         "spellIsReady": {
+          "spellId": {
+           "spellId": 1719
+          }
+         }
+        },
+        {
+         "not": {
+          "val": {
+           "auraIsActive": {
+            "auraId": {
+             "spellId": 2458
+            }
+           }
+          }
+         }
+        },
+        {
+         "cmp": {
+          "op": "OpLe",
+          "lhs": {
+           "currentRage": {}
+          },
+          "rhs": {
+           "const": {
+            "val": "25"
+           }
+          }
+         }
+        }
+       ]
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 2458
+      }
+     }
+    }
+   },
+   {
+    "notes": "Whenever rage is under 80: 10 rage at once and 10 more over 10 seconds, back every minute, and a quarter more with each point of Improved Bloodrage. The level 60 build takes two points at 54 and 55, the raid build one at 60.",
+    "action": {
+     "condition": {
+      "cmp": {
+       "op": "OpLt",
+       "lhs": {
+        "currentRage": {}
+       },
+       "rhs": {
+        "const": {
+         "val": "80"
+        }
+       }
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 2687
+      }
+     }
+    }
+   },
+   {
+    "notes": "Whenever it drops: 10 rage for the attack power of everyone within 20 yards, raid included.",
+    "action": {
+     "condition": {
+      "not": {
+       "val": {
+        "auraIsActive": {
+         "auraId": {
+          "spellId": 11551,
+          "rank": 6
+         }
+        }
+       }
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 11551,
+       "rank": 6
+      }
+     }
+    }
+   },
+   {
+    "notes": "Keep it ticking: the bleed ignores armor and grows with your attack power, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too.",
+    "action": {
+     "condition": {
+      "not": {
+       "val": {
+        "dotIsActive": {
+         "spellId": {
+          "spellId": 11574,
+          "rank": 7
+         }
+        }
+       }
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 11574,
+       "rank": 7
+      }
+     }
+    }
+   },
+   {
+    "notes": "The moment it lights up, even ahead of Mortal Strike from 40: a dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in; with both points of Improved Overpower it crits most of the time.",
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 11585,
+       "rank": 4
+      }
+     }
+    }
+   },
+   {
+    "notes": "On cooldown: a big hit every 6 seconds, and it cuts the healing the target takes in half.",
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 21553,
+       "rank": 4
+      }
+     }
+    }
+   },
+   {
+    "notes": "On cooldown after Mortal Strike, raid build only: your white swings for the next 8 seconds each bring 5 more rage. Costs a quarter of your base health.",
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 1329555
+      }
+     }
+    }
+   },
+   {
+    "notes": "Only with Improved Slam, and between Mortal Strikes from 40: the talent keeps your swing timer running through the cast. Without it Slam stops your swing and costs you damage.",
+    "action": {
+     "condition": {
+      "cmp": {
+       "op": "OpLt",
+       "lhs": {
+        "spellCastTime": {
+         "spellId": {
+          "spellId": 11605,
+          "rank": 5
+         }
+        }
+       },
+       "rhs": {
+        "const": {
+         "val": "1.5s"
+        }
+       }
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 11605,
+       "rank": 5
+      }
+     }
+    }
+   },
+   {
+    "notes": "Below 20%. Your first one spends the full bar you walked in with, so arrive with rage; after that it shares the globals with Mortal Strike from 40.",
+    "action": {
+     "condition": {
+      "isExecutePhase": {
+       "threshold": "E20"
+      }
+     },
+     "castSpell": {
+      "spellId": {
+       "spellId": 20662,
+       "rank": 5
+      }
+     }
+    }
+   },
+   {
+    "notes": "On a free global in Battle Stance, from 27: 75% weapon damage, twice that on dragons and giants.",
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 1310222
+      }
+     }
+    }
+   },
+   {
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "rank": 3,
+       "spellId": 7373
+      }
+     },
+     "condition": {
+      "and": {
+       "vals": [
+        {
+         "auraIsKnown": {
+          "auraId": {
+           "spellId": 10610
+          }
+         }
+        },
+        {
+         "not": {
+          "val": {
+           "isExecutePhase": {
+            "threshold": "E25"
+           }
+          }
+         }
+        }
+       ]
+      }
+     }
+    },
+    "notes": "Only with a Windfury Totem on you, on a free global, and never from 25% down: 10 rage for a main-hand hit that can trigger the totem's strike. Without the totem it is rage your other attacks need."
+   },
+   {
+    "notes": "Only above 90 rage, so a full bar does not waste what your swings make. Below that, keep the rage for the attacks that lose damage when they wait: Overpower from 12, Execute from 24 and Mortal Strike from 40.",
+    "action": {
+     "castSpell": {
+      "spellId": {
+       "spellId": 11567,
+       "rank": 8,
+       "tag": 1
+      }
+     },
+     "condition": {
+      "cmp": {
+       "op": "OpGe",
+       "lhs": {
+        "currentRage": {}
+       },
+       "rhs": {
+        "const": {
+         "val": "90"
+        }
+       }
+      }
+     }
+    }
+   }
+  ]
+ }
+}
