@@ -112748,14 +112748,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 272069,
-                  "source_kind": "vendor",
-                  "source": "Creeg Bothunk"
-                },
-                {
                   "item_id": 11824,
                   "source_kind": "dungeon",
                   "source": "Blackrock Depths: Ok'thor the Breaker"
+                },
+                {
+                  "item_id": 17768,
+                  "source_kind": "quest",
+                  "source": "Vyletongue Corruption"
                 }
               ]
             },
@@ -112766,14 +112766,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 272070,
-                  "source_kind": "vendor",
-                  "source": "Creeg Bothunk"
-                },
-                {
                   "item_id": 11824,
                   "source_kind": "dungeon",
                   "source": "Blackrock Depths: Ok'thor the Breaker"
+                },
+                {
+                  "item_id": 17768,
+                  "source_kind": "quest",
+                  "source": "Vyletongue Corruption"
                 }
               ]
             },
@@ -113036,12 +113036,12 @@
               "chance": 0.14,
               "alternatives": [
                 {
-                  "item_id": 271950,
+                  "item_id": 271945,
                   "source_kind": "rep",
                   "source": "Theramore Expeditionary Force"
                 },
                 {
-                  "item_id": 271945,
+                  "item_id": 271950,
                   "source_kind": "rep",
                   "source": "Theramore Expeditionary Force"
                 }
@@ -113077,9 +113077,9 @@
                   "source": "Leggings of Arcana"
                 },
                 {
-                  "item_id": 22752,
-                  "source_kind": "rep",
-                  "source": "Silverwing Sentinels"
+                  "item_id": 14545,
+                  "source_kind": "dungeon",
+                  "source": "Scholomance: Jandice Barov"
                 }
               ]
             },
@@ -113338,7 +113338,7 @@
                   "source": "PvP rank 12 · General · Horde"
                 },
                 {
-                  "item_id": 272101,
+                  "item_id": 272097,
                   "source_kind": "vendor",
                   "source": "Creeg Bothunk"
                 }
@@ -113553,12 +113553,12 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 1.113,
-          "crit": 0.443,
-          "hit": 0.748,
-          "spell_haste": -2.357,
+          "intellect": 1.129,
+          "crit": 0.448,
+          "hit": 0.758,
+          "spell_haste": -2.389,
           "nature_power": 0.84,
-          "mp5": 2.585
+          "mp5": 2.607
         },
         "hit_to_cap": {
           "alliance": {
@@ -117818,14 +117818,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 2721,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
+                },
+                {
                   "item_id": 7720,
                   "source_kind": "dungeon",
                   "source": "Scarlet Monastery: High Inquisitor Whitemane"
-                },
-                {
-                  "item_id": 9429,
-                  "source_kind": "dungeon",
-                  "source": "Uldaman"
                 }
               ]
             },
@@ -117836,14 +117836,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 1714,
-                  "source_kind": "dungeon",
-                  "source": "Zul'Farrak: Witch Doctor's Chest"
-                },
-                {
                   "item_id": 7722,
                   "source_kind": "dungeon",
                   "source": "Scarlet Monastery: High Inquisitor Whitemane"
+                },
+                {
+                  "item_id": 10824,
+                  "source_kind": "quest",
+                  "source": "Bring the End"
                 }
               ]
             },
@@ -117859,9 +117859,9 @@
                   "source": "World drop"
                 },
                 {
-                  "item_id": 7057,
-                  "source_kind": "crafted",
-                  "source": "Tailoring"
+                  "item_id": 7712,
+                  "source_kind": "dungeon",
+                  "source": "Scarlet Monastery: Arcanist Doan"
                 }
               ]
             },
@@ -117877,9 +117877,9 @@
                   "source": "Creeg Bothunk"
                 },
                 {
-                  "item_id": 6424,
+                  "item_id": 6901,
                   "source_kind": "dungeon",
-                  "source": "Uldaman: Ancient Treasure"
+                  "source": "Blackfathom Deeps: Old Serra'kis"
                 }
               ]
             },
@@ -117908,14 +117908,14 @@
               "chance": 0.4,
               "alternatives": [
                 {
-                  "item_id": 4545,
-                  "source_kind": "quest",
-                  "source": "Foul Magics"
-                },
-                {
                   "item_id": 13119,
                   "source_kind": "world_drop",
                   "source": "World drop"
+                },
+                {
+                  "item_id": 4545,
+                  "source_kind": "quest",
+                  "source": "Foul Magics"
                 }
               ]
             },
@@ -117926,14 +117926,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 254021,
-                  "source_kind": "crafted",
-                  "source": "Tailoring"
-                },
-                {
                   "item_id": 250569,
                   "source_kind": "crafted",
                   "source": "Blacksmithing"
+                },
+                {
+                  "item_id": 10019,
+                  "source_kind": "crafted",
+                  "source": "Tailoring"
                 }
               ]
             },
@@ -117944,14 +117944,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 250559,
+                  "source_kind": "crafted",
+                  "source": "Blacksmithing"
+                },
+                {
                   "item_id": 252523,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
-                },
-                {
-                  "item_id": 10771,
-                  "source_kind": "dungeon",
-                  "source": "Razorfen Downs: Mordresh Fire Eye"
                 }
               ]
             },
@@ -117998,32 +117998,32 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 19520,
-                  "source_kind": "rep",
-                  "source": "Warsong Outriders"
-                },
-                {
                   "item_id": 281635,
                   "source_kind": "quest",
                   "source": "Greater Friend of the Library"
+                },
+                {
+                  "item_id": 279845,
+                  "source_kind": "quest",
+                  "source": "Opportunistic Education"
                 }
               ]
             },
             "finger2": {
-              "item_id": 272070,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk",
+              "item_id": 19520,
+              "source_kind": "rep",
+              "source": "Warsong Outriders",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 19520,
-                  "source_kind": "rep",
-                  "source": "Warsong Outriders"
+                  "item_id": 279845,
+                  "source_kind": "quest",
+                  "source": "Opportunistic Education"
                 },
                 {
-                  "item_id": 281635,
-                  "source_kind": "quest",
-                  "source": "Greater Friend of the Library"
+                  "item_id": 9447,
+                  "source_kind": "dungeon",
+                  "source": "Gnomeregan: Electrocutioner 6000"
                 }
               ]
             },
@@ -118048,14 +118048,14 @@
               "chance": 0.2,
               "alternatives": [
                 {
-                  "item_id": 3415,
-                  "source_kind": "dungeon",
-                  "source": "Blackfathom Deeps"
-                },
-                {
                   "item_id": 2816,
                   "source_kind": "dungeon",
                   "source": "Razorfen Kraul: Death Speaker Jargba"
+                },
+                {
+                  "item_id": 3415,
+                  "source_kind": "dungeon",
+                  "source": "Blackfathom Deeps"
                 }
               ]
             },
@@ -118071,9 +118071,9 @@
                   "source": "Compendium of the Fallen"
                 },
                 {
-                  "item_id": 9393,
+                  "item_id": 9403,
                   "source_kind": "dungeon",
-                  "source": "Uldaman"
+                  "source": "Uldaman: Olaf"
                 }
               ]
             }
@@ -118106,7 +118106,7 @@
             254037,
             7760,
             252533,
-            272070,
+            19520,
             1713,
             272059,
             7721,
@@ -118909,7 +118909,7 @@
                   "source": "Blackrock Spire: Urok Doomhowl"
                 },
                 {
-                  "item_id": 272407,
+                  "item_id": 272406,
                   "source_kind": "vendor",
                   "source": "Pix Xizzix"
                 }
@@ -118927,7 +118927,7 @@
                   "source": "Blackrock Spire: Urok Doomhowl"
                 },
                 {
-                  "item_id": 272407,
+                  "item_id": 272406,
                   "source_kind": "vendor",
                   "source": "Pix Xizzix"
                 }
@@ -119194,7 +119194,7 @@
                   "source": "Blackrock Spire: Urok Doomhowl"
                 },
                 {
-                  "item_id": 272407,
+                  "item_id": 272406,
                   "source_kind": "vendor",
                   "source": "Pix Xizzix"
                 }
@@ -119212,7 +119212,7 @@
                   "source": "Blackrock Spire: Urok Doomhowl"
                 },
                 {
-                  "item_id": 272407,
+                  "item_id": 272406,
                   "source_kind": "vendor",
                   "source": "Pix Xizzix"
                 }
@@ -150938,20 +150938,20 @@
               ]
             },
             "chest": {
-              "item_id": 22409,
-              "source_kind": "dungeon",
-              "source": "Stratholme: Baron Rivendare",
+              "item_id": 15786,
+              "source_kind": "quest",
+              "source": "High Chief Winterfall",
               "chance": null,
               "alternatives": [
+                {
+                  "item_id": 22409,
+                  "source_kind": "dungeon",
+                  "source": "Stratholme: Baron Rivendare"
+                },
                 {
                   "item_id": 13314,
                   "source_kind": "dungeon",
                   "source": "Scholomance: Ras Frostwhisper"
-                },
-                {
-                  "item_id": 16666,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: General Drakkisath"
                 }
               ]
             },
@@ -151046,7 +151046,7 @@
               ]
             },
             "finger1": {
-              "item_id": 272407,
+              "item_id": 272406,
               "source_kind": "vendor",
               "source": "Pix Xizzix",
               "chance": null,
@@ -151331,7 +151331,7 @@
               ]
             },
             "finger1": {
-              "item_id": 272407,
+              "item_id": 272406,
               "source_kind": "vendor",
               "source": "Pix Xizzix",
               "chance": null,
@@ -151441,13 +151441,13 @@
             22403,
             19050,
             272411,
-            22409,
+            15786,
             19595,
             13255,
             18676,
             237815,
             22240,
-            272407,
+            272406,
             19325,
             13213,
             272438,
@@ -151465,7 +151465,7 @@
             18676,
             252486,
             22240,
-            272407,
+            272406,
             19325,
             13213,
             272438,
@@ -151475,10 +151475,10 @@
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.206,
-          "crit": 0.701,
-          "hit": 1.272,
-          "spell_haste": 9.709,
+          "intellect": 0.207,
+          "crit": 0.706,
+          "hit": 1.281,
+          "spell_haste": 9.779,
           "nature_power": 0.877
         },
         "hit_to_cap": {
@@ -152114,9 +152114,9 @@
           "attack_power": 1.0,
           "strength": 2.2,
           "agility": 1.44,
-          "crit": 2.439,
-          "melee_haste": 24.72,
-          "intellect": 1.691,
+          "crit": 2.441,
+          "melee_haste": 24.751,
+          "intellect": 1.692,
           "spell_power": 0.915
         },
         "hit_to_cap": {
@@ -152362,9 +152362,9 @@
                   "source": "Pix Xizzix"
                 },
                 {
-                  "item_id": 13001,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 272406,
+                  "source_kind": "vendor",
+                  "source": "Pix Xizzix"
                 }
               ]
             },
@@ -152647,9 +152647,9 @@
                   "source": "Pix Xizzix"
                 },
                 {
-                  "item_id": 13001,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 272406,
+                  "source_kind": "vendor",
+                  "source": "Pix Xizzix"
                 }
               ]
             },
@@ -175011,7 +175011,6 @@
     "16658": "Wildhunter Cloak",
     "16659": "Deftkin Belt",
     "16661": "Soft Willow Cape",
-    "16666": "Vest of Elements",
     "16673": "Cord of Elements",
     "16675": "Beaststalker's Boots",
     "16677": "Beaststalker's Cap",
@@ -175054,7 +175053,6 @@
     "16791": "Silkstream Cuffs",
     "16793": "Arcmetal Shoulders",
     "16794": "Gripsteel Wristguards",
-    "16873": "Braidfur Gloves",
     "16886": "Outlaw Sabre",
     "16887": "Witch's Finger",
     "16975": "Warsong Sash",

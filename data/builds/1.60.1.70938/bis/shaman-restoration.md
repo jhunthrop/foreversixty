@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat. An item's crit rating
 
 ### Band 20 (dwarf, 0000000000000000-000000000000000000-2530000010000000)
 
-Set DPS (verified): 73.1. Weights run: 7.6s. Verify run: 44.1s. 286 eligible items had no known source.
+Set DPS (verified): 73.1. Weights run: 7.2s. Verify run: 41.6s. 286 eligible items had no known source.
 
 Race sweep: dwarf 73.1 ± 0.0 (heal_score); the guide race dwarf is best.
 
@@ -40,7 +40,7 @@ No-known-source sample (15 of 286, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (dwarf, 0000000000000000-000000000000000000-5530001010411000)
 
-Set DPS (verified): 133.8. Weights run: 8.2s. Verify run: 48.0s. 475 eligible items had no known source.
+Set DPS (verified): 133.8. Weights run: 7.8s. Verify run: 45.7s. 475 eligible items had no known source.
 
 Race sweep: dwarf 133.9 ± 0.0 (heal_score); the guide race dwarf is best.
 
@@ -72,7 +72,7 @@ No-known-source sample (15 of 475, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (dwarf, 0000000000000000-000000000000000000-5530001011513051)
 
-Set DPS (verified): 207.7. Weights run: 15.4s. Verify run: 174.0s. 804 eligible items had no known source.
+Set DPS (verified): 207.7. Weights run: 15.3s. Verify run: 165.5s. 804 eligible items had no known source.
 
 Race sweep: dwarf 207.8 ± 0.1 (heal_score); the guide race dwarf is best.
 
@@ -104,7 +104,7 @@ No-known-source sample (15 of 804, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (dwarf, 0000000000000000-055000000000000000-5530001011513051)
 
-Set DPS (verified): 280.3. Weights run: 16.8s. Verify run: 226.7s. 1053 eligible items had no known source.
+Set DPS (verified): 280.3. Weights run: 16.4s. Verify run: 223.3s. 1053 eligible items had no known source.
 
 Race sweep: dwarf 280.4 ± 0.1 (heal_score); the guide race dwarf is best.
 
@@ -136,7 +136,7 @@ No-known-source sample (15 of 1053, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60 (dwarf, 0000000000000000-055000000000000000-5530003315513151)
 
-Set DPS (verified): 374.1. Weights run: 19.6s. Verify run: 509.9s. 2377 eligible items had no known source.
+Set DPS (verified): 374.1. Weights run: 19.8s. Verify run: 502.5s. 2377 eligible items had no known source.
 
 Race sweep: dwarf 374.0 ± 0.2 (heal_score); the guide race dwarf is best.
 
@@ -154,8 +154,8 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | waist | Wisdom of the Timbermaw (19047) | Tailoring [crafted] | sim-verified (+0.8 DPS vs the runner-up, not corroborated against the finished set) | yes | Sash of Mercy (14553, -0.83 DPS, sim-verified) [world_drop]; Stormseeker's Girdle (272399, -1.66 DPS) [vendor]; Devout Belt (16696, -2.95 DPS) [dungeon] |
 | legs | Legplates of the Chromatic Defier (12945) | Legplates of the Chromatic Defier [quest] | 84.5 healing_power points (24.21 DPS) | yes | Ironfeather Leggings (252486, -2.59 DPS, sim-verified) [crafted]; Leggings of Arcana (12756, -3.16 DPS) [quest]; Red Dragonscale Leggings (252603, -3.68 DPS) [crafted] |
 | feet | Mooncloth Boots (15802) | Tailoring [crafted] | 56.6 healing_power points (16.23 DPS) | yes | Faith Healer's Boots (22247, -0.99 DPS, sim-verified) [dungeon]; Firemoss Boots (22275, -2.17 DPS) [dungeon]; Mender's Leather Boots (252472, -3.12 DPS) [crafted] |
-| finger1 | Band of Mending (22334) | Stratholme: Balnazzar [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Rosewine Circle (13178, -2.29 DPS) [dungeon]; Blessed Band of Light (272407, -2.80 DPS) [vendor]; Naglering (11669, -11.78 DPS, sim-verified) [dungeon] |
-| finger2 | Fordring's Seal (16058) | In Dreams [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Rosewine Circle (13178, -1.60 DPS, sim-verified) [dungeon]; Blessed Band of Light (272407, -2.72 DPS) [vendor]; Seal of Rivendare (13345, -3.22 DPS) [dungeon] |
+| finger1 | Band of Mending (22334) | Stratholme: Balnazzar [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Rosewine Circle (13178, -2.29 DPS) [dungeon]; Channeler's Ring (272406, -2.62 DPS) [vendor]; Naglering (11669, -11.78 DPS, sim-verified) [dungeon] |
+| finger2 | Fordring's Seal (16058) | In Dreams [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Rosewine Circle (13178, -1.60 DPS, sim-verified) [dungeon]; Channeler's Ring (272406, -2.55 DPS) [vendor]; Blessed Band of Light (272407, -2.72 DPS) [vendor] |
 | trinket1 | Ankh of Life (1713) | World drop [world_drop] | sim-verified (+6.0 DPS vs the runner-up, not corroborated against the finished set) | yes | Uther's Strength (11302, +0.00 DPS) [world_drop]; Weakness Analyzer (272438, +0.00 DPS) [vendor]; Serenity Field (272439, +0.00 DPS) [vendor] |
 | trinket2 | Burst of Knowledge (11832) | Blackrock Depths: Ambassador Flamelash [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Uther's Strength (11302, -0.55 DPS) [world_drop]; Weakness Analyzer (272438, -0.55 DPS) [vendor]; Serenity Field (272439, -1.03 DPS, sim-verified) [vendor] |
 | main_hand | Glowing Brightwood Staff (812) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Grand Marshal's Warhammer (23454, +0.00 DPS) [vendor]; Argent Crusader (13249, -2.69 DPS, sim-verified) [quest]; Hammer of the Grand Crusader (18717, -3.91 DPS) [dungeon] |
@@ -168,7 +168,7 @@ No-known-source sample (15 of 2377, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (dwarf, 0000000000000000-055000000000000000-5530003315513151)
 
-Set DPS (verified): 895.5. Weights run: 12.4s. Verify run: 421.2s. 2377 eligible items had no known source.
+Set DPS (verified): 895.5. Weights run: 11.9s. Verify run: 401.0s. 2377 eligible items had no known source.
 
 Race sweep: dwarf 896.0 ± 0.6 (heal_score); the guide race dwarf is best.
 
@@ -187,7 +187,7 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | legs | Legplates of the Chromatic Defier (12945) | Legplates of the Chromatic Defier [quest] | 77.4 healing_power points (18.99 DPS) | yes | Ironfeather Leggings (252486, -1.64 DPS) [crafted]; Sentinel's Silk Leggings (237815, -3.23 DPS) [vendor]; Sentinel's Lizardhide Pants (237817, -3.23 DPS) [vendor] |
 | feet | Mooncloth Boots (15802) | Tailoring [crafted] | 50.7 healing_power points (12.45 DPS) | yes | Faith Healer's Boots (22247, -1.80 DPS, sim-verified) [dungeon]; Swarmtender's Footpads (275609, -1.90 DPS) [crafted]; Broodwatcher's Treaders (275621, -1.90 DPS) [crafted] |
 | finger1 | Fordring's Seal (16058) | In Dreams [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Rosewine Circle (13178, -1.78 DPS) [dungeon]; Blessed Band of Light (272407, -2.01 DPS) [vendor]; Naglering (11669, -25.52 DPS, sim-verified) [dungeon] |
-| finger2 | Band of Mending (22334) | Stratholme: Balnazzar [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Blessed Band of Light (272407, -1.86 DPS) [vendor]; Maiden's Circle (13001, -3.19 DPS) [world_drop]; Rosewine Circle (13178, -3.44 DPS, sim-verified) [dungeon] |
+| finger2 | Band of Mending (22334) | Stratholme: Balnazzar [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Blessed Band of Light (272407, -1.86 DPS) [vendor]; Channeler's Ring (272406, -2.87 DPS) [vendor]; Rosewine Circle (13178, -3.44 DPS, sim-verified) [dungeon] |
 | trinket1 | Dormant Heart of the Mountain (249473) | Enchanting [crafted] | sim-verified (+12.2 DPS vs the runner-up, not corroborated against the finished set) | yes | Uther's Strength (11302, +0.00 DPS) [world_drop]; Second Wind (11819, +0.00 DPS) [dungeon]; Burst of Knowledge (11832, +0.00 DPS) [dungeon] |
 | trinket2 | Serenity Field (272439) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Uther's Strength (11302, -0.74 DPS) [world_drop]; Burst of Knowledge (11832, -0.77 DPS) [dungeon]; Weakness Analyzer (272438, -1.50 DPS, sim-verified) [vendor] |
 | main_hand | Glowing Brightwood Staff (812) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Hammer of the Grand Crusader (18717, -3.28 DPS) [dungeon]; Argent Crusader (13249, -5.31 DPS, sim-verified) [quest]; Staff of Metanoia (22394, -5.89 DPS) [dungeon] |
@@ -202,7 +202,7 @@ No-known-source sample (15 of 2377, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (orc, 0000000000000000-000000000000000000-2530000010000000)
 
-Set DPS (verified): 72.9. Weights run: 7.6s. Verify run: 48.1s. 275 eligible items had no known source.
+Set DPS (verified): 72.9. Weights run: 7.2s. Verify run: 45.7s. 275 eligible items had no known source.
 
 Race sweep: orc 72.9 ± 0.0, windshaper-skyborne 72.8 ± 0.0, troll 72.8 ± 0.0, tauren 72.8 ± 0.0 (heal_score); the guide race orc is best.
 
@@ -234,7 +234,7 @@ No-known-source sample (15 of 275, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (orc, 0000000000000000-000000000000000000-5530001010411000)
 
-Set DPS (verified): 134.5. Weights run: 8.2s. Verify run: 49.9s. 469 eligible items had no known source.
+Set DPS (verified): 134.5. Weights run: 7.8s. Verify run: 47.7s. 469 eligible items had no known source.
 
 Race sweep: orc 134.5 ± 0.0, windshaper-skyborne 134.4 ± 0.0, troll 133.4 ± 0.0, tauren 133.3 ± 0.0 (heal_score); the guide race orc is best.
 
@@ -266,39 +266,39 @@ No-known-source sample (15 of 469, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (orc, 0000000000000000-000000000000000000-5530001011513051)
 
-Set DPS (verified): 208.7. Weights run: 15.4s. Verify run: 179.8s. 787 eligible items had no known source.
+Set DPS (verified): 208.2. Weights run: 15.3s. Verify run: 169.2s. 787 eligible items had no known source.
 
-Race sweep: orc 208.6 ± 0.1, windshaper-skyborne 208.6 ± 0.1, troll 206.2 ± 0.1, tauren 206.2 ± 0.1 (heal_score); the guide race orc is best.
+Race sweep: orc 208.3 ± 0.1, windshaper-skyborne 208.1 ± 0.1, troll 205.9 ± 0.1, tauren 205.9 ± 0.1 (heal_score); the guide race orc is best.
 
-Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.257, intellect=1.878 ± 0.025, spirit=1.137 ± 0.023, mp5=3.685 ± 0.028, crit=0.316 ± 0.023 per rating point (14 rating = 1%, 4.421 per %), spell_haste=not significant (0.461 ± 0.273)
+Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.025, intellect=1.186 ± 0.010, spirit=0.902 ± 0.009, mp5=2.385 ± 0.010, crit=0.146 ± 0.005 per rating point (14 rating = 1%, 2.044 per %), spell_haste=not significant (0.056 ± 0.087)
 
 | Slot | Item | Source | Score (healing_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Papal Fez (9431) | Uldaman [dungeon] | 64.2 healing_power points (16.38 DPS) | yes | Whitemane's Chapeau (7720, -3.11 DPS, sim-verified) [dungeon]; Miner's Hat of the Deep (9429, -5.17 DPS) [dungeon]; Corpseshroud (10574, -5.48 DPS) [dungeon] |
-| neck | Glowing Eye of Mordresh (10769) | Razorfen Downs: Mordresh Fire Eye [dungeon] | 35.0 healing_power points (8.94 DPS) | yes | Necklace of Calisea (1714, -4.60 DPS, sim-verified) [dungeon]; Triune Amulet (7722, -4.87 DPS) [dungeon]; Darkspear Warding Pendant (272074, -5.58 DPS) [vendor] |
-| shoulder | Inquisitor's Shawl (19507) | Scarlet Monastery: High Inquisitor Fairbanks [dungeon] | 46.4 healing_power points (11.85 DPS) | yes | Sheepshear Mantle (13115, -3.75 DPS, sim-verified) [world_drop]; Green Silken Shoulders (7057, -4.53 DPS) [crafted]; Mantle of Doan (7712, -4.86 DPS) [dungeon] |
-| back | Battle Healer's Cloak (19528) | Warsong Outriders [rep] | sim-verified (+0.7 DPS vs the runner-up, not corroborated against the finished set) | yes | Darkspear Raider's Cloak (272077, -0.74 DPS, sim-verified) [vendor]; Blackforge Cape (6424, -1.05 DPS) [dungeon] |
-| chest | Stormcloth Vest (10020) | Tailoring [crafted] | 67.1 healing_power points (17.13 DPS) | yes | Dreamweave Vest (10021, -4.15 DPS) [crafted]; Death's Head Vestment (10581, -4.92 DPS) [dungeon]; Deathchill Armor (10764, -5.44 DPS, sim-verified) [dungeon] |
-| wrist | Spidertank Oilrag (9448) | Gnomeregan: Electrocutioner 6000 [dungeon] | sim-verified (+0.5 DPS vs the runner-up, not corroborated against the finished set) | yes | Radiant Silver Bracers (4545, -0.26 DPS) [quest]; Enchanted Kodo Bracers (13119, -0.30 DPS) [world_drop]; Mindthrust Bracers (1974, -0.49 DPS, sim-verified) [dungeon] |
-| hands | Mender's Leather Gloves (252530) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Gilded Handwraps (254021, -0.54 DPS, sim-verified) [crafted]; Prefect's Gauntlet (250569, -0.96 DPS) [crafted]; Stormcloth Gloves (10011, -1.11 DPS) [crafted] |
-| waist | Gilded Cord (254037) | Tailoring [crafted] | 43.8 healing_power points (11.19 DPS) | yes | Mender's Leather Belt (252523, -2.04 DPS, sim-verified) [crafted]; Deathmage Sash (10771, -2.22 DPS) [dungeon]; Prefect's Belt (250559, -2.22 DPS) [crafted] |
-| legs | Warchief Kilt (7760) | Scarlet Monastery [dungeon] | 51.2 healing_power points (13.07 DPS) | yes | Stoneweaver Leggings (9407, -0.92 DPS, sim-verified) [dungeon]; Wisdom's Leather Leggings (252519, -2.32 DPS) [crafted]; Pristine Leggings (253987, -2.64 DPS) [crafted] |
-| feet | Mender's Leather Shoes (252533) (or Mender's Mail Boots (252565)) | Leatherworking [crafted] | 45.1 healing_power points (11.51 DPS) | yes | Mender's Mail Boots (252565, +0.00 DPS) [crafted]; Gilded Slippers (254001, -1.89 DPS) [crafted]; Skycaller's Leather Shoes (252532, -3.39 DPS) [crafted] |
-| finger1 | Runemender's Seal (273031) | Arcane Anomaly [world] | 27.1 healing_power points (6.91 DPS) | yes | Advisor's Ring (19520, -1.80 DPS) [rep]; Philanthropist's Ring (281635, -1.97 DPS) [quest]; Welken Ring (5011, -2.49 DPS) [world_drop] |
-| finger2 | Darkspear Signet (272070) | Creeg Bothunk [vendor] | 22.1 healing_power points (5.64 DPS) | yes | Advisor's Ring (19520, -0.52 DPS) [rep]; Philanthropist's Ring (281635, -0.70 DPS) [quest]; Welken Ring (5011, -1.22 DPS) [world_drop] |
-| trinket1 | Ankh of Life (1713) | World drop [world_drop] | sim-verified (+5.5 DPS vs the runner-up, not corroborated against the finished set) | yes | - |
+| head | Papal Fez (9431) | Uldaman [dungeon] | 50.3 healing_power points (8.54 DPS) | yes | Holy Shroud (2721, -2.01 DPS) [world_drop]; Whitemane's Chapeau (7720, -2.97 DPS, sim-verified) [dungeon]; Miner's Hat of the Deep (9429, -3.08 DPS) [dungeon] |
+| neck | Glowing Eye of Mordresh (10769) | Razorfen Downs: Mordresh Fire Eye [dungeon] | 29.5 healing_power points (5.01 DPS) | yes | Triune Amulet (7722, -2.58 DPS) [dungeon]; Amberglow Talisman (10824, -3.48 DPS) [quest]; Necklace of Calisea (1714, -4.26 DPS, sim-verified) [dungeon] |
+| shoulder | Inquisitor's Shawl (19507) | Scarlet Monastery: High Inquisitor Fairbanks [dungeon] | 37.4 healing_power points (6.35 DPS) | yes | Sheepshear Mantle (13115, -2.21 DPS) [world_drop]; Mantle of Doan (7712, -2.73 DPS) [dungeon]; Earthen Silk Shoulders (254033, -5.10 DPS, sim-verified) [crafted] |
+| back | Battle Healer's Cloak (19528) | Warsong Outriders [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Darkspear Raider's Cloak (272077, -0.19 DPS, sim-verified) [vendor]; Glowing Thresher Cape (6901, -1.41 DPS) [dungeon]; Blackforge Cape (6424, -1.60 DPS) [dungeon] |
+| chest | Stormcloth Vest (10020) | Tailoring [crafted] | 65.2 healing_power points (11.08 DPS) | yes | Dreamweave Vest (10021, -4.06 DPS) [crafted]; Death's Head Vestment (10581, -4.42 DPS) [dungeon]; Deathchill Armor (10764, -4.99 DPS, sim-verified) [dungeon] |
+| wrist | Spidertank Oilrag (9448) | Gnomeregan: Electrocutioner 6000 [dungeon] | 16.2 healing_power points (2.74 DPS) | yes | Enchanted Kodo Bracers (13119, -0.41 DPS) [world_drop]; Radiant Silver Bracers (4545, -0.45 DPS) [quest]; Earthen Silk Cuffs (254019, -0.97 DPS, sim-verified) [crafted] |
+| hands | Mender's Leather Gloves (252530) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Prefect's Gauntlet (250569, -0.40 DPS) [crafted]; Dreamweave Gloves (10019, -0.44 DPS) [crafted]; Gilded Handwraps (254021, -0.57 DPS, sim-verified) [crafted] |
+| waist | Gilded Cord (254037) | Tailoring [crafted] | 36.9 healing_power points (6.27 DPS) | yes | Prefect's Belt (250559, -1.12 DPS) [crafted]; Mender's Leather Belt (252523, -1.80 DPS, sim-verified) [crafted]; Deathmage Sash (10771, -2.06 DPS) [dungeon] |
+| legs | Warchief Kilt (7760) | Scarlet Monastery [dungeon] | 43.7 healing_power points (7.43 DPS) | yes | Stoneweaver Leggings (9407, -0.53 DPS, sim-verified) [dungeon]; Wisdom's Leather Leggings (252519, -1.38 DPS) [crafted]; Pristine Leggings (253987, -1.52 DPS) [crafted] |
+| feet | Mender's Leather Shoes (252533) (or Mender's Mail Boots (252565)) | Leatherworking [crafted] | 38.6 healing_power points (6.56 DPS) | yes | Mender's Mail Boots (252565, +0.00 DPS) [crafted]; Gilded Slippers (254001, -1.14 DPS) [crafted]; Skycaller's Leather Shoes (252532, -2.17 DPS) [crafted] |
+| finger1 | Runemender's Seal (273031) | Arcane Anomaly [world] | 21.5 healing_power points (3.66 DPS) | yes | Philanthropist's Ring (281635, -0.95 DPS) [quest]; Solid Gold Band (279845, -1.02 DPS) [quest]; Electrocutioner Lagnut (9447, -1.05 DPS) [dungeon] |
+| finger2 | Advisor's Ring (19520) | Warsong Outriders [rep] | 16.2 healing_power points (2.74 DPS) | yes | Solid Gold Band (279845, -0.11 DPS) [quest]; Electrocutioner Lagnut (9447, -0.14 DPS) [dungeon]; Philanthropist's Ring (281635, -0.24 DPS, sim-verified) [quest] |
+| trinket1 | Ankh of Life (1713) | World drop [world_drop] | sim-verified (+5.7 DPS vs the runner-up, not corroborated against the finished set) | yes | - |
 | trinket2 | Darkspear Voodoo Seal (272059) | Creeg Bothunk [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | - |
-| main_hand | Hand of Righteousness (7721) | Scarlet Monastery: High Inquisitor Whitemane [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Staff of the Friar (3415, -8.12 DPS) [dungeon]; Death Speaker Scepter (2816, -8.96 DPS) [dungeon]; Staff of Jordan (873, -9.94 DPS, sim-verified) [world_drop] |
-| off_hand | Prophetic Cane (6803) | Into The Scarlet Monastery [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Forcestone Buckler (17508, -1.51 DPS, sim-verified) [quest]; Beacon of Hope (9393, -1.65 DPS) [dungeon]; Battered Viking Shield (9403, -2.21 DPS) [dungeon] |
+| main_hand | Hand of Righteousness (7721) | Scarlet Monastery: High Inquisitor Whitemane [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Death Speaker Scepter (2816, -5.64 DPS) [dungeon]; Staff of the Friar (3415, -5.92 DPS) [dungeon]; Staff of Jordan (873, -9.01 DPS, sim-verified) [world_drop] |
+| off_hand | Prophetic Cane (6803) | Into The Scarlet Monastery [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Forcestone Buckler (17508, -0.39 DPS) [quest]; Battered Viking Shield (9403, -0.93 DPS) [dungeon]; Beacon of Hope (9393, -1.60 DPS, sim-verified) [dungeon] |
 | ranged | - | - |  |  |  |
 
-**New at 40:** head: Papal Fez; neck: Glowing Eye of Mordresh; shoulder: Inquisitor's Shawl; back: Battle Healer's Cloak; chest: Stormcloth Vest; hands: Mender's Leather Gloves; waist: Gilded Cord; legs: Warchief Kilt; feet: Mender's Leather Shoes; finger2: Darkspear Signet; trinket1: Ankh of Life; trinket2: Darkspear Voodoo Seal; main_hand: Hand of Righteousness; off_hand: Prophetic Cane
+**New at 40:** head: Papal Fez; neck: Glowing Eye of Mordresh; shoulder: Inquisitor's Shawl; back: Battle Healer's Cloak; chest: Stormcloth Vest; hands: Mender's Leather Gloves; waist: Gilded Cord; legs: Warchief Kilt; feet: Mender's Leather Shoes; finger2: Advisor's Ring; trinket1: Ankh of Life; trinket2: Darkspear Voodoo Seal; main_hand: Hand of Righteousness; off_hand: Prophetic Cane
 
 No-known-source sample (15 of 787, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings; 4196 Feathered Mantle
 
 ### Band 50 (orc, 0000000000000000-055000000000000000-5530001011513051)
 
-Set DPS (verified): 282.2. Weights run: 16.8s. Verify run: 233.1s. 1021 eligible items had no known source.
+Set DPS (verified): 282.2. Weights run: 16.4s. Verify run: 228.2s. 1021 eligible items had no known source.
 
 Race sweep: orc 282.1 ± 0.1, windshaper-skyborne 282.0 ± 0.1, troll 279.6 ± 0.1, tauren 279.5 ± 0.1 (heal_score); the guide race orc is best.
 
@@ -330,7 +330,7 @@ No-known-source sample (15 of 1021, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60 (orc, 0000000000000000-055000000000000000-5530003315513151)
 
-Set DPS (verified): 376.1. Weights run: 19.6s. Verify run: 518.9s. 2334 eligible items had no known source.
+Set DPS (verified): 376.1. Weights run: 19.8s. Verify run: 512.6s. 2334 eligible items had no known source.
 
 Race sweep: orc 376.0 ± 0.2, windshaper-skyborne 375.9 ± 0.2, troll 374.0 ± 0.2, tauren 372.8 ± 0.2 (heal_score); the guide race orc is best.
 
@@ -348,8 +348,8 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | waist | Wisdom of the Timbermaw (19047) | Tailoring [crafted] | sim-verified (+0.5 DPS vs the runner-up, not corroborated against the finished set) | yes | Sash of Mercy (14553, -0.48 DPS, sim-verified) [world_drop]; Stormseeker's Girdle (272399, -1.66 DPS) [vendor]; Devout Belt (16696, -2.95 DPS) [dungeon] |
 | legs | Legplates of the Chromatic Defier (12945) | Legplates of the Chromatic Defier [quest] | 84.5 healing_power points (24.21 DPS) | yes | General's Mail Pants (231670, +0.00 DPS) [vendor]; Ironfeather Leggings (252486, -2.90 DPS, sim-verified) [crafted]; Legionnaire's Mail Pants (227167, -2.92 DPS) [vendor] |
 | feet | Mooncloth Boots (15802) | Tailoring [crafted] | 56.6 healing_power points (16.23 DPS) | yes | General's Mail Boots (231667, +0.00 DPS) [pvp]; Faith Healer's Boots (22247, -1.15 DPS, sim-verified) [dungeon]; Firemoss Boots (22275, -2.17 DPS) [dungeon] |
-| finger1 | Band of Mending (22334) | Stratholme: Balnazzar [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Rosewine Circle (13178, -2.29 DPS) [dungeon]; Blessed Band of Light (272407, -2.80 DPS) [vendor]; Naglering (11669, -11.88 DPS, sim-verified) [dungeon] |
-| finger2 | Fordring's Seal (16058) | In Dreams [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Rosewine Circle (13178, -1.90 DPS, sim-verified) [dungeon]; Blessed Band of Light (272407, -2.72 DPS) [vendor]; Seal of Rivendare (13345, -3.22 DPS) [dungeon] |
+| finger1 | Band of Mending (22334) | Stratholme: Balnazzar [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Rosewine Circle (13178, -2.29 DPS) [dungeon]; Channeler's Ring (272406, -2.62 DPS) [vendor]; Naglering (11669, -11.88 DPS, sim-verified) [dungeon] |
+| finger2 | Fordring's Seal (16058) | In Dreams [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Rosewine Circle (13178, -1.90 DPS, sim-verified) [dungeon]; Channeler's Ring (272406, -2.55 DPS) [vendor]; Blessed Band of Light (272407, -2.72 DPS) [vendor] |
 | trinket1 | Ankh of Life (1713) | World drop [world_drop] | sim-verified (+6.1 DPS vs the runner-up, not corroborated against the finished set) | yes | Uther's Strength (11302, +0.00 DPS) [world_drop]; Weakness Analyzer (272438, +0.00 DPS) [vendor]; Serenity Field (272439, +0.00 DPS) [vendor] |
 | trinket2 | Burst of Knowledge (11832) | Blackrock Depths: Ambassador Flamelash [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Uther's Strength (11302, -0.55 DPS) [world_drop]; Weakness Analyzer (272438, -0.55 DPS) [vendor]; Serenity Field (272439, -0.91 DPS, sim-verified) [vendor] |
 | main_hand | Glowing Brightwood Staff (812) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | High Warlord's Battle Mace (23464, +0.00 DPS) [vendor]; Argent Crusader (13249, -3.11 DPS, sim-verified) [quest]; Hammer of the Grand Crusader (18717, -3.91 DPS) [dungeon] |
@@ -362,7 +362,7 @@ No-known-source sample (15 of 2334, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (orc, 0000000000000000-055000000000000000-5530003315513151)
 
-Set DPS (verified): 900.3. Weights run: 12.4s. Verify run: 423.1s. 2334 eligible items had no known source.
+Set DPS (verified): 900.3. Weights run: 11.9s. Verify run: 403.4s. 2334 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 904.8 ± 0.6, orc 900.4 ± 0.6, troll 900.0 ± 0.6, tauren 893.8 ± 0.5 (heal_score); windshaper-skyborne beats the guide race orc by 4.4 (0.48%) ± 0.8, beyond error.
 
@@ -381,7 +381,7 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | legs | Legplates of the Chromatic Defier (12945) | Legplates of the Chromatic Defier [quest] | 77.4 healing_power points (18.99 DPS) | yes | General's Mail Pants (231670, +0.00 DPS) [vendor]; Legionnaire's Mail Pants (227167, -1.46 DPS) [vendor]; Ironfeather Leggings (252486, -3.38 DPS, sim-verified) [crafted] |
 | feet | Mooncloth Boots (15802) | Tailoring [crafted] | 50.7 healing_power points (12.45 DPS) | yes | General's Mail Boots (231667, +0.00 DPS) [pvp]; Faith Healer's Boots (22247, -1.33 DPS, sim-verified) [dungeon]; Blood Guard's Mail Boots (227170, -1.58 DPS) [vendor] |
 | finger1 | Fordring's Seal (16058) | In Dreams [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Rosewine Circle (13178, -1.78 DPS) [dungeon]; Blessed Band of Light (272407, -2.01 DPS) [vendor]; Naglering (11669, -25.66 DPS, sim-verified) [dungeon] |
-| finger2 | Band of Mending (22334) | Stratholme: Balnazzar [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Blessed Band of Light (272407, -1.86 DPS) [vendor]; Maiden's Circle (13001, -3.19 DPS) [world_drop]; Rosewine Circle (13178, -4.92 DPS, sim-verified) [dungeon] |
+| finger2 | Band of Mending (22334) | Stratholme: Balnazzar [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Blessed Band of Light (272407, -1.86 DPS) [vendor]; Channeler's Ring (272406, -2.87 DPS) [vendor]; Rosewine Circle (13178, -4.92 DPS, sim-verified) [dungeon] |
 | trinket1 | Dormant Heart of the Mountain (249473) | Enchanting [crafted] | sim-verified (+13.1 DPS vs the runner-up, not corroborated against the finished set) | yes | Uther's Strength (11302, +0.00 DPS) [world_drop]; Second Wind (11819, +0.00 DPS) [dungeon]; Burst of Knowledge (11832, +0.00 DPS) [dungeon] |
 | trinket2 | Serenity Field (272439) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Uther's Strength (11302, -0.74 DPS) [world_drop]; Burst of Knowledge (11832, -0.77 DPS) [dungeon]; Weakness Analyzer (272438, -1.52 DPS, sim-verified) [vendor] |
 | main_hand | Glowing Brightwood Staff (812) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Hammer of the Grand Crusader (18717, -3.28 DPS) [dungeon]; Staff of Metanoia (22394, -5.89 DPS) [dungeon]; Argent Crusader (13249, -8.25 DPS, sim-verified) [quest] |
