@@ -14,7 +14,7 @@ Renders: `l8-first-open.png`, `l8-steps-done.png` (design/mocks/addon_hub_l8.py,
 
 - Header: Me's figures say `no spec chosen` while no build is followed (MeTab.figures, `L.meNoSpec`), as the board.
 - The `3 steps` note went: the numbered rows say how many; the note shows only progress, `1 of 3 done`.
-- Every `tour*` and `panel*` Locale key the deleted tour window and Panel used is gone (93 keys).
+- Every `tour*` and `panel*` Locale key the deleted tour window and Panel used is gone (93 keys). Seven `panel*` keys stay because live code reads them: `panelTabLabel`, `panelOffPlanTalent`, `panelOverPlanTalent`, `panelTabOpens` (PanelTab, the pane's door to Gear), `panelTalentAt`, `panelSpendNow` (Follow) and `panelNoUpgradesFromSources` (GearTabView).
 - The tooltip's hit line reads as the client prints it, `3.0%` (`%1$.1f%%`), wow-player's check.
 - Step 1's second line runs under the link, so the three spec names fit whole.
 
@@ -28,3 +28,7 @@ Renders: `l8-first-open.png`, `l8-steps-done.png` (design/mocks/addon_hub_l8.py,
 - The Gear dot is the real upgrade data's (Gloves of Holy Might beats the worn Trueaim Gauntlets).
 - Done rows keep one row height, so the tooltip never moves when step 3's address goes.
 - Step 2 keeps the approved words `Hover an item you wear` (spec 11 board copy); its tooltip carries the point.
+
+## Round 2
+
+ai-slop-reviewer flagged seven `panel*` keys left; each has a live reader (above), so they stay, and on that it passed (PASS). info-density-reviewer PASS. brand-consistency-reviewer PASS (nit: `3.0%` is the client's own `%1$.1f%%`, kept). With ux-designer SHIP and wow-player SHIP from round 1, every reviewer has passed.
