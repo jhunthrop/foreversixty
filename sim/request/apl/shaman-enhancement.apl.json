@@ -101,7 +101,7 @@
       }
     },
     {
-      "notes": "Flame Shock when it is not on the target and your mana is above about a third: its burn ticks through two shock cooldowns, so one Flame Shock between your Earth Shocks does more than one more Earth Shock. Below a third, keep the mana for Stormstrike and Earth Shock.",
+      "notes": "Flame Shock when it is not on the target and your mana is above about a third: its burn ticks through two shock cooldowns, so one Flame Shock between your Earth Shocks does more than one more Earth Shock. Below a third, keep the mana for Earth Shock and for Stormstrike once you have it.",
       "action": {
         "condition": {
           "and": {
