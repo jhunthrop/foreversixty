@@ -2,7 +2,7 @@
   "spec": "hunter-beast-mastery",
   "build": "1.60.1.70938",
   "engine_version": "037798db1",
-  "generated_at": "2026-11-14T00:04:07Z",
+  "generated_at": "2026-11-14T02:21:47Z",
   "bands": [
     {
       "spec": "hunter-beast-mastery",
@@ -1143,8 +1143,8 @@
         "main_hand: Impaling Harpoon",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 6.433036052,
-      "verify_run_seconds": 12.532301702,
+      "weights_run_seconds": 4.940152911,
+      "verify_run_seconds": 10.200941774,
       "coverage": {
         "back": {
           "eligible": 104,
@@ -2395,8 +2395,8 @@
         "main_hand: Impaling Harpoon",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 6.433036052,
-      "verify_run_seconds": 12.123467000999998,
+      "weights_run_seconds": 4.940152911,
+      "verify_run_seconds": 9.846585155,
       "coverage": {
         "back": {
           "eligible": 105,
@@ -3769,8 +3769,8 @@
         "main_hand: Felbough Arm",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 6.123050636,
-      "verify_run_seconds": 17.566225023,
+      "weights_run_seconds": 4.842108786,
+      "verify_run_seconds": 14.152932758,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -5118,8 +5118,8 @@
         "main_hand: Felbough Arm",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 6.123050636,
-      "verify_run_seconds": 18.728219555000003,
+      "weights_run_seconds": 4.842108786,
+      "verify_run_seconds": 15.091531014,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -6496,8 +6496,8 @@
         "main_hand: Staff of Jordan",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 6.483624733,
-      "verify_run_seconds": 12.945727762999999,
+      "weights_run_seconds": 5.144554493,
+      "verify_run_seconds": 10.593027999999999,
       "coverage": {
         "back": {
           "eligible": 257,
@@ -7875,8 +7875,8 @@
         "main_hand: Staff of Jordan",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 6.483624733,
-      "verify_run_seconds": 12.907621765,
+      "weights_run_seconds": 5.144554493,
+      "verify_run_seconds": 10.585956757999998,
       "coverage": {
         "back": {
           "eligible": 259,
@@ -9452,8 +9452,8 @@
         "trinket2: Devilsaur Tooth",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 6.357866842,
-      "verify_run_seconds": 27.24686095,
+      "weights_run_seconds": 5.127903158,
+      "verify_run_seconds": 22.164989357,
       "coverage": {
         "back": {
           "eligible": 330,
@@ -11033,8 +11033,8 @@
         "trinket2: Frozen Heart of the Mountain",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 6.357866842,
-      "verify_run_seconds": 28.153075323000003,
+      "weights_run_seconds": 5.127903158,
+      "verify_run_seconds": 22.641822447000003,
       "coverage": {
         "back": {
           "eligible": 335,
@@ -12161,7 +12161,7 @@
               ],
               "next": {
                 "item_id": 13217,
-                "rank": 11,
+                "rank": 10,
                 "source": "Houses of the Holy",
                 "dps_delta": -6.08
               }
@@ -12199,7 +12199,7 @@
               ],
               "next": {
                 "item_id": 2951,
-                "rank": 16,
+                "rank": 15,
                 "source_kind": "world_drop",
                 "source": "World drop",
                 "dps_delta": -6.18
@@ -12725,8 +12725,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Eaglehorn Long Bow"
       ],
-      "weights_run_seconds": 6.461641622,
-      "verify_run_seconds": 67.53974453400001,
+      "weights_run_seconds": 5.117179119,
+      "verify_run_seconds": 55.006378736,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -13852,7 +13852,7 @@
               ],
               "next": {
                 "item_id": 13217,
-                "rank": 11,
+                "rank": 10,
                 "source": "Houses of the Holy",
                 "dps_delta": -6.08
               }
@@ -13900,7 +13900,7 @@
               ],
               "next": {
                 "item_id": 2951,
-                "rank": 15,
+                "rank": 14,
                 "source_kind": "world_drop",
                 "source": "World drop",
                 "dps_delta": -6.18
@@ -14435,8 +14435,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Eaglehorn Long Bow"
       ],
-      "weights_run_seconds": 6.461641622,
-      "verify_run_seconds": 66.83060895300001,
+      "weights_run_seconds": 5.117179119,
+      "verify_run_seconds": 54.439186086,
       "coverage": {
         "back": {
           "eligible": 472,
@@ -15568,7 +15568,7 @@
               ],
               "next": {
                 "item_id": 13217,
-                "rank": 9,
+                "rank": 8,
                 "source": "Houses of the Holy",
                 "dps_delta": -9.05
               }
@@ -15584,7 +15584,7 @@
               ],
               "next": {
                 "item_id": 21563,
-                "rank": 12,
+                "rank": 11,
                 "source": "Stormpike Guard",
                 "dps_delta": -9.05,
                 "standing": "exalted"
@@ -15606,7 +15606,7 @@
               ],
               "next": {
                 "item_id": 10634,
-                "rank": 15,
+                "rank": 14,
                 "source_kind": "world_drop",
                 "source": "World drop",
                 "dps_delta": -9.87
@@ -16090,8 +16090,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Eaglehorn Long Bow"
       ],
-      "weights_run_seconds": 6.730135139,
-      "verify_run_seconds": 66.668133392,
+      "weights_run_seconds": 5.330116461,
+      "verify_run_seconds": 55.684775174,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -17206,7 +17206,7 @@
               ],
               "next": {
                 "item_id": 13217,
-                "rank": 9,
+                "rank": 8,
                 "source": "Houses of the Holy",
                 "dps_delta": -9.05
               }
@@ -17222,7 +17222,7 @@
               ],
               "next": {
                 "item_id": 21563,
-                "rank": 11,
+                "rank": 10,
                 "source": "Frostwolf Clan",
                 "dps_delta": -9.05,
                 "standing": "exalted"
@@ -17254,7 +17254,7 @@
               ],
               "next": {
                 "item_id": 10634,
-                "rank": 14,
+                "rank": 13,
                 "source_kind": "world_drop",
                 "source": "World drop",
                 "dps_delta": -9.87
@@ -17762,8 +17762,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Eaglehorn Long Bow"
       ],
-      "weights_run_seconds": 6.730135139,
-      "verify_run_seconds": 66.640588443,
+      "weights_run_seconds": 5.330116461,
+      "verify_run_seconds": 55.295867926,
       "coverage": {
         "back": {
           "eligible": 472,

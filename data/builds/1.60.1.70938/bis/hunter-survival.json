@@ -2,7 +2,7 @@
   "spec": "hunter-survival",
   "build": "1.60.1.70938",
   "engine_version": "037798db1",
-  "generated_at": "2026-11-14T00:14:51Z",
+  "generated_at": "2026-11-14T02:31:16Z",
   "bands": [
     {
       "spec": "hunter-survival",
@@ -1228,8 +1228,8 @@
         "off_hand: Cruel Barb",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 6.7572862449999995,
-      "verify_run_seconds": 11.46437611,
+      "weights_run_seconds": 5.32993872,
+      "verify_run_seconds": 9.022570966,
       "coverage": {
         "back": {
           "eligible": 104,
@@ -2558,8 +2558,8 @@
         "off_hand: Edward's Knife",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 6.7572862449999995,
-      "verify_run_seconds": 13.800221355,
+      "weights_run_seconds": 5.32993872,
+      "verify_run_seconds": 10.989072791,
       "coverage": {
         "back": {
           "eligible": 105,
@@ -3980,8 +3980,8 @@
         "off_hand: Bloody Brass Knuckles",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 6.970627049,
-      "verify_run_seconds": 22.746713761,
+      "weights_run_seconds": 5.425498756,
+      "verify_run_seconds": 18.118588946,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -5395,8 +5395,8 @@
         "off_hand: Bloody Brass Knuckles",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 6.970627049,
-      "verify_run_seconds": 21.059372787999997,
+      "weights_run_seconds": 5.425498756,
+      "verify_run_seconds": 16.920611501,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -6866,8 +6866,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: Swiftwind"
       ],
-      "weights_run_seconds": 6.997558945,
-      "verify_run_seconds": 22.926036663,
+      "weights_run_seconds": 5.475032806,
+      "verify_run_seconds": 21.622809089,
       "coverage": {
         "back": {
           "eligible": 257,
@@ -8308,8 +8308,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: Swiftwind"
       ],
-      "weights_run_seconds": 6.997558945,
-      "verify_run_seconds": 23.206160345,
+      "weights_run_seconds": 5.475032806,
+      "verify_run_seconds": 21.828718356000003,
       "coverage": {
         "back": {
           "eligible": 259,
@@ -9939,8 +9939,8 @@
         "off_hand: Doomforged Straightedge",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 7.318200947,
-      "verify_run_seconds": 31.909513063000002,
+      "weights_run_seconds": 6.80949323,
+      "verify_run_seconds": 30.658092886,
       "coverage": {
         "back": {
           "eligible": 330,
@@ -11475,8 +11475,8 @@
         "off_hand: Dawn's Edge",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 7.318200947,
-      "verify_run_seconds": 31.37471771,
+      "weights_run_seconds": 6.80949323,
+      "verify_run_seconds": 29.815515282,
       "coverage": {
         "back": {
           "eligible": 335,
@@ -13254,8 +13254,8 @@
         "main_hand: Teebu's Blazing Longsword",
         "off_hand: Felstriker"
       ],
-      "weights_run_seconds": 5.328581016,
-      "verify_run_seconds": 57.602298759,
+      "weights_run_seconds": 5.074266083,
+      "verify_run_seconds": 56.035501782,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -15042,8 +15042,8 @@
         "main_hand: Teebu's Blazing Longsword",
         "off_hand: Felstriker"
       ],
-      "weights_run_seconds": 5.328581016,
-      "verify_run_seconds": 57.670695359,
+      "weights_run_seconds": 5.074266083,
+      "verify_run_seconds": 55.659231616999996,
       "coverage": {
         "back": {
           "eligible": 472,
@@ -16191,7 +16191,7 @@
               ],
               "next": {
                 "item_id": 13217,
-                "rank": 8,
+                "rank": 7,
                 "source": "Houses of the Holy",
                 "dps_delta": -9.22
               }
@@ -16207,7 +16207,7 @@
               ],
               "next": {
                 "item_id": 21563,
-                "rank": 10,
+                "rank": 9,
                 "source": "Stormpike Guard",
                 "dps_delta": -9.22,
                 "standing": "exalted"
@@ -16229,7 +16229,7 @@
               ],
               "next": {
                 "item_id": 10634,
-                "rank": 15,
+                "rank": 14,
                 "source_kind": "world_drop",
                 "source": "World drop",
                 "dps_delta": -10.62
@@ -16794,8 +16794,8 @@
         "off_hand: Felstriker",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 5.000236655,
-      "verify_run_seconds": 57.905348456000006,
+      "weights_run_seconds": 4.614753779,
+      "verify_run_seconds": 55.985928246,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -18603,8 +18603,8 @@
         "off_hand: Felstriker",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 5.000236655,
-      "verify_run_seconds": 56.452781009,
+      "weights_run_seconds": 4.614753779,
+      "verify_run_seconds": 54.830546264999995,
       "coverage": {
         "back": {
           "eligible": 472,
