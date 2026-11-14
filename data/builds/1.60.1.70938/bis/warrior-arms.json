@@ -2,7 +2,7 @@
   "spec": "warrior-arms",
   "build": "1.60.1.70938",
   "engine_version": "f9385b498",
-  "generated_at": "2026-11-14T07:20:18Z",
+  "generated_at": "2026-11-14T13:58:30Z",
   "bands": [
     {
       "spec": "warrior-arms",
@@ -1146,8 +1146,8 @@
         "main_hand: Smite's Mighty Hammer",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 5.065887869,
-      "verify_run_seconds": 13.809511463,
+      "weights_run_seconds": 5.249338466,
+      "verify_run_seconds": 13.734387182999999,
       "coverage": {
         "back": {
           "eligible": 104,
@@ -2400,8 +2400,8 @@
         "main_hand: Forsaken Greataxe",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 5.065887869,
-      "verify_run_seconds": 16.203629004,
+      "weights_run_seconds": 5.249338466,
+      "verify_run_seconds": 16.291954432,
       "coverage": {
         "back": {
           "eligible": 105,
@@ -3721,8 +3721,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Double-barreled Shotgun"
       ],
-      "weights_run_seconds": 5.867734277,
-      "verify_run_seconds": 25.996023151,
+      "weights_run_seconds": 5.880305005,
+      "verify_run_seconds": 25.588592951000003,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -5046,8 +5046,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Double-barreled Shotgun"
       ],
-      "weights_run_seconds": 5.867734277,
-      "verify_run_seconds": 25.295155776,
+      "weights_run_seconds": 5.880305005,
+      "verify_run_seconds": 24.468945605000002,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -6401,8 +6401,8 @@
         "main_hand: Fiery War Axe",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 5.78584339,
-      "verify_run_seconds": 16.793285813,
+      "weights_run_seconds": 5.818469249,
+      "verify_run_seconds": 16.930749935,
       "coverage": {
         "back": {
           "eligible": 257,
@@ -7740,8 +7740,8 @@
         "main_hand: Fiery War Axe",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 5.78584339,
-      "verify_run_seconds": 17.903329432,
+      "weights_run_seconds": 5.818469249,
+      "verify_run_seconds": 17.748179949,
       "coverage": {
         "back": {
           "eligible": 259,
@@ -9182,8 +9182,8 @@
         "main_hand: Thorium Greatmace",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 6.169922152,
-      "verify_run_seconds": 29.796815799999997,
+      "weights_run_seconds": 6.165879586,
+      "verify_run_seconds": 29.795411743000003,
       "coverage": {
         "back": {
           "eligible": 330,
@@ -10731,8 +10731,8 @@
         "main_hand: Thorium Greatmace",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 6.169922152,
-      "verify_run_seconds": 21.651623676,
+      "weights_run_seconds": 6.165879586,
+      "verify_run_seconds": 21.40416333,
       "coverage": {
         "back": {
           "eligible": 335,
@@ -12399,8 +12399,8 @@
         "main_hand: Blackblade of Shahram",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 5.812812882,
-      "verify_run_seconds": 110.75729790700001,
+      "weights_run_seconds": 5.632404204,
+      "verify_run_seconds": 110.350277985,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -14089,8 +14089,8 @@
         "trinket2: Hand of Justice",
         "main_hand: Blackblade of Shahram"
       ],
-      "weights_run_seconds": 5.812812882,
-      "verify_run_seconds": 111.23876796799999,
+      "weights_run_seconds": 5.632404204,
+      "verify_run_seconds": 109.906426033,
       "coverage": {
         "back": {
           "eligible": 472,
@@ -15678,8 +15678,8 @@
         "main_hand: Blackblade of Shahram",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 4.966243041,
-      "verify_run_seconds": 94.732203725,
+      "weights_run_seconds": 4.993943578,
+      "verify_run_seconds": 94.311344226,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -17368,8 +17368,8 @@
         "trinket2: Blackhand's Breadth",
         "main_hand: Blackblade of Shahram"
       ],
-      "weights_run_seconds": 4.966243041,
-      "verify_run_seconds": 95.766729579,
+      "weights_run_seconds": 4.993943578,
+      "verify_run_seconds": 94.815133033,
       "coverage": {
         "back": {
           "eligible": 472,
