@@ -83707,27 +83707,27 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 5003,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
-                {
                   "item_id": 273049,
                   "source_kind": "world",
                   "source": "Shade of the Archmage"
+                },
+                {
+                  "item_id": 5003,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
             "shoulder": {
-              "item_id": 7684,
+              "item_id": 6685,
               "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Bloodmage Thalnos",
-              "chance": null,
+              "source": "Razorfen Kraul: Death Speaker Jargba",
+              "chance": 0.4,
               "alternatives": [
                 {
-                  "item_id": 6685,
+                  "item_id": 7684,
                   "source_kind": "dungeon",
-                  "source": "Razorfen Kraul: Death Speaker Jargba"
+                  "source": "Scarlet Monastery: Bloodmage Thalnos"
                 },
                 {
                   "item_id": 4718,
@@ -83743,14 +83743,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 6901,
-                  "source_kind": "dungeon",
-                  "source": "Blackfathom Deeps: Old Serra'kis"
-                },
-                {
                   "item_id": 19529,
                   "source_kind": "rep",
                   "source": "Warsong Outriders"
+                },
+                {
+                  "item_id": 6901,
+                  "source_kind": "dungeon",
+                  "source": "Blackfathom Deeps: Old Serra'kis"
                 }
               ]
             },
@@ -83773,15 +83773,15 @@
               ]
             },
             "wrist": {
-              "item_id": 9448,
+              "item_id": 1974,
               "source_kind": "dungeon",
-              "source": "Gnomeregan: Electrocutioner 6000",
-              "chance": 0.4,
+              "source": "Shadowfang Keep",
+              "chance": null,
               "alternatives": [
                 {
-                  "item_id": 1974,
+                  "item_id": 9448,
                   "source_kind": "dungeon",
-                  "source": "Shadowfang Keep"
+                  "source": "Gnomeregan: Electrocutioner 6000"
                 },
                 {
                   "item_id": 6407,
@@ -83863,38 +83863,38 @@
               ]
             },
             "finger1": {
-              "item_id": 272071,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 273030,
-                  "source_kind": "dungeon",
-                  "source": "Excavation Site: Wetlands: Relic Guardian"
-                },
-                {
-                  "item_id": 19521,
-                  "source_kind": "rep",
-                  "source": "Warsong Outriders"
-                }
-              ]
-            },
-            "finger2": {
               "item_id": 273031,
               "source_kind": "world",
               "source": "Arcane Anomaly",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 273030,
-                  "source_kind": "dungeon",
-                  "source": "Excavation Site: Wetlands: Relic Guardian"
+                  "item_id": 19521,
+                  "source_kind": "rep",
+                  "source": "Warsong Outriders"
                 },
+                {
+                  "item_id": 9447,
+                  "source_kind": "dungeon",
+                  "source": "Gnomeregan: Electrocutioner 6000"
+                }
+              ]
+            },
+            "finger2": {
+              "item_id": 273030,
+              "source_kind": "dungeon",
+              "source": "Excavation Site: Wetlands: Relic Guardian",
+              "chance": null,
+              "alternatives": [
                 {
                   "item_id": 19521,
                   "source_kind": "rep",
                   "source": "Warsong Outriders"
+                },
+                {
+                  "item_id": 9447,
+                  "source_kind": "dungeon",
+                  "source": "Gnomeregan: Electrocutioner 6000"
                 }
               ]
             },
@@ -83956,16 +83956,15 @@
           "horde": [
             2721,
             13084,
-            7684,
+            6685,
             272078,
             6682,
-            9448,
             9395,
             252523,
             252519,
             254001,
-            272071,
             273031,
+            273030,
             2816,
             249395
           ]
@@ -84264,9 +84263,9 @@
                   "source": "Scarlet Monastery: High Inquisitor Whitemane"
                 },
                 {
-                  "item_id": 2721,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 9429,
+                  "source_kind": "dungeon",
+                  "source": "Uldaman"
                 }
               ]
             },
@@ -84282,9 +84281,9 @@
                   "source": "Scarlet Monastery: High Inquisitor Whitemane"
                 },
                 {
-                  "item_id": 272074,
-                  "source_kind": "vendor",
-                  "source": "Creeg Bothunk"
+                  "item_id": 1714,
+                  "source_kind": "dungeon",
+                  "source": "Zul'Farrak: Witch Doctor's Chest"
                 }
               ]
             },
@@ -84295,12 +84294,12 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 254033,
+                  "item_id": 7057,
                   "source_kind": "crafted",
                   "source": "Tailoring"
                 },
                 {
-                  "item_id": 7057,
+                  "item_id": 254033,
                   "source_kind": "crafted",
                   "source": "Tailoring"
                 }
@@ -84318,9 +84317,9 @@
                   "source": "Uldaman: Ancient Treasure"
                 },
                 {
-                  "item_id": 6901,
-                  "source_kind": "dungeon",
-                  "source": "Blackfathom Deeps: Old Serra'kis"
+                  "item_id": 272078,
+                  "source_kind": "vendor",
+                  "source": "Creeg Bothunk"
                 }
               ]
             },
@@ -84354,22 +84353,22 @@
                   "source": "Foul Magics"
                 },
                 {
-                  "item_id": 254019,
-                  "source_kind": "crafted",
-                  "source": "Tailoring"
+                  "item_id": 13119,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
             "hands": {
-              "item_id": 254021,
+              "item_id": 252530,
               "source_kind": "crafted",
-              "source": "Tailoring",
+              "source": "Leatherworking",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 252530,
+                  "item_id": 254021,
                   "source_kind": "crafted",
-                  "source": "Leatherworking"
+                  "source": "Tailoring"
                 },
                 {
                   "item_id": 250569,
@@ -84433,9 +84432,9 @@
               ]
             },
             "finger1": {
-              "item_id": 272070,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk",
+              "item_id": 273031,
+              "source_kind": "world",
+              "source": "Arcane Anomaly",
               "chance": null,
               "alternatives": [
                 {
@@ -84451,20 +84450,20 @@
               ]
             },
             "finger2": {
-              "item_id": 273031,
-              "source_kind": "world",
-              "source": "Arcane Anomaly",
+              "item_id": 19520,
+              "source_kind": "rep",
+              "source": "Warsong Outriders",
               "chance": null,
               "alternatives": [
-                {
-                  "item_id": 19520,
-                  "source_kind": "rep",
-                  "source": "Warsong Outriders"
-                },
                 {
                   "item_id": 273030,
                   "source_kind": "dungeon",
                   "source": "Excavation Site: Wetlands: Relic Guardian"
+                },
+                {
+                  "item_id": 281635,
+                  "source_kind": "quest",
+                  "source": "Greater Friend of the Library"
                 }
               ]
             },
@@ -84501,18 +84500,18 @@
               ]
             },
             "off_hand": {
-              "item_id": 9393,
-              "source_kind": "dungeon",
-              "source": "Uldaman",
+              "item_id": 6803,
+              "source_kind": "quest",
+              "source": "Into The Scarlet Monastery",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 17508,
-                  "source_kind": "quest",
-                  "source": "Compendium of the Fallen"
+                  "item_id": 9393,
+                  "source_kind": "dungeon",
+                  "source": "Uldaman"
                 },
                 {
-                  "item_id": 7749,
+                  "item_id": 17508,
                   "source_kind": "quest",
                   "source": "Compendium of the Fallen"
                 }
@@ -84543,15 +84542,16 @@
             19507,
             19528,
             10020,
-            254021,
+            9448,
+            252530,
             254037,
             7760,
             250549,
-            272070,
+            19520,
             272059,
             1713,
             7721,
-            9393
+            6803
           ]
         },
         "weights": {
@@ -84858,20 +84858,20 @@
           },
           "horde": {
             "head": {
-              "item_id": 13102,
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "item_id": 9431,
+              "source_kind": "dungeon",
+              "source": "Uldaman",
               "chance": null,
               "alternatives": [
-                {
-                  "item_id": 9431,
-                  "source_kind": "dungeon",
-                  "source": "Uldaman"
-                },
                 {
                   "item_id": 10630,
                   "source_kind": "dungeon",
                   "source": "Sunken Temple: Atal'ai Warrior"
+                },
+                {
+                  "item_id": 13102,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -84912,15 +84912,15 @@
               ]
             },
             "back": {
-              "item_id": 11623,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: High Interrogator Gerstahn ",
+              "item_id": 19527,
+              "source_kind": "rep",
+              "source": "Warsong Outriders",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 19527,
-                  "source_kind": "rep",
-                  "source": "Warsong Outriders"
+                  "item_id": 11623,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths: High Interrogator Gerstahn "
                 },
                 {
                   "item_id": 19121,
@@ -85026,50 +85026,50 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 252472,
+                  "item_id": 252579,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
                 },
                 {
-                  "item_id": 252579,
+                  "item_id": 252472,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
                 }
               ]
             },
             "finger1": {
-              "item_id": 272069,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 6440,
-                  "source_kind": "dungeon",
-                  "source": "Zul'Farrak"
-                },
-                {
-                  "item_id": 273031,
-                  "source_kind": "world",
-                  "source": "Arcane Anomaly"
-                }
-              ]
-            },
-            "finger2": {
               "item_id": 19519,
               "source_kind": "rep",
               "source": "Warsong Outriders",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 6440,
-                  "source_kind": "dungeon",
-                  "source": "Zul'Farrak"
+                  "item_id": 273031,
+                  "source_kind": "world",
+                  "source": "Arcane Anomaly"
                 },
+                {
+                  "item_id": 11824,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths: Ok'thor the Breaker"
+                }
+              ]
+            },
+            "finger2": {
+              "item_id": 6440,
+              "source_kind": "dungeon",
+              "source": "Zul'Farrak",
+              "chance": null,
+              "alternatives": [
                 {
                   "item_id": 273031,
                   "source_kind": "world",
                   "source": "Arcane Anomaly"
+                },
+                {
+                  "item_id": 11824,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths: Ok'thor the Breaker"
                 }
               ]
             },
@@ -85103,9 +85103,9 @@
                   "source": "Look at the Size of It!"
                 },
                 {
-                  "item_id": 11302,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 13503,
+                  "source_kind": "crafted",
+                  "source": "Alchemy"
                 }
               ]
             },
@@ -85164,17 +85164,16 @@
             17718
           ],
           "horde": [
-            13102,
             22234,
-            11623,
+            19527,
             12462,
             250584,
             252551,
             252477,
             11841,
             254107,
-            272069,
             19519,
+            6440,
             272061,
             17718
           ]
@@ -85669,21 +85668,21 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 22334,
-                  "source_kind": "dungeon",
-                  "source": "Stratholme: Balnazzar"
-                },
-                {
                   "item_id": 16058,
                   "source_kind": "quest",
                   "source": "In Dreams"
+                },
+                {
+                  "item_id": 18103,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: Warchief Rend Blackhand"
                 }
               ]
             },
             "finger2": {
-              "item_id": 272068,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk",
+              "item_id": 22334,
+              "source_kind": "dungeon",
+              "source": "Stratholme: Balnazzar",
               "chance": null,
               "alternatives": [
                 {
@@ -85692,9 +85691,9 @@
                   "source": "In Dreams"
                 },
                 {
-                  "item_id": 22334,
+                  "item_id": 18103,
                   "source_kind": "dungeon",
-                  "source": "Stratholme: Balnazzar"
+                  "source": "Blackrock Spire: Warchief Rend Blackhand"
                 }
               ]
             },
@@ -85735,9 +85734,9 @@
               ]
             },
             "main_hand": {
-              "item_id": 11923,
+              "item_id": 18717,
               "source_kind": "dungeon",
-              "source": "Blackrock Depths: Chest of The Seven",
+              "source": "Stratholme: Balnazzar",
               "chance": null,
               "alternatives": [
                 {
@@ -85746,27 +85745,9 @@
                   "source": "PvP rank 14 · High Warlord · Horde"
                 },
                 {
-                  "item_id": 18717,
+                  "item_id": 11923,
                   "source_kind": "dungeon",
-                  "source": "Stratholme: Balnazzar"
-                }
-              ]
-            },
-            "off_hand": {
-              "item_id": 19312,
-              "source_kind": "rep",
-              "source": "Frostwolf Clan",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 234564,
-                  "source_kind": "pvp",
-                  "source": "PvP rank 14 · High Warlord · Horde"
-                },
-                {
-                  "item_id": 235474,
-                  "source_kind": "vendor",
-                  "source": "PvP rank 14 · High Warlord · Horde"
+                  "source": "Blackrock Depths: Chest of The Seven"
                 }
               ]
             }
@@ -85803,11 +85784,10 @@
             250600,
             16691,
             13178,
-            272068,
+            22334,
             11832,
             10659,
-            11923,
-            19312
+            18717
           ]
         },
         "weights": {
@@ -91396,14 +91376,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 13376,
+                  "source_kind": "dungeon",
+                  "source": "Stratholme: Magistrate Barthilas"
+                },
+                {
                   "item_id": 15421,
                   "source_kind": "quest",
                   "source": "In Dreams"
-                },
-                {
-                  "item_id": 271907,
-                  "source_kind": "rep",
-                  "source": "Theramore Expeditionary Force"
                 }
               ]
             },
@@ -91432,14 +91412,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 11962,
+                  "source_kind": "quest",
+                  "source": "The Love Potion"
+                },
+                {
                   "item_id": 12626,
                   "source_kind": "dungeon",
                   "source": "Blackrock Spire: Shadow Hunter Vosh'gajin"
-                },
-                {
-                  "item_id": 12546,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Depths"
                 }
               ]
             },
@@ -91468,14 +91448,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 16685,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: Smolderthorn Mystic"
+                },
+                {
                   "item_id": 20044,
                   "source_kind": "vendor",
                   "source": "Samuel Hawke"
-                },
-                {
-                  "item_id": 20046,
-                  "source_kind": "rep",
-                  "source": "The League of Arathor"
                 }
               ]
             },
@@ -91504,12 +91484,12 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 11822,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Depths: Golem Lord Argelmach"
+                  "item_id": 16472,
+                  "source_kind": "vendor",
+                  "source": "PvP rank 12 · Marshal · Alliance"
                 },
                 {
-                  "item_id": 16472,
+                  "item_id": 231652,
                   "source_kind": "vendor",
                   "source": "PvP rank 12 · Marshal · Alliance"
                 }
@@ -91522,14 +91502,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 272406,
+                  "source_kind": "vendor",
+                  "source": "Pix Xizzix"
+                },
+                {
                   "item_id": 12543,
                   "source_kind": "quest",
                   "source": "The Princess's Surprise"
-                },
-                {
-                  "item_id": 19109,
-                  "source_kind": "world",
-                  "source": "Ivus the Forest Lord"
                 }
               ]
             },
@@ -91545,9 +91525,9 @@
                   "source": "The Princess's Surprise"
                 },
                 {
-                  "item_id": 17045,
-                  "source_kind": "quest",
-                  "source": "Aurius' Reckoning"
+                  "item_id": 272406,
+                  "source_kind": "vendor",
+                  "source": "Pix Xizzix"
                 }
               ]
             },
@@ -91594,14 +91574,293 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 234568,
+                  "item_id": 234565,
                   "source_kind": "pvp",
                   "source": "PvP rank 14 · Grand Marshal · Alliance"
                 },
                 {
-                  "item_id": 234570,
-                  "source_kind": "vendor",
+                  "item_id": 234568,
+                  "source_kind": "pvp",
                   "source": "PvP rank 14 · Grand Marshal · Alliance"
+                }
+              ]
+            },
+            "ranged": {
+              "item_id": 23203,
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "chance": null,
+              "alternatives": []
+            }
+          },
+          "horde": {
+            "head": {
+              "item_id": 252605,
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 16686,
+                  "source_kind": "dungeon",
+                  "source": "Scholomance: Darkmaster Gandling"
+                },
+                {
+                  "item_id": 13390,
+                  "source_kind": "dungeon",
+                  "source": "Stratholme: Postmaster Malown"
+                }
+              ]
+            },
+            "neck": {
+              "item_id": 14558,
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 1443,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
+                },
+                {
+                  "item_id": 15856,
+                  "source_kind": "quest",
+                  "source": "Hidden Treasures"
+                }
+              ]
+            },
+            "shoulder": {
+              "item_id": 272958,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 272104,
+                  "source_kind": "vendor",
+                  "source": "Creeg Bothunk"
+                },
+                {
+                  "item_id": 272103,
+                  "source_kind": "vendor",
+                  "source": "Creeg Bothunk"
+                }
+              ]
+            },
+            "back": {
+              "item_id": 272411,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 15421,
+                  "source_kind": "quest",
+                  "source": "In Dreams"
+                },
+                {
+                  "item_id": 272063,
+                  "source_kind": "vendor",
+                  "source": "Creeg Bothunk"
+                }
+              ]
+            },
+            "chest": {
+              "item_id": 16688,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: General Drakkisath",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 13314,
+                  "source_kind": "dungeon",
+                  "source": "Scholomance: Ras Frostwhisper"
+                },
+                {
+                  "item_id": 16666,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: General Drakkisath"
+                }
+              ]
+            },
+            "wrist": {
+              "item_id": 19595,
+              "source_kind": "rep",
+              "source": "Warsong Outriders",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 12626,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: Shadow Hunter Vosh'gajin"
+                },
+                {
+                  "item_id": 12546,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths"
+                }
+              ]
+            },
+            "hands": {
+              "item_id": 12632,
+              "source_kind": "crafted",
+              "source": "Blacksmithing",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 272097,
+                  "source_kind": "vendor",
+                  "source": "Creeg Bothunk"
+                },
+                {
+                  "item_id": 272101,
+                  "source_kind": "vendor",
+                  "source": "Creeg Bothunk"
+                }
+              ]
+            },
+            "waist": {
+              "item_id": 12606,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Solakar Flamewreath",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 16685,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: Smolderthorn Mystic"
+                },
+                {
+                  "item_id": 20171,
+                  "source_kind": "rep",
+                  "source": "The Defilers"
+                }
+              ]
+            },
+            "legs": {
+              "item_id": 252486,
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 22741,
+                  "source_kind": "rep",
+                  "source": "Warsong Outriders"
+                },
+                {
+                  "item_id": 252603,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
+                }
+              ]
+            },
+            "feet": {
+              "item_id": 18102,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Warchief Rend Blackhand",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 11822,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths: Golem Lord Argelmach"
+                },
+                {
+                  "item_id": 22275,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths: Guzzler"
+                }
+              ]
+            },
+            "finger1": {
+              "item_id": 13345,
+              "source_kind": "dungeon",
+              "source": "Stratholme: Baron Rivendare",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 12545,
+                  "source_kind": "quest",
+                  "source": "The Princess Saved?"
+                },
+                {
+                  "item_id": 13001,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
+                }
+              ]
+            },
+            "finger2": {
+              "item_id": 272406,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 12545,
+                  "source_kind": "quest",
+                  "source": "The Princess Saved?"
+                },
+                {
+                  "item_id": 19109,
+                  "source_kind": "world",
+                  "source": "Ivus the Forest Lord"
+                }
+              ]
+            },
+            "trinket1": {
+              "item_id": 13965,
+              "source_kind": "quest",
+              "source": "For The Horde!",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 11302,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
+                },
+                {
+                  "item_id": 272438,
+                  "source_kind": "vendor",
+                  "source": "Pix Xizzix"
+                }
+              ]
+            },
+            "trinket2": {
+              "item_id": 11832,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Ambassador Flamelash",
+              "chance": 0.17,
+              "alternatives": [
+                {
+                  "item_id": 272438,
+                  "source_kind": "vendor",
+                  "source": "Pix Xizzix"
+                },
+                {
+                  "item_id": 272439,
+                  "source_kind": "vendor",
+                  "source": "Pix Xizzix"
+                }
+              ]
+            },
+            "main_hand": {
+              "item_id": 2801,
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 234546,
+                  "source_kind": "pvp",
+                  "source": "PvP rank 14 · High Warlord · Horde"
+                },
+                {
+                  "item_id": 234548,
+                  "source_kind": "vendor",
+                  "source": "PvP rank 14 · High Warlord · Horde"
                 }
               ]
             },
@@ -91617,285 +91876,6 @@
                   "source": "Pix Xizzix"
                 }
               ]
-            }
-          },
-          "horde": {
-            "head": {
-              "item_id": 252605,
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 12640,
-                  "source_kind": "crafted",
-                  "source": "Blacksmithing"
-                },
-                {
-                  "item_id": 250599,
-                  "source_kind": "crafted",
-                  "source": "Blacksmithing"
-                }
-              ]
-            },
-            "neck": {
-              "item_id": 14558,
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 22403,
-                  "source_kind": "dungeon",
-                  "source": "Stratholme: Cannon Master Willey"
-                },
-                {
-                  "item_id": 1443,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                }
-              ]
-            },
-            "shoulder": {
-              "item_id": 272958,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 19050,
-                  "source_kind": "crafted",
-                  "source": "Tailoring"
-                },
-                {
-                  "item_id": 272105,
-                  "source_kind": "vendor",
-                  "source": "Creeg Bothunk"
-                }
-              ]
-            },
-            "back": {
-              "item_id": 272411,
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 13376,
-                  "source_kind": "dungeon",
-                  "source": "Stratholme: Magistrate Barthilas"
-                },
-                {
-                  "item_id": 15421,
-                  "source_kind": "quest",
-                  "source": "In Dreams"
-                }
-              ]
-            },
-            "chest": {
-              "item_id": 16688,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: General Drakkisath",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 11726,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Depths: Gorosh the Dervish"
-                },
-                {
-                  "item_id": 252483,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
-                }
-              ]
-            },
-            "wrist": {
-              "item_id": 19595,
-              "source_kind": "rep",
-              "source": "Warsong Outriders",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 12936,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: Warchief Rend Blackhand"
-                },
-                {
-                  "item_id": 20481,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
-                }
-              ]
-            },
-            "hands": {
-              "item_id": 12632,
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 14615,
-                  "source_kind": "dungeon",
-                  "source": "Scholomance"
-                },
-                {
-                  "item_id": 272097,
-                  "source_kind": "vendor",
-                  "source": "Creeg Bothunk"
-                }
-              ]
-            },
-            "waist": {
-              "item_id": 12606,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Solakar Flamewreath",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 20171,
-                  "source_kind": "rep",
-                  "source": "The Defilers"
-                },
-                {
-                  "item_id": 20177,
-                  "source_kind": "rep",
-                  "source": "The Defilers"
-                }
-              ]
-            },
-            "legs": {
-              "item_id": 252486,
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 22673,
-                  "source_kind": "rep",
-                  "source": "Warsong Outriders"
-                },
-                {
-                  "item_id": 250598,
-                  "source_kind": "crafted",
-                  "source": "Blacksmithing"
-                }
-              ]
-            },
-            "feet": {
-              "item_id": 18102,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Warchief Rend Blackhand",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 13967,
-                  "source_kind": "dungeon",
-                  "source": "Scholomance: Kirtonos the Herald"
-                },
-                {
-                  "item_id": 14616,
-                  "source_kind": "dungeon",
-                  "source": "Scholomance"
-                }
-              ]
-            },
-            "finger1": {
-              "item_id": 13345,
-              "source_kind": "dungeon",
-              "source": "Stratholme: Baron Rivendare",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 19325,
-                  "source_kind": "rep",
-                  "source": "Frostwolf Clan"
-                },
-                {
-                  "item_id": 22433,
-                  "source_kind": "dungeon",
-                  "source": "Scholomance: Darkmaster Gandling"
-                }
-              ]
-            },
-            "finger2": {
-              "item_id": 272406,
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 19325,
-                  "source_kind": "rep",
-                  "source": "Frostwolf Clan"
-                },
-                {
-                  "item_id": 22433,
-                  "source_kind": "dungeon",
-                  "source": "Scholomance: Darkmaster Gandling"
-                }
-              ]
-            },
-            "trinket1": {
-              "item_id": 13965,
-              "source_kind": "quest",
-              "source": "For The Horde!",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 13213,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: Mother Smolderweb"
-                },
-                {
-                  "item_id": 19120,
-                  "source_kind": "quest",
-                  "source": "Job Opening: Guard Captain of Revantusk Village"
-                }
-              ]
-            },
-            "trinket2": {
-              "item_id": 272438,
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 13213,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: Mother Smolderweb"
-                },
-                {
-                  "item_id": 19120,
-                  "source_kind": "quest",
-                  "source": "Job Opening: Guard Captain of Revantusk Village"
-                }
-              ]
-            },
-            "main_hand": {
-              "item_id": 2801,
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 234542,
-                  "source_kind": "pvp",
-                  "source": "PvP rank 14 · High Warlord · Horde"
-                },
-                {
-                  "item_id": 234546,
-                  "source_kind": "pvp",
-                  "source": "PvP rank 14 · High Warlord · Horde"
-                }
-              ]
-            },
-            "ranged": {
-              "item_id": 23203,
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "chance": null,
-              "alternatives": []
             }
           }
         },
@@ -91931,7 +91911,7 @@
             13345,
             272406,
             13965,
-            272438,
+            11832,
             2801,
             23203
           ]
@@ -91939,10 +91919,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 2.2,
-          "agility": 1.916,
-          "crit": 2.91,
-          "melee_haste": 11.489,
-          "intellect": 6.296,
+          "agility": 1.929,
+          "crit": 2.93,
+          "melee_haste": 11.52,
+          "intellect": 6.325,
           "spell_power": 3.671
         },
         "hit_to_cap": {
@@ -146426,9 +146406,9 @@
                   "source": "Pix Xizzix"
                 },
                 {
-                  "item_id": 272407,
-                  "source_kind": "vendor",
-                  "source": "Pix Xizzix"
+                  "item_id": 17713,
+                  "source_kind": "dungeon",
+                  "source": "Maraudon: Princess Theradras"
                 }
               ]
             },
@@ -146444,9 +146424,9 @@
                   "source": "Pix Xizzix"
                 },
                 {
-                  "item_id": 272407,
-                  "source_kind": "vendor",
-                  "source": "Pix Xizzix"
+                  "item_id": 17713,
+                  "source_kind": "dungeon",
+                  "source": "Maraudon: Princess Theradras"
                 }
               ]
             },
@@ -146705,9 +146685,9 @@
                   "source": "Warsong Outriders"
                 },
                 {
-                  "item_id": 13001,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 13098,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: General Drakkisath"
                 }
               ]
             },
@@ -146718,9 +146698,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 12545,
-                  "source_kind": "quest",
-                  "source": "The Princess Saved?"
+                  "item_id": 13098,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: General Drakkisath"
                 },
                 {
                   "item_id": 13001,
@@ -174495,7 +174475,6 @@
     "11916": "Shizzle's Muzzle",
     "11917": "Shizzle's Nozzle Wiper",
     "11918": "Grotslab Gloves",
-    "11921": "Impervious Giant",
     "11923": "The Hammer of Grace",
     "11928": "Thaurissan's Royal Scepter",
     "11929": "Haunting Specter Leggings",
@@ -175011,6 +174990,7 @@
     "16658": "Wildhunter Cloak",
     "16659": "Deftkin Belt",
     "16661": "Soft Willow Cape",
+    "16666": "Vest of Elements",
     "16673": "Cord of Elements",
     "16675": "Beaststalker's Boots",
     "16677": "Beaststalker's Cap",
@@ -175053,6 +175033,7 @@
     "16791": "Silkstream Cuffs",
     "16793": "Arcmetal Shoulders",
     "16794": "Gripsteel Wristguards",
+    "16873": "Braidfur Gloves",
     "16886": "Outlaw Sabre",
     "16887": "Witch's Finger",
     "16975": "Warsong Sash",
@@ -176329,6 +176310,7 @@
     "272099": "Raider Gloves",
     "272101": "Raider Handguards",
     "272103": "Darkspear Shoulderpads",
+    "272104": "Darkspear Shoulders",
     "272105": "Darkspear Pauldrons",
     "272106": "Darkspear Epaulets",
     "272107": "Darkspear Mantle",
@@ -176691,7 +176673,6 @@
     "11784": 23.3,
     "11860": 37.3,
     "11863": 31.1,
-    "11921": 48.9,
     "11923": 25.0,
     "11931": 50.5,
     "12247": 16.8,
