@@ -1,5 +1,12 @@
 # Forever Sixty
 
+## 2.0.52
+
+- Gear sources: an item that needs a reputation standing (a quartermaster's goods included) shows only with Reputation on, and PvP rank and battleground faction items also need PvP on.
+- Turning a source on or off on the Gear tab now redraws the slot picks, Upgrades and More upgrades at once, not just the item tooltips.
+- Gear names the enchant your spec's list uses for each slot, with its icon and tooltip ("No enchant: Enchant Chest - Greater Stats"), and says when the enchant you wear is weaker. Slots the list does not enchant, or that you are too low to enchant, are no longer flagged.
+- The Me tab now shows where your character stands before you have any logs: experience and rested, your build and next talent, professions, your top gear upgrades with where to get them, and the enchants you're missing, plus one link to the companion app for your score, logs and sims.
+
 ## 2.0.51
 
 - Clicking Me, Gear, Rotation, Guild or Officer switches tabs again. Before, only the Builds tab answered a click.
