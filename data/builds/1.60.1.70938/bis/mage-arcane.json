@@ -1,8 +1,8 @@
 {
   "spec": "mage-arcane",
   "build": "1.60.1.70938",
-  "engine_version": "037798db1",
-  "generated_at": "2026-11-14T02:22:04Z",
+  "engine_version": "f0f90b5f9",
+  "generated_at": "2026-11-14T05:06:10Z",
   "bands": [
     {
       "spec": "mage-arcane",
@@ -1202,8 +1202,8 @@
         "off_hand: Mathystra Channeling Orb",
         "ranged: Skycaller"
       ],
-      "weights_run_seconds": 3.546137978,
-      "verify_run_seconds": 3.256095361,
+      "weights_run_seconds": 3.722631534,
+      "verify_run_seconds": 3.071846369,
       "coverage": {
         "back": {
           "eligible": 104,
@@ -2463,8 +2463,8 @@
         "main_hand: Crescent Staff",
         "ranged: Skycaller"
       ],
-      "weights_run_seconds": 3.546137978,
-      "verify_run_seconds": 3.6938287770000002,
+      "weights_run_seconds": 3.722631534,
+      "verify_run_seconds": 3.666943424,
       "coverage": {
         "back": {
           "eligible": 105,
@@ -3862,8 +3862,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 3.902246475,
-      "verify_run_seconds": 7.319768471,
+      "weights_run_seconds": 4.15978594,
+      "verify_run_seconds": 6.93703748,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -5247,8 +5247,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 3.902246475,
-      "verify_run_seconds": 7.59713823,
+      "weights_run_seconds": 4.15978594,
+      "verify_run_seconds": 7.322228177,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -6685,8 +6685,8 @@
         "main_hand: Staff of Jordan",
         "ranged: Nether Force Wand"
       ],
-      "weights_run_seconds": 3.905498214,
-      "verify_run_seconds": 3.415933499,
+      "weights_run_seconds": 3.85346368,
+      "verify_run_seconds": 3.73496911,
       "coverage": {
         "back": {
           "eligible": 257,
@@ -8103,8 +8103,8 @@
         "main_hand: Staff of Jordan",
         "ranged: Nether Force Wand"
       ],
-      "weights_run_seconds": 3.905498214,
-      "verify_run_seconds": 3.470399264,
+      "weights_run_seconds": 3.85346368,
+      "verify_run_seconds": 3.242070462,
       "coverage": {
         "back": {
           "eligible": 259,
@@ -9732,8 +9732,8 @@
         "off_hand: Truesilver Conduit",
         "ranged: Lesser Eternal Wand"
       ],
-      "weights_run_seconds": 4.098580875,
-      "verify_run_seconds": 10.726149812000001,
+      "weights_run_seconds": 3.996218597,
+      "verify_run_seconds": 10.8542755,
       "coverage": {
         "back": {
           "eligible": 330,
@@ -11443,8 +11443,8 @@
         "main_hand: Blade of Eternal Darkness",
         "off_hand: Truesilver Conduit"
       ],
-      "weights_run_seconds": 4.098580875,
-      "verify_run_seconds": 9.606559315,
+      "weights_run_seconds": 3.996218597,
+      "verify_run_seconds": 9.892614333000001,
       "coverage": {
         "back": {
           "eligible": 335,
@@ -13171,8 +13171,8 @@
         "off_hand: Therazane's Touch",
         "ranged: Oblivion's Touch"
       ],
-      "weights_run_seconds": 4.448936888,
-      "verify_run_seconds": 20.905558521,
+      "weights_run_seconds": 4.134576981,
+      "verify_run_seconds": 20.636941602,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -14959,8 +14959,8 @@
         "off_hand: Therazane's Touch",
         "ranged: Bonecreeper Stylus"
       ],
-      "weights_run_seconds": 4.448936888,
-      "verify_run_seconds": 25.206068215000002,
+      "weights_run_seconds": 4.134576981,
+      "verify_run_seconds": 24.351306688,
       "coverage": {
         "back": {
           "eligible": 472,
@@ -16691,8 +16691,8 @@
         "main_hand: Ironbark Staff",
         "ranged: Bonecreeper Stylus"
       ],
-      "weights_run_seconds": 5.008677241,
-      "verify_run_seconds": 24.476575998,
+      "weights_run_seconds": 5.027141586,
+      "verify_run_seconds": 24.381737675,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -18350,8 +18350,8 @@
         "main_hand: Ironbark Staff",
         "ranged: Brilliant Wand"
       ],
-      "weights_run_seconds": 5.008677241,
-      "verify_run_seconds": 25.374888704,
+      "weights_run_seconds": 5.027141586,
+      "verify_run_seconds": 25.036231350999998,
       "coverage": {
         "back": {
           "eligible": 472,
