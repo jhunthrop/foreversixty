@@ -6,7 +6,8 @@
 Writes design/reviews/2026-11-13-addon-hub/l4/<board>.png at device scale 2, the window at its real 740 px
 width in the frame the Builds tab draws (addon_builds_window.py): the header, the strip, the left column at
 388 and the right at 288, the footer. Each board draws what surfaces/RotationTab.lua draws for its inputs, by
-the same rules (RotationTab.stops, priority, played, weightRows), so the review sees the build.
+the same rules (RotationTab.stops, priority, played; the weights are StatWeights', addon_stat_weights.py), so the
+review sees the build.
 
 Every character, guild and raid is made up: Velisandre, a level 60 Night Elf hunter, and Torvin, a level 34
 dwarf hunter. No real player.
@@ -25,6 +26,7 @@ import sys
 import addon_builds as ab
 import addon_builds_window as bw
 import addon_hub as ah
+import addon_stat_weights as sw
 import addon_ux as ux
 from addon_builds import L, esc
 from addon_ux import ADDON, ROOT
@@ -32,13 +34,8 @@ from addon_ux import ADDON, ROOT
 OUT = ROOT / 'design/reviews/2026-11-13-addon-hub/l4'
 DATA_LUA = (ROOT / 'addon/ForeverSixty/Data.lua').read_text()
 SPEC = 'hunter-beast-mastery'
-RATING_PER_PERCENT = {'hit': 10, 'crit': 14, 'expertise': 10, 'dodge': 12, 'parry': 15, 'block': 5, 'defense': 1,
-                      'haste': 10}
-HASTE = {'haste', 'melee_haste', 'spell_haste'}
-STAT_NAMES = dict(re.findall(r'(\w+) = "([^"]+)"', re.search(r'L\.rotStatNames = \{(.*?)\}', ab.LOCALE, re.S).group(1)))
 WEEKDAYS = re.findall(r'"(\w+day)"', re.search(r'L\.rotWeekdays = \{([^}]*)\}', ab.LOCALE).group(1))
-MAX_BOSSES, MAX_WEIGHTS = 12, 6
-SAME_AS = {'attack_power': 'ranged_attack_power', 'ranged_attack_power': 'attack_power'}
+MAX_BOSSES = 12
 COND_WIDTH = 388 - 16 - 24 - 16
 
 CSS = bw.CSS + f'''
@@ -182,25 +179,13 @@ def played(message):
             'bosses': rows[:MAX_BOSSES], 'more': max(0, len(rows) - MAX_BOSSES), 'lost': lost}
 
 
-def weight_rows(weights, dps, note, reference='ranged_attack_power'):
-    rows, haste = [], None
-    for stat, w in weights.items():
-        twin = SAME_AS.get(stat)
-        if w <= 0 or (twin and weights.get(twin) == w and stat != reference):
-            continue
-        if stat in HASTE:
-            haste = max(haste or 0, w)
-        else:
-            rows.append((stat, w / RATING_PER_PERCENT.get(stat, 1)))
-    rows.sort(key=lambda r: (-r[1], r[0]))
-    top = rows[0][1]
-    return {'stats': [(s, STAT_NAMES.get(s, s)) for s, _ in rows[:MAX_WEIGHTS]],
-            'rows': [(fmt(L('rotRating'), STAT_NAMES.get(s, s)) if s in RATING_PER_PERCENT else STAT_NAMES.get(s, s),
-                      p / top, p * dps if dps else None) for s, p in rows[:MAX_WEIGHTS]],
-            'haste': haste * dps if haste and dps else None, 'note': note, 'unit': L('rotDps')}
-
-
 # --- Drawing -----------------------------------------------------------------------------------------
+
+def weights_html(m):
+    """The Stat weights block, the Gear tab's own (addon_stat_weights)."""
+    head, body = sw.html(m)
+    return f'<div class="sec">{head}{body}</div>'
+
 
 def section(heading, body, right=''):
     return (f'<div class="sec"><div class="sh"><span>{heading}</span><span class="r">{right}</span></div>'
@@ -229,17 +214,6 @@ def priority_html(spec, shown, level, followed):
     head = (f'<div class="sh" style="height:22px"><span>{title}</span>{stepper(shown, level, spec)}</div>'
             f'<div style="height:4px"></div>')
     return f'<div class="sec">{head}{rows}</div>'
-
-
-def weights_html(w):
-    rows = (f'<tr class="h"><td style="width:232px">{L("rotStat")}</td><td class="n" style="width:60px">'
-            f'{L("rotWeight")}</td><td class="n">{fmt(L("rotPerPoint"), w["unit"])}</td></tr>')
-    for label, scale, value in w['rows']:
-        rows += (f'<tr><td>{esc(label)}</td><td class="n s">{scale:.2f}</td>'
-                 f'<td class="n m">{f"{value:.2f}" if value is not None else L("rotNone")}</td></tr>')
-    haste = (f'<div class="m" style="margin-top:2px">{esc(fmt(L("rotHaste"), w["haste"], w["unit"]))}</div>'
-             if w['haste'] else '')
-    return section(L('rotWeights'), f'<table class="tb">{rows}</table>{haste}', esc(w['note']))
 
 
 def played_html(p, me_link=True, companion=True):
@@ -288,14 +262,14 @@ MOLTEN_CORE = {'date': '2026-12-15', 'bosses': [
 
 def board_60():
     p = played(MOLTEN_CORE)
-    weights = weight_rows(shipped_weights(SPEC), dps_per_point(SPEC, 60), '')
+    weights = sw.model(shipped_weights(SPEC), dps_per_point(SPEC, 60))
     left = priority_html(SPEC, 60, 60, True) + weights_html(weights)
     figures = (bw.name_of('Beast Mastery', 'raid'), fmt(L('rotFiguresFollowed'), p['mean'], p['day']))
     return board('Velisandre', 60, figures, left, played_html(p))
 
 
 def board_34_stepped():
-    weights = weight_rows(shipped_weights(SPEC), dps_per_point(SPEC, 40), '')
+    weights = sw.model(shipped_weights(SPEC), dps_per_point(SPEC, 40))
     left = priority_html(SPEC, 40, 34, True) + weights_html(weights)
     figures = (bw.name_of('Beast Mastery', 'leveling'),)
     return board('Torvin', 34, figures, left, played_html(None), dots=('Builds',))
@@ -304,7 +278,7 @@ def board_34_stepped():
 def board_no_build():
     p = played({'date': MOLTEN_CORE['date'], 'bosses': MOLTEN_CORE['bosses'][:5]})
     sim = dict(shipped_weights(SPEC), hit=27.4, agility=1.72, crit=16.9)
-    weights = weight_rows(sim, 0.1412, fmt(L('rotWeightsSimOn'), '14 Dec'))
+    weights = sw.model(sim, 0.1412, fmt(L('weightsSimOn'), '14 Dec'))
     left = priority_html(SPEC, 60, 60, False) + weights_html(weights)
     figures = (fmt(L('rotFiguresFollowed'), p['mean'], p['day']),)
     return board('Velisandre', 60, figures, left, played_html(p, me_link=False), dots=('Builds',))

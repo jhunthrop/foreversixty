@@ -43,6 +43,8 @@ describe("the TOC", function()
 		"surfaces/BuildDialog.lua",
 		-- The window's Me tab (hub spec 4.1): the model, then its frame, which registers the tab.
 		"surfaces/MeTab.lua", "surfaces/MeFrame.lua",
+		-- The Stat weights block the Gear and Rotation tabs share: reads Gear.currentWeights' answer.
+		"surfaces/StatWeights.lua",
 		-- The Gear tab (hub spec 4.3): its model reads the tooltip's targets, the slot marks' list and the
 		-- source filter; its frames register the tab with the hub.
 		"surfaces/GearTab.lua", "surfaces/GearTabView.lua",

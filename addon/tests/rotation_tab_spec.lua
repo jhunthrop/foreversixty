@@ -197,37 +197,30 @@ describe("the Rotation tab", function()
 	end)
 
 	describe("the stat weights", function()
-		it("puts every stat per rating point over the top stat's, haste apart per 1%, from the shipped band", function()
+		it("are StatWeights' block at the level the stepper shows", function()
 			local current = require("Gear").currentWeights(DATA, "hunter-beast-mastery", nil, KEY, 60)
-			assert.are.equal(60, current.measuredBand)
-			local weights = RotationTab.weightRows(current, 60)
-			assert.are.same({ "hit", "agility", "crit", "ranged_attack_power" },
-				{ weights.rows[1].stat, weights.rows[2].stat, weights.rows[3].stat, weights.rows[4].stat })
-			assert.are.equal(1, weights.rows[1].scale)
-			assert.are.near(1.6 / 3, weights.rows[2].scale, 1e-9)
-			assert.are.near(3 * 0.1351, weights.rows[1].value, 1e-9)
-			assert.are.near(4 * 0.1351, weights.haste, 1e-9)
-			-- Measured at the level the stepper shows: nothing to say; at another level, the band.
-			assert.is_nil(weights.note)
-			assert.are.equal("at level 60", RotationTab.weightRows(current, 34).note)
-			assert.are.same({ "10 hit rating is 1% hit" }, weights.rows[1].hover)
-			assert.is_nil(weights.rows[2].hover)
-			assert.are.same({ "Hit rating", "Agility", "Crit rating", "Ranged attack power" },
-				{ weights.rows[1].label, weights.rows[2].label, weights.rows[3].label, weights.rows[4].label })
-			-- Attack power weighs as ranged attack power does: one row, the reference's.
-			assert.are.equal(4, #weights.rows)
-			assert.are.equal("DPS", weights.unit)
+			local model = RotationTab.model({ data = DATA, spec = "hunter-beast-mastery", level = 60, shown = 34,
+				weights = current })
+			assert.are.same(require("StatWeights").model(current, 34), model.weights)
+			assert.are.equal("at level 60", model.weights.note)
 		end)
+	end)
 
-		it("names the companion's sim and its day, with no DPS where the sim gives no figure", function()
-			local weights = RotationTab.weightRows({ tag = "sim", generatedAt = "2026-12-07T21:03:00Z",
-				weights = { strength = 1, hit = 20 }, caps = { "hit" } })
-			assert.are.equal("your sim, 7 Dec", weights.note)
-			assert.is_nil(weights.rows[1].value)
-			assert.is_true(weights.rows[1].capped)
-			assert.is_false(weights.rows[2].capped)
-			assert.is_nil(weights.haste)
-			assert.is_nil(RotationTab.weightRows(nil))
+	describe("the Aimed Shot line", function()
+		it("keeps the cooldown it shares with Multi-Shot in the shipped data: the client's category 2, 6 s", function()
+			-- Build 1.60.1.70938's SpellCategories puts Aimed Shot (19434, 20900 to 20904) and Multi-Shot (2643)
+			-- in category 2, and SpellCooldowns gives each a 6000 ms category cooldown: one shared cooldown.
+			local shipped = require("Data")
+			local found = 0
+			for _, spec in ipairs({ "hunter-beast-mastery", "hunter-marksmanship" }) do
+				for _, row in ipairs(RotationTab.priority(shipped, spec, 60, 60)) do
+					if row.name == "Aimed Shot" then
+						found = found + 1
+						assert.is_truthy(row.full:find("shared with Multi-Shot", 1, true), spec)
+					end
+				end
+			end
+			assert.is_true(found > 0)
 		end)
 	end)
 
@@ -255,7 +248,7 @@ describe("the Rotation tab", function()
 			assert.is_true(left[string.format(L.rotLevel, 60)])
 			assert.is_true(right[string.format(L.rotAllBosses, 5)])
 			assert.is_true(right["84%"])
-			assert.is_true(left[L.rotWeights])
+			assert.is_true(left[L.weightsTitle])
 			assert.is_true(left["Hit rating"])
 			assert.is_true(right["Downtime 31 s"])
 			assert.is_true(right["73 s"])

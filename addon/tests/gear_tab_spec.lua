@@ -2,7 +2,7 @@
 -- The Gear tab of the Forever Sixty window (design/specs/2026-11-13-addon-hub.md 4.3): the doll in the
 -- character pane's order (no off hand beside a two-hander), each cell's state (Best in slot, the gain,
 -- in your bags, No enchant), the upgrades sorted and capped at four with their total, the source line
--- with a drop chance only where the data has one, the stat weights over the top stat with haste apart,
+-- with a drop chance only where the data has one, the hit cap under the shared stat weights,
 -- the header's figures, the bag upgrade it has waiting, and the window: the tab drawn through the hub,
 -- a source kind re-picking every surface in the same frame, an Alt-click's slot on the hover ground.
 local helper = require("spec_helper")
@@ -235,35 +235,6 @@ describe("the Gear tab's model (GearTab)", function()
 		assert.is_true(sources.choice.showDefault)
 	end)
 
-	it("normalizes the weights to the top stat per rating point, haste apart per 1%", function()
-		local weights = GearTab.weights({ tag = "sim", dpsPerPoint = 0.1,
-			weights = { hit = 20, crit = 14, strength = 2, attack_power = 1, melee_haste = 5, spell_haste = 1 } })
-		assert.is_true(weights.sim)
-		local rows = {}
-		for index, row in ipairs(weights.rows) do
-			rows[index] = { row.stat, row.weight, row.dps }
-		end
-		-- Hit 20 per 1% is 2 a rating point (10 a percent); crit 14 per 1% is 1 a point (14 a percent).
-		assert.are.same({ { "hit", 1, 0.2 }, { "strength", 1, 0.2 }, { "attack_power", 0.5, 0.1 }, { "crit", 0.5, 0.1 } },
-			rows)
-		assert.are.near(0.6, weights.haste, 1e-9)
-		-- In score (no DPS per point): weights only, no haste line.
-		local score = GearTab.weights({ weights = { strength = 1, melee_haste = 4 } })
-		assert.is_nil(score.rows[1].dps)
-		assert.is_nil(score.haste)
-		assert.is_false(score.sim)
-		assert.is_nil(GearTab.weights(nil))
-	end)
-
-	it("keeps at most seven weights", function()
-		local many = {}
-		for index, stat in ipairs({ "strength", "agility", "stamina", "intellect", "spirit", "attack_power",
-			"spell_power", "healing_power", "mp5" }) do
-			many[stat] = index
-		end
-		assert.are.equal(GearTab.WEIGHT_ROWS, #GearTab.weights({ weights = many }).rows)
-	end)
-
 	it("offers Raid-ready only at a band with that list, and opens on it", function()
 		local raid = input({ data = RAID_DATA })
 		assert.is_true(GearTab.hasRaidList(raid, 30))
@@ -311,10 +282,10 @@ describe("the Gear tab's model (GearTab)", function()
 	end)
 
 	it("words the hit cap per part the band publishes, against the list's own figures", function()
-		assert.are.same({ "Hit: 2% to the 9% cap", "White swings: 21% to the 28% cap" },
+		assert.are.same({ "Melee hit: 2% to the 9% cap", "White swings: 21% to the 28% cap" },
 			GearTab.hitCap(RAID_DATA, SPEC, 30, "horde", GearTab.BARE).lines)
 		local raid = GearTab.hitCap(RAID_DATA, SPEC, 30, "horde", GearTab.RAID)
-		assert.are.same({ "Hit: at the 9% cap", "White swings: 19% to the 28% cap" }, raid.lines)
+		assert.are.same({ "Melee hit: at the 9% cap", "White swings: 19% to the 28% cap" }, raid.lines)
 		assert.are.equal(L.gearHitCapTitle, raid.tip[1])
 		assert.is_truthy(raid.tip[2].text:find("Improves your chance to hit by 1.0%.", 1, true))
 		local caster = { hitToCap = { ["priest-shadow"] = { bare = { [40] = { alliance = {
@@ -323,8 +294,20 @@ describe("the Gear tab's model (GearTab)", function()
 			GearTab.hitCap(caster, "priest-shadow", 40, "alliance", GearTab.BARE).lines)
 		local hybrid = { hitToCap = { [SPEC] = { bare = { [60] = { horde = {
 			hit = { 2.9, 9 }, spell = { 9.9, 16 } } } } } } }
-		assert.are.same({ "Hit: 2.9% to the 9% cap", "Spell hit: 9.9% to the 16% cap" },
+		assert.are.same({ "Melee hit: 2.9% to the 9% cap", "Spell hit: 9.9% to the 16% cap" },
 			GearTab.hitCap(hybrid, SPEC, 60, "horde", GearTab.BARE).lines)
+		-- A hunter at range: "Ranged hit", and no spell line (its priority casts nothing that rolls spell
+		-- hit; the published spell part is its traps' and Volley's); Survival swings in melee and keeps it.
+		local hunter = { hitToCap = {} }
+		for _, spec in ipairs({ "hunter-beast-mastery", "hunter-marksmanship", "hunter-survival" }) do
+			hunter.hitToCap[spec] = { bare = { [60] = { horde = { hit = { 2, 9 }, spell = { 9, 16 } } } } }
+		end
+		for _, spec in ipairs({ "hunter-beast-mastery", "hunter-marksmanship" }) do
+			assert.are.same({ "Ranged hit: 2% to the 9% cap" },
+				GearTab.hitCap(hunter, spec, 60, "horde", GearTab.BARE).lines, spec)
+		end
+		assert.are.same({ "Melee hit: 2% to the 9% cap", "Spell hit: 9% to the 16% cap" },
+			GearTab.hitCap(hunter, "hunter-survival", 60, "horde", GearTab.BARE).lines)
 		-- A healer's band, another faction, another band: nothing to say.
 		assert.is_nil(GearTab.hitCap(DATA, SPEC, 30, "horde", GearTab.BARE))
 		assert.is_nil(GearTab.hitCap(RAID_DATA, SPEC, 30, "alliance", GearTab.BARE))
@@ -429,7 +412,7 @@ describe("the Gear tab in the window", function()
 		assert.is_true(raidReady.foreverSixtySelected)
 		assert.is_false(bare.foreverSixtySelected)
 		assert.is_truthy(view.cells.head.status:GetText():find("+7.0 DPS", 1, true))
-		assert.are.equal("Hit: at the 9% cap", view.weights.hit[1]:GetText())
+		assert.are.equal("Melee hit: at the 9% cap", view.weights.hit[1]:GetText())
 		assert.is_true(view.weights.hitHover:IsShown())
 		-- The header counts what the doll shows.
 		assert.is_truthy(Hub.headerFor(Hub.tab("gear")).note:find("1 of 3 best in slot", 1, true))
@@ -437,7 +420,7 @@ describe("the Gear tab in the window", function()
 		assert.are.equal(GearTab.BARE, GearTabView.condition)
 		assert.is_true(bare.foreverSixtySelected)
 		assert.is_truthy(view.cells.head.status:GetText():find("+5.0 DPS", 1, true))
-		assert.are.equal("Hit: 2% to the 9% cap", view.weights.hit[1]:GetText())
+		assert.are.equal("Melee hit: 2% to the 9% cap", view.weights.hit[1]:GetText())
 		-- 40 has no Raid-ready list: no Conditions row.
 		view.bands[3]:GetScript("OnClick")(view.bands[3])
 		assert.is_false(view.conditionsLabel:IsShown())

@@ -15,8 +15,8 @@ approved board's:
 - Gains: Progress.slotGain's rule ported: each stat over its rating per percent (Rules.RATING_PER_PERCENT) times
   the shipped weight (Data.lua weights), the ranged weapon's own DPS at the band's measured weapon term
   (Gear.weaponTerm), times the band's DPS per point (Data.lua dpsPerPoint).
-- Stat weights: the same shipped weights per rating point over the top stat; neither the shipped data nor the
-  inbox weights message carries an error, so the table has no error column.
+- Stat weights: StatWeights' block, the Rotation tab's own (addon_stat_weights.py): the shipped weights per rating
+  point over the top stat, attack power once.
 - Source lines: ItemTooltip.sourceParts' rule; the drop chance only where Data.lua carries one.
 - Source counts: Sources.counts over the band's published picks.
 - Conditions (the gear-hit lane): at a band with a Raid-ready list (Data.lua `bisRaid`) the row shows, Raid-ready by
@@ -31,6 +31,7 @@ import re
 import sys
 
 import addon_hub as hub
+import addon_stat_weights as sw
 from addon_hub import ADDON, CLIENT_GOLD, QUALITY, esc, section, window
 import addon_ux as ux
 from addon_ux import ROOT, icon_uri
@@ -53,9 +54,6 @@ SLOT_WORD = {'head': 'Head', 'neck': 'Neck', 'shoulder': 'Shoulder', 'back': 'Ba
              'hands': 'Hands', 'waist': 'Waist', 'legs': 'Legs', 'feet': 'Feet', 'finger1': 'Finger',
              'finger2': 'Finger', 'trinket1': 'Trinket', 'trinket2': 'Trinket', 'main_hand': 'Main Hand',
              'off_hand': 'Off Hand', 'ranged': 'Ranged'}
-STAT_WORD = {'hit': 'Hit', 'crit': 'Critical Strike', 'agility': 'Agility', 'strength': 'Strength',
-             'intellect': 'Intellect', 'attack_power': 'Attack Power', 'ranged_attack_power': 'Ranged Attack Power',
-             'spirit': 'Spirit', 'stamina': 'Stamina', 'expertise': 'Expertise'}
 RIGHT_ROOM = 258
 LEFT = ['head', 'neck', 'shoulder', 'back', 'chest', 'wrist', 'main_hand', 'off_hand', 'ranged']
 RIGHT = ['hands', 'waist', 'legs', 'feet', 'finger1', 'finger2', 'trinket1', 'trinket2']
@@ -94,6 +92,15 @@ def cap_percent(value):
     return f'{value:g}' if value == int(value) else f'{value:.1f}'
 
 
+def hit_type(spec):
+    """Rules.hitType: melee, a hunter at range, or a caster."""
+    melee_specs = {'paladin-protection', 'paladin-retribution', 'shaman-enhancement', 'hunter-survival'}
+    cls = spec.split('-')[0]
+    if cls in ('warrior', 'rogue') or spec in melee_specs or spec.startswith('druid-feral'):
+        return 'melee'
+    return 'ranged' if cls == 'hunter' else 'spell'
+
+
 def hit_lines(spec, band, faction, condition):
     """GearTab.hitCap's lines over Data.lua's hitToCap and its hitCaps pool."""
     pool = re.findall(r'^\t(\{.*\}),$', lua_block('local hitCaps = {', 'hitCaps'), re.M)
@@ -109,8 +116,12 @@ def hit_lines(spec, band, faction, condition):
     entry = pool[int(found.group(1)) - 1]
     parts = {k: (float(a), float(b)) for k, a, b in re.findall(r'(hit|white|spell) = \{ ([\d.]+), ([\d.]+) \}', entry)}
     school = re.search(r'school = \{ ([\d.]+), "([^"]+)" \}', entry)
+    if 'hit' in parts and hit_type(spec) == 'ranged':
+        # A ranged hunter's priority casts nothing that rolls spell hit (GearTab.hitCap).
+        parts.pop('spell', None)
+    weapon_word = 'Ranged hit' if hit_type(spec) == 'ranged' else 'Melee hit'
     lines = []
-    for key, word in (('hit', 'Hit'), ('white', 'White swings'), ('spell', 'Spell hit')):
+    for key, word in (('hit', weapon_word), ('white', 'White swings'), ('spell', 'Spell hit')):
         if key in parts:
             to, cap = parts[key]
             lines.append(f'{word}: at the {cap_percent(cap)}% cap' if to <= 0
@@ -378,24 +389,13 @@ def upgrades_block(ch, cells):
 
 
 def weights_block(ch, sim):
-    rows = []
-    for stat, w in ch.weights.items():
-        if w > 0 and stat not in ('melee_haste', 'spell_haste', 'weapon_dps', 'haste'):
-            rows.append((stat, w / RATING_PER_PERCENT.get(stat, 1)))
-    top = max(p for _, p in rows)
-    rows.sort(key=lambda r: (-r[1], STAT_WORD.get(r[0], r[0])))
-    body = '<tr><th>Stat</th><th class="n">Weight</th><th class="n" style="width:52px">DPS</th></tr>'
-    rows = [r for r in rows if r[1] / top >= 0.05]
-    for stat, point in rows[:7]:
-        body += (f'<tr><td>{STAT_WORD.get(stat, stat)}</td><td class="n">{point / top:.2f}</td>'
-                 f'<td class="n m">{point * ch.pp["dps"]:.2f}</td></tr>')
-    haste = sum(ch.weights.get(k, 0) for k in ('melee_haste', 'spell_haste'))
-    haste_line = (f'<div class="m" style="height:18px">Haste {haste * ch.pp["dps"]:.2f} DPS per 1%</div>'
-                  if haste else '')
+    """StatWeights' block (the Rotation tab's own, addon_stat_weights) with GearTab.hitCap's lines under it."""
+    m = sw.model(ch.weights, ch.pp['dps'], sw.L('weightsSim') if sim else '', ch.pp['reference'])
+    head, body = sw.html(m)
     hit = ''.join(f'<div class="m" style="height:18px">{line}</div>'
                   for line in hit_lines(ch.spec, ch.band, ch.faction, ch.condition))
-    note = 'your sim, per rating point' if sim else 'per rating point'
-    return f'<div class="sec">{heading("Stat weights", note)}<table class="tbl">{body}</table>{haste_line}{hit}</div>'
+    hit = f'<div style="margin-top:6px">{hit}</div>' if hit else ''
+    return f'<div class="sec">{head}{body}{hit}</div>'
 
 
 def checkbox(on):

@@ -18,18 +18,19 @@ local HubFrame = ns.HubFrame or require("HubFrame")
 local Hub = ns.Hub or require("Hub")
 local BuildsWindow = ns.BuildsWindow or require("BuildsWindow")
 local GearTab = ns.GearTab or require("GearTab")
+local StatWeights = ns.StatWeights or require("StatWeights")
 
 local GearTabView = {}
 
 --- Pixel layout: the Level row and its label column and buttons, the gap to the Conditions row; the doll's
---- cells (pitch, icon, the gap to the text, the gap between the columns); the Upgrades rows; the weights
---- table's rows and its number columns' right edges; the Sources rows and their columns' gap; the room
+--- cells (pitch, icon, the gap to the text, the gap between the columns); the Upgrades rows; the hit-cap
+--- lines under the weights and the room above them; the Sources rows and their columns' gap; the room
 --- between sections.
 GearTabView.LAYOUT = {
 	control = 20, controlLabel = 66, band = 32, bandGap = 4, controlGap = 10, dollTop = 12,
 	cell = 36, cellIcon = 28, cellGap = 6, columnGap = 6, moreRow = 18, moreIcon = 16,
 	upgrade = 36, upgradeIcon = 24,
-	weightRow = 18, weightNumber = 52, weightGap = 8,
+	hitRow = 18, hitGap = 6,
 	sourceRow = 20, sourceGap = 16,
 	sectionGap = 20, under = 4,
 }
@@ -232,20 +233,9 @@ local function buildUpgrades(parent, width)
 	return section
 end
 
+--- The Stat weights block (StatWeights, the Rotation tab's own) with the hit-cap lines under it.
 local function buildWeights(parent, width)
-	local section = BuildsWindow.buildSection(parent, width, { text = text }, L.gearWeights, nil)
-	local function columns(hexKey)
-		local row = { stat = text(parent, hexKey), weight = text(parent, hexKey), dps = text(parent, "muted") }
-		row.weight:SetJustifyH("RIGHT")
-		row.dps:SetJustifyH("RIGHT")
-		return row
-	end
-	section.head = columns("muted")
-	section.rows = {}
-	for index = 1, GearTab.WEIGHT_ROWS do
-		section.rows[index] = columns("body")
-	end
-	section.haste = text(parent, "muted", width)
+	local section = StatWeights.build(parent, width)
 	section.hit = {}
 	for index = 1, GearTabView.HIT_LINES do
 		section.hit[index] = text(parent, "muted", width)
@@ -543,37 +533,7 @@ local function drawUpgrades(section, parent, width, y, upgrades, doll)
 	return y + textHeight(section.empty)
 end
 
-local function drawWeightRow(row, parent, width, y, values)
-	local G = GearTabView.LAYOUT
-	local dpsRight = width
-	local weightRight = width - (values.dps ~= nil and G.weightNumber + G.weightGap or 0)
-	row.stat:SetText(values.stat)
-	place(row.stat, parent, 0, y)
-	row.weight:SetText(values.weight)
-	row.weight:ClearAllPoints()
-	row.weight:SetPoint("TOPRIGHT", parent, "TOPLEFT", weightRight, -y)
-	row.weight:Show()
-	if values.dps ~= nil then
-		row.dps:SetText(values.dps)
-		row.dps:ClearAllPoints()
-		row.dps:SetPoint("TOPRIGHT", parent, "TOPLEFT", dpsRight, -y)
-		row.dps:Show()
-	else
-		row.dps:Hide()
-	end
-end
-
-local function hideWeights(section)
-	local rows = { section.head }
-	for _, row in ipairs(section.rows) do
-		rows[#rows + 1] = row
-	end
-	for _, row in ipairs(rows) do
-		row.stat:Hide()
-		row.weight:Hide()
-		row.dps:Hide()
-	end
-	section.haste:Hide()
+local function hideHitCap(section)
 	for _, line in ipairs(section.hit) do
 		line:Hide()
 	end
@@ -587,13 +547,14 @@ local function drawHitCap(section, parent, width, y, hitCap)
 	if hitCap == nil then
 		return y
 	end
+	y = y + G.hitGap
 	local top = y
 	for index, line in ipairs(hitCap.lines) do
 		local region = section.hit[index]
 		if region ~= nil then
 			region:SetText(line)
 			place(region, parent, 0, y)
-			y = y + G.weightRow
+			y = y + G.hitRow
 		end
 	end
 	section.hitTip = hitCap.tip
@@ -604,33 +565,16 @@ local function drawHitCap(section, parent, width, y, hitCap)
 	return y
 end
 
+--- The weights at `y` (StatWeights.model) and the hit cap under them; the y after them (the room above
+--- them given back without weights).
 local function drawWeights(section, parent, width, y, weights, hitCap)
 	local G = GearTabView.LAYOUT
-	hideWeights(section)
-	if weights == nil or #weights.rows == 0 then
-		section.heading:Hide()
-		section.note:Hide()
+	hideHitCap(section)
+	local under = StatWeights.draw(section, y, weights, fit, textHeight)
+	if under == nil then
 		return y - G.sectionGap
 	end
-	y = BuildsWindow.drawSection(section, parent, width, y, weights.sim and L.gearWeightsSim or L.gearWeightsShipped,
-		fit, textHeight) + G.under
-	local dpsWord = weights.unit == "hps" and L.tooltipUnitHps or L.tooltipUnitDps
-	local scored = weights.unit ~= "score"
-	drawWeightRow(section.head, parent, width, y, { stat = L.gearStat, weight = L.gearWeight,
-		dps = scored and dpsWord or nil })
-	y = y + G.weightRow
-	for index, values in ipairs(weights.rows) do
-		drawWeightRow(section.rows[index], parent, width, y, { stat = values.word,
-			weight = string.format("%.2f", values.weight),
-			dps = values.dps ~= nil and string.format("%.2f", values.dps) or nil })
-		y = y + G.weightRow
-	end
-	if weights.haste ~= nil then
-		section.haste:SetText(string.format(L.gearHaste, weights.haste, dpsWord))
-		place(section.haste, parent, 0, y)
-		y = y + G.weightRow
-	end
-	return drawHitCap(section, parent, width, y, hitCap)
+	return drawHitCap(section, parent, width, under, hitCap)
 end
 
 local function drawSources(section, parent, width, y, sources)
@@ -707,7 +651,7 @@ function GearTabView.draw()
 	local left = drawMore(view, upgrades.rest, doll.unit, drawDoll(view, doll, dollTop))
 	local width = S.windowRight
 	local y = drawUpgrades(view.upgrades, view.right, width, 0, upgrades, doll)
-	y = drawWeights(view.weights, view.right, width, y + G.sectionGap, GearTab.weights(input.current),
+	y = drawWeights(view.weights, view.right, width, y + G.sectionGap, StatWeights.model(input.current, band),
 		GearTab.hitCap(input.data, input.spec, band, input.faction, condition))
 	y = drawSources(view.sources, view.right, width, y + G.sectionGap, GearTabView.sourcesModel)
 	local body = math.max(left, y)

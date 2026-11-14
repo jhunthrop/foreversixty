@@ -440,23 +440,11 @@ function Progress.itemVerdict(slot, hovered, equipped, weights, dpsPerPoint, wea
 	return Progress.slotVerdict(slot, hovered, equipped[slot], weights, dpsPerPoint, weapon)
 end
 
---- Specs that fight in melee, whose weapons lead the slot list. Every
---- warrior and rogue spec; for the rest, only the melee tree (Forever's
---- hunters are melee only in survival). A feral druid's slug is
---- "druid-feral..." in every spelling the data uses, so it is a prefix.
-local MELEE_CLASSES = { warrior = true, rogue = true }
-local MELEE_SPECS = {
-	["paladin-retribution"] = true, ["shaman-enhancement"] = true, ["hunter-survival"] = true,
-}
 local WEAPON_SLOTS = { main_hand = true, off_hand = true, ranged = true }
 
+--- Whether a spec fights in melee (Rules.hitType), so its weapons lead the slot list.
 local function isMelee(spec)
-	if spec == nil then
-		return false
-	end
-	local class = spec:match("^([^-]+)")
-	return MELEE_CLASSES[class] == true or MELEE_SPECS[spec] == true
-		or spec:find("^druid%-feral") ~= nil
+	return Rules.hitType(spec) == "melee"
 end
 
 --- The paper doll's slot order (Export.INVENTORY_SLOTS), with main hand,

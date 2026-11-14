@@ -9,7 +9,7 @@
 -- last_raid: the mean followed, every boss least followed first with its biggest loss) and Lost across
 -- the night (the losses summed by kind), with a link to Me.
 --
--- Pure models first (RotationTab.priority, played, weightRows, model), then the frames.
+-- Pure models first (RotationTab.priority, played, model), then the frames; the weights are StatWeights'.
 local _, ns = ...
 ns = type(ns) == "table" and ns or {}
 local L = ns.L or require("Locale")
@@ -20,35 +20,26 @@ local Talents = ns.Talents or require("Talents")
 local Export = ns.Export or require("Export")
 local Follow = ns.Follow or require("Follow")
 local Gear = ns.Gear or require("Gear")
-local Rules = ns.Rules or require("Rules")
 local LastRaid = ns.LastRaid or require("LastRaid")
-local Progress = ns.Progress or require("Progress")
 local Rotation = ns.Rotation or require("Rotation")
 local Hub = ns.Hub or require("Hub")
 local BuildsWindow = ns.BuildsWindow or require("BuildsWindow")
+local StatWeights = ns.StatWeights or require("StatWeights")
 
 local RotationTab = {}
 
 --- Pixel layout: a priority row's pitch for a one-line condition and each line more, the number
 --- column, the spell icon and the gap after it; a table row and its head; the stepper's buttons and
---- the level between them; the room between sections; the columns of the weights and the boss tables.
+--- the level between them; the room between sections; the columns of the boss tables.
 RotationTab.LAYOUT = {
 	row = 36, rowLine = 15, number = 16, icon = 24, iconGap = 8,
 	tableRow = 18, tableHead = 16, step = 20, stepLevel = 64, stepGap = 4, sectionGap = 20,
-	weightStat = 232, weightValue = 60,
 	boss = 136, followed = 56, cellGap = 8,
 }
 --- A condition wraps to at most this many lines (Rotation.plainCondition cuts the rest).
 RotationTab.CONDITION_LINES = 2
 --- The most bosses listed; the rest are counted under the table (spec 3.1: a tab never scrolls).
 RotationTab.MAX_BOSSES = 12
---- The most stat weights listed, the largest first.
-RotationTab.MAX_WEIGHTS = 6
---- Attack power counts for ranged attacks too: where a spec weighs both alike, one row says it.
-RotationTab.SAME_AS = { attack_power = "ranged_attack_power", ranged_attack_power = "attack_power" }
---- The weights keys that are haste: shown apart, per 1% (the SimC convention, spec 4.3).
-RotationTab.HASTE = { haste = true, melee_haste = true, spell_haste = true }
-
 --- Injection point: the shipped data (ns.Data when nil); tests set it.
 RotationTab.data = nil
 
@@ -109,92 +100,6 @@ function RotationTab.priority(data, spec, shown, level, measure, width)
 	return rows
 end
 
---- A weight per rating point: a rating stat's weight is per 1% (Rules.RATING_PER_PERCENT).
-local function perPoint(stat, weight)
-	return weight / (Rules.RATING_PER_PERCENT[stat] or 1)
-end
-
---- The stat's name in the web's words (L.rotStatNames), else the tooltip's.
-local function statLabel(stat)
-	return L.rotStatNames[stat] or L.statNames[stat] or stat
-end
-
---- Each weighted stat but haste, per rating point, and haste's own weight: a stat the spec weighs
---- exactly as its twin (SAME_AS) is left to the twin that is the reference.
-local function perPointRows(current)
-	local rows, haste = {}, nil
-	for stat, weight in pairs(current.weights) do
-		local twin = RotationTab.SAME_AS[stat]
-		local duplicate = twin ~= nil and current.weights[twin] == weight and current.reference ~= stat
-		if type(weight) == "number" and weight > 0 and not duplicate then
-			if RotationTab.HASTE[stat] then
-				haste = math.max(haste or 0, weight)
-			else
-				rows[#rows + 1] = { stat = stat, point = perPoint(stat, weight) }
-			end
-		end
-	end
-	table.sort(rows, function(a, b)
-		if a.point ~= b.point then
-			return a.point > b.point
-		end
-		return a.stat < b.stat
-	end)
-	return rows, haste
-end
-
---- Where the weights come from: the companion's sim and its day; else the band they were measured at,
---- said only when it is not the level the stepper shows (`shown`).
-local function sourceNote(current, shown)
-	if current.tag == "sim" then
-		local stamp = type(current.generatedAt) == "string" and Compat.shortDate(current.generatedAt:sub(1, 10)) or nil
-		return stamp ~= nil and string.format(L.rotWeightsSimOn, stamp) or L.rotWeightsSim
-	end
-	local band = current.measuredBand or Progress.MAX_LEVEL
-	return band ~= shown and string.format(L.rotWeightsShipped, band) or nil
-end
-
---- A stat's row label: a rating stat says so ("Hit rating"), its hover gives the conversion.
-local function rowLabel(stat)
-	local label = statLabel(stat)
-	return Rules.RATING_PER_PERCENT[stat] ~= nil and string.format(L.rotRating, label) or label
-end
-
-local function rowHover(stat)
-	local factor = Rules.RATING_PER_PERCENT[stat]
-	if factor == nil then
-		return nil
-	end
-	local word = statLabel(stat):lower()
-	return { string.format(L.rotRatingConversion, factor, word, word) }
-end
-
---- The weights section from Gear.currentWeights' answer `current`, or nil: { rows = { stat, label,
---- scale, value, capped } with `scale` per point over the top stat's (the top stat is 1.00) and `value`
---- DPS per point (nil without a DPS figure), largest first, at most MAX_WEIGHTS; haste (DPS per 1%,
---- apart); unit ("DPS", "HPS"); note (the source) }.
-function RotationTab.weightRows(current, shown)
-	if type(current) ~= "table" or type(current.weights) ~= "table" then
-		return nil
-	end
-	local rows, haste = perPointRows(current)
-	if #rows == 0 then
-		return nil
-	end
-	local dps, top, capped = tonumber(current.dpsPerPoint), rows[1].point, {}
-	for _, stat in ipairs(type(current.caps) == "table" and current.caps or {}) do
-		capped[stat] = true
-	end
-	local kept = {}
-	for index = 1, math.min(#rows, RotationTab.MAX_WEIGHTS) do
-		local row = rows[index]
-		kept[index] = { stat = row.stat, label = rowLabel(row.stat), hover = rowHover(row.stat), scale = row.point / top,
-			value = dps ~= nil and row.point * dps or nil, capped = capped[row.stat] == true }
-	end
-	return { rows = kept, haste = (haste ~= nil and dps ~= nil) and haste * dps or nil, note = sourceNote(current, shown),
-		unit = current.healing and L.rotHps or L.rotDps }
-end
-
 --- The tab's whole model from `input` { data, spec, followed, buildName, level, shown, lastRaid,
 --- companion, weights, measure, width }: { spec, specName, followed, buildName, companion, stops,
 --- shown, previous, next, lines, played, weights }.
@@ -207,7 +112,7 @@ function RotationTab.model(input)
 		previous = RotationTab.step(stops, shown, -1), next = RotationTab.step(stops, shown, 1),
 		lines = RotationTab.priority(input.data, input.spec, shown, input.level, input.measure, input.width),
 		played = LastRaid.played(input.lastRaid, RotationTab.MAX_BOSSES),
-		weights = RotationTab.weightRows(input.weights, shown),
+		weights = StatWeights.model(input.weights, shown),
 	}
 end
 
@@ -464,12 +369,6 @@ local function drawTableRow(row, parent, y, cells, layout, hover)
 	return y + G.tableRow
 end
 
-local function weightsLayout()
-	local width = Theme.SIZES.windowLeft
-	return { width = width, firstWidth = G.weightStat, second = G.weightStat + G.weightValue,
-		third = width, thirdRight = true }
-end
-
 local function bossLayout()
 	local width = Theme.SIZES.windowRight
 	local third = G.boss + G.followed + G.cellGap
@@ -491,35 +390,6 @@ local function drawRows(pool, parent, y, entries, layout)
 	return y
 end
 
---- The weights section on the left at `y`; the y under it (y itself without weights).
-local function drawWeights(view, weights, y)
-	local parent, section = view.left, view.weights
-	for _, region in ipairs({ section.heading, section.note, section.haste }) do
-		region:Hide()
-	end
-	hideFrom(view.weightRows, 1)
-	if weights == nil then
-		return y
-	end
-	y = BuildsWindow.drawSection(section, parent, Theme.SIZES.windowLeft, y + G.sectionGap, weights.note, fit,
-		textHeight)
-	local entries = { { cells = { { L.rotStat, "muted" }, { L.rotWeight, "muted" },
-		{ string.format(L.rotPerPoint, weights.unit), "muted" } } } }
-	for _, row in ipairs(weights.rows) do
-		local scale = row.capped and L.rotCapped or string.format("%.2f", row.scale)
-		entries[#entries + 1] = { hover = row.hover, cells = { { row.label, "body" },
-			{ scale, row.capped and "muted" or "strong" },
-			{ row.value ~= nil and string.format("%.2f", row.value) or L.rotNone, "muted" } } }
-	end
-	y = drawRows(view.weightRows, parent, y, entries, weightsLayout())
-	if weights.haste ~= nil then
-		section.haste:SetText(string.format(L.rotHaste, weights.haste, weights.unit))
-		place(section.haste, parent, 0, y + 2)
-		y = y + 2 + textHeight(section.haste)
-	end
-	return y
-end
-
 --- The left column: Priority with the stepper, the lines, then the stat weights at the level shown; its
 --- height.
 local function drawLeft(view, model)
@@ -533,7 +403,11 @@ local function drawLeft(view, model)
 		y = drawPriorityRow(pooled(view.lines, index, makePriorityRow, parent), line, parent, y)
 	end
 	hideFrom(view.lines, #model.lines + 1)
-	return drawWeights(view, model.weights, y)
+	if model.weights == nil then
+		StatWeights.hide(view.weights)
+		return y
+	end
+	return StatWeights.draw(view.weights, y + G.sectionGap, model.weights, fit, textHeight)
 end
 
 --- How you played it's rows: the head, then each boss { name, followed, biggest loss } with its hover.
@@ -636,13 +510,12 @@ function RotationTab.build(body)
 	local ruleX = S.padding + S.windowLeft + S.windowGutter / 2
 	divider:SetPoint("TOPLEFT", body, "TOPLEFT", ruleX, 0)
 	divider:SetPoint("BOTTOMLEFT", body, "BOTTOMLEFT", ruleX, 0)
-	local view = { body = body, lines = {}, weightRows = {}, bossRows = {}, lostRows = {} }
+	local view = { body = body, lines = {}, bossRows = {}, lostRows = {} }
 	view.left = column(body, S.padding, S.windowLeft)
 	view.right = column(body, S.padding + S.windowLeft + S.windowGutter, S.windowRight)
 	view.priority = BuildsWindow.buildSection(view.left, S.windowLeft, DEPS, L.rotPriority, nil)
 	view.stepper = buildStepper(view, view.left)
-	view.weights = BuildsWindow.buildSection(view.left, S.windowLeft, DEPS, L.rotWeights, nil)
-	view.weights.haste = text(view.left, "muted", S.windowLeft)
+	view.weights = StatWeights.build(view.left, S.windowLeft)
 	view.played = BuildsWindow.buildSection(view.right, S.windowRight, DEPS, L.rotPlayed, nil)
 	view.lost = BuildsWindow.buildSection(view.right, S.windowRight, DEPS, L.rotLost, nil)
 	view.summary = text(view.right, "body", S.windowRight)

@@ -282,6 +282,28 @@ Rules.RATING_PER_PERCENT = {
 --- The weights rating haste counts against: it speeds attacks and casts alike.
 Rules.HASTE_WEIGHTS = { "melee_haste", "spell_haste" }
 
+--- Specs that fight in melee: every warrior and rogue spec; for the rest, only the melee tree (Forever's
+--- hunters are melee only in Survival). A feral druid's slug is "druid-feral..." in every spelling the
+--- data uses, so it is a prefix.
+local MELEE_CLASSES = { warrior = true, rogue = true }
+local MELEE_SPECS = {
+	["paladin-protection"] = true, ["paladin-retribution"] = true, ["shaman-enhancement"] = true,
+	["hunter-survival"] = true,
+}
+
+--- The table a spec's attacks roll on: "melee" for a melee spec, "ranged" for a hunter shooting from
+--- range (Beast Mastery, Marksmanship), "spell" for every caster and healer. nil without a spec.
+function Rules.hitType(spec)
+	if type(spec) ~= "string" then
+		return nil
+	end
+	local class = spec:match("^([^-]+)")
+	if MELEE_CLASSES[class] or MELEE_SPECS[spec] or spec:find("^druid%-feral") ~= nil then
+		return "melee"
+	end
+	return class == "hunter" and "ranged" or "spell"
+end
+
 --- hit and crit are one stat in Forever; the key the weights table uses, or
 --- nil for a client key this module does not know.
 function Rules.statKey(itemStatKey)

@@ -1,8 +1,9 @@
 -- addon/ForeverSixty/surfaces/GearTab.lua
 -- The Gear tab's model (design/specs/2026-11-13-addon-hub.md 4.3): what you wear, what beats it and where
 -- you get it. The doll by band (each slot's worn item against the band's pick: Best in slot, the gain,
--- in your bags, No enchant), the upgrades with their DPS gains and total, the stat weights normalized to
--- the top stat, and the source filter with its counts. Pure over the inputs GearTab.read gathers once a
+-- in your bags, No enchant), the upgrades with their DPS gains and total, the hit cap under the stat
+-- weights (StatWeights draws the weights themselves, the Rotation tab's block), and the source filter
+-- with its counts. Pure over the inputs GearTab.read gathers once a
 -- draw: every gain is Progress.slotTargets' (the tooltip's Next line, the slot marks and the guild gap
 -- read the same one), every source line the tooltip's own (ItemTooltip.sourceParts: the drop chance only
 -- where the data carries one), every pick Gear.pick under the character's source choice (Sources).
@@ -32,16 +33,8 @@ GearTab.CONDITIONS = { GearTab.RAID, GearTab.BARE }
 --- main hand only beside a one-hander.
 GearTab.LEFT = { "head", "neck", "shoulder", "back", "chest", "wrist", "main_hand", "off_hand", "ranged" }
 GearTab.RIGHT = { "hands", "waist", "legs", "feet", "finger1", "finger2", "trinket1", "trinket2" }
---- A weight under this share of the top stat's is left out of the table: it moves no choice.
-GearTab.WEIGHT_FLOOR = 0.05
---- The most Upgrades rows, and the most Stat weights rows.
+--- The most Upgrades rows.
 GearTab.UPGRADES = 4
-GearTab.WEIGHT_ROWS = 7
---- The weights rating haste counts at, summed (Gear.score's rule), shown apart per 1%.
-local HASTE = {}
-for _, stat in ipairs(Rules.HASTE_WEIGHTS) do
-	HASTE[stat] = true
-end
 
 local TWO_HANDED = "INVTYPE_2HWEAPON"
 
@@ -184,11 +177,19 @@ local function capLine(word, part)
 	return string.format(L.gearHitCapTo, word, capPercent(part[1]), capPercent(part[2]))
 end
 
+--- The word a weapon user's hit line leads with, from the spec's hit type (Rules.hitType): "Ranged hit"
+--- for a hunter shooting from range, "Melee hit" for everyone who swings.
+local function weaponHitWord(spec)
+	return Rules.hitType(spec) == "ranged" and L.gearHitRangedWord or L.gearHitMeleeWord
+end
+
 --- The hit cap under the stat weights (spec 13): { lines, tip }, one line per part the band publishes
---- (Data.hitToCap[spec][condition][band][faction]): special attacks and ranged shots against the 9% cap,
---- white swings for a dual wielder, spells against the 16% cap, and a school a talent adds hit to. The
---- figures are the list's character's (its gear and, Raid-ready, its buffs), never the addon's own.
---- nil where the band publishes none (a healer). Pure.
+--- (Data.hitToCap[spec][condition][band][faction]): special attacks or ranged shots against the 9% cap,
+--- named by the spec's hit type, white swings for a dual wielder, spells against the 16% cap, and a
+--- school a talent adds hit to. A ranged hunter's priority casts nothing that rolls spell hit (Arcane
+--- Shot and Serpent Sting roll ranged hit), so the spell part its traps and Volley give the engine's
+--- profile is left out. The figures are the list's character's (its gear and, Raid-ready, its buffs),
+--- never the addon's own. nil where the band publishes none (a healer). Pure.
 function GearTab.hitCap(data, spec, band, faction, condition)
 	local bySpec = type(data) == "table" and type(data.hitToCap) == "table" and spec ~= nil and data.hitToCap[spec]
 		or nil
@@ -198,16 +199,20 @@ function GearTab.hitCap(data, spec, band, faction, condition)
 	if type(entry) ~= "table" then
 		return nil
 	end
+	local spell = entry.spell
+	if entry.hit ~= nil and Rules.hitType(spec) == "ranged" then
+		spell = nil
+	end
 	local lines = {}
-	for _, part in ipairs({ { L.gearHitWord, entry.hit }, { L.gearHitWhiteWord, entry.white },
-		{ L.gearHitSpellWord, entry.spell } }) do
+	for _, part in ipairs({ { weaponHitWord(spec), entry.hit }, { L.gearHitWhiteWord, entry.white },
+		{ L.gearHitSpellWord, spell } }) do
 		if type(part[2]) == "table" then
 			lines[#lines + 1] = capLine(part[1], part[2])
 		end
 	end
-	if type(entry.school) == "table" and type(entry.spell) == "table" then
+	if type(entry.school) == "table" and type(spell) == "table" then
 		lines[#lines + 1] = capLine(string.format(L.gearHitSchoolWord, entry.school[2]),
-			{ entry.school[1], entry.spell[2] })
+			{ entry.school[1], spell[2] })
 	end
 	if #lines == 0 then
 		return nil
@@ -448,51 +453,6 @@ function GearTab.unenchantedLine(doll)
 		end
 	end
 	return #names > 0 and string.format(L.gearNoEnchantSlots, table.concat(names, L.sourcesListSeparator)) or nil
-end
-
--- Stat weights -----------------------------------------------------------------------------------
-
---- The stat weights (spec 4.3 item 2): { sim (the weights are the companion's sim), unit, rows = { stat,
---- word, weight (over the top stat's, so the top is 1.00), dps (per point, nil in score) }, haste (DPS
---- per 1% of haste, nil without one) }, the top GearTab.WEIGHT_ROWS by weight. A rating stat's weight is
---- per 1% (Rules.RATING_PER_PERCENT), so it is read per rating point first. nil without weights. Pure.
-function GearTab.weights(current)
-	if type(current) ~= "table" or type(current.weights) ~= "table" then
-		return nil
-	end
-	local perPoint = tonumber(current.dpsPerPoint)
-	local rows, top, haste = {}, 0, nil
-	for stat, weight in pairs(current.weights) do
-		if type(weight) == "number" and weight > 0 then
-			if HASTE[stat] then
-				haste = (haste or 0) + weight
-			elseif stat ~= "weapon_dps" and stat ~= "haste" then
-				local point = weight / (Rules.RATING_PER_PERCENT[stat] or 1)
-				rows[#rows + 1] = { stat = stat, word = ItemTooltip.statWord(stat), point = point }
-				top = math.max(top, point)
-			end
-		end
-	end
-	local kept = {}
-	for _, row in ipairs(rows) do
-		row.weight = row.point / top
-		row.dps = perPoint ~= nil and row.point * perPoint or nil
-		if row.weight >= GearTab.WEIGHT_FLOOR then
-			kept[#kept + 1] = row
-		end
-	end
-	rows = kept
-	table.sort(rows, function(a, b)
-		if a.weight ~= b.weight then
-			return a.weight > b.weight
-		end
-		return a.word < b.word
-	end)
-	for index = #rows, GearTab.WEIGHT_ROWS + 1, -1 do
-		rows[index] = nil
-	end
-	return { sim = current.tag == "sim", unit = ItemTooltip.unitOf(current), rows = rows,
-		haste = haste ~= nil and perPoint ~= nil and haste * perPoint or nil }
 end
 
 -- Sources ----------------------------------------------------------------------------------------

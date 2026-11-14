@@ -2,7 +2,7 @@
 ## Title: Forever Sixty
 ## Notes: Your build, in game. Import your character into the planner and follow a build you chose on the site.
 ## Author: foreversixty.gg
-## Version: 2.0.48
+## Version: 2.0.49
 ## IconTexture: Interface\AddOns\ForeverSixty\icon
 ## X-Curse-Project-ID: 1706689
 ## X-Wago-ID: XKqEdoKy
@@ -54,6 +54,7 @@ surfaces\HubDraw.lua
 surfaces\BuildDialog.lua
 surfaces\MeTab.lua
 surfaces\MeFrame.lua
+surfaces\StatWeights.lua
 surfaces\GearTab.lua
 surfaces\GearTabView.lua
 surfaces\SiteStatus.lua
