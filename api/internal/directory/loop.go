@@ -82,5 +82,5 @@ func (l *Loop) passLocked(ctx context.Context, interval time.Duration) {
 func LogPass(s *Service, res PassResult) {
 	s.logger().Info("directory", "op", "pass", "rosters", res.Rosters, "roster_members", res.RosterMembers,
 		"profiles", res.Profiles, "private", res.Private, "deleted", res.Deleted, "misses", res.Misses,
-		"failed", res.Failed, "expired", res.Expired, "calls", res.Calls, "rate_limited", res.RateLimited)
+		"failed", res.Failed, "realm_rulesets", res.RealmRulesets, "expired", res.Expired, "calls", res.Calls, "rate_limited", res.RateLimited)
 }

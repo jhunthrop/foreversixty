@@ -384,7 +384,7 @@ func rulesetForRealm(realms []bnetapi.Realm, slug string) (ruleset string, ok bo
 
 // rulesetSources names, for the needs_ruleset log line, every field
 // rulesetFor reads, in order.
-const rulesetSources = "realm.slug,protected_character.realm_id,realm_table,profile.ruleset,addon_row,own_row,realm_answers"
+const rulesetSources = "realm.slug,learned_realm,directory,protected_character.realm_id,realm_table,profile.ruleset,addon_row,own_row,realm_answers"
 
 // resolvedRuleset is what rulesetFor found: the ruleset, and whether it is the
 // player's own answer to the unknown-realm question.
@@ -397,17 +397,21 @@ type resolvedRuleset struct {
 // of its key, from the first source that names one:
 //
 //  1. the realm slug, for a realmed game;
-//  2. the realm id from the protected-character link, whose realm type
+//  2. the realm id's learned ruleset (directory.RealmRuleset: realms the
+//     character directory typed from log GUIDs and sign-ins), then the
+//     character directory's own row for this character id, whose ruleset its
+//     profile or its guild named (a roster lists members who are not public);
+//  3. the realm id from the protected-character link, whose realm type
 //     (PvE, PvP, RP, RP PvP) is the ruleset: first in the region's realm
 //     list, while Blizzard lists one (Forever's has answered 404 since
 //     2026-11-05), then in the committed Forever realm table
 //     (bnetapi.Client.KnownRealm), which needs no call at all;
-//  3. the character profile's own ruleset ("PvP", "Roleplay PvP");
-//  4. this account's own addon row of the same name (rulesetFromAddonRow);
-//  5. this character's own Battle.net row, when it is keyed by a ruleset:
+//  4. the character profile's own ruleset ("PvP", "Roleplay PvP");
+//  5. this account's own addon row of the same name (rulesetFromAddonRow);
+//  6. this character's own Battle.net row, when it is keyed by a ruleset:
 //     the player's answer to the unknown-realm question, or what an earlier
 //     source named (a profile since made private never demotes it);
-//  6. the realm's agreed answers (realmConsensus): two or more players, none
+//  7. the realm's agreed answers (realmConsensus): two or more players, none
 //     disagreeing.
 //
 // ok is false when none does. There is no default: a guessed ruleset keys the
@@ -420,6 +424,9 @@ func (s *Service) rulesetFor(ctx context.Context, userID int64, region string, r
 		if ruleset, ok := rulesetForRealm(realms, ch.RealmSlug); ok {
 			return resolvedRuleset{Ruleset: ruleset}, true, nil
 		}
+	}
+	if ruleset, ok, err := directoryRuleset(ctx, s.Pool, region, ch.RealmID, ch.ID); err != nil || ok {
+		return resolvedRuleset{Ruleset: ruleset}, ok, err
 	}
 	if ruleset, ok := s.rulesetForRealmID(region, realms, ch.RealmID); ok {
 		return resolvedRuleset{Ruleset: ruleset}, true, nil

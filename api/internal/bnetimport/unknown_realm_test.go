@@ -300,7 +300,7 @@ func TestALaterResolutionMovesAnUnknownCharactersRows(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer func() { _ = tx.Rollback(ctx) }()
-	newKey, ruleset, err := svc.resolveUnknownInPlace(ctx, tx, otherKey, "us", character.RulesetUnknown, "Quiet Sleeper", unknownRealm)
+	newKey, ruleset, err := svc.resolveUnknownInPlace(ctx, tx, otherKey, "us", character.RulesetUnknown, "Quiet Sleeper", unknownRealm, 0)
 	if err != nil {
 		t.Fatal(err)
 	}

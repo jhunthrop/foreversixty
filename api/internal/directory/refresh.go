@@ -16,16 +16,18 @@ type PassResult struct {
 	Rosters, RosterMembers                     int
 	Profiles, Private, Deleted, Misses, Failed int64
 	Expired                                    int64
-	Calls                                      int64
-	RateLimited                                bool
+	// RealmRulesets is how many directory characters took their ruleset from a learned realm.
+	RealmRulesets int64
+	Calls         int64
+	RateLimited   bool
 }
 
 // errStop ends a pass early: a 429 (every further call would spend the shared quota for
 // another refusal) or the pass's own deadline.
 var errStop = errors.New("directory: pass stopped")
 
-// Pass seeds the sweep, reads due rosters, then due characters oldest first, then expires
-// what no source confirmed within 30 days. It runs until nothing is due or ctx ends; the
+// Pass seeds the sweep, reads due rosters, then due characters oldest first, then learns
+// realm rulesets and expires what no source confirmed within 30 days. It runs until nothing is due or ctx ends; the
 // budget paces every call. A 429 stops it with RateLimited set and no error.
 func (s *Service) Pass(ctx context.Context) (PassResult, error) {
 	var res PassResult
@@ -43,7 +45,13 @@ func (s *Service) Pass(ctx context.Context) (PassResult, error) {
 			return res, err
 		}
 	}
-	expired, err := s.expire(context.WithoutCancel(ctx))
+	after := context.WithoutCancel(ctx)
+	learned, err := s.learnRealms(after)
+	if err != nil {
+		return res, err
+	}
+	res.RealmRulesets = learned
+	expired, err := s.expire(after)
 	res.Expired = expired
 	return res, err
 }

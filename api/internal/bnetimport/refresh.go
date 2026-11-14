@@ -201,7 +201,7 @@ func (s *Service) refreshOneCharacter(ctx context.Context, sc staleCharacter, ro
 	if err != nil {
 		return err
 	}
-	key, ruleset, err = s.resolveUnknownInPlace(ctx, tx, key, region, ruleset, name, realmID)
+	key, ruleset, err = s.resolveUnknownInPlace(ctx, tx, key, region, ruleset, name, realmID, sc.BnetCharacterID)
 	if err != nil {
 		return err
 	}

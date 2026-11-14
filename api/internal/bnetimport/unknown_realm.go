@@ -12,6 +12,7 @@ import (
 	"github.com/jackc/pgx/v5"
 
 	"github.com/jhunthrop/foreversixty/api/internal/character"
+	"github.com/jhunthrop/foreversixty/api/internal/directory"
 )
 
 // realmAnswerQuorum is how many players must give a realm the same answer,
@@ -116,20 +117,18 @@ func (s *Service) carryProvisionalKey(ctx context.Context, tx pgx.Tx, ref charac
 }
 
 // resolveUnknownInPlace is the nightly refresh's step for a row still on
-// character.RulesetUnknown: the committed realm table or the realm's agreed
-// answers may name its ruleset since the import, and the row moves to it.
-// Returns the key and ruleset to carry on with.
+// character.RulesetUnknown: the learned realm table, the character directory,
+// the committed realm table or the realm's agreed answers may name its ruleset
+// since the import, and the row moves to it. Returns the key and ruleset to
+// carry on with.
 func (s *Service) resolveUnknownInPlace(ctx context.Context, tx pgx.Tx, key, region, ruleset, name string,
-	realmID int64) (string, string, error) {
-	if ruleset != character.RulesetUnknown || realmID == 0 {
+	realmID, bnetID int64) (string, string, error) {
+	if ruleset != character.RulesetUnknown {
 		return key, ruleset, nil
 	}
-	resolved, ok := s.rulesetForRealmID(region, nil, realmID)
-	if !ok {
-		var err error
-		if resolved, ok, err = realmConsensus(ctx, tx, region, realmID); err != nil || !ok {
-			return key, ruleset, err
-		}
+	resolved, ok, err := s.unknownRealmRuleset(ctx, tx, region, realmID, bnetID)
+	if err != nil || !ok {
+		return key, ruleset, err
 	}
 	newKey := character.Key(region, resolved, name)
 	_, moved, err := s.moveKey(ctx, tx, key, newKey, resolved)
@@ -137,6 +136,30 @@ func (s *Service) resolveUnknownInPlace(ctx context.Context, tx pgx.Tx, key, reg
 		return key, ruleset, err
 	}
 	return newKey, resolved, nil
+}
+
+// unknownRealmRuleset is the first source that names a ruleset for a row on an unknown realm,
+// in rulesetFor's order without a Blizzard call.
+func (s *Service) unknownRealmRuleset(ctx context.Context, tx pgx.Tx, region string, realmID, bnetID int64) (string, bool, error) {
+	if ruleset, ok, err := directoryRuleset(ctx, tx, region, realmID, bnetID); err != nil || ok {
+		return ruleset, ok, err
+	}
+	if realmID == 0 {
+		return "", false, nil
+	}
+	if ruleset, ok := s.rulesetForRealmID(region, nil, realmID); ok {
+		return ruleset, true, nil
+	}
+	return realmConsensus(ctx, tx, region, realmID)
+}
+
+// directoryRuleset is what the character directory knows without a Blizzard call: the realm
+// id's learned ruleset, then the directory's own row for the character id.
+func directoryRuleset(ctx context.Context, q directory.Querier, region string, realmID, bnetID int64) (string, bool, error) {
+	if ruleset, ok, err := directory.RealmRuleset(ctx, q, region, realmID); err != nil || ok {
+		return ruleset, ok, err
+	}
+	return directory.CharacterRuleset(ctx, q, region, bnetID)
 }
 
 // awaitingRow is a character on an unknown realm, as AnswerRealm reads it.
