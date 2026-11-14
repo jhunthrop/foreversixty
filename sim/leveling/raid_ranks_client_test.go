@@ -34,10 +34,20 @@ func TestBloodPactMatchesTheClient(t *testing.T) {
 	assertRanks(t, "Blood Pact", loadClassFrom(t, trueshotAuraSpellconstDir, "warlock"), core.BloodPactRanks, auraModStat, miscStamina, true)
 }
 
+// windfuryStrikeSpellconstDir is the first build whose spellconst carries
+// push 113887's Windfury Totem: the rank's spell is a weapon strike.
+const windfuryStrikeSpellconstDir = "../../data/builds/1.60.1.70938/spellconst/"
+
+// effectWeaponDamage is SpellEffect.Effect 58, a weapon damage strike.
+const effectWeaponDamage = 58
+
 // Windfury Totem: the cast spells 8512, 10613, 10614 are learned at the
-// engine's levels and the buffs 8516, 10608, 10610 state its attack power.
+// engine's levels, and since push 113887 the rank's spell (8516, 10608,
+// 10610) is the main-hand weapon strike the engine casts on a proc, no
+// longer an attack power buff. The strike's attack power is the totem aura's
+// dummy, which the class files do not carry; the fork's client test reads it.
 func TestWindfuryTotemRanksMatchTheClient(t *testing.T) {
-	client := loadClassFrom(t, trueshotAuraSpellconstDir, "shaman")
+	client := loadClassFrom(t, windfuryStrikeSpellconstDir, "shaman")
 	casts := []int32{8512, 10613, 10614}
 	for i, id := range casts {
 		rank := i + windfuryTotemFirstCastRank
@@ -45,12 +55,12 @@ func TestWindfuryTotemRanksMatchTheClient(t *testing.T) {
 		if !ok || cast.SpellLevel != core.WindfuryTotemLevel[rank] {
 			t.Errorf("Windfury Totem %d: client level %d (found %v), engine %d", id, cast.SpellLevel, ok, core.WindfuryTotemLevel[rank])
 		}
-		buff, ok := client.ByID(core.WindfuryBuffSpellId[rank])
+		strike, ok := client.ByID(core.WindfuryStrikeSpellId[rank])
 		if !ok {
-			t.Fatalf("Windfury Totem buff %d is not in the client table", core.WindfuryBuffSpellId[rank])
+			t.Fatalf("Windfury Totem strike %d is not in the client table", core.WindfuryStrikeSpellId[rank])
 		}
-		if amount := findEffect(buff, auraModAttackPower, 0).Amount; amount != core.WindfuryBuffBonusAP[rank] {
-			t.Errorf("Windfury Totem buff %d: engine %v attack power, client %v", buff.ID, core.WindfuryBuffBonusAP[rank], amount)
+		if len(strike.Effects) != 1 || strike.Effects[0].Effect != effectWeaponDamage {
+			t.Errorf("Windfury Totem strike %d: client effects %+v, want one weapon damage effect (58)", strike.ID, strike.Effects)
 		}
 	}
 }
