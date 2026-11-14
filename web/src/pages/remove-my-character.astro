@@ -1,0 +1,17 @@
+---
+// web/src/pages/remove-my-character.astro
+// /remove-my-character: the character directory's opt-out. The whole page is the island: the
+// character comes from the form, or from the query after a Battle.net sign-in.
+import Base from '../layouts/Base.astro';
+import RemoveCharacter from '../components/RemoveCharacter.svelte';
+---
+
+<Base
+  title="Remove my character"
+  description="Remove a character from what Forever Sixty reads from Blizzard, and keep it out."
+  path="/remove-my-character"
+>
+  <main id="main" tabindex="-1">
+    <RemoveCharacter client:load />
+  </main>
+</Base>

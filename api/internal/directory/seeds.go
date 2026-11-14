@@ -58,6 +58,7 @@ func (s *Service) seedSignIns(ctx context.Context) error {
 		  from characters c
 		 where c.bnet_character_id is not null and c.region = any($1)
 		   and not exists (select 1 from directory_name_misses m where m.region = c.region and m.slug = split_part(c.key, '/', 3))
+		   and not exists (select 1 from directory_optouts o where o.region = c.region and o.bnet_character_id = c.bnet_character_id)
 		 order by c.region, c.bnet_character_id, c.refreshed_at desc
 		on conflict (region, bnet_character_id) do update set sources = `+mergeSources+`
 		 where not ($2 = any(character_directory.sources))`,

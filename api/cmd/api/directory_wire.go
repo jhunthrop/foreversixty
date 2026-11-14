@@ -6,9 +6,13 @@ import (
 	"fmt"
 	"log/slog"
 
+	"github.com/jackc/pgx/v5/pgxpool"
+
+	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/bnetimport"
 	"github.com/jhunthrop/foreversixty/api/internal/config"
 	"github.com/jhunthrop/foreversixty/api/internal/directory"
+	"github.com/jhunthrop/foreversixty/api/internal/server"
 )
 
 // directoryJobs are the character directory's Cloud Run job commands, rows of extraJobs.
@@ -32,6 +36,22 @@ func wireDirectory(ctx context.Context, cfg config.Config, importer *bnetimport.
 	}
 	svc := &directory.Service{Pool: importer.Pool, Client: importer.Client, Regions: cfg.BnetRegions, Log: log}
 	go (&directory.Loop{Service: svc}).Run(ctx)
+}
+
+// wireDirectoryRoutes mounts the routes that ride on the Battle.net import and the directory:
+// the unknown-realm answer (with the import on) and the "Remove my character" opt-out, whose
+// name lookups share the import's Blizzard client when there is one, and whose guild-note
+// codes arrive in the addon's outbox.
+func wireDirectoryRoutes(pool *pgxpool.Pool, accounts *auth.Service, deps *server.Deps) {
+	optOuts := &directory.OptOuts{Pool: pool}
+	if importer, ok := accounts.Importer.(*bnetimport.Service); ok {
+		deps.RealmAnswers = importer
+		optOuts.Client = importer.Client
+	}
+	deps.OptOuts = optOuts
+	if deps.Addon != nil {
+		deps.Addon.OptOutCodes = optOuts
+	}
 }
 
 // runDirectoryRefresh is the directory-refresh job: one pass, its counts logged.

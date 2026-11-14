@@ -521,6 +521,9 @@ type Service struct {
 	// OwnScores produces the own_score messages (own_score.go): each of the account's
 	// characters' own Forever Score. Nil sends none.
 	OwnScores OwnScoreSource
+	// OptOutCodes removes from the character directory each guildmate whose public guild note
+	// carries their "Remove my character" code (directory.OptOuts); nil ignores the codes.
+	OptOutCodes OptOutCodeVerifier
 	// SimRequests turns an outbox's sim_request into a server run.
 	// sims.Service satisfies it. Nil answers every request
 	// "unavailable"; the export it rode in with is still stored.

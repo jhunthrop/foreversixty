@@ -17,6 +17,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/builds"
 	"github.com/jhunthrop/foreversixty/api/internal/coach"
 	"github.com/jhunthrop/foreversixty/api/internal/creators"
+	"github.com/jhunthrop/foreversixty/api/internal/directory"
 	"github.com/jhunthrop/foreversixty/api/internal/discordbot"
 	"github.com/jhunthrop/foreversixty/api/internal/engagement"
 	"github.com/jhunthrop/foreversixty/api/internal/events"
@@ -109,6 +110,9 @@ type Deps struct {
 	// RealmAnswers serves the unknown-realm question's answer (POST /v1/me/realm-answers); nil
 	// (the Battle.net character import off) leaves it unmounted.
 	RealmAnswers *bnetimport.Service
+	// OptOuts serves the "Remove my character" page's calls (POST /v1/directory/opt-out/...);
+	// nil leaves them unmounted.
+	OptOuts *directory.OptOuts
 	// Engagement serves the owner's daily and weekly actives and retention (/admin/activity).
 	Engagement *engagement.Service
 
@@ -220,6 +224,9 @@ func NewRouter(d Deps) http.Handler {
 	}
 	if d.RealmAnswers != nil {
 		bnetimport.MountRealmAnswers(mux, d.RealmAnswers)
+	}
+	if d.OptOuts != nil {
+		directory.MountOptOuts(mux, d.OptOuts, d.Log, d.TrustedProxyHops)
 	}
 	if d.Engagement != nil {
 		engagement.Mount(mux, d.Engagement)

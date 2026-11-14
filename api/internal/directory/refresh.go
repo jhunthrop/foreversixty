@@ -198,6 +198,10 @@ func (s *Service) refreshOne(ctx context.Context, row dueRow, res *PassResult) e
 		return s.notPublic(ctx, row, res)
 	case !status.Valid:
 		return s.gone(ctx, row, res)
+	case status.ID != 0 && status.ID != row.ID && s.isOptedOut(ctx, row.Region, status.ID):
+		// A name seed of a character whose player asked to be left out: never read, never stored.
+		atomic.AddInt64(&res.Misses, 1)
+		return s.recordMiss(ctx, row.Region, row.Slug)
 	case row.ID != 0 && status.ID != 0 && status.ID != row.ID:
 		// The name now belongs to another character: the old one is gone, the new one is read.
 		atomic.AddInt64(&res.Deleted, 1)

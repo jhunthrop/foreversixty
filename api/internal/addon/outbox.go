@@ -16,6 +16,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/jhunthrop/foreversixty/api/internal/character"
+	"github.com/jhunthrop/foreversixty/api/internal/directory"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/api/internal/sims"
 	simapi "github.com/jhunthrop/foreversixty/sim/api"
@@ -101,7 +102,18 @@ func (e OutboxExport) scoreVisible() bool { return e.ScoreVisible == nil || *e.S
 type RosterSnapshot struct {
 	Guild   string         `json:"guild"`
 	Members []RosterMember `json:"members"`
+	// OptOutCodes are the "Remove my character" codes the addon found in members' public guild
+	// notes: each member's plain name and the code alone, never the rest of the note.
+	OptOutCodes []directory.NoteCode `json:"optout_codes,omitempty"`
 }
+
+// OptOutCodeVerifier removes the directory characters whose guild notes carry their codes.
+type OptOutCodeVerifier interface {
+	VerifyNoteCodes(ctx context.Context, region, guild string, codes []directory.NoteCode) (int, error)
+}
+
+// maxOptOutCodes bounds the codes one snapshot may carry (a guild's own member cap).
+const maxOptOutCodes = maxRosterMembers
 
 // RosterMember is one member line: contract 2's hello fields plus name and
 // seen_at.
@@ -212,8 +224,9 @@ func readSimRequest(raw json.RawMessage) (req *sims.AddonSimRequest, invalid boo
 // normalised the way an export's guild= is.
 func readRoster(raw json.RawMessage) (snap *RosterSnapshot, dropped int, invalid bool) {
 	var wire struct {
-		Guild   string            `json:"guild"`
-		Members []json.RawMessage `json:"members"`
+		Guild       string               `json:"guild"`
+		Members     []json.RawMessage    `json:"members"`
+		OptOutCodes []directory.NoteCode `json:"optout_codes"`
 	}
 	if err := json.Unmarshal(raw, &wire); err != nil {
 		return nil, 0, true
@@ -234,7 +247,24 @@ func readRoster(raw json.RawMessage) (snap *RosterSnapshot, dropped int, invalid
 	if len(wire.Members) > 0 && len(kept) == 0 {
 		return nil, dropped, true
 	}
-	return &RosterSnapshot{Guild: guild, Members: kept}, dropped, false
+	return &RosterSnapshot{Guild: guild, Members: kept, OptOutCodes: readOptOutCodes(wire.OptOutCodes)}, dropped, false
+}
+
+// readOptOutCodes keeps the well-formed codes, each with the member's plain name (the realm
+// segment the client adds is dropped), at most maxOptOutCodes of them.
+func readOptOutCodes(wire []directory.NoteCode) []directory.NoteCode {
+	var out []directory.NoteCode
+	for _, nc := range wire {
+		if len(out) == maxOptOutCodes {
+			break
+		}
+		name, _ := character.SplitUnit(nc.Name)
+		if !directory.ValidCode(nc.Code) || !plainText(nc.Name) || !character.ValidSlug(character.Slug(name)) {
+			continue
+		}
+		out = append(out, directory.NoteCode{Name: name, Code: nc.Code})
+	}
+	return out
 }
 
 // valid reports whether a member line can go on the guild page. gear_gap
@@ -360,16 +390,55 @@ func (s *Service) applyOutbox(ctx context.Context, userID int64, ob *Outbox) (*O
 		}
 	}
 	if ob.RosterSnapshot != nil {
-		stored, err := s.Store.PutRosterSnapshot(ctx, userID, key, *ob.RosterSnapshot)
-		if err != nil {
+		if err := s.applyRoster(ctx, userID, own.Region, key, *ob.RosterSnapshot, res); err != nil {
 			return nil, "", err
-		}
-		res.RosterSnapshot = OutboxNotInGuild
-		if stored {
-			res.RosterSnapshot = OutboxStored
 		}
 	}
 	return res, key, nil
+}
+
+// applyRoster stores the snapshot's members as the guild's roster and hands its opt-out codes
+// to the directory, both only when the sender's character is in the guild the snapshot names.
+// A snapshot of codes alone leaves the stored roster as it was.
+func (s *Service) applyRoster(ctx context.Context, userID int64, region, key string, snap RosterSnapshot, res *OutboxResult) error {
+	inGuild := false
+	if len(snap.Members) > 0 || len(snap.OptOutCodes) == 0 {
+		stored, err := s.Store.PutRosterSnapshot(ctx, userID, key, snap)
+		if err != nil {
+			return err
+		}
+		inGuild = stored
+	} else {
+		member, err := s.Store.InGuildNamed(ctx, userID, key, snap.Guild)
+		if err != nil {
+			return err
+		}
+		inGuild = member
+	}
+	res.RosterSnapshot = OutboxNotInGuild
+	if inGuild {
+		res.RosterSnapshot = OutboxStored
+	}
+	if !inGuild || len(snap.OptOutCodes) == 0 || s.OptOutCodes == nil {
+		return nil
+	}
+	if _, err := s.OptOutCodes.VerifyNoteCodes(ctx, region, snap.Guild, snap.OptOutCodes); err != nil {
+		s.Store.logger().Warn("addon", "op", "opt_out_codes", "err", err)
+	}
+	return nil
+}
+
+// InGuildNamed reports whether the account's character is in the guild of that name.
+func (s *Store) InGuildNamed(ctx context.Context, userID int64, characterKey, guild string) (bool, error) {
+	var member bool
+	err := s.Pool.QueryRow(ctx,
+		`select exists (select 1 from guild_characters gc join guilds g on g.id = gc.guild_id
+		  where gc.character_key = $1 and gc.user_id = $2 and lower(g.name) = lower($3))`,
+		characterKey, userID, guild).Scan(&member)
+	if err != nil {
+		return false, fmt.Errorf("addon: guild membership of %s: %w", characterKey, err)
+	}
+	return member, nil
 }
 
 // simRequest hands the request to SimRequests for the account's own

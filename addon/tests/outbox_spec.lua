@@ -98,6 +98,23 @@ describe("Export.outbox", function()
 	it("has no roster snapshot when nobody in the guild has been heard", function()
 		assert.is_nil(Export.outbox(parts({ seen = {} })).roster_snapshot)
 	end)
+
+	it("reads opt-out codes out of public notes, carrying the code alone", function()
+		local codes = Export.optOutCodes({
+			{ name = "Vela Thornbrook-Yell", note = "alt of Orrin FS-7K2QXM thanks" },
+			{ name = "Orrin Ashmantle-Yell", note = "raider" },
+			{ name = "Sel Duskwater-Yell", note = "fs-7k2qxm" },
+			{ name = "Ada Quill-Yell", note = "FS-0O1I00" },
+		})
+		assert.are.same({ { name = "Vela Thornbrook-Yell", code = "FS-7K2QXM" } }, codes)
+	end)
+
+	it("sends the codes in the snapshot, even when nobody in the guild has been heard", function()
+		local codes = { { name = "Vela Thornbrook-Yell", code = "FS-7K2QXM" } }
+		local snapshot = Export.outbox(parts({ seen = {}, optOutCodes = codes })).roster_snapshot
+		assert.are.same({ guild = "OLYMPUS XXVII", members = {}, optout_codes = codes }, snapshot)
+		assert.is_nil(Export.outbox(parts()).roster_snapshot.optout_codes)
+	end)
 end)
 
 describe("Export.saveOutbox", function()

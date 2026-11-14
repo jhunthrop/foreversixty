@@ -779,9 +779,7 @@ func serve(log *slog.Logger) error {
 	wireActivity(ctx, activityWiring{cfg: cfg, pool: pool, trees: treeData, auth: authStore, accounts: accounts,
 		events: publisher, log: log}, &deps)
 	wireBnetRefresh(ctx, cfg, accounts, authenticator, log)
-	if importer, ok := accounts.Importer.(*bnetimport.Service); ok {
-		deps.RealmAnswers = importer
-	}
+	wireDirectoryRoutes(pool, accounts, &deps)
 	wireCreators(creatorsWiring{cfg: cfg, pool: pool, deps: &deps, entitle: entStore, accounts: accounts,
 		authenticator: authenticator, log: log})
 	srv := &http.Server{

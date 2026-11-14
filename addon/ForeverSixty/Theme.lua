@@ -1572,8 +1572,9 @@ function Theme.playerGuild()
 end
 
 --- The guild roster as the client holds it (L5.1): one { name, rankIndex, level, classToken,
---- online } per GetGuildRosterInfo row, the name as the client gives it ("Name-Realm"). Empty
---- where the client has no roster API or has not sent the roster yet. Only read.
+--- online, note } per GetGuildRosterInfo row, the name as the client gives it ("Name-Realm"),
+--- note the public note ("" when blank). Empty where the client has no roster API or has not
+--- sent the roster yet. Only read.
 function Theme.guildRoster()
 	local roster = {}
 	if type(GetNumGuildMembers) ~= "function" or type(GetGuildRosterInfo) ~= "function" then
@@ -1581,11 +1582,12 @@ function Theme.guildRoster()
 	end
 	local okCount, count = pcall(GetNumGuildMembers)
 	for index = 1, (okCount and tonumber(count) or 0) do
-		local ok, name, _, rankIndex, level, _, _, _, _, online, _, classToken = pcall(GetGuildRosterInfo, index)
+		local ok, name, _, rankIndex, level, _, _, note, _, online, _, classToken = pcall(GetGuildRosterInfo, index)
 		if ok and type(name) == "string" and name ~= "" then
 			roster[#roster + 1] = {
 				name = name, rankIndex = tonumber(rankIndex), level = tonumber(level),
 				classToken = type(classToken) == "string" and classToken or nil, online = online == true or online == 1,
+				note = type(note) == "string" and note or "",
 			}
 		end
 	end

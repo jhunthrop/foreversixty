@@ -492,6 +492,12 @@ Notes for the reader:
   holds the score itself. `seen_at` is `YYYY-MM-DD HH:MM` local. `class` is the classFilename
   from `GetGuildRosterInfo` ("WARRIOR"), absent for a name the client's guild roster does not
   hold yet. A snapshot carries only the members the guild tab has live data for.
+- `roster_snapshot.optout_codes` (added 2026-11-14) is a list of `{ name, code }`, present only
+  when a guild member's public note carries a "Remove my character" code (`FS-` and six of
+  A-Z without I and O, and 2-9): `name` as `GetGuildRosterInfo` gives it, `code` the code alone,
+  never the rest of the note. A snapshot with codes is sent even when `members` is empty; the
+  API then stores no roster and only removes those characters from the character directory
+  (api/internal/directory/optout.go), and only when the sender is in the guild it names.
 - `raid_answer` (added 2026-11-08) is a list, one entry per raid the player answered in game
   (the addon panel's Tonight buttons) since the companion last cleared it; a second answer for
   the same raid replaces the first. `character` is the `export.character` form; `answer` is

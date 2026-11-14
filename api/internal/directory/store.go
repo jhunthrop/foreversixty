@@ -43,7 +43,7 @@ type profileRead struct {
 // mergeSources is the SQL that unions a row's sources with an insert's, sorted.
 const mergeSources = `array(select distinct s from unnest(character_directory.sources || excluded.sources) s order by s)`
 
-// upsertRoster writes every member of one roster read and clears the guild from rows of
+// upsertRoster writes every member of one roster read (never an opted-out one) and clears the guild from rows of
 // members no longer on it, in one transaction. A member's ruleset is the guild's unless its
 // own profile named one.
 func (s *Service) upsertRoster(ctx context.Context, g dirGuild, roster bnetapi.Roster) error {
@@ -64,6 +64,7 @@ func (s *Service) upsertRoster(ctx context.Context, g dirGuild, roster bnetapi.R
 			    guild_bnet_id, guild_name, guild_rank, ruleset, ruleset_source, sources, roster_seen_at, refreshed_at)
 			select $1, $2, $3, $4, nullif($5, ''), nullif($6::int, 0), nullif($7, ''), $8, $9, $10, $11,
 			       nullif($12, ''), case when $12 = '' then null else 'guild' end, array[$13], now(), now()
+			 where not exists (select 1 from directory_optouts o where o.region = $1 and o.bnet_character_id = $2)
 			on conflict (region, bnet_character_id) do update set
 			  name = excluded.name, slug = excluded.slug,
 			  class = coalesce(excluded.class, character_directory.class),
@@ -159,7 +160,7 @@ func (s *Service) dueCharacters(ctx context.Context, limit int) ([]dueRow, error
 }
 
 // saveProfile writes one character's public read, inserting the row when a name seed found
-// it, and adds its guild to the sweep.
+// it, and adds its guild to the sweep. An opted-out character is never written.
 func (s *Service) saveProfile(ctx context.Context, region string, sources []string, read profileRead) error {
 	p := read.Profile
 	equipment, err := jsonOrNil(read.Equipment)
@@ -191,6 +192,7 @@ func (s *Service) saveProfile(ctx context.Context, region string, sources []stri
 		select $1, $2, $3, $4, nullif($5, ''), nullif($6, ''), nullif($7, ''), $8, $9, $10, nullif($11, ''),
 		       case when $11 = '' then null else 'profile' end, $12, nullif($13, ''), $14, $15, $16, nullif($17, ''),
 		       true, $18, now(), now()
+		 where not exists (select 1 from directory_optouts o where o.region = $1 and o.bnet_character_id = $2)
 		on conflict (region, bnet_character_id) do update set
 		  name = excluded.name, slug = excluded.slug, class = coalesce(excluded.class, character_directory.class),
 		  race = coalesce(excluded.race, character_directory.race),
@@ -293,6 +295,10 @@ func (s *Service) expire(ctx context.Context) (int64, error) {
 	if _, err := s.Pool.Exec(ctx,
 		`delete from directory_name_misses where checked_at < now() - $1::interval`, interval(missAfter)); err != nil {
 		return 0, fmt.Errorf("directory: expire misses: %w", err)
+	}
+	if _, err := s.Pool.Exec(ctx,
+		`delete from directory_optout_codes where expires_at < now() - $1::interval`, interval(staleAfter)); err != nil {
+		return 0, fmt.Errorf("directory: expire opt-out codes: %w", err)
 	}
 	return tag.RowsAffected(), nil
 }

@@ -1578,6 +1578,12 @@ components:
             sign_ins: { type: integer, format: int64 }
             linked: { type: integer, format: int64 }
             premium: { type: integer, format: int64 }
+    DirectoryOptOutInput:
+      type: object
+      required: [region, name]
+      properties:
+        region: { type: string, enum: [us, eu] }
+        name: { type: string, description: "The character's full name, first name and surname", example: Vela Thornbrook }
     AppTesterInput:
       type: object
       required: [email, platform]
@@ -11069,6 +11075,102 @@ paths:
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
         '429':
           description: This address's hour budget is spent
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/directory/opt-out/code:
+    post:
+      summary: Get a code that removes a character from the character directory
+      operationId: startDirectoryOptOut
+      description: >-
+        No auth ("Remove my character", Blizzard API terms 11(c)). Names the character by region
+        and full name; a name the directory does not hold is looked up on Blizzard's public
+        profile, so it is kept out from now on. The code (FS- and six letters or digits) removes
+        the character once its public guild note carries it and a guildmate's addon sends it.
+        A new code replaces the last. 10 a minute per IP.
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/DirectoryOptOutInput' } } }
+      responses:
+        '200':
+          description: The code and when it lapses
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        required: [code, expires_at]
+                        properties:
+                          code: { type: string, example: FS-7K2QXM }
+                          expires_at: { type: string, format: date-time }
+        '400':
+          description: Not JSON, or not a region (us, eu) and a character name
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '404':
+          description: No public character has that name, and the directory holds none
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '429':
+          description: This address's minute budget is spent
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/directory/opt-out/status:
+    post:
+      summary: Where a character's directory opt-out stands
+      operationId: directoryOptOutStatus
+      description: No auth. removed, waiting (a code is out and unexpired) or none. 10 a minute per IP.
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/DirectoryOptOutInput' } } }
+      responses:
+        '200':
+          description: The state
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data: { type: object, required: [state], properties: { state: { type: string, enum: [removed, waiting, none] } } }
+        '400':
+          description: Not JSON, or not a region and a character name
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '429':
+          description: This address's minute budget is spent
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+  /v1/directory/opt-out/account:
+    post:
+      summary: Remove one of the signed-in account's own characters from the directory
+      operationId: removeOwnDirectoryCharacter
+      description: >-
+        Session only. The character must be on the account's Battle.net import (its Blizzard
+        character id); it is deleted from the directory and never stored again. 10 a minute per IP.
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/DirectoryOptOutInput' } } }
+      responses:
+        '200':
+          description: Removed
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data: { type: object, required: [state], properties: { state: { type: string, enum: [removed] } } }
+        '400':
+          description: Not JSON, or not a region and a character name
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '401':
+          description: Not signed in
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '403':
+          description: The character is not on this account's Battle.net import (not_yours)
+          content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
+        '429':
+          description: This address's minute budget is spent
           content: { application/json: { schema: { $ref: '#/components/schemas/ErrorEnvelope' } } }
   /v1/admin/app-testers:
     get:

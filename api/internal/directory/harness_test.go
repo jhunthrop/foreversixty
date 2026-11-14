@@ -34,7 +34,7 @@ func testPool(t *testing.T) *pgxpool.Pool {
 	}
 	t.Cleanup(pool.Close)
 	if _, err := pool.Exec(context.Background(),
-		`truncate character_directory, directory_guilds, directory_name_misses, users, guilds, characters cascade`); err != nil {
+		`truncate character_directory, directory_guilds, directory_name_misses, directory_optouts, directory_optout_codes, realm_rulesets, users, guilds, characters cascade`); err != nil {
 		t.Fatal(err)
 	}
 	return pool

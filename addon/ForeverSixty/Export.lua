@@ -554,6 +554,34 @@ local function rosterClasses()
 	return classes
 end
 
+--- An opt-out code's letters: "FS-" and six of A-Z (no I or O) and 2-9, the site's own alphabet.
+local OPT_OUT_CODE = "FS%-([A-HJ-NP-Z2-9][A-HJ-NP-Z2-9][A-HJ-NP-Z2-9][A-HJ-NP-Z2-9][A-HJ-NP-Z2-9][A-HJ-NP-Z2-9])"
+
+--- The "Remove my character" codes in the guild roster's public notes: { name, code } for each
+--- member whose note carries one, sorted by name. Only the code leaves the client, never the
+--- rest of the note. `roster` is Theme.guildRoster(). Pure.
+function Export.optOutCodes(roster)
+	local codes = {}
+	for _, row in ipairs(roster or {}) do
+		local letters = type(row.note) == "string" and row.note:match(OPT_OUT_CODE) or nil
+		if letters ~= nil then
+			codes[#codes + 1] = { name = row.name, code = "FS-" .. letters }
+		end
+	end
+	table.sort(codes, function(left, right)
+		return left.name < right.name
+	end)
+	return codes
+end
+
+--- The roster snapshot of `guild` from its members and opt-out codes; nil when it has neither.
+local function rosterSnapshot(guild, members, codes)
+	if #members == 0 and #codes == 0 then
+		return nil
+	end
+	return { guild = guild, members = members, optout_codes = #codes > 0 and codes or nil }
+end
+
 --- The members of `guild` this session heard on GUILD, by name: the seven contract fields,
 --- `seen_at` as local wall time. `seen` is Comms.seen (its `time` is the game clock), `now`
 --- the game clock and `wallNow` the wall clock at the same moment; `classes` is the class
@@ -588,14 +616,12 @@ function Export.scoreVisibleField(visible)
 end
 
 --- The outbox, built from plain values: { character, code, wallNow, simRequest, raidAnswers, guild (a name,
---- or nil/false outside a guild), seen, now, classes }. Pure.
+--- or nil/false outside a guild), seen, now, classes, optOutCodes }. Pure.
 function Export.outbox(parts)
 	local roster
 	if parts.guild then
 		local members = rosterMembers(parts.seen, parts.now or 0, parts.wallNow, parts.classes)
-		if #members > 0 then
-			roster = { guild = parts.guild, members = members }
-		end
+		roster = rosterSnapshot(parts.guild, members, parts.optOutCodes or {})
 	end
 	return {
 		format = Export.OUTBOX_FORMAT,
@@ -699,6 +725,7 @@ function Export.saveOutbox(data, code)
 		seen = Comms.seen,
 		now = now,
 		classes = rosterClasses(),
+		optOutCodes = Export.optOutCodes(Theme.guildRoster()),
 	})
 	-- The roster heard in the world stands when logout finds none to read (X.2).
 	if outbox.roster_snapshot == nil and guild ~= nil and Export.lastRoster ~= nil
@@ -728,8 +755,9 @@ local function snapshotRoster()
 	end
 	local Comms = ns.Comms or require("Comms")
 	local members = rosterMembers(Comms.seen, Theme.now(), time(), rosterClasses())
-	if #members > 0 then
-		Export.lastRoster = { guild = guild.name, members = members }
+	local snapshot = rosterSnapshot(guild.name, members, Export.optOutCodes(Theme.guildRoster()))
+	if snapshot ~= nil then
+		Export.lastRoster = snapshot
 	end
 end
 
