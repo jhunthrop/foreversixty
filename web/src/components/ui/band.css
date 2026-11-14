@@ -28,15 +28,15 @@
     --band-size: max(100%, 1440px) auto;
     --band-at: center calc(-96px - var(--band-y, 0px)) / var(--band-size) no-repeat;
     --band-paint:
-      linear-gradient(var(--color-veil-band), var(--color-veil-band)),
-      var(--art-band, none) var(--band-at), var(--art-band-phone, none) var(--band-at), var(--color-band);
+      linear-gradient(var(--color-veil-band), var(--color-veil-band)), var(--art-band, none) var(--band-at),
+      var(--art-band-phone, none) var(--band-at), var(--color-band);
     background: var(--band-paint);
   }
   .ui-band[data-art='hero'] {
     --hero-at: 0 calc(-10vw - var(--band-y, 0px)) / 124% auto no-repeat;
     --band-paint:
-      linear-gradient(var(--color-veil-night), var(--color-veil-night)),
-      var(--art-hero, none) var(--hero-at), var(--art-hero-phone, none) var(--hero-at), var(--color-night);
+      linear-gradient(var(--color-veil-night), var(--color-veil-night)), var(--art-hero, none) var(--hero-at),
+      var(--art-hero-phone, none) var(--hero-at), var(--color-night);
   }
   .ui-band-end {
     border-bottom: 1px solid black;
