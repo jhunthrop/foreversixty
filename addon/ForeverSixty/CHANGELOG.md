@@ -1,5 +1,9 @@
 # Forever Sixty
 
+## 2.0.51
+
+- Clicking Me, Gear, Rotation, Guild or Officer switches tabs again. Before, only the Builds tab answered a click.
+
 ## 2.0.50
 
 - Fixes 2.0.48 and 2.0.49 not loading: the addon showed as enabled but did nothing.

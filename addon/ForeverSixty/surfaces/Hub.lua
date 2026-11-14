@@ -435,8 +435,16 @@ local function drawStrip()
 	local strip, G = Hub.strip, Hub.LAYOUT
 	local shown = Hub.visibleTabs()
 	Theme.setShown({ strip.frame }, #shown > 1)
-	for _, button in pairs(strip.buttons) do
-		button:Hide()
+	-- Hide only the buttons whose tab no longer shows: a Hide and Show on a button under the cursor drops
+	-- the press, so a refresh between mouse-down and mouse-up ate every tab click (2.0.48 to 2.0.50).
+	local showing = {}
+	for _, tab in ipairs(shown) do
+		showing[tab.id] = true
+	end
+	for id, button in pairs(strip.buttons) do
+		if not showing[id] then
+			button:Hide()
+		end
 	end
 	local previous
 	for _, tab in ipairs(shown) do

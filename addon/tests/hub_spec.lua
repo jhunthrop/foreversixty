@@ -87,6 +87,21 @@ describe("the Forever Sixty window (Hub)", function()
 		assert.are.same({ "gear:x", "gear:nil" }, shown)
 	end)
 
+	it("never hides a showing tab's button on a refresh, so a click that redraws the strip still lands", function()
+		-- 2.0.48 to 2.0.50: the Builds paste box lost focus on the press, the tab redrew, the strip hid and
+		-- showed every button, and the client dropped the press, so no tab but Builds could be clicked.
+		tab("builds", 1)
+		tab("gear", 2)
+		Hub.open("builds")
+		local button = Hub.strip.buttons.gear
+		local before = mock.countCalls(button, "Hide")
+		Hub.refresh()
+		assert.are.equal(before, mock.countCalls(button, "Hide"))
+		tab("gone", 3, { available = function() return false end })
+		Hub.refresh()
+		assert.is_false(Hub.strip.buttons.gone:IsShown() == true)
+	end)
+
 	it("builds each tab's body once into its own content frame, and shows only the active one", function()
 		tab("builds", 1)
 		tab("gear", 2)
