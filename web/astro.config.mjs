@@ -169,6 +169,10 @@ const contentLastmod = (() => {
 export default defineConfig({
   site: 'https://foreversixty.gg',
   trailingSlash: 'never',
+  // Inlined on purpose. Tried 2026-11-13 ('auto', the shared ~165 KB stylesheet as a cached file):
+  // the HTML fell by 30 to 40 KB compressed per page, but the render-blocking request doubled a
+  // first visit's LCP on a throttled phone (Lighthouse, devtools throttling: about 1.0 s to 2.1 s
+  // on home, tiers, a BiS page and a guide). First visits are most of the traffic, so it stays.
   build: { format: 'file', inlineStylesheets: 'always' },
   integrations: [
     svelte(),
