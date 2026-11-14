@@ -98579,25 +98579,19 @@
             "hit": null,
             "white": null,
             "spell": [
-              16.0,
+              12.0,
               16.0
             ],
-            "school": [
-              12.0,
-              "Shadow"
-            ]
+            "school": null
           },
           "horde": {
             "hit": null,
             "white": null,
             "spell": [
-              16.0,
+              12.0,
               16.0
             ],
-            "school": [
-              12.0,
-              "Shadow"
-            ]
+            "school": null
           }
         }
       },
@@ -99198,25 +99192,19 @@
             "hit": null,
             "white": null,
             "spell": [
-              16.0,
+              11.0,
               16.0
             ],
-            "school": [
-              11.0,
-              "Shadow"
-            ]
+            "school": null
           },
           "horde": {
             "hit": null,
             "white": null,
             "spell": [
-              16.0,
+              11.0,
               16.0
             ],
-            "school": [
-              11.0,
-              "Shadow"
-            ]
+            "school": null
           }
         }
       },
@@ -99807,25 +99795,19 @@
             "hit": null,
             "white": null,
             "spell": [
-              14.5,
+              9.5,
               16.0
             ],
-            "school": [
-              9.5,
-              "Shadow"
-            ]
+            "school": null
           },
           "horde": {
             "hit": null,
             "white": null,
             "spell": [
-              14.5,
+              9.5,
               16.0
             ],
-            "school": [
-              9.5,
-              "Shadow"
-            ]
+            "school": null
           }
         }
       },
@@ -100482,25 +100464,19 @@
             "hit": null,
             "white": null,
             "spell": [
-              12.1,
+              7.1,
               16.0
             ],
-            "school": [
-              7.1,
-              "Shadow"
-            ]
+            "school": null
           },
           "horde": {
             "hit": null,
             "white": null,
             "spell": [
-              14.1,
+              9.1,
               16.0
             ],
-            "school": [
-              9.1,
-              "Shadow"
-            ]
+            "school": null
           }
         }
       },
@@ -101175,25 +101151,19 @@
             "hit": null,
             "white": null,
             "spell": [
-              13.1,
+              8.1,
               16.0
             ],
-            "school": [
-              8.1,
-              "Shadow"
-            ]
+            "school": null
           },
           "horde": {
             "hit": null,
             "white": null,
             "spell": [
-              12.0,
+              7.0,
               16.0
             ],
-            "school": [
-              7.0,
-              "Shadow"
-            ]
+            "school": null
           }
         }
       }
@@ -148797,25 +148767,19 @@
             "hit": null,
             "white": null,
             "spell": [
-              13.0,
+              8.0,
               16.0
             ],
-            "school": [
-              8.0,
-              "Shadow"
-            ]
+            "school": null
           },
           "horde": {
             "hit": null,
             "white": null,
             "spell": [
-              11.0,
+              6.0,
               16.0
             ],
-            "school": [
-              6.0,
-              "Shadow"
-            ]
+            "school": null
           }
         }
       }

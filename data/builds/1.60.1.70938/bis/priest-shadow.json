@@ -1,8 +1,8 @@
 {
   "spec": "priest-shadow",
   "build": "1.60.1.70938",
-  "engine_version": "f0f90b5f9",
-  "generated_at": "2026-11-14T06:57:44Z",
+  "engine_version": "f9385b498",
+  "generated_at": "2026-11-14T09:14:39Z",
   "bands": [
     {
       "spec": "priest-shadow",
@@ -1163,8 +1163,8 @@
         "main_hand: Staff of the Blessed Seer",
         "ranged: Skycaller"
       ],
-      "weights_run_seconds": 3.273157385,
-      "verify_run_seconds": 2.804097984,
+      "weights_run_seconds": 2.708760208,
+      "verify_run_seconds": 2.413295987,
       "coverage": {
         "back": {
           "eligible": 104,
@@ -1253,15 +1253,8 @@
       "haste_scale_factor": 0.5339962462494218,
       "hit_to_cap": {
         "kind": "spell",
-        "baseline": 0,
-        "spell": 16,
-        "school": {
-          "names": [
-            "Shadow"
-          ],
-          "hit": 4,
-          "to_cap": 12
-        }
+        "baseline": 4,
+        "spell": 12
       },
       "haste_on_items": false
     },
@@ -2421,8 +2414,8 @@
         "main_hand: Staff of the Blessed Seer",
         "ranged: Skycaller"
       ],
-      "weights_run_seconds": 3.273157385,
-      "verify_run_seconds": 2.514159911,
+      "weights_run_seconds": 2.708760208,
+      "verify_run_seconds": 2.157514941,
       "coverage": {
         "back": {
           "eligible": 105,
@@ -2511,15 +2504,8 @@
       "haste_scale_factor": 0.5339962462494218,
       "hit_to_cap": {
         "kind": "spell",
-        "baseline": 0,
-        "spell": 16,
-        "school": {
-          "names": [
-            "Shadow"
-          ],
-          "hit": 4,
-          "to_cap": 12
-        }
+        "baseline": 4,
+        "spell": 12
       },
       "haste_on_items": false
     },
@@ -3822,8 +3808,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 3.133637654,
-      "verify_run_seconds": 4.861220856,
+      "weights_run_seconds": 2.584106487,
+      "verify_run_seconds": 4.063877973,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -3915,15 +3901,8 @@
       "haste_scale_factor": 0.04430854097291514,
       "hit_to_cap": {
         "kind": "spell",
-        "baseline": 0,
-        "spell": 16,
-        "school": {
-          "names": [
-            "Shadow"
-          ],
-          "hit": 5,
-          "to_cap": 11
-        }
+        "baseline": 5,
+        "spell": 11
       },
       "haste_on_items": false
     },
@@ -5255,8 +5234,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Starfaller"
       ],
-      "weights_run_seconds": 3.133637654,
-      "verify_run_seconds": 4.56855857,
+      "weights_run_seconds": 2.584106487,
+      "verify_run_seconds": 3.83060866,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -5348,15 +5327,8 @@
       "haste_scale_factor": 0.3852064350260669,
       "hit_to_cap": {
         "kind": "spell",
-        "baseline": 0,
-        "spell": 16,
-        "school": {
-          "names": [
-            "Shadow"
-          ],
-          "hit": 5,
-          "to_cap": 11
-        }
+        "baseline": 5,
+        "spell": 11
       },
       "haste_on_items": false
     },
@@ -6696,8 +6668,8 @@
         "main_hand: Staff of Jordan",
         "ranged: Plaguerot Sprig"
       ],
-      "weights_run_seconds": 3.274943521,
-      "verify_run_seconds": 3.452311647,
+      "weights_run_seconds": 2.632644547,
+      "verify_run_seconds": 2.9310299619999998,
       "coverage": {
         "back": {
           "eligible": 257,
@@ -6789,15 +6761,8 @@
       "haste_scale_factor": 0.4617623592630001,
       "hit_to_cap": {
         "kind": "spell",
-        "baseline": 1.5,
-        "spell": 14.5,
-        "school": {
-          "names": [
-            "Shadow"
-          ],
-          "hit": 6.5,
-          "to_cap": 9.5
-        }
+        "baseline": 6.5,
+        "spell": 9.5
       },
       "haste_on_items": false
     },
@@ -8099,8 +8064,8 @@
         "main_hand: Staff of Jordan",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 3.274943521,
-      "verify_run_seconds": 4.0026930620000005,
+      "weights_run_seconds": 2.632644547,
+      "verify_run_seconds": 3.528731021,
       "coverage": {
         "back": {
           "eligible": 259,
@@ -8192,15 +8157,8 @@
       "haste_scale_factor": 0.4617623592630001,
       "hit_to_cap": {
         "kind": "spell",
-        "baseline": 1.5,
-        "spell": 14.5,
-        "school": {
-          "names": [
-            "Shadow"
-          ],
-          "hit": 6.5,
-          "to_cap": 9.5
-        }
+        "baseline": 6.5,
+        "spell": 9.5
       },
       "haste_on_items": false
     },
@@ -9795,8 +9753,8 @@
         "trinket2: Enriched Seal",
         "ranged: Woestave"
       ],
-      "weights_run_seconds": 3.12752014,
-      "verify_run_seconds": 5.628377087,
+      "weights_run_seconds": 2.60617921,
+      "verify_run_seconds": 4.949931353,
       "coverage": {
         "back": {
           "eligible": 330,
@@ -9888,15 +9846,8 @@
       "haste_scale_factor": -0.018943385819094216,
       "hit_to_cap": {
         "kind": "spell",
-        "baseline": 3.9,
-        "spell": 12.1,
-        "school": {
-          "names": [
-            "Shadow"
-          ],
-          "hit": 8.9,
-          "to_cap": 7.1
-        }
+        "baseline": 8.9,
+        "spell": 7.1
       },
       "haste_on_items": false
     },
@@ -11526,8 +11477,8 @@
         "off_hand: Truesilver Conduit",
         "ranged: Woestave"
       ],
-      "weights_run_seconds": 3.12752014,
-      "verify_run_seconds": 5.860908299,
+      "weights_run_seconds": 2.60617921,
+      "verify_run_seconds": 4.8395264749999996,
       "coverage": {
         "back": {
           "eligible": 335,
@@ -11619,15 +11570,8 @@
       "haste_scale_factor": -0.018943385819094216,
       "hit_to_cap": {
         "kind": "spell",
-        "baseline": 1.9,
-        "spell": 14.1,
-        "school": {
-          "names": [
-            "Shadow"
-          ],
-          "hit": 6.9,
-          "to_cap": 9.1
-        }
+        "baseline": 6.9,
+        "spell": 9.1
       },
       "haste_on_items": false
     },
@@ -13355,8 +13299,8 @@
         "off_hand: Book of the Dead",
         "ranged: Oblivion's Touch"
       ],
-      "weights_run_seconds": 3.183033828,
-      "verify_run_seconds": 22.852569341000002,
+      "weights_run_seconds": 2.848581614,
+      "verify_run_seconds": 20.225148788,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -13450,15 +13394,8 @@
       "haste_scale_factor": 0.36998670177589993,
       "hit_to_cap": {
         "kind": "spell",
-        "baseline": 2.9,
-        "spell": 13.1,
-        "school": {
-          "names": [
-            "Shadow"
-          ],
-          "hit": 7.9,
-          "to_cap": 8.1
-        }
+        "baseline": 7.9,
+        "spell": 8.1
       },
       "haste_on_items": false
     },
@@ -15140,8 +15077,8 @@
         "off_hand: Book of the Dead",
         "ranged: Oblivion's Touch"
       ],
-      "weights_run_seconds": 3.183033828,
-      "verify_run_seconds": 18.685867507,
+      "weights_run_seconds": 2.848581614,
+      "verify_run_seconds": 16.199792775,
       "coverage": {
         "back": {
           "eligible": 472,
@@ -15235,15 +15172,8 @@
       "haste_scale_factor": 0.36998670177589993,
       "hit_to_cap": {
         "kind": "spell",
-        "baseline": 4,
-        "spell": 12,
-        "school": {
-          "names": [
-            "Shadow"
-          ],
-          "hit": 9,
-          "to_cap": 7
-        }
+        "baseline": 9,
+        "spell": 7
       },
       "haste_on_items": false
     },
@@ -16842,8 +16772,8 @@
         "main_hand: Ironbark Staff",
         "ranged: Bonecreeper Stylus"
       ],
-      "weights_run_seconds": 3.533830321,
-      "verify_run_seconds": 21.152242559,
+      "weights_run_seconds": 3.074843276,
+      "verify_run_seconds": 18.404410258,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -16937,15 +16867,8 @@
       "haste_scale_factor": 4.621845349977776,
       "hit_to_cap": {
         "kind": "spell",
-        "baseline": 3,
-        "spell": 13,
-        "school": {
-          "names": [
-            "Shadow"
-          ],
-          "hit": 8,
-          "to_cap": 8
-        }
+        "baseline": 8,
+        "spell": 8
       },
       "haste_on_items": false
     },
@@ -18518,8 +18441,8 @@
         "main_hand: Ironbark Staff",
         "ranged: Bonecreeper Stylus"
       ],
-      "weights_run_seconds": 3.533830321,
-      "verify_run_seconds": 20.833465741,
+      "weights_run_seconds": 3.074843276,
+      "verify_run_seconds": 17.575970407,
       "coverage": {
         "back": {
           "eligible": 472,
@@ -18613,15 +18536,8 @@
       "haste_scale_factor": 5.612535219194561,
       "hit_to_cap": {
         "kind": "spell",
-        "baseline": 5,
-        "spell": 11,
-        "school": {
-          "names": [
-            "Shadow"
-          ],
-          "hit": 10,
-          "to_cap": 6
-        }
+        "baseline": 10,
+        "spell": 6
       },
       "haste_on_items": false
     }

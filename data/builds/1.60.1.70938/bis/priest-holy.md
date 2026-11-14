@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat. An item's crit rating
 
 ### Band 20 (human, 000000000000000000-03502001000000000-00000000000000000)
 
-Set DPS (verified): 41.8. Weights run: 23.7s. Verify run: 135.6s. 203 eligible items had no known source.
+Set DPS (verified): 41.8. Weights run: 25.4s. Verify run: 147.4s. 203 eligible items had no known source.
 
 Race sweep: human 41.8 ± 0.0, gnome 40.4 ± 0.0, night-elf 39.1 ± 0.0, dwarf 38.7 ± 0.0 (heal_score); the guide race human is best.
 
@@ -40,7 +40,7 @@ No-known-source sample (15 of 203, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (human, 000000000000000000-33502003030110000-00000000000000000)
 
-Set DPS (verified): 76.2. Weights run: 23.5s. Verify run: 150.4s. 325 eligible items had no known source.
+Set DPS (verified): 76.2. Weights run: 25.2s. Verify run: 164.2s. 325 eligible items had no known source.
 
 Race sweep: human 76.2 ± 0.0, gnome 72.2 ± 0.0, night-elf 70.4 ± 0.0, dwarf 69.8 ± 0.0 (heal_score); the guide race human is best.
 
@@ -72,7 +72,7 @@ No-known-source sample (15 of 325, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (human, 000000000000000000-33502003030121431-00000000000000000)
 
-Set DPS (verified): 175.1. Weights run: 106.2s. Verify run: 242.5s. 461 eligible items had no known source.
+Set DPS (verified): 175.1. Weights run: 113.4s. Verify run: 261.2s. 461 eligible items had no known source.
 
 Race sweep: human 175.1 ± 0.2, gnome 171.2 ± 0.2, night-elf 168.8 ± 0.2, dwarf 167.8 ± 0.2 (heal_score); the guide race human is best.
 
@@ -104,7 +104,7 @@ No-known-source sample (15 of 461, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (human, 005005000000000000-33502003030121431-00000000000000000)
 
-Set DPS (verified): 257.8. Weights run: 40.5s. Verify run: 358.1s. 608 eligible items had no known source.
+Set DPS (verified): 257.8. Weights run: 42.6s. Verify run: 381.5s. 608 eligible items had no known source.
 
 Race sweep: human 257.6 ± 0.2, gnome 251.2 ± 0.2, night-elf 246.8 ± 0.2, dwarf 245.4 ± 0.2 (heal_score); the guide race human is best.
 
@@ -136,7 +136,7 @@ No-known-source sample (15 of 608, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (human, 005005031030000000-33505003030121431-00000000000000000)
 
-Set DPS (verified): 419.3. Weights run: 38.1s. Verify run: 1063.3s. 1525 eligible items had no known source.
+Set DPS (verified): 419.3. Weights run: 39.8s. Verify run: 1111.2s. 1525 eligible items had no known source.
 
 Race sweep: human 419.1 ± 0.3, gnome 399.5 ± 0.3, night-elf 387.1 ± 0.3, dwarf 383.7 ± 0.3 (heal_score); the guide race human is best.
 
@@ -168,7 +168,7 @@ No-known-source sample (15 of 1525, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (human, 005005031030000000-33505003030121431-00000000000000000)
 
-Set DPS (verified): 880.7. Weights run: 61.5s. Verify run: 553.6s. 1525 eligible items had no known source.
+Set DPS (verified): 880.7. Weights run: 63.9s. Verify run: 574.8s. 1525 eligible items had no known source.
 
 Race sweep: human 880.9 ± 0.5, gnome 867.4 ± 0.5, night-elf 851.2 ± 0.5, dwarf 848.9 ± 0.5 (heal_score); the guide race human is best.
 
@@ -202,7 +202,7 @@ No-known-source sample (15 of 1525, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (undead, 000000000000000000-03502001000000000-00000000000000000)
 
-Set DPS (verified): 41.0. Weights run: 23.7s. Verify run: 124.9s. 196 eligible items had no known source.
+Set DPS (verified): 41.0. Weights run: 25.4s. Verify run: 136.1s. 196 eligible items had no known source.
 
 Race sweep: undead 41.0 ± 0.0, troll 37.3 ± 0.0 (heal_score); the guide race undead is best.
 
@@ -234,7 +234,7 @@ No-known-source sample (15 of 196, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (undead, 000000000000000000-33502003030110000-00000000000000000)
 
-Set DPS (verified): 79.3. Weights run: 23.5s. Verify run: 144.5s. 318 eligible items had no known source.
+Set DPS (verified): 79.3. Weights run: 25.2s. Verify run: 158.4s. 318 eligible items had no known source.
 
 Race sweep: undead 79.4 ± 0.0, troll 70.8 ± 0.0 (heal_score); the guide race undead is best.
 
@@ -266,7 +266,7 @@ No-known-source sample (15 of 318, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (undead, 000000000000000000-33502003030121431-00000000000000000)
 
-Set DPS (verified): 182.0. Weights run: 106.2s. Verify run: 236.0s. 454 eligible items had no known source.
+Set DPS (verified): 182.0. Weights run: 113.4s. Verify run: 252.9s. 454 eligible items had no known source.
 
 Race sweep: undead 181.8 ± 0.2, troll 167.3 ± 0.2 (heal_score); the guide race undead is best.
 
@@ -298,7 +298,7 @@ No-known-source sample (15 of 454, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (undead, 005005000000000000-33502003030121431-00000000000000000)
 
-Set DPS (verified): 272.0. Weights run: 40.5s. Verify run: 323.8s. 601 eligible items had no known source.
+Set DPS (verified): 272.0. Weights run: 42.6s. Verify run: 345.3s. 601 eligible items had no known source.
 
 Race sweep: undead 271.7 ± 0.2, troll 244.5 ± 0.2 (heal_score); the guide race undead is best.
 
@@ -330,7 +330,7 @@ No-known-source sample (15 of 601, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (undead, 005005031030000000-33505003030121431-00000000000000000)
 
-Set DPS (verified): 429.6. Weights run: 38.1s. Verify run: 1035.5s. 1520 eligible items had no known source.
+Set DPS (verified): 429.6. Weights run: 39.8s. Verify run: 1076.7s. 1520 eligible items had no known source.
 
 Race sweep: undead 429.6 ± 0.3, troll 391.9 ± 0.3 (heal_score); the guide race undead is best.
 
@@ -362,7 +362,7 @@ No-known-source sample (15 of 1520, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (undead, 005005031030000000-33505003030121431-00000000000000000)
 
-Set DPS (verified): 893.4. Weights run: 61.5s. Verify run: 548.5s. 1520 eligible items had no known source.
+Set DPS (verified): 893.4. Weights run: 63.9s. Verify run: 567.7s. 1520 eligible items had no known source.
 
 Race sweep: undead 893.4 ± 0.5, troll 846.6 ± 0.5 (heal_score); the guide race undead is best.
 

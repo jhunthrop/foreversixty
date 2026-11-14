@@ -1253,13 +1253,10 @@ local hitCaps = {
 	{ hit = { 4.7, 9 }, spell = { 11.7, 16 } },
 	{ hit = { 2.5, 9 }, spell = { 9.5, 16 } },
 	{ hit = { 1.4, 9 }, spell = { 8.4, 16 } },
-	{ spell = { 16, 16 }, school = { 12, "Shadow" } },
-	{ spell = { 16, 16 }, school = { 11, "Shadow" } },
-	{ spell = { 14.5, 16 }, school = { 9.5, "Shadow" } },
-	{ spell = { 12.1, 16 }, school = { 7.1, "Shadow" } },
-	{ spell = { 14.1, 16 }, school = { 9.1, "Shadow" } },
-	{ spell = { 13.1, 16 }, school = { 8.1, "Shadow" } },
-	{ spell = { 12, 16 }, school = { 7, "Shadow" } },
+	{ spell = { 11, 16 } },
+	{ spell = { 9.5, 16 } },
+	{ spell = { 9.1, 16 } },
+	{ spell = { 7, 16 } },
 	{ hit = { 8.6, 9 }, white = { 27.6, 28 } },
 	{ hit = { 9, 9 }, white = { 28, 28 } },
 	{ hit = { 4.1, 9 }, white = { 23.1, 28 } },
@@ -1278,12 +1275,8 @@ local hitCaps = {
 	{ hit = { 0, 9 }, spell = { 6.9, 16 } },
 	{ hit = { 0, 9 }, spell = { 5, 16 } },
 	{ hit = { 0, 9 }, spell = { 6.3, 16 } },
-	{ spell = { 11, 16 } },
-	{ spell = { 9.5, 16 } },
 	{ spell = { 10.1, 16 } },
-	{ spell = { 9.1, 16 } },
 	{ spell = { 4.1, 16 } },
-	{ spell = { 7, 16 } },
 	{ hit = { 4.1, 9 } },
 	{ hit = { 3.4, 9 } },
 	{ hit = { 0.1, 9 } },
@@ -1305,8 +1298,6 @@ local hitCaps = {
 	{ hit = { 5.7, 9 }, spell = { 12.7, 16 } },
 	{ hit = { 0, 9 }, spell = { 4, 16 } },
 	{ hit = { 0, 9 }, spell = { 7, 16 } },
-	{ spell = { 13, 16 }, school = { 8, "Shadow" } },
-	{ spell = { 11, 16 }, school = { 6, "Shadow" } },
 	{ hit = { 0, 9 }, white = { 17.7, 28 } },
 	{ hit = { 0, 9 }, white = { 18.3, 28 } },
 	{ hit = { 0, 9 }, white = { 18.7, 28 } },
@@ -9026,7 +9017,7 @@ ns.Data = {
 				[60] = { alliance = hitCaps[5], horde = hitCaps[5] },
 			},
 			raid = {
-				[60] = { alliance = hitCaps[71], horde = hitCaps[30] },
+				[60] = { alliance = hitCaps[44], horde = hitCaps[30] },
 			},
 		},
 		["druid-feral"] = {
@@ -9062,7 +9053,7 @@ ns.Data = {
 				[60] = { alliance = hitCaps[17], horde = hitCaps[17] },
 			},
 			raid = {
-				[60] = { alliance = hitCaps[82], horde = hitCaps[82] },
+				[60] = { alliance = hitCaps[75], horde = hitCaps[75] },
 			},
 		},
 		["hunter-marksmanship"] = {
@@ -9074,7 +9065,7 @@ ns.Data = {
 				[60] = { alliance = hitCaps[20], horde = hitCaps[17] },
 			},
 			raid = {
-				[60] = { alliance = hitCaps[75], horde = hitCaps[83] },
+				[60] = { alliance = hitCaps[68], horde = hitCaps[76] },
 			},
 		},
 		["hunter-survival"] = {
@@ -9086,7 +9077,7 @@ ns.Data = {
 				[60] = { alliance = hitCaps[26], horde = hitCaps[26] },
 			},
 			raid = {
-				[60] = { alliance = hitCaps[84], horde = hitCaps[84] },
+				[60] = { alliance = hitCaps[77], horde = hitCaps[77] },
 			},
 		},
 		["mage-arcane"] = {
@@ -9098,7 +9089,7 @@ ns.Data = {
 				[60] = { alliance = hitCaps[30], horde = hitCaps[30] },
 			},
 			raid = {
-				[60] = { alliance = hitCaps[85], horde = hitCaps[86] },
+				[60] = { alliance = hitCaps[78], horde = hitCaps[79] },
 			},
 		},
 		["mage-fire"] = {
@@ -9110,7 +9101,7 @@ ns.Data = {
 				[60] = { alliance = hitCaps[32], horde = hitCaps[30] },
 			},
 			raid = {
-				[60] = { alliance = hitCaps[87], horde = hitCaps[87] },
+				[60] = { alliance = hitCaps[80], horde = hitCaps[80] },
 			},
 		},
 		["mage-frost"] = {
@@ -9122,7 +9113,7 @@ ns.Data = {
 				[60] = { alliance = hitCaps[32], horde = hitCaps[32] },
 			},
 			raid = {
-				[60] = { alliance = hitCaps[87], horde = hitCaps[88] },
+				[60] = { alliance = hitCaps[80], horde = hitCaps[81] },
 			},
 		},
 		["paladin-protection"] = {
@@ -9134,7 +9125,7 @@ ns.Data = {
 				[60] = { alliance = hitCaps[37], horde = hitCaps[38] },
 			},
 			raid = {
-				[60] = { alliance = hitCaps[89], horde = hitCaps[90] },
+				[60] = { alliance = hitCaps[82], horde = hitCaps[83] },
 			},
 		},
 		["paladin-retribution"] = {
@@ -9146,87 +9137,87 @@ ns.Data = {
 				[60] = { alliance = hitCaps[35], horde = hitCaps[7] },
 			},
 			raid = {
-				[60] = { alliance = hitCaps[91], horde = hitCaps[92] },
+				[60] = { alliance = hitCaps[84], horde = hitCaps[85] },
 			},
 		},
 		["priest-shadow"] = {
 			bare = {
-				[20] = { alliance = hitCaps[41], horde = hitCaps[41] },
-				[30] = { alliance = hitCaps[42], horde = hitCaps[42] },
-				[40] = { alliance = hitCaps[43], horde = hitCaps[43] },
-				[50] = { alliance = hitCaps[44], horde = hitCaps[45] },
-				[60] = { alliance = hitCaps[46], horde = hitCaps[47] },
+				[20] = { alliance = hitCaps[2], horde = hitCaps[2] },
+				[30] = { alliance = hitCaps[41], horde = hitCaps[41] },
+				[40] = { alliance = hitCaps[42], horde = hitCaps[42] },
+				[50] = { alliance = hitCaps[28], horde = hitCaps[43] },
+				[60] = { alliance = hitCaps[29], horde = hitCaps[44] },
 			},
 			raid = {
-				[60] = { alliance = hitCaps[93], horde = hitCaps[94] },
+				[60] = { alliance = hitCaps[5], horde = hitCaps[30] },
 			},
 		},
 		["rogue-assassination"] = {
 			bare = {
-				[20] = { alliance = hitCaps[48], horde = hitCaps[48] },
-				[30] = { alliance = hitCaps[49], horde = hitCaps[49] },
-				[40] = { alliance = hitCaps[49], horde = hitCaps[49] },
-				[50] = { alliance = hitCaps[50], horde = hitCaps[51] },
-				[60] = { alliance = hitCaps[52], horde = hitCaps[53] },
+				[20] = { alliance = hitCaps[45], horde = hitCaps[45] },
+				[30] = { alliance = hitCaps[46], horde = hitCaps[46] },
+				[40] = { alliance = hitCaps[46], horde = hitCaps[46] },
+				[50] = { alliance = hitCaps[47], horde = hitCaps[48] },
+				[60] = { alliance = hitCaps[49], horde = hitCaps[50] },
 			},
 			raid = {
-				[60] = { alliance = hitCaps[95], horde = hitCaps[96] },
+				[60] = { alliance = hitCaps[86], horde = hitCaps[87] },
 			},
 		},
 		["rogue-combat"] = {
 			bare = {
-				[20] = { alliance = hitCaps[54], horde = hitCaps[54] },
-				[30] = { alliance = hitCaps[55], horde = hitCaps[55] },
-				[40] = { alliance = hitCaps[55], horde = hitCaps[55] },
-				[50] = { alliance = hitCaps[56], horde = hitCaps[57] },
-				[60] = { alliance = hitCaps[56], horde = hitCaps[57] },
+				[20] = { alliance = hitCaps[51], horde = hitCaps[51] },
+				[30] = { alliance = hitCaps[52], horde = hitCaps[52] },
+				[40] = { alliance = hitCaps[52], horde = hitCaps[52] },
+				[50] = { alliance = hitCaps[53], horde = hitCaps[54] },
+				[60] = { alliance = hitCaps[53], horde = hitCaps[54] },
 			},
 			raid = {
-				[60] = { alliance = hitCaps[53], horde = hitCaps[95] },
+				[60] = { alliance = hitCaps[50], horde = hitCaps[86] },
 			},
 		},
 		["rogue-subtlety"] = {
 			bare = {
-				[20] = { alliance = hitCaps[48], horde = hitCaps[48] },
-				[30] = { alliance = hitCaps[49], horde = hitCaps[49] },
-				[40] = { alliance = hitCaps[49], horde = hitCaps[49] },
-				[50] = { alliance = hitCaps[50], horde = hitCaps[51] },
-				[60] = { alliance = hitCaps[56], horde = hitCaps[57] },
+				[20] = { alliance = hitCaps[45], horde = hitCaps[45] },
+				[30] = { alliance = hitCaps[46], horde = hitCaps[46] },
+				[40] = { alliance = hitCaps[46], horde = hitCaps[46] },
+				[50] = { alliance = hitCaps[47], horde = hitCaps[48] },
+				[60] = { alliance = hitCaps[53], horde = hitCaps[54] },
 			},
 			raid = {
-				[60] = { alliance = hitCaps[97], horde = hitCaps[98] },
+				[60] = { alliance = hitCaps[88], horde = hitCaps[89] },
 			},
 		},
 		["shaman-elemental"] = {
 			bare = {
-				[20] = { alliance = hitCaps[58], horde = hitCaps[1] },
-				[30] = { alliance = hitCaps[58], horde = hitCaps[1] },
-				[40] = { alliance = hitCaps[59], horde = hitCaps[27] },
+				[20] = { alliance = hitCaps[55], horde = hitCaps[1] },
+				[30] = { alliance = hitCaps[55], horde = hitCaps[1] },
+				[40] = { alliance = hitCaps[56], horde = hitCaps[27] },
 				[50] = { alliance = hitCaps[31], horde = hitCaps[29] },
 				[60] = { alliance = hitCaps[5], horde = hitCaps[31] },
 			},
 			raid = {
-				[60] = { alliance = hitCaps[99], horde = hitCaps[99] },
+				[60] = { alliance = hitCaps[90], horde = hitCaps[90] },
 			},
 		},
 		["shaman-enhancement"] = {
 			bare = {
-				[20] = { alliance = hitCaps[60], horde = hitCaps[6] },
-				[30] = { alliance = hitCaps[60], horde = hitCaps[6] },
-				[40] = { alliance = hitCaps[61], horde = hitCaps[6] },
-				[50] = { alliance = hitCaps[62], horde = hitCaps[63] },
-				[60] = { alliance = hitCaps[64], horde = hitCaps[65] },
+				[20] = { alliance = hitCaps[57], horde = hitCaps[6] },
+				[30] = { alliance = hitCaps[57], horde = hitCaps[6] },
+				[40] = { alliance = hitCaps[58], horde = hitCaps[6] },
+				[50] = { alliance = hitCaps[59], horde = hitCaps[60] },
+				[60] = { alliance = hitCaps[61], horde = hitCaps[62] },
 			},
 			raid = {
-				[60] = { alliance = hitCaps[92], horde = hitCaps[65] },
+				[60] = { alliance = hitCaps[85], horde = hitCaps[62] },
 			},
 		},
 		["warlock-affliction"] = {
 			bare = {
-				[20] = { alliance = hitCaps[66], horde = hitCaps[66] },
-				[30] = { alliance = hitCaps[66], horde = hitCaps[66] },
-				[40] = { alliance = hitCaps[67], horde = hitCaps[67] },
-				[50] = { alliance = hitCaps[68], horde = hitCaps[68] },
+				[20] = { alliance = hitCaps[41], horde = hitCaps[41] },
+				[30] = { alliance = hitCaps[41], horde = hitCaps[41] },
+				[40] = { alliance = hitCaps[42], horde = hitCaps[42] },
+				[50] = { alliance = hitCaps[63], horde = hitCaps[63] },
 				[60] = { alliance = hitCaps[5], horde = hitCaps[5] },
 			},
 			raid = {
@@ -9238,11 +9229,11 @@ ns.Data = {
 				[20] = { alliance = hitCaps[1], horde = hitCaps[1] },
 				[30] = { alliance = hitCaps[1], horde = hitCaps[1] },
 				[40] = { alliance = hitCaps[27], horde = hitCaps[27] },
-				[50] = { alliance = hitCaps[69], horde = hitCaps[69] },
-				[60] = { alliance = hitCaps[70], horde = hitCaps[70] },
+				[50] = { alliance = hitCaps[43], horde = hitCaps[43] },
+				[60] = { alliance = hitCaps[64], horde = hitCaps[64] },
 			},
 			raid = {
-				[60] = { alliance = hitCaps[30], horde = hitCaps[71] },
+				[60] = { alliance = hitCaps[30], horde = hitCaps[44] },
 			},
 		},
 		["warlock-destruction"] = {
@@ -9250,8 +9241,8 @@ ns.Data = {
 				[20] = { alliance = hitCaps[1], horde = hitCaps[1] },
 				[30] = { alliance = hitCaps[1], horde = hitCaps[1] },
 				[40] = { alliance = hitCaps[27], horde = hitCaps[27] },
-				[50] = { alliance = hitCaps[69], horde = hitCaps[69] },
-				[60] = { alliance = hitCaps[71], horde = hitCaps[71] },
+				[50] = { alliance = hitCaps[43], horde = hitCaps[43] },
+				[60] = { alliance = hitCaps[44], horde = hitCaps[44] },
 			},
 			raid = {
 				[60] = { alliance = hitCaps[30], horde = hitCaps[32] },
@@ -9262,8 +9253,8 @@ ns.Data = {
 				[20] = { alliance = hitCaps[11], horde = hitCaps[11] },
 				[30] = { alliance = hitCaps[11], horde = hitCaps[11] },
 				[40] = { alliance = hitCaps[11], horde = hitCaps[13] },
-				[50] = { alliance = hitCaps[72], horde = hitCaps[73] },
-				[60] = { alliance = hitCaps[74], horde = hitCaps[75] },
+				[50] = { alliance = hitCaps[65], horde = hitCaps[66] },
+				[60] = { alliance = hitCaps[67], horde = hitCaps[68] },
 			},
 			raid = {
 				[60] = { alliance = hitCaps[20], horde = hitCaps[20] },
@@ -9271,14 +9262,14 @@ ns.Data = {
 		},
 		["warrior-fury"] = {
 			bare = {
-				[20] = { alliance = hitCaps[49], horde = hitCaps[49] },
-				[30] = { alliance = hitCaps[49], horde = hitCaps[49] },
-				[40] = { alliance = hitCaps[49], horde = hitCaps[76] },
-				[50] = { alliance = hitCaps[77], horde = hitCaps[78] },
-				[60] = { alliance = hitCaps[79], horde = hitCaps[80] },
+				[20] = { alliance = hitCaps[46], horde = hitCaps[46] },
+				[30] = { alliance = hitCaps[46], horde = hitCaps[46] },
+				[40] = { alliance = hitCaps[46], horde = hitCaps[69] },
+				[50] = { alliance = hitCaps[70], horde = hitCaps[71] },
+				[60] = { alliance = hitCaps[72], horde = hitCaps[73] },
 			},
 			raid = {
-				[60] = { alliance = hitCaps[80], horde = hitCaps[100] },
+				[60] = { alliance = hitCaps[73], horde = hitCaps[91] },
 			},
 		},
 		["warrior-protection"] = {
@@ -9287,10 +9278,10 @@ ns.Data = {
 				[30] = { alliance = hitCaps[11], horde = hitCaps[11] },
 				[40] = { alliance = hitCaps[13], horde = hitCaps[13] },
 				[50] = { alliance = hitCaps[11], horde = hitCaps[11] },
-				[60] = { alliance = hitCaps[81], horde = hitCaps[81] },
+				[60] = { alliance = hitCaps[74], horde = hitCaps[74] },
 			},
 			raid = {
-				[60] = { alliance = hitCaps[81], horde = hitCaps[101] },
+				[60] = { alliance = hitCaps[74], horde = hitCaps[92] },
 			},
 		},
 	},
