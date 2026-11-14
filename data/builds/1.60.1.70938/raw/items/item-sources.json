@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-14T07:07:12.256671+00:00",
+ "generated_at": "2026-11-14T13:45:16.028276+00:00",
  "source": {
   "wowhead": {
    "note": "scraped per item id, ONLY for ids the fork database names no source for at all; see pipeline.wowhead_item_sources for the URL pattern, the four listviews read, and the politeness rules."
