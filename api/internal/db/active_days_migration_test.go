@@ -5,9 +5,9 @@ import (
 	"testing"
 )
 
-const activeDaysVersion = 104
+const activeDaysVersion = 105
 
-// 0104 adds user_active_days and backfills it from what history keeps: signups, sessions, the
+// 0105 adds user_active_days and backfills it from what history keeps: signups, sessions, the
 // player's own sims, addon sims and syncs, the latest addon export and the devices, each on its
 // surface, every row marked backfilled. Import sims stay out: the nightly refresh starts them.
 func TestMigrationBackfillsTheActiveDays(t *testing.T) {
