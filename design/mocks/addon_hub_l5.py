@@ -40,7 +40,7 @@ def name(n, cls):
 
 
 def tonight(answer='none', queued=None, accepts=True):
-    words = {'none': ('Not signed up', 'cg', ''), 'in': ('In', 'ok', ' <span class="m">as DPS, sent Tue 19:04</span>'),
+    words = {'none': ('Not signed up', 'ls', ''), 'in': ('In', 'ok', ' <span class="m">as DPS, sent Tue 19:04</span>'),
              'late': ('Late', 'cg', ' <span class="m">as DPS, not sent yet</span>')}
     shown = queued or answer
     word, cls, detail = words[shown]
@@ -74,9 +74,9 @@ def signups():
     return section('Sign-ups', f'<div>{line}</div><div>{roles}</div>', '12 of 40 coming')
 
 
-def next_raids(first=('Not signed up', 'cg')):
-    rows = [(f'{TODAY} 20:00', 'Onyxia\'s Lair', *first, True), ('Sun 13 Dec 19:30', 'Molten Core', 'Not signed up', 'cg', False),
-            ('Tue 15 Dec 19:30', 'Molten Core', 'Not signed up', 'cg', False)]
+def next_raids(first=('Not signed up', 'ls')):
+    rows = [(f'{TODAY} 20:00', 'Onyxia\'s Lair', *first, True), ('Sun 13 Dec 19:30', 'Molten Core', 'Not signed up', 'ls', False),
+            ('Tue 15 Dec 19:30', 'Molten Core', 'Not signed up', 'ls', False)]
     body = ''.join(f'<tr><td class="{"" if shown else "m"}">{d}</td><td class="s">{n}</td><td class="{c}">{a}</td></tr>'
                    for d, n, a, c, shown in rows)
     return section('Next raids', f'<table class="tbl nx">{body}</table>')

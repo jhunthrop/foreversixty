@@ -299,7 +299,7 @@ def status(cell):
     elif cell.get('gain', 0) > 0:
         gain = f'<span class="ok">+{cell["gain"]:.1f} DPS</span>'
         if cell.get('inBags'):
-            gain += ' <span class="cg">in your bags</span>'
+            gain += ' in your bags'
         parts.append(gain)
     elif cell.get('pick'):
         parts.append('<span class="m">Better than the list</span>')
@@ -346,7 +346,7 @@ def where_text(cell, room=None, per_char=6.0):
     """GearTab.whereLine: whole; else the slot gives way; else the chance; else the place's last words."""
     slot = SLOT_WORD[cell['slot']]
     if cell.get('inBags'):
-        return f'{slot} · <span class="cg">In your bags</span>'
+        return f'{slot} · In your bags'
     pick = cell['pick']
     first, second = source_parts(pick)
     chance = f'{max(1, int(pick["chance"] * 100 + 0.5))}% drop' if pick.get('chance') else None

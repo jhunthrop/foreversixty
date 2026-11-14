@@ -690,11 +690,12 @@ Comms.updateNoticed = false
 --- One quiet chat line the first time a guildmate's hello or snapshot! carries a later version
 --- than this addon's own (`mine`, Comms.addonVersion by default). True when it was said.
 function Comms.noticeNewerVersion(theirs, mine)
-	if Comms.updateNoticed or not Comms.isNewerVersion(theirs, mine or Comms.addonVersion()) then
+	mine = mine or Comms.addonVersion()
+	if Comms.updateNoticed or not Comms.isNewerVersion(theirs, mine) then
 		return false
 	end
 	Comms.updateNoticed = true
-	Theme.say(string.format(L.commsUpdateAvailable, theirs))
+	Theme.say(string.format(L.commsUpdateAvailable, theirs, mine))
 	return true
 end
 

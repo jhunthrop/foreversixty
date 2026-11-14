@@ -191,6 +191,7 @@ CSS = f'''
 .cg {{ color: {CLIENT_GOLD}; }}
 .ok {{ color: {ADDON['success']}; }}
 .wa {{ color: {ADDON['warning']}; }}
+.ls {{ color: {ADDON['loss']}; }}
 .one {{ white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
 .ic {{ box-shadow: 0 0 0 1px #000; flex: none; display: block; }}
 .row {{ display: flex; align-items: center; gap: 8px; }}
@@ -475,7 +476,7 @@ def doll_cell(r, side=''):
     else:
         status = f'<span class="ok">+{r["gain"]:.1f} DPS</span>'
     if r['slot'] == 'hands':
-        status += ' <span class="cg">in your bags</span>'
+        status += ' in your bags'
     parts = [status, ench] if side != 'r' else [ench, status]
     line2 = ' · '.join(p for p in parts if p) if side != 'r' else ' · '.join(p for p in parts if p)
     return (f'<div class="cell {side}">{item_icon(r["worn"], 28)}<div class="tx"><div class="one">{item_name(r["worn"])}</div>'
@@ -518,7 +519,7 @@ def board_gear():
     ups = sorted((r for r in rows.values() if r['gain'] > 0), key=lambda r: -r['gain'])[:4]
     up_rows = ''
     for r in ups:
-        where = '<span class="cg">In your bags</span>' if r['pick'] == BAG_UPGRADE else source_words(r)
+        where = 'In your bags' if r['pick'] == BAG_UPGRADE else source_words(r)
         up_rows += (f'<div class="up">{item_icon(r["pick"], 24)}<div class="tx"><div class="row"><span class="one" style="flex:1">'
                     f'{item_name(r["pick"])}</span><span class="ok">+{r["gain"]:.1f} DPS</span></div>'
                     f'<div class="m one">{SLOT_NAMES[r["slot"]]} · {where}</div></div></div>')
@@ -652,8 +653,8 @@ def board_guild():
     left += section('Your prep', prep, 'for Onyxia')
     left += section('Sign-ups', f'<div>{signups_line()}</div><div class="m">{roles_line()}</div>',
                     f'{len(coming())} of 40 coming')
-    nxt = [(f'{TODAY} 20:00', 'Onyxia\'s Lair', 'In as DPS', 'ok'), ('Sun 13 Dec 19:30', 'Molten Core', 'Not signed up', 'cg'),
-           ('Tue 15 Dec 19:30', 'Molten Core', 'Not signed up', 'cg')]
+    nxt = [(f'{TODAY} 20:00', 'Onyxia\'s Lair', 'In as DPS', 'ok'), ('Sun 13 Dec 19:30', 'Molten Core', 'Not signed up', 'ls'),
+           ('Tue 15 Dec 19:30', 'Molten Core', 'Not signed up', 'ls')]
     wrows = ''.join(f'<tr><td class="m">{d}</td><td class="s">{n}</td><td class="{c}">{a}</td></tr>' for d, n, a, c in nxt)
     right = section('Next raids', f'<table class="tbl">{wrows}</table>')
     top = sorted(ROSTER, key=lambda r: -r[3])[:5]

@@ -87,6 +87,11 @@ test.describe('Send this build to the addon', () => {
     await page.goto('/planner');
     const action = page.getByTestId('planner-send');
     await expect(action).toHaveText('Send this build to Obnoxious Yell');
+    // Signed in, In the game ends with the one Install the addon link (lib/addon/install-link.ts).
+    await expect(page.getByTestId('planner-in-game').getByTestId('planner-install-addon')).toHaveAttribute(
+      'href',
+      '/setup',
+    );
     await page.getByTestId('planner-in-game').screenshot({
       path: process.env.W2_CAPTURES ? `${process.env.W2_CAPTURES}/send-build-before.png` : undefined,
     });
@@ -292,5 +297,6 @@ test.describe('Send this build to the addon', () => {
       '/setup#addon',
     );
     await expect(page.getByTestId('planner-get-addon')).toHaveCount(0);
+    await expect(page.getByTestId('planner-install-addon')).toHaveCount(0);
   });
 });

@@ -78,8 +78,6 @@
   import BandCompare from './BandCompare.svelte';
   import ImportBox from './ImportBox.svelte';
   import InGame from './InGame.svelte';
-  import ActionLink from '../ui/ActionLink.svelte';
-  import { INSTALL_ADDON_LINK } from '../../lib/addon/install-link';
   import PlannerAnswer from './PlannerAnswer.svelte';
   import GuideBuilds from './GuideBuilds.svelte';
   import type { GuideBuild } from '../../lib/planner/guide-builds';
@@ -1333,11 +1331,6 @@
           {/if}
           {#if originLine !== ''}<span class="text-gold" data-testid="planner-build-origin">{originLine}</span
             >{/if}
-        {/snippet}
-        {#snippet actions()}
-          <ActionLink href={INSTALL_ADDON_LINK.href} data-testid="planner-install-addon"
-            >{INSTALL_ADDON_LINK.label}</ActionLink
-          >
         {/snippet}
         {#snippet answer()}
           <!-- Drawn in the server render too (seo-fix 2026-11-10): the count needs no reference data,

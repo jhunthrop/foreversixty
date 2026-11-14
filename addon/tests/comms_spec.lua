@@ -464,7 +464,7 @@ describe("Comms, the FS1 protocol", function()
 			assert.are.equal(0, #printed)
 			hello("2.0.57", "Newer-Yell")
 			assert.are.equal(1, #printed)
-			assert.is_truthy(printed[1]:find(string.format(L.commsUpdateAvailable, "2.0.57"), 1, true))
+			assert.is_truthy(printed[1]:find(string.format(L.commsUpdateAvailable, "2.0.57", "2.0.56"), 1, true))
 			hello("2.0.58", "Newest-Yell")
 			Comms.onEvent("FS1", "1|snapshot!|60|hunter-beast-mastery|14|Beast Mastery raid|2026-12-09|2.0.59|||",
 				"GUILD", "Other-Yell")

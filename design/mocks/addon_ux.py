@@ -77,7 +77,7 @@ ADDON = {'gold': color('base.gold'), 'muted': color('base.muted'), 'body': color
          'bg': color('base.bg'), 'raised': color('base.raised'), 'hover': color('base.hover'),
          'line': color('base.line'), 'cream': color('forever.cream'), 'strong': color('base.strong'),
          'blue': color('forever.blue'), 'blue_edge': color('forever.blueEdge'), 'teal': color('forever.teal'),
-         'teal_edge': color('forever.tealEdge'), 'inset': color('addon.inset')}
+         'teal_edge': color('forever.tealEdge'), 'inset': color('addon.inset'), 'loss': color('forever.warn')}
 BODY_FACES = {w: f for w, f in FONT_FILES['body'].items()}
 
 

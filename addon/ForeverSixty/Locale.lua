@@ -513,7 +513,7 @@ local L = {
 	diagCommsFailedCount = "Other players' messages that could not be handled: %d",
 	commsSent = "Hello sent to your guild.",
 	-- One line a session when a guildmate's addon is newer (Comms.noticeNewerVersion).
-	commsUpdateAvailable = "Version %s is out; a guildmate already has it. Update through CurseForge or Wago.",
+	commsUpdateAvailable = "%s is out, you have %s. Update through CurseForge or Wago.",
 	commsSharingOff = "Not sent: \"Share my build with my guild\" is off. Type /fs options to turn it on.",
 	commsUnknownKind = "Forever Sixty has no message of that kind.",
 	commsWrongChannel = "That message cannot go to %s.",

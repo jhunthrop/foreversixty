@@ -20,6 +20,8 @@
   import { LINK } from '../../lib/ui/primitives';
   import CopyForGame from '../CopyForGame.svelte';
   import Button from '../ui/Button.svelte';
+  import ActionLink from '../ui/ActionLink.svelte';
+  import { INSTALL_ADDON_LINK } from '../../lib/addon/install-link';
   import Section from '../ui/Section.svelte';
 
   let {
@@ -173,6 +175,12 @@
             >{ctaCopy.getAddonAndCompanion} ›</a
           >
         </p>
+      {/if}
+      <!-- Signed in, the one Install the addon link (signed out, the addon link above or Import's says it). -->
+      {#if character !== null}
+        <ActionLink href={INSTALL_ADDON_LINK.href} data-testid="planner-install-addon"
+          >{INSTALL_ADDON_LINK.label}</ActionLink
+        >
       {/if}
     </div>
   {/if}
