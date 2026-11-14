@@ -1,0 +1,5 @@
+paladin-retribution-dps-bare50-alliance-emptied-legsknight -spec paladin-retribution -preset bare -band 50 -faction alliance -iterations 3000 -seed 7 -gear legs:220797
+paladin-retribution-dps-bare50-horde-emptied-legsstone -spec paladin-retribution -preset bare -band 50 -faction horde -iterations 3000 -seed 7 -gear legs:220798
+paladin-retribution-dps-bare60-alliance-emptied-mhforce -spec paladin-retribution -preset bare -band 60 -faction alliance -iterations 3000 -seed 7 -gear main_hand:19323
+paladin-retribution-dps-bare60-horde-emptied-mhforce -spec paladin-retribution -preset bare -band 60 -faction horde -iterations 3000 -seed 7 -gear main_hand:19323
+paladin-retribution-dps-bare60-horde-emptied-mhgreatsword -spec paladin-retribution -preset bare -band 60 -faction horde -iterations 3000 -seed 7 -gear main_hand:234542
