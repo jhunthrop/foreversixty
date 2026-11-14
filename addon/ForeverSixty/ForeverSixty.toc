@@ -28,6 +28,7 @@ RaidDrops.lua
 Export.lua
 Follow.lua
 Sources.lua
+EquipPercent.lua
 Gear.lua
 Progress.lua
 Rotation.lua

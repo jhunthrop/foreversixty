@@ -184,7 +184,9 @@ end
 local function drawJobs(view, parent, width, jobs, y, classes)
 	for index, job in ipairs(jobs) do
 		local key = "job" .. index
-		local label = L.guildYourJob .. " " .. Theme.inlineColor("clientGold", job.label)
+		-- The job's name in white, the site's and the apps' row title (design/specs/2026-11-14-addon-brand.md:
+		-- gold is only the waiting dot's and the score's; the waiting dot already says a job is new).
+		local label = L.guildYourJob .. " " .. Theme.inlineColor("strong", job.label)
 		if job.encounter ~= nil then
 			label = label .. Theme.inlineColor("muted", SEP .. job.encounter)
 		end

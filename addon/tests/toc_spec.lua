@@ -15,7 +15,9 @@ describe("the TOC", function()
 		-- What dropped in a raid (guild slice 7): Export writes it into the code as drops=.
 		"RaidDrops.lua", "Export.lua", "Follow.lua",
 		-- The gear source filter: reads Prefs, Export and Follow; Gear.pick resolves through it.
-		"Sources.lua", "Gear.lua",
+		"Sources.lua",
+		-- An on-equip spell's literal percent (Trueaim Gauntlets' 3% hit): Gear.statsOf reads it.
+		"EquipPercent.lua", "Gear.lua",
 		"Progress.lua", "Rotation.lua",
 		-- The raid jobs (guild assignments): read Codec, Theme and the inbox; /fs job prints them.
 		"RaidAssign.lua",

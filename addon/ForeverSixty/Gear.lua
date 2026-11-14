@@ -16,6 +16,7 @@ local Compat = ns.Compat or require("Compat")
 local Rules = ns.Rules or require("Rules")
 local Follow = ns.Follow or require("Follow")
 local Sources = ns.Sources or require("Sources")
+local EquipPercent = ns.EquipPercent or require("EquipPercent")
 
 local Gear = {}
 
@@ -32,6 +33,11 @@ function Gear.statsOf(link)
 		if name ~= nil and type(value) == "number" then
 			stats[name] = (stats[name] or 0) + value
 		end
+	end
+	-- An on-equip spell's literal percent (Trueaim Gauntlets' 3% hit) is no GetItemStats key: it is
+	-- read from the item's tooltip as the rating points that buy it, so Gear.score prices it at 3%.
+	for name, points in pairs(EquipPercent.ratingOf(link, stats)) do
+		stats[name] = (stats[name] or 0) + points
 	end
 	return stats
 end

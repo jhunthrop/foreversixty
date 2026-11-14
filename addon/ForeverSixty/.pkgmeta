@@ -19,10 +19,21 @@ package-as: ForeverSixty
 move-folders:
   ForeverSixty/ForeverSixtyInbox: ForeverSixtyInbox
 
-# No libraries are embedded: this addon has no dependencies, and a nolib
-# variant of a zip with no libs in it is a second artefact saying the same
-# thing.
+# No libraries are embedded, and a nolib variant of a zip with no libs in it
+# is a second artefact saying the same thing.
 enable-nolib-creation: no
+
+# Forever Sixty Data (CurseForge project 1706707, slug foreversixtydata; Wago
+# ANz7R564) carries the nightly ratings the addon reads (TOC OptionalDeps: the
+# addon still runs without it and says the pack is missing). It is a REQUIRED
+# relation, not optional: the packager sends every relation listed here as the
+# file's whole relation list on the CurseForge upload (release.sh, the
+# "relations" payload), so an optional entry would replace the project's
+# Default Relation (required) and the CurseForge app would stop installing the
+# data pack with the addon. The packager sends no relations to Wago; Wago's
+# relation is set on its dashboard. A wrong slug fails the upload loudly.
+required-dependencies:
+  - foreversixtydata
 
 ignore:
   - .pkgmeta

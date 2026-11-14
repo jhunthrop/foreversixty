@@ -460,6 +460,21 @@ local L = {
 	enchantedLine = "Enchanted: %s",
 	enchantSpeedWord = "Speed",
 	enchantWeaponDamage = "Weapon Damage",
+	-- An on-equip spell's literal percent (EquipPercent), which GetItemStats never reports: the client's
+	-- "Equip:" word where it has no ITEM_SPELL_TRIGGER_ONEQUIP, and the spell wordings by stat, %s the
+	-- amount ("3%"). The 1.60 client prints a rating as the same words, which EquipPercent nets out.
+	equipTrigger = "Equip:",
+	equipPercentLines = {
+		hit = { "Improves your chance to hit by %s.", "Improves your chance to hit with spells by %s." },
+		crit = {
+			"Improves your chance to get a critical strike by %s.",
+			"Improves your chance to get a critical strike with spells by %s.",
+		},
+		dodge = { "Increases your chance to dodge an attack by %s." },
+		parry = { "Increases your chance to parry an attack by %s." },
+		block = { "Increases your chance to block attacks with a shield by %s." },
+		defense = { "Increased Defense +%s." },
+	},
 	-- A name the client has not sent yet (and the end of a shortened name).
 	tooltipNamePending = "…",
 	-- /fs diag verbose: which of the client's two tooltip hooks the section is drawn through.

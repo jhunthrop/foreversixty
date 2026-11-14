@@ -127,6 +127,112 @@ describe("Gear", function()
 		end)
 	end)
 
+	-- 2026-11-15: an on-equip spell's literal percent is no GetItemStats key (the client reads stats from
+	-- ItemSparse's columns; Trueaim Gauntlets' 3% hit is a spell), so the tooltip gain, the Gear tab and
+	-- the bag arrow priced Trueaim's hit at nothing. Read from the item's own tooltip as the rating that
+	-- buys the same percent, never as rating points themselves (that would be 0.3%). The tooltips are
+	-- the client's lines for items/<class>.json's percent_stats rows of 1.60.1.70938.
+	describe("an on-equip percent (items/<class>.json percent_stats)", function()
+		local EquipPercent
+		local LINKS = {
+			trueaim = "|cff0070dd|Hitem:13255::::::::60:::::::|h[Trueaim Gauntlets]|h|r",
+			giantstalker = "|cffa335ee|Hitem:16852::::::::60:::::::|h[Giantstalker's Gloves]|h|r",
+			arcanist = "|cffa335ee|Hitem:16795::::::::60:::::::|h[Arcanist Crown]|h|r",
+			savant = "|cff0070dd|Hitem:12752::::::::60:::::::|h[Cap of the Scarlet Savant]|h|r",
+			bloodfang = "|cffa335ee|Hitem:16905::::::::60:::::::|h[Bloodfang Chestpiece]|h|r",
+			slashclaw = "|cff1eff00|Hitem:900001::::::::60:::::::|h[Slashclaw Bracers]|h|r",
+		}
+		-- GetItemStats as the client answers: the ItemSparse columns only, no percent.
+		local STATS = {
+			[LINKS.trueaim] = { RESISTANCE0_NAME = 120 },
+			[LINKS.giantstalker] = { ITEM_MOD_AGILITY_SHORT = 18, ITEM_MOD_STAMINA_SHORT = 12, RESISTANCE0_NAME = 290 },
+			[LINKS.arcanist] = { ITEM_MOD_INTELLECT_SHORT = 27, ITEM_MOD_STAMINA_SHORT = 16, ITEM_MOD_SPIRIT_SHORT = 10 },
+			[LINKS.savant] = { ITEM_MOD_INTELLECT_SHORT = 20, ITEM_MOD_STAMINA_SHORT = 17 },
+			[LINKS.bloodfang] = { ITEM_MOD_AGILITY_SHORT = 26, ITEM_MOD_STAMINA_SHORT = 17, ITEM_MOD_STRENGTH_SHORT = 12 },
+			[LINKS.slashclaw] = { ITEM_MOD_AGILITY_SHORT = 7, ITEM_MOD_HIT_RATING_SHORT = 10 },
+		}
+		local TIPS = {
+			[LINKS.trueaim] = { "Trueaim Gauntlets", "Hands", "120 Armor", "Equip: Improves your chance to hit by 3%." },
+			[LINKS.giantstalker] = { "Giantstalker's Gloves", "+18 Agility", "Equip: Improves your chance to hit by 2%." },
+			[LINKS.arcanist] = {
+				"Arcanist Crown", "+27 Intellect",
+				"|cff1eff00Equip: Improves your chance to hit with spells by 1%.|r",
+				"Equip: Increases damage and healing done by magical spells and effects by up to 20.",
+			},
+			[LINKS.savant] = { "Cap of the Scarlet Savant", "Equip: Improves your chance to get a critical strike with spells by 2%." },
+			[LINKS.bloodfang] = {
+				"Bloodfang Chestpiece",
+				"Equip: Improves your chance to get a critical strike by 1%.",
+				"Equip: Improves your chance to hit by 2%.",
+			},
+			-- A rating item: the client prints its 10 hit as the same words from its own percent.
+			[LINKS.slashclaw] = { "Slashclaw Bracers", "+7 Agility", "Equip: Improves your chance to hit by 1.0%." },
+		}
+
+		before_each(function()
+			mock.install({
+				itemStats = STATS,
+				globals = {
+					C_TooltipInfo = {
+						GetHyperlink = function(link)
+							local lines = {}
+							for index, text in ipairs(TIPS[link] or {}) do
+								lines[index] = { leftText = text }
+							end
+							return { lines = lines }
+						end,
+					},
+				},
+			})
+			EquipPercent = helper.load("EquipPercent")
+			Gear = helper.load("Gear")
+		end)
+
+		after_each(function()
+			EquipPercent.cache = {}
+		end)
+
+		it("reads Trueaim Gauntlets' 3% hit as 3%, the rating that buys it, not as 3 rating", function()
+			assert.are.same({ armor = 120, hit = 30 }, Gear.statsOf(LINKS.trueaim))
+			-- Survival's hit weight, per 1%: 3% of it, where 3 rating (0.3%) or none was priced before.
+			assert.is_near(3 * 26, Gear.score(Gear.statsOf(LINKS.trueaim), { hit = 26 }), 1e-9)
+		end)
+
+		it("reads a melee and a spell hit percent, and a melee and a spell crit percent", function()
+			assert.is_near(18 * 0.7 + 2 * 26, Gear.score(Gear.statsOf(LINKS.giantstalker), { agility = 0.7, hit = 26 }), 1e-9)
+			assert.are.equal(10, Gear.statsOf(LINKS.arcanist).hit)
+			assert.are.equal(28, Gear.statsOf(LINKS.savant).crit)
+			local bloodfang = Gear.statsOf(LINKS.bloodfang)
+			assert.are.same({ 14, 20 }, { bloodfang.crit, bloodfang.hit })
+		end)
+
+		it("never counts a rating item's own percent line twice", function()
+			assert.are.same({ agility = 7, hit = 10 }, Gear.statsOf(LINKS.slashclaw))
+		end)
+
+		it("prices the percent item above a rating item the old reading put ahead", function()
+			-- Hunter hands at a ranged hunter's weights: Trueaim's 3% hit beats Slashclaw's 1% and 7 agility.
+			local weights = { agility = 1, hit = 12 }
+			local trueaim = Gear.score(Gear.statsOf(LINKS.trueaim), weights)
+			local slashclaw = Gear.score(Gear.statsOf(LINKS.slashclaw), weights)
+			assert.is_true(trueaim > slashclaw)
+			assert.is_near(36, trueaim, 1e-9)
+		end)
+
+		it("reads the tooltip once per item and asks again while the client has not sent it", function()
+			local reads = 0
+			_G.C_TooltipInfo.GetHyperlink = function(link)
+				reads = reads + 1
+				return { lines = link == LINKS.trueaim and { { leftText = TIPS[LINKS.trueaim][4] } } or {} }
+			end
+			Gear.statsOf(LINKS.trueaim)
+			Gear.statsOf(LINKS.trueaim)
+			Gear.statsOf(LINKS.giantstalker)
+			Gear.statsOf(LINKS.giantstalker)
+			assert.are.equal(3, reads)
+		end)
+	end)
+
 	it("reads the spec off the tree the points name beyond doubt (Talents.decideTree)", function()
 		local ranks = { [1] = { ["1:1"] = 1 }, [2] = { ["1:1"] = 7 }, [3] = { ["1:1"] = 1 } }
 		assert.are.equal("paladin-protection", Gear.specOf(DATA, "paladin", ranks))
