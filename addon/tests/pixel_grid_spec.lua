@@ -224,7 +224,7 @@ describe("the addon's windows on the pixel grid", function()
 	it("draws an outline a whole number of pixels thick, never under one", function()
 		start(1440, 1)
 		-- 1440 pixels over 768 units: 1.875 a unit, so a 1-unit edge is 2 pixels.
-		local edges = Theme.outline(_G.UIParent, 1, "umberEdge")
+		local edges = Theme.outline(_G.UIParent, 1, "border")
 		for index, edge in ipairs(Theme.EDGES) do
 			local thick = edge.horizontal and edges[index]:GetHeight() or edges[index]:GetWidth()
 			assert.are.near(2 * 768 / 1440, thick, 1e-9, edge.from)

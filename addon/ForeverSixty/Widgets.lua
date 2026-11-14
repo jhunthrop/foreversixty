@@ -59,20 +59,13 @@ function Widgets.edgedButton(parent, text, onClick, name, width, height)
 	button.GetText = function(self)
 		return self.foreverSixtyLabel:GetText()
 	end
-	--- Rest or lit, closed or open (Widgets.setEdgedOpen): the fill, the edge and the label
-	--- together. Open (L4.3 fix round 3, item 3): the label in body over the inset ground of a
-	--- pressed tab; lit while open, the label brightens and the inset ground stays.
+	--- Rest or lit: the fill, the edge and the label together.
 	local function look(lit)
-		local open = button.foreverSixtyOpen == true
-		if open then
-			Theme.paint(ground, Theme.CONTROL_STATES.tab.pressed)
-		else
-			Theme.paint(ground, lit and "hover" or "background", not lit and Theme.ALPHA.window or nil)
-		end
+		Theme.paint(ground, lit and "hover" or "background", not lit and Theme.ALPHA.window or nil)
 		for _, edge in ipairs(button.foreverSixtyEdges) do
 			Theme.paint(edge, lit and "goldHover" or "gold")
 		end
-		label:SetTextColor(Theme.rgb(Theme.HEX[lit and "goldHover" or (open and "body" or "gold")]))
+		label:SetTextColor(Theme.rgb(Theme.HEX[lit and "goldHover" or "gold"]))
 	end
 	button.foreverSixtyLook = look
 	button:SetScript("OnEnter", function()
