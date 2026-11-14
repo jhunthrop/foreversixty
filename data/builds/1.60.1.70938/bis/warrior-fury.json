@@ -1,8 +1,8 @@
 {
   "spec": "warrior-fury",
   "build": "1.60.1.70938",
-  "engine_version": "f0f90b5f9",
-  "generated_at": "2026-11-14T05:13:38Z",
+  "engine_version": "f9385b498",
+  "generated_at": "2026-11-14T07:28:55Z",
   "bands": [
     {
       "spec": "warrior-fury",
@@ -1198,8 +1198,8 @@
         "off_hand: Diamond Hammer",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 4.796043712,
-      "verify_run_seconds": 18.80610662,
+      "weights_run_seconds": 6.21013999,
+      "verify_run_seconds": 25.110547981000003,
       "coverage": {
         "back": {
           "eligible": 104,
@@ -2512,8 +2512,8 @@
         "off_hand: Diamond Hammer",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 4.796043712,
-      "verify_run_seconds": 19.469652754000002,
+      "weights_run_seconds": 6.21013999,
+      "verify_run_seconds": 25.222226095,
       "coverage": {
         "back": {
           "eligible": 105,
@@ -3930,8 +3930,8 @@
         "off_hand: Bloody Brass Knuckles",
         "ranged: Double-barreled Shotgun"
       ],
-      "weights_run_seconds": 5.511632467,
-      "verify_run_seconds": 10.992299312,
+      "weights_run_seconds": 7.31066529,
+      "verify_run_seconds": 14.414239727000002,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -5339,8 +5339,8 @@
         "off_hand: Bloody Brass Knuckles",
         "ranged: Double-barreled Shotgun"
       ],
-      "weights_run_seconds": 5.511632467,
-      "verify_run_seconds": 9.763732051,
+      "weights_run_seconds": 7.31066529,
+      "verify_run_seconds": 12.698270331,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -6780,8 +6780,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 5.629939327,
-      "verify_run_seconds": 19.267065069,
+      "weights_run_seconds": 7.249577646,
+      "verify_run_seconds": 25.201168942000002,
       "coverage": {
         "back": {
           "eligible": 257,
@@ -8195,8 +8195,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 5.629939327,
-      "verify_run_seconds": 18.47744146,
+      "weights_run_seconds": 7.249577646,
+      "verify_run_seconds": 24.043353732,
       "coverage": {
         "back": {
           "eligible": 259,
@@ -9787,8 +9787,8 @@
         "off_hand: Doomforged Straightedge",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 5.828578023,
-      "verify_run_seconds": 16.817701372,
+      "weights_run_seconds": 7.525041942,
+      "verify_run_seconds": 22.076845742,
       "coverage": {
         "back": {
           "eligible": 330,
@@ -11411,8 +11411,8 @@
         "off_hand: Doomforged Straightedge",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 5.828578023,
-      "verify_run_seconds": 16.911937793,
+      "weights_run_seconds": 7.525041942,
+      "verify_run_seconds": 21.710116844999998,
       "coverage": {
         "back": {
           "eligible": 335,
@@ -13129,8 +13129,8 @@
         "off_hand: Felstriker",
         "ranged: Bloodseeker"
       ],
-      "weights_run_seconds": 6.084342655,
-      "verify_run_seconds": 94.263868261,
+      "weights_run_seconds": 7.895983941,
+      "verify_run_seconds": 123.116427946,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -14861,8 +14861,8 @@
         "main_hand: Persuader",
         "off_hand: Felstriker"
       ],
-      "weights_run_seconds": 6.084342655,
-      "verify_run_seconds": 104.396496533,
+      "weights_run_seconds": 7.895983941,
+      "verify_run_seconds": 133.97487647,
       "coverage": {
         "back": {
           "eligible": 472,
@@ -16589,8 +16589,8 @@
         "off_hand: Felstriker",
         "ranged: Bloodseeker"
       ],
-      "weights_run_seconds": 5.395568971,
-      "verify_run_seconds": 83.06900092,
+      "weights_run_seconds": 6.913600038,
+      "verify_run_seconds": 104.165203836,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -18276,8 +18276,8 @@
         "off_hand: Felstriker",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 5.395568971,
-      "verify_run_seconds": 81.479967628,
+      "weights_run_seconds": 6.913600038,
+      "verify_run_seconds": 104.188315004,
       "coverage": {
         "back": {
           "eligible": 472,

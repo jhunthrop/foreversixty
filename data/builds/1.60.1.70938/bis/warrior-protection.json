@@ -1,8 +1,8 @@
 {
   "spec": "warrior-protection",
   "build": "1.60.1.70938",
-  "engine_version": "f0f90b5f9",
-  "generated_at": "2026-11-14T05:18:18Z",
+  "engine_version": "f9385b498",
+  "generated_at": "2026-11-14T07:34:46Z",
   "bands": [
     {
       "spec": "warrior-protection",
@@ -1417,8 +1417,8 @@
         "off_hand: Redbeard Crest",
         "ranged: Calibrated Blunderbuss"
       ],
-      "weights_run_seconds": 4.340519316,
-      "verify_run_seconds": 8.391559182,
+      "weights_run_seconds": 5.519996487,
+      "verify_run_seconds": 10.417679412,
       "coverage": {
         "back": {
           "eligible": 104,
@@ -2918,8 +2918,8 @@
         "off_hand: Redbeard Crest",
         "ranged: Satchel of Copper Bombs"
       ],
-      "weights_run_seconds": 4.340519316,
-      "verify_run_seconds": 8.40505521,
+      "weights_run_seconds": 5.519996487,
+      "verify_run_seconds": 10.490285403,
       "coverage": {
         "back": {
           "eligible": 105,
@@ -4545,8 +4545,8 @@
         "off_hand: Bonepile Gaze",
         "ranged: Chesterfall Musket"
       ],
-      "weights_run_seconds": 4.059122188,
-      "verify_run_seconds": 4.912110312,
+      "weights_run_seconds": 5.078953341,
+      "verify_run_seconds": 6.127878024,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -6146,8 +6146,8 @@
         "off_hand: Bonepile Gaze",
         "ranged: Chesterfall Musket"
       ],
-      "weights_run_seconds": 4.059122188,
-      "verify_run_seconds": 4.858798480000001,
+      "weights_run_seconds": 5.078953341,
+      "verify_run_seconds": 6.040014641999999,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -7881,8 +7881,8 @@
         "main_hand: Sword of Serenity",
         "off_hand: Aegis of the Scarlet Commander"
       ],
-      "weights_run_seconds": 4.0639236,
-      "verify_run_seconds": 9.561142388,
+      "weights_run_seconds": 5.049742992,
+      "verify_run_seconds": 11.908730104,
       "coverage": {
         "back": {
           "eligible": 257,
@@ -9616,8 +9616,8 @@
         "main_hand: Nordic Longshank",
         "off_hand: Aegis of the Scarlet Commander"
       ],
-      "weights_run_seconds": 4.0639236,
-      "verify_run_seconds": 9.549101298,
+      "weights_run_seconds": 5.049742992,
+      "verify_run_seconds": 11.464238482999999,
       "coverage": {
         "back": {
           "eligible": 259,
@@ -11450,8 +11450,8 @@
         "off_hand: Wall of the Dead",
         "ranged: Gryphonwing Long Bow"
       ],
-      "weights_run_seconds": 4.036611027,
-      "verify_run_seconds": 10.928096916,
+      "weights_run_seconds": 5.026880967,
+      "verify_run_seconds": 13.227118767999999,
       "coverage": {
         "back": {
           "eligible": 330,
@@ -13281,8 +13281,8 @@
         "off_hand: Wall of the Dead",
         "ranged: Massive Longbow"
       ],
-      "weights_run_seconds": 4.036611027,
-      "verify_run_seconds": 12.420238554,
+      "weights_run_seconds": 5.026880967,
+      "verify_run_seconds": 15.002634898,
       "coverage": {
         "back": {
           "eligible": 335,
@@ -15197,8 +15197,8 @@
         "off_hand: The Immovable Object",
         "ranged: Outrunner's Bow"
       ],
-      "weights_run_seconds": 8.603606735,
-      "verify_run_seconds": 69.513145001,
+      "weights_run_seconds": 11.015116668,
+      "verify_run_seconds": 86.509852477,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -17088,8 +17088,8 @@
         "off_hand: The Immovable Object",
         "ranged: Outrider's Bow"
       ],
-      "weights_run_seconds": 8.603606735,
-      "verify_run_seconds": 69.616867223,
+      "weights_run_seconds": 11.015116668,
+      "verify_run_seconds": 85.757173763,
       "coverage": {
         "back": {
           "eligible": 472,
@@ -18906,8 +18906,8 @@
         "off_hand: The Immovable Object",
         "ranged: Outrunner's Bow"
       ],
-      "weights_run_seconds": 9.196033434,
-      "verify_run_seconds": 70.661497927,
+      "weights_run_seconds": 11.936505476,
+      "verify_run_seconds": 89.51425556199999,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -20813,8 +20813,8 @@
         "off_hand: The Immovable Object",
         "ranged: Outrider's Bow"
       ],
-      "weights_run_seconds": 9.196033434,
-      "verify_run_seconds": 72.33122962200001,
+      "weights_run_seconds": 11.936505476,
+      "verify_run_seconds": 90.41333690500001,
       "coverage": {
         "back": {
           "eligible": 472,

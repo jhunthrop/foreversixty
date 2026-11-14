@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat. An item's crit rating
 
 ### Band 20 (night-elf, 12321200000000000-000000000000000000-000000000000000000)
 
-Set DPS (verified): 33.0. Weights run: 3.9s. Verify run: 11.0s. 388 eligible items had no known source.
+Set DPS (verified): 33.0. Weights run: 5.1s. Verify run: 13.8s. 388 eligible items had no known source.
 
 Race sweep: high-order-skyborne 33.4 ± 0.0, night-elf 33.0 ± 0.0, human 32.9 ± 0.0, dwarf 32.6 ± 0.0, gnome 32.5 ± 0.0 (dps); high-order-skyborne beats the guide race night-elf by 0.4 (1.28%) ± 0.0, beyond error.
 
@@ -40,7 +40,7 @@ No-known-source sample (15 of 388, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (night-elf, 12323213130000000-000000000000000000-000000000000000000)
 
-Set DPS (verified): 68.2. Weights run: 4.4s. Verify run: 19.4s. 637 eligible items had no known source.
+Set DPS (verified): 68.2. Weights run: 5.9s. Verify run: 26.0s. 637 eligible items had no known source.
 
 Race sweep: night-elf 68.2 ± 0.1, human 67.4 ± 0.1, gnome 66.6 ± 0.1, dwarf 66.3 ± 0.1, high-order-skyborne 65.8 ± 0.1 (dps); the guide race night-elf is best.
 
@@ -72,7 +72,7 @@ No-known-source sample (15 of 637, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 40 (night-elf, 12323213132214001-000000000000000000-000000000000000000)
 
-Set DPS (verified): 151.8. Weights run: 4.5s. Verify run: 13.0s. 946 eligible items had no known source.
+Set DPS (verified): 151.8. Weights run: 5.8s. Verify run: 16.8s. 946 eligible items had no known source.
 
 Race sweep: night-elf 151.8 ± 0.2, human 150.7 ± 0.2, gnome 149.2 ± 0.2, dwarf 148.4 ± 0.2, high-order-skyborne 142.6 ± 0.2 (dps); the guide race night-elf is best.
 
@@ -104,7 +104,7 @@ No-known-source sample (15 of 946, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (night-elf, 12323213132215201-050200000000000000-000000000000000000)
 
-Set DPS (verified): 223.7. Weights run: 4.7s. Verify run: 22.6s. 1228 eligible items had no known source.
+Set DPS (verified): 223.7. Weights run: 6.2s. Verify run: 29.8s. 1228 eligible items had no known source.
 
 Race sweep: high-order-skyborne 223.7 ± 0.3, night-elf 223.7 ± 0.3, human 222.4 ± 0.3, dwarf 221.8 ± 0.3, gnome 220.9 ± 0.3 (dps); high-order-skyborne beats the guide race night-elf by 0.0 (0.01%) ± 0.4, inside error.
 
@@ -136,7 +136,7 @@ No-known-source sample (15 of 1228, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60 (night-elf, 12323213132215201-050500000000000000-205000000000000000)
 
-Set DPS (verified): 317.0. Weights run: 4.3s. Verify run: 85.7s. 2727 eligible items had no known source.
+Set DPS (verified): 317.0. Weights run: 5.8s. Verify run: 110.8s. 2727 eligible items had no known source.
 
 Race sweep: high-order-skyborne 317.2 ± 0.4, night-elf 317.0 ± 0.4, human 316.4 ± 0.4, gnome 315.9 ± 0.4, dwarf 313.1 ± 0.4 (dps); high-order-skyborne beats the guide race night-elf by 0.1 (0.04%) ± 0.5, inside error.
 
@@ -168,7 +168,7 @@ No-known-source sample (15 of 2727, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60, raid preset (night-elf, 30303213132215201-050500050120000000-100000000000000000)
 
-Set DPS (verified): 954.7. Weights run: 3.8s. Verify run: 74.1s. 2727 eligible items had no known source.
+Set DPS (verified): 954.7. Weights run: 5.0s. Verify run: 94.7s. 2727 eligible items had no known source.
 
 Race sweep: high-order-skyborne 958.6 ± 1.1, night-elf 954.7 ± 1.1, human 951.1 ± 1.1, gnome 948.8 ± 1.1, dwarf 943.3 ± 1.1 (dps); high-order-skyborne beats the guide race night-elf by 3.9 (0.40%) ± 1.5, beyond error.
 
@@ -202,7 +202,7 @@ No-known-source sample (15 of 2727, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 20 (undead, 12321200000000000-000000000000000000-000000000000000000)
 
-Set DPS (verified): 34.2. Weights run: 3.9s. Verify run: 12.1s. 371 eligible items had no known source.
+Set DPS (verified): 34.2. Weights run: 5.1s. Verify run: 16.2s. 371 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 34.5 ± 0.0, undead 34.2 ± 0.0, troll 33.5 ± 0.0, orc 33.4 ± 0.0, tauren 33.2 ± 0.0 (dps); windshaper-skyborne beats the guide race undead by 0.3 (0.87%) ± 0.0, beyond error.
 
@@ -234,7 +234,7 @@ No-known-source sample (15 of 371, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (undead, 12323213130000000-000000000000000000-000000000000000000)
 
-Set DPS (verified): 68.2. Weights run: 4.4s. Verify run: 18.4s. 622 eligible items had no known source.
+Set DPS (verified): 68.2. Weights run: 5.9s. Verify run: 25.3s. 622 eligible items had no known source.
 
 Race sweep: undead 68.2 ± 0.1, troll 67.2 ± 0.1, orc 67.1 ± 0.1, tauren 66.6 ± 0.1, windshaper-skyborne 65.8 ± 0.1 (dps); the guide race undead is best.
 
@@ -266,7 +266,7 @@ No-known-source sample (15 of 622, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 40 (undead, 12323213132214001-000000000000000000-000000000000000000)
 
-Set DPS (verified): 150.7. Weights run: 4.5s. Verify run: 13.4s. 928 eligible items had no known source.
+Set DPS (verified): 150.7. Weights run: 5.8s. Verify run: 17.9s. 928 eligible items had no known source.
 
 Race sweep: undead 150.7 ± 0.2, orc 148.6 ± 0.2, troll 147.9 ± 0.2, tauren 147.7 ± 0.2, windshaper-skyborne 141.8 ± 0.2 (dps); the guide race undead is best.
 
@@ -298,7 +298,7 @@ No-known-source sample (15 of 928, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (undead, 12323213132215201-050200000000000000-000000000000000000)
 
-Set DPS (verified): 225.2. Weights run: 4.7s. Verify run: 16.8s. 1209 eligible items had no known source.
+Set DPS (verified): 225.2. Weights run: 6.2s. Verify run: 21.7s. 1209 eligible items had no known source.
 
 Race sweep: undead 225.2 ± 0.3, windshaper-skyborne 224.7 ± 0.3, troll 223.2 ± 0.3, orc 222.8 ± 0.3, tauren 221.3 ± 0.3 (dps); the guide race undead is best.
 
@@ -330,7 +330,7 @@ No-known-source sample (15 of 1209, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60 (undead, 12323213132215201-050500000000000000-205000000000000000)
 
-Set DPS (verified): 317.1. Weights run: 4.3s. Verify run: 85.3s. 2717 eligible items had no known source.
+Set DPS (verified): 317.1. Weights run: 5.8s. Verify run: 111.2s. 2717 eligible items had no known source.
 
 Race sweep: undead 317.1 ± 0.4, windshaper-skyborne 315.7 ± 0.4, troll 312.9 ± 0.4, orc 312.2 ± 0.4, tauren 310.5 ± 0.4 (dps); the guide race undead is best.
 
@@ -362,7 +362,7 @@ No-known-source sample (15 of 2717, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60, raid preset (undead, 30303213132215201-050500050120000000-100000000000000000)
 
-Set DPS (verified): 951.2. Weights run: 3.8s. Verify run: 74.9s. 2717 eligible items had no known source.
+Set DPS (verified): 951.2. Weights run: 5.0s. Verify run: 95.8s. 2717 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 957.9 ± 1.1, undead 951.2 ± 1.1, orc 951.0 ± 1.1, troll 948.4 ± 1.1, tauren 941.8 ± 1.1 (dps); windshaper-skyborne beats the guide race undead by 6.6 (0.70%) ± 1.6, beyond error.
 
