@@ -80,7 +80,7 @@ The build also puts two points in **Improved Berserker Rage**, so every Berserke
 
 **The pull.** Bloodrage a few seconds before the tank pulls, then Battle Shout with that rage. If a raid warrior's shout is already on you, skip yours and keep the rage for Bloodthirst; solo and in a small group, always shout. Stay in Berserker Stance and walk in: the early Bloodrage has already put you in combat, so there is no Charge to take, and with Improved Bloodrage it brings more rage than a Charge would. On trash and while leveling, Charge or Intercept in freely.
 
-**Rage.** Never hold Reckless Swings; the health it costs is the healers' to cover. Below 60 rage, hold it for Bloodthirst and Whirlwind instead of queueing Heroic Strike. With a shaman's Windfury Totem on you, Hamstring right after Reckless Swings while the boss is above 25%: ten rage for a main-hand hit that can trigger the totem's strike. Without Windfury, never Hamstring for damage.
+**Rage.** Never hold Reckless Swings; the health it costs is the healers' to cover. Below 60 rage, hold it for Bloodthirst and Whirlwind instead of queueing Heroic Strike. With a shaman's Windfury Totem on you, Hamstring right after Reckless Swings while the target is above 25%: ten rage for a main-hand hit that can trigger the totem's strike. From 25% down that rage is your first Execute. Without Windfury, never Hamstring for damage.
 
 **Fears.** Berserker Rage breaks fear and keeps you immune to it for 10 seconds, which is why it waits on Magmadar, Onyxia and Nefarian for Panic, Bellowing Roar and the fear. Death Wish can be pressed while you are feared too: it breaks the fear and keeps you immune for its 30 seconds, so if Berserker Rage is down and you have the 10 rage, it is your second fear break.
 
