@@ -76,3 +76,17 @@ def test_an_item_wowhead_does_not_list_is_unchanged():
     client = _client()
     (out,) = with_wowhead_equip_stats([client], [], FACTORS)
     assert out == client
+
+
+def test_a_stat_a_hotfix_removed_is_not_filled_back():
+    """Channeler's Ring 272406: push 114062 trades its Spirit for spell power;
+    Wowhead's older record still says spi 8 and hitpct 1."""
+    ring = _wowhead(272406, {"int": 14, "spi": 8, "hitpct": 1})
+    client = pb.SimItem(
+        id=272406, stats=stat_array([("intellect", 14.0), ("hit", 1.0), ("spell_power", 9.0)])
+    )
+    (out,) = with_wowhead_equip_stats(
+        [client], [ring], FACTORS, dropped={272406: frozenset({"spirit"})}
+    )
+    assert out.stats[stat_index("spirit")] == 0.0
+    assert out.stats[stat_index("spell_power")] == 9.0

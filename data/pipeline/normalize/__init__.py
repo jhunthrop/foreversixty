@@ -155,6 +155,7 @@ def normalize_build(
     from pipeline.normalize.classicdb import merge_class_items as merge_classicdb_class_items
     from pipeline.normalize.classicdb import merge_items as merge_classicdb_items
     from pipeline.normalize.classicdb import merge_sets as merge_classicdb_sets
+    from pipeline.normalize.dropped_stats import dropped_stat_keys
     from pipeline.normalize.dungeons import normalize_dungeons
     from pipeline.normalize.effects import EffectIndex
     from pipeline.normalize.factions import load_factions
@@ -443,7 +444,11 @@ def normalize_build(
         skipped.append(f"items/: {error}")
         shutil.rmtree(build_dir / "items", ignore_errors=True)
     else:
-        class_items = fill_client_equip_stats(class_items, load_payload_items(build_dir))
+        class_items = fill_client_equip_stats(
+            class_items,
+            load_payload_items(build_dir),
+            dropped_stat_keys(read_csv(raw / "ItemSparse.csv"), sparse_rows),
+        )
         if wowhead_supplement is not None:
             class_items = merge_class_items(class_items, wowhead_supplement, class_rows)
         if classicdb_supplement is not None:

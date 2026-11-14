@@ -297,3 +297,14 @@ def test_a_supplement_row_and_an_unlisted_item_are_left_alone() -> None:
     assert fill_client_equip_stats([classicdb], [_BENEDICTION]) == [classicdb]
     client = _client_staff({"intellect": 31})
     assert fill_client_equip_stats([client], []) == [client]
+
+
+def test_a_stat_a_hotfix_removed_is_not_filled_back() -> None:
+    """Blessed Band of Light 272407: the 13 Nov hotfix removed its hit; Wowhead
+    still shows hitpct 1."""
+    (record,) = fill_client_equip_stats(
+        [_client_staff({"intellect": 31, "stamina": 10})],
+        [_BENEDICTION],
+        dropped={18608: frozenset({"spirit", "healing"})},
+    )
+    assert record.items[0].stats == {"intellect": 31, "stamina": 10, "spell_power": 65}

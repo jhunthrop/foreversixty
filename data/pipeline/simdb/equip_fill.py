@@ -12,7 +12,9 @@ Forever's feed states the server's amounts, so each stat a client row leaves
 at zero takes Wowhead's,
 converted like a Wowhead-supplement item (`build_wowhead_sim_items`). Armour
 stays the client's curve value, and a stat the client row states is never
-overridden.
+overridden, and a stat a hotfix removed from the row
+(`pipeline.normalize.dropped_stats`) is not put back from Wowhead's older
+record.
 """
 
 from __future__ import annotations
@@ -27,12 +29,12 @@ from pipeline.simproto import pb
 _KEEP_CLIENT = frozenset({stat_index("armor")})
 
 
-def _filled(client: pb.SimItem, wowhead: pb.SimItem) -> pb.SimItem:
+def _filled(client: pb.SimItem, wowhead: pb.SimItem, keep: frozenset[int]) -> pb.SimItem:
     size = max(len(client.stats), len(wowhead.stats))
     ours = list(client.stats) + [0.0] * (size - len(client.stats))
     theirs = list(wowhead.stats) + [0.0] * (size - len(wowhead.stats))
     stats = [
-        mine if mine or index in _KEEP_CLIENT else max(0.0, other)
+        mine if mine or index in keep else max(0.0, other)
         for index, (mine, other) in enumerate(zip(ours, theirs, strict=True))
     ]
     out = pb.SimItem()
@@ -46,9 +48,12 @@ def with_wowhead_equip_stats(
     items: Iterable[pb.SimItem],
     wowhead_items: Iterable[wh.WowheadItem],
     rating_factors: Mapping[str, float],
+    dropped: Mapping[int, frozenset[str]] | None = None,
 ) -> list[pb.SimItem]:
-    """`items`, each carrying Wowhead's stat wherever its own is zero."""
+    """`items`, each carrying Wowhead's stat wherever its own is zero, except
+    the stats `dropped` says a hotfix removed from that item's row."""
     by_id = {item.id: item for item in wowhead_items}
+    dropped = dropped or {}
     out: list[pb.SimItem] = []
     for item in items:
         record = by_id.get(item.id)
@@ -56,5 +61,6 @@ def with_wowhead_equip_stats(
             out.append(item)
             continue
         (wowhead,) = build_wowhead_sim_items([record], rating_factors)
-        out.append(_filled(item, wowhead))
+        removed = frozenset(stat_index(key) for key in dropped.get(item.id, frozenset()))
+        out.append(_filled(item, wowhead, _KEEP_CLIENT | removed))
     return out

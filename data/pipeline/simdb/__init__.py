@@ -47,6 +47,7 @@ from pipeline.hotfix_merge import merge_hotfix_table
 from pipeline.manifest import refresh_manifest
 from pipeline.models import ConsumableRecord
 from pipeline.normalize import write_json
+from pipeline.normalize.dropped_stats import dropped_stat_keys
 from pipeline.normalize.gear import MAX_PLAYER_LEVEL, column_value, int_column, is_junk_name
 from pipeline.normalize.item_curves import load_item_curves
 from pipeline.simdb.enchants import (
@@ -256,7 +257,11 @@ def build_sim_database(
     if wowhead_path.exists():
         # A hotfix item's effect links never reach the client tables
         # (pipeline/simdb/equip_fill.py); Wowhead states its on-equip stats.
-        items = with_wowhead_equip_stats(items, wh.load_items(wowhead_path), rating_factors)
+        # A stat a hotfix removed stays removed (pipeline/normalize/dropped_stats.py).
+        dropped = dropped_stat_keys(read_csv(raw / "ItemSparse.csv"), sparse_rows)
+        items = with_wowhead_equip_stats(
+            items, wh.load_items(wowhead_path), rating_factors, dropped
+        )
 
     # Every id ItemSparse states outright, junk or not, gate-passing or not --
     # "the client already has this id" for a supplement's own purposes

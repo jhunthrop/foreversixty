@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import logging
 from collections import Counter
+from collections.abc import Mapping
 from pathlib import Path
 
 from pipeline.models import ClassItems, Item, ItemSetRecord
@@ -68,7 +69,9 @@ def load_payload_items(build_dir: Path) -> list[WowheadItem]:
 
 
 def fill_client_equip_stats(
-    records: list[ClassItems], wowhead_items: list[WowheadItem]
+    records: list[ClassItems],
+    wowhead_items: list[WowheadItem],
+    dropped: Mapping[int, frozenset[str]] | None = None,
 ) -> list[ClassItems]:
     """`records`, each client row carrying Wowhead's stat wherever its own is absent.
 
@@ -77,8 +80,12 @@ def fill_client_equip_stats(
     damage and healing were in simdb (which the sim scores) but not in
     items/<class>.json (which the planner shows). The rule is simdb's: only a
     stat the client row leaves out is taken, a stated one is never overridden,
-    and only client rows (`stats_source` None) are touched."""
+    and only client rows (`stats_source` None) are touched. `dropped`
+    (`pipeline.normalize.dropped_stats.dropped_stat_keys`) names the stats a
+    hotfix removed from an item's row; Wowhead's older record never puts
+    those back."""
     by_id = {item.id: item for item in wowhead_items}
+    dropped = dropped or {}
     filled = 0
     out: list[ClassItems] = []
     for record in records:
@@ -89,7 +96,9 @@ def fill_client_equip_stats(
                 {
                     key: amount
                     for key, amount in planner_stats(source).items()
-                    if amount and not item.stats.get(key)
+                    if amount
+                    and not item.stats.get(key)
+                    and key not in dropped.get(item.id, frozenset())
                 }
                 if source is not None and item.stats_source is None
                 else {}
