@@ -1030,14 +1030,9 @@ L.dialogSimState = {
 L.diagDialogOff = "The build dialog did not open on screen; /fs printed the commands instead."
 L.diagDialogFocus = "The build dialog opened without the keyboard; click its box to type."
 
-
 -- The "Forever Sixty" character-panel tab (spec section 4.5, L4.3): the button beside the
 -- client's tabs, and the flyout's header and region titles.
 L.panelTabLabel = L.addonName
-L.panelHeader = L.addonName
--- A target's second line: the slot in the client's own word, then the item tooltip's own
--- source line ("Chest · Wailing Caverns · Mutanus the Devourer · 33% drop").
-L.panelTargetDetail = "%s · %s"
 -- The off-plan count's hover, one talent a line: a node the plan never touches ("Improved
 -- Wrath · Balance · Rank 2/5"), and a planned node holding more than the plan asks
 -- ("Improved Wrath · Balance · Rank 4/5 (plan 3)").
@@ -1264,124 +1259,17 @@ L.timeTwelveHour = "%d %s"
 L.timeAm = "am"
 L.timePm = "pm"
 
--- The first-run tour (surfaces/Onboarding.lua, design/specs/2026-11-08-addon-ux.md 3.1).
-L.tourTitle = "Welcome to Forever Sixty"
--- Each page's lead (spec section 6.3): what the player gets, in a veteran's words, then the page.
-L.tourLoopLead = "Your next talent gets a gold ring and a better bag item gets a green arrow."
-L.tourSiteLead = "What you pick on the site shows up on your bags, in your talent window and in your panel."
-L.tourBackLead = "Each boss gets a parse and a biggest loss once the companion uploads the fight."
-L.tourGuildLead = "Your officers post the raid on the site. On the day, the line by your minimap says Tonight, and "
-	.. "your panel has your job if they set one."
-L.tourSetupLead = "The gold ring, the bag arrows and the rotation all follow the build you pick."
-L.tourLoopHeading = "How Forever Sixty works"
-L.tourSiteHeading = "The site, in your game"
-L.tourBackHeading = "Your game, back to the site"
-L.tourGuildHeading = "Your guild, everywhere"
-L.tourSetupHeading = "Set it up"
-L.tourCharacter = "Your character"
-L.tourCharacterLine = "Imported from Battle.net when you sign in."
-L.tourSite = "foreversixty.gg"
-L.tourSiteLine = "Best in slot, the sim, guides, tier lists."
-L.tourGame = "In game"
-L.tourGameLine = "Your bags, your talent window, your panel."
-L.tourFights = "Your fights"
-L.tourFightsLine = "The companion app uploads each one."
-L.tourBack = "Back on the site"
-L.tourBackLine = "Your fights rated, the coach, your Forever Score."
-L.tourGuild = "Your guild"
-L.tourGuildLine = "Raids from the site, in your Discord and in game."
-L.tourSiteBis = "BiS pages"
-L.tourArrow = "The green arrow"
-L.tourArrowLine = "On a bag item, a quest reward or a loot roll that beats what you wear."
-L.tourSiteWeights = "Spec weights or your sim"
-L.tourOneLine = "One line on every item"
-L.tourOneLineText = "+2.2 DPS, Best in slot or Not for you. Shift shows the rest."
-L.tourSiteBuild = "Class guide build"
-L.tourRing = "The gold talent ring"
-L.tourRingLine = "Your next point, in that build's order."
-L.tourSiteRotation = "Class guide rotation"
-L.tourRotation = "Rotation in your panel"
-L.tourRotationLine = "The buttons to press at your level, and what changes next."
-L.tourUpload = "The companion uploads your fights"
-L.tourUploadLine = "The companion reads your combat log and sends each fight as it ends. Turn on Advanced Combat "
-	.. "Logging once (System, Network), then type /combatlog when you play."
-L.tourRated = "The site rates them and coaches you"
-L.tourRatedLine = "Each fight gets a report, a percentile and the one thing that cost you most, like \"biggest loss: "
-	.. "standing in fire\"."
-L.tourScore = "Your Forever Score"
-L.tourScoreLine = "Gear, experience, parses, attendance and preparation, in one number, on your tooltip for "
-	.. "players with Forever Sixty and Forever Sixty Data."
--- The coordinator's ruling (2026-11-08): one short line that the score can be hidden.
-L.tourScoreHide = "Settings can hide it from others."
-L.tourGuildRaid = "Onyxia's Lair"
-L.tourGuildChipNote = "The line by your minimap."
-L.tourGuildJob = "Whelps, west cave"
-L.tourGuildJobNote = "In your panel, and in chat when you zone in."
-L.tourAnswer = "Answer In, Late, Bench or Out"
-L.tourAnswerSite = "On foreversixty.gg"
-L.tourAnswerDiscord = "In Discord, on the raid post"
-L.tourAnswerLater = "In game and on the phone app"
-L.tourComing = "\194\183 coming"
-L.tourYourPath = "Your path: %s"
-L.tourNextPoint = "Next point at level %d: %s"
-L.tourSignIn = "Sign in on the site"
-L.tourSignInLine = "Sign in with Battle.net. Upgrades, talents and rotation work without it."
-L.tourCompanion = "Get the companion for your PC"
-L.tourCompanionLine = "Uploads your fights for reports and the coach, and keeps your builds in step with the site."
-L.tourCompanionRan = "The companion has run"
-L.tourSiteSaw = "The site saw %s %s."
-L.tourSiteSilent = "The site has not seen %s in %d days. Is the companion running?"
-L.tourHourAgo = "%d hour ago"
-L.tourHoursAgo = "%d hours ago"
-L.tourMinutesAgo = "%d minutes ago"
-L.tourLinks = "Click a box, then Ctrl+C."
-L.tourAgain = "/fs tour opens this again."
--- The coordinator's ruling (2026-11-08): a small QR for the tester sign-up until the apps ship.
-L.tourAppBeta = "Join the app beta"
-L.tourSkip = "Skip tour"
-L.tourJustTooltips = "Tooltips only"
--- Its hover: the button's name as the tooltip's gold title, then in white the setting's own hint and
--- that it ends the tour.
-L.tourJustTooltipsHint = {
-	L.tourJustTooltips,
-	{ text = L.settingsTooltipsOnlyHint },
-	{ text = "Ends the tour. /fs tour opens it again." },
-}
-L.tourNext = "Next"
-L.tourBackButton = "Back"
-L.tourDone = "Done"
-L.tourOpenPanel = "Open my panel"
--- The title band's right-hand number: "2 of 5".
-L.tourPageOf = "of %d"
 L.diagOnboardingFailed = "Set up (the first open) failed once: %s"
 
--- The addon panel, the in-game home (surfaces/Panel.lua, design/specs/2026-11-08-addon-ux.md section 4).
--- The title band's number: the Forever Score in its tier colour, then this unit in bone-dim.
+-- The character pane's door to the Gear tab (PanelTab), and /fs diag's line for the window.
 L.panelTabOpens = "Opens Gear."
 L.diagPanelState = "Window: %s"
 -- The chip's hover with nothing waiting and no tab to name.
 L.chipHintOpen = "Click: open Forever Sixty"
--- The title band's meta line: "Level 24 Hunter".
-L.panelFact = "Level %d %s"
--- The tour's picture of the job line (Onboarding).
-L.panelJob = "Job: %s"
-L.panelUpgrades = "Upgrades"
-L.panelInBags = "In your bags"
-L.panelEquip = "Equip"
 -- After a row's source when the item asks for a higher level: " · level 27".
-L.panelAtLevel = " · level %d"
-L.panelAllBest = "Every slot is best for your build."
 L.homePicksStart = "Picks start at level %d"
-L.panelJustNow = "just now"
-L.panelTalents = "Talents"
-L.panelOnPlan = "%d of %d points"
-L.panelOffPlanCount = "%d points off plan"
 L.panelTalentAt = "Level %d: %s"
-L.panelNextTalentUnnamed = "Your next talent"
 L.panelSpendNow = "Spend %d now"
-L.panelChange = "Change"
-L.panelTalentsButton = "Talents"
-L.panelPickPath = "Pick your path"
 -- The spec question (Follow.specQuestion, spec section 6.2): asked wherever a spec is needed and the
 -- character's points do not name a tree (Talents.decideTree). "Are you Holy or Retribution?": the
 -- trees that hold points when two or more do, else every tree of the class. Shared by the tour's
@@ -1395,9 +1283,6 @@ L.pathAskOr = " or "
 -- Builds dialog's own rows.
 L.pathSplit = "%d %s"
 L.pathNext = "%s next"
-L.panelPick = "Pick"
-L.panelPathFoot = "First talent point at level %d"
-
 
 -- The gear source filter (Sources.lua, design/specs/2026-11-13-addon-source-filter.md): the web BiS
 -- page's eight kinds and words (web/src/lib/bis/source-choice.ts), the panel's foot line, the Sources
@@ -1492,7 +1377,6 @@ L.gearEquipLine = "Equip %s %s"
 L.gearGainBare = "+%.1f"
 L.gearGainScoreBare = "+%d"
 
-
 -- /fs drops (RaidDrops.lua): the raid nights the loot window recorded for the export's drops=.
 L.dropsNone = "No raid drops recorded on this character yet. Open a boss corpse in a raid."
 L.dropsHeader = "Raid drops recorded: %d nights, newest first"
@@ -1553,7 +1437,7 @@ L.mePointsOnPlan = "%d of %d points on plan"
 L.meSimQueued = "Queued"
 -- The first open's Set up (spec 4.1, board hub-me-setup.png): three steps in Right now's place.
 L.meSetUp = "Set up"
-L.meSteps = "%d steps"
+L.meNoSpec = "no spec chosen"
 L.meStepsDone = "%d of %d done"
 L.meStepHover = "Hover an item you wear"
 L.meStepBelow = "%s, below"

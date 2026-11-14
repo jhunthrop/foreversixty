@@ -331,10 +331,12 @@ function MeTab.footer(input)
 	return #parts > 0 and join(parts) or nil
 end
 
---- The header's two figures (spec 3.2): the guild, then the build followed. Pure.
+--- The header's two figures (spec 3.2): the guild, then the build followed, or "no spec chosen" without one
+--- (board hub-me-setup.png). Pure.
 function MeTab.figures(input)
 	local parts = {}
-	for _, part in ipairs({ input.guild, input.buildName }) do
+	local build = type(input.buildName) == "string" and input.buildName ~= "" and input.buildName or L.meNoSpec
+	for _, part in ipairs({ input.guild, build }) do
 		if type(part) == "string" and part ~= "" then
 			parts[#parts + 1] = part
 		end

@@ -52,7 +52,7 @@ describe("Set up, the pure model", function()
 
 	it("numbers three steps, each its object and the tab it opens, with nothing done yet", function()
 		local model = Onboarding.steps({ specs = SPECS, classToken = "HUNTER", example = EXAMPLE, gearOpen = true })
-		assert.are.equal("3 steps", model.note)
+		assert.is_nil(model.note)
 		local spec, hover, app = model.rows[1], model.rows[2], model.rows[3]
 		assert.are.same({ 1, 2, 3 }, { spec.number, hover.number, app.number })
 		assert.are.equal(L.hubPickSpec, spec.line)

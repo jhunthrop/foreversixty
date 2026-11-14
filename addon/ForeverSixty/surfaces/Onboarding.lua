@@ -151,7 +151,8 @@ function Onboarding.steps(input)
 		row.number = index
 		done = done + (row.done and 1 or 0)
 	end
-	local note = done == 0 and string.format(L.meSteps, #rows) or string.format(L.meStepsDone, done, #rows)
+	-- The numbered rows say how many there are; the note says only how far along the player is.
+	local note = done > 0 and string.format(L.meStepsDone, done, #rows) or nil
 	return { note = note, rows = rows, example = example }
 end
 

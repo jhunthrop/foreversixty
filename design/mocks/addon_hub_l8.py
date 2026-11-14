@@ -90,7 +90,8 @@ def tooltip_html():
     pick = hub.ITEMS[TOP['pick']]
     hit = it['percent_stats'].get('hit')
     stats = ''.join(f'<div>+{v} {k.title()}</div>' for k, v in it['stats'].items() if k != 'hit' or not hit)
-    equip = f'<div class="g">Equip: Improves your chance to hit by {hit}%.</div>' if hit else ''
+    # The client's own words: TOOLTIP_ITEM_STAT_HIT_PERCENT_INCREASE, "%1$.1f%%".
+    equip = f'<div class="g">Equip: Improves your chance to hit by {hit:.1f}%.</div>' if hit else ''
     return (f'<div class="gt"><div class="t" style="color:{hub.QUALITY[it["quality"]]}">{esc(it["name"])}</div>'
             f'<div>Binds when picked up</div><div class="two"><span>{hub.SLOT_NAMES[it["slot"]]}</span>'
             f'<span>{it["armor_type"].title()}</span></div><div>{it["armor"]} Armor</div>{stats}{equip}'
@@ -100,7 +101,7 @@ def tooltip_html():
 
 
 def setup_html(model):
-    out = me.section('Set up', model['note'])
+    out = me.section('Set up', model.get('note'))
     for row in model['rows']:
         mark = TICK if row['done'] else f'<span class="no">{row["number"]}</span>'
         under = (f'<div style="color:{ADDON["gold"]}">{esc(row["link"])}</div>' if row.get('link') else

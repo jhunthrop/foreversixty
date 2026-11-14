@@ -302,7 +302,7 @@ describe("the Me tab in the window", function()
 		assert.are.equal("me", open(INBOX))
 		local header = Hub.headerFor(Hub.tab("me"))
 		assert.are.equal("Bob", header.title)
-		assert.are.equal("Level 60 Hunter · Thornwake Company", header.note)
+		assert.are.equal("Level 60 Hunter · Thornwake Company · no spec chosen", header.note)
 		local parts = MeFrame.parts
 		assert.are.equal("1184", parts.score.number:GetText())
 		assert.is_true(parts.score.number:IsShown())
