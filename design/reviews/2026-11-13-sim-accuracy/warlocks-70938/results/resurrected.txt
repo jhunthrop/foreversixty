@@ -1,0 +1,11 @@
+6825 pushed ItemSparse records; 10 publish a primary or hit/crit stat their pushed row leaves out
+13255 Trueaim Gauntlets push 16790471 row ['83'] published extra {'hit': 3} wowhead {'armor': 218, 'mlehitpct': 3, 'rgdhitpct': 3}
+13968 Eye of the Beast push 16791184 row [] published extra {'crit': 1} wowhead {'cooldown': 300000, 'splcritstrkpct': 1}
+17754 Infernal Trickster Leggings push 16794970 row ['agility', 'intellect', 'spirit'] published extra {'hit': 1} wowhead {'agi': 20, 'armor': 263, 'int': 8, 'mlehitpct': 1, 'rgdhitpct': 1, 'spi': 10}
+18296 Marksman Bands push 16795512 row ['agility', 'stamina'] published extra {'hit': 1} wowhead {'agi': 12, 'armor': 146, 'mlehitpct': 1, 'rgdhitpct': 1, 'sta': 8}
+18388 Stoneshatter push 16795604 row [] published extra {'hit': 1} wowhead {'damageMaxAll': 111, 'damageMinAll': 73, 'dmgmax1': 111, 'dmgmin1': 73, 'dmgrange': 0.4, 'dmgtype1': 0, 'dps': 31.72, 'mlehitpct': 1, 'rgddmgmax': 111, 'rgddmgmin': 73, 'rgddps': 31.72, 'rgdhitpct': 1, 'rgdspeed': 2.9, 'speed': 2.9}
+18469 Royal Seal of Eldre'Thalas push 16795685 row ['55', 'healing', 'spell_power'] published extra {'spirit': 16} wowhead {'classes': 16, 'natres': 15, 'spi': 16, 'splheal': 15, 'splpwr': 7}
+18470 Royal Seal of Eldre'Thalas push 16795686 row ['55', 'healing', 'spell_power'] published extra {'spirit': 16} wowhead {'classes': 1024, 'natres': 15, 'spi': 16, 'splheal': 15, 'splpwr': 7}
+22207 Sash of the Grand Hunt push 16799423 row ['agility', 'intellect', 'stamina'] published extra {'hit': 1} wowhead {'agi': 15, 'armor': 199, 'int': 6, 'mlehitpct': 1, 'rgdhitpct': 1, 'sta': 14}
+272406 Channeler's Ring push 114062 row ['hit', 'intellect', 'spell_power'] published extra {'spirit': 8} wowhead {'hitpct': 1, 'int': 14, 'spi': 8}
+272407 Blessed Band of Light push 114062 row ['healing', 'spell_power', 'spirit', 'stamina'] published extra {'hit': 1} wowhead {'hitpct': 1, 'spi': 8, 'splheal': 21, 'splpwr': 10, 'sta': 10}

@@ -1,0 +1,39 @@
+755 Health Funnel 1 ['e3.amount:5->5.44999980927']
+3110 Firebolt 1 ['e0.amount:4->6', 'e0.variance:0.28571429849->0.33333340287', 'e0.points_per_level:0.10000000149->0.30000001192']
+3698 Health Funnel 2 ['e3.amount:10->10.48999977112']
+3700 Health Funnel 4 ['e3.amount:25->25.39999961853']
+7799 Firebolt 2 ['e0.amount:7->11', 'e0.variance:0.15384615958->0.18181821704', 'e0.points_per_level:0.20000000298->0.40000000596']
+7800 Firebolt 3 ['e0.amount:12->15', 'e0.variance:0.16666667163->0.23529414833', 'e0.points_per_level:0.30000001192->0.40000000596']
+7801 Firebolt 4 ['e0.amount:17->18', 'e0.variance:0.11428570747->0.22222217917', 'e0.points_per_level:0.30000001192->0.40000000596']
+11695 Health Funnel 7 ['e3.amount:61->61.20000076294']
+18376 Corruption 0 ['e0.amount:351->350.81845092773']
+18671 Curse of Agony 0 ['e0.amount:298->298.19567871094']
+20801 Firebolt 0 ['e0.amount:152->152.02133178711']
+21068 Corruption 0 ['e0.amount:117->116.93949127197']
+28447 Shadow Burst 0 ['e0.amount:1754->1754.0922851562']
+1213450 Corruption 0 ['e0.amount:117->116.93949127197']
+1225228 Bane of Havoc 0 ['gcd_ms:0->1500']
+1233077 Curse of Agony 0 ['e0.amount:2923->2923.4870605469']
+1316697 Wrack 1 ['e0.amount:36->25.20000076294', 'e0.sp_coefficient:0.28600001335->0.20020000637', 'e0.points_per_level:2.5->1.75', 'e1.aura:271->4', 'e1.amount:10->100']
+talents identical
+trainables identical
+push 113766 Spell record 17804 spell 17804 Soul Siphon
+push 113837 Spell record 460906 spell 460906 Demonic Frenzy
+push 113837 Spell record 468540 spell 468540 Massive Destruction
+push 113766 Spell record 1225228 spell 1225228 Bane of Havoc
+push 113766 Spell record 1316697 spell 1316697 Wrack
+push 113766 SpellCooldowns record 102518 spell 1225228 Bane of Havoc
+push 113766 SpellEffect record 681913 spell 3110 Firebolt
+push 113766 SpellEffect record 685570 spell 7799 Firebolt
+push 113766 SpellEffect record 685571 spell 7800 Firebolt
+push 113766 SpellEffect record 685572 spell 7801 Firebolt
+push 113702 SpellEffect record 697943 spell 20575 Command
+push 113766 SpellEffect record 1349556 spell 1316697 Wrack
+push 113766 SpellEffect record 1349557 spell 1316697 Wrack
+push 113704 SpellMisc record 815375 spell 1262316 The Quick and the Dead
+push 113766 SpellMisc record 862720 spell 1316697 Wrack
+push 113766 SpellName record 17804 spell 17804 Soul Siphon
+push 113837 SpellName record 460906 spell 460906 Demonic Frenzy
+push 113837 SpellName record 468540 spell 468540 Massive Destruction
+push 113766 SpellName record 1225228 spell 1225228 Bane of Havoc
+push 113766 SpellName record 1316697 spell 1316697 Wrack

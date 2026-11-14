@@ -1,0 +1,29 @@
+00775993 rank-floor 42 (Hellfire) adv 36 casts    22 3sdrcwdgo2yi
+00CFF9F5 rank-floor 40 (Curse of the Elements) adv 38 casts    38 ju2t73py6pib
+000D2407 rank-floor 40 (Wrack) adv 26 casts    36 3sdrcwdgo2yi
+006B2637 rank-floor 36 (Life Tap) adv 30 casts    47 eygg26pg4gr2
+0016E3FD rank-floor 36 (Life Tap) adv 28 casts    58 3sdrcwdgo2yi
+000D34C9 rank-floor 36 (Shadow Bolt) adv 31 casts    23 3sdrcwdgo2yi
+006776E8 rank-floor 36 (Life Tap) adv 31 casts    19 3sdrcwdgo2yi
+006CB81D rank-floor 34 (Corruption) adv 30 casts    23 3sdrcwdgo2yi
+004ED7A7 rank-floor 34 (Corruption) adv 27 casts    40 3sdrcwdgo2yi
+0050820C rank-floor 34 (Corruption) adv 27 casts     5 3sdrcwdgo2yi
+004F9143 rank-floor 34 (Corruption) adv 32 casts     6 3sdrcwdgo2yi
+00E6AD43 rank-floor 34 (Corruption) adv 30 casts    12 3sdrcwdgo2yi
+00614469 rank-floor 32 (Fear) adv 24 casts    14 edcgw6rodqs2
+00347A48 rank-floor 32 (Curse of Weakness) adv 27 casts    61 3sdrcwdgo2yi
+00C3BB82 rank-floor 30 (Demon Armor) adv 30 casts     8 4q5el2xsgoy7,ctxicu4cuyek
+000E97CC rank-floor 30 (Immolate) adv 28 casts    10 edcgw6rodqs2
+0037DCC0 rank-floor 30 (Demon Armor) adv 27 casts    28 eygg26pg4gr2
+004F4524 rank-floor 30 (Siphon Life) adv 29 casts    17 3sdrcwdgo2yi
+006A93A6 rank-floor 28 (Bane of Agony) adv 24 casts     6 4q5el2xsgoy7,ctxicu4cuyek
+006BFFB5 rank-floor 28 (Bane of Agony) adv 19 casts    20 gxrgvz4yzsi2
+00938BA1 rank-floor 28 (Bane of Agony) adv 26 casts    12 gxrgvz4yzsi2
+0041B399 rank-floor 28 (Bane of Agony) adv 23 casts    17 gxrgvz4yzsi2
+0051CA54 rank-floor 26 (Life Tap) adv 15 casts     8 gxrgvz4yzsi2
+01245FA7 rank-floor 24 (Drain Soul) adv 19 casts    11 gxrgvz4yzsi2
+0066A276 rank-floor 20 (Curse of the Elements) adv 14 casts    14 gxrgvz4yzsi2
+004EF32B rank-floor 20 (Demon Armor) adv 19 casts     9 gxrgvz4yzsi2
+009B45C4 rank-floor 20 (Demon Armor) adv 10 casts     8 gxrgvz4yzsi2
+0194383F rank-floor 14 (Corruption) adv  9 casts    24 gxrgvz4yzsi2
+00FFC54D rank-floor 10 (Drain Soul) adv  4 casts    14 3sdrcwdgo2yi

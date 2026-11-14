@@ -1,0 +1,4 @@
+ok  	github.com/wowsims/classic/sim/warlock	0.251s
+ok  	github.com/wowsims/classic/sim/warlock/dps	0.031s
+ok  	github.com/wowsims/classic/sim/core	1.304s
+ok  	github.com/wowsims/classic/sim/conformance	1.462s

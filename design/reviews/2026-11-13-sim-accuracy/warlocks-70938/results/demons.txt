@@ -1,0 +1,12 @@
+Succubus   swings   266 crits    2 0.8%  owners 16
+Voidwalker swings   363 crits    6 1.7%  owners 20
+Imp        swings     0 crits    0 0.0%  owners 12
+Felhunter  swings    29 crits    1 3.4%  owners 1
+Imp        spell    3110 hits    11 crits    1 9.1%
+Imp        spell    7799 hits     7 crits    0 0.0%
+Imp        spell    7801 hits    31 crits    2 6.5%
+Succubus   spell    7814 hits    10 crits    0 0.0%
+Succubus   spell    7815 hits     3 crits    0 0.0%
+Succubus   spell    7816 hits    10 crits    1 10.0%
+Succubus   spell 1293697 hits    13 crits    1 7.7%
+Voidwalker spell 1293697 hits    20 crits    1 5.0%

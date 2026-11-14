@@ -1,0 +1,18 @@
+edge    dot        elapsed  observed  next-tick  hotfix-note   (seconds after the last tick)
+start  Corruption    2.68     2.919       3.00        2.84  -> hotfix-note
+end    Corruption    1.08     3.046       1.50        1.92  -> hotfix-note
+start  Agony         1.20     1.997       2.00        1.60  -> next-tick
+end    Agony         0.57     1.019       1.00        1.43  -> next-tick
+start  Corruption    0.00     1.510       3.00        1.50  -> hotfix-note
+start  Agony         1.12     1.997       2.00        1.56  -> next-tick
+end    Corruption    0.54     1.406       1.50        2.46  -> next-tick
+end    Siphon        1.15     1.594       1.50        1.85  -> next-tick
+start  Corruption    2.73     3.387       3.00        2.86  -> next-tick
+start  Agony         0.00     1.053       2.00        1.00  -> hotfix-note
+start  Siphon        0.00     1.575       3.00        1.50  -> hotfix-note
+start  Corruption    1.38     1.495       3.00        2.19  -> hotfix-note
+start  Agony         1.89     1.995       2.00        1.94  -> next-tick
+start  Corruption    0.00     1.463       3.00        1.50  -> hotfix-note
+start  Agony         0.00     0.926       2.00        1.00  -> hotfix-note
+end    Agony         0.49     1.017       1.00        1.51  -> next-tick
+start  Siphon        0.00     1.462       3.00        1.50  -> hotfix-note
