@@ -30,4 +30,5 @@ func wireBnetRefresh(ctx context.Context, cfg config.Config, accounts *auth.Serv
 	}
 	authenticator.Visits = svc
 	go (&bnetimport.RefreshLoop{Service: svc}).Run(ctx)
+	wireDirectory(ctx, cfg, svc, log)
 }

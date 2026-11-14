@@ -143,6 +143,9 @@ type Config struct {
 	// (an incident switch): sign-in still works, the nightly job only probes
 	// namespaces, and characters come from the addon alone.
 	BnetImportCharacters bool
+	// CharacterDirectory (CHARACTER_DIRECTORY, on unless "false") runs the character directory's
+	// hourly refresh in the API (directory.Loop); the switch that stops its Blizzard calls.
+	CharacterDirectory bool
 	// AppSignIn (APP_SIGN_IN=true) mounts the native app sign-in: GET /v1/auth/app/start,
 	// POST /v1/auth/app/exchange and POST /v1/auth/app/logout. Off by default; the routes
 	// answer 404 until the apps ship. It needs Battle.net configured to do anything.
@@ -334,6 +337,7 @@ func Load(getenv func(string) string) (Config, error) {
 		c.BnetProfileGame = defaultBnetProfileGame
 	}
 	c.BnetImportCharacters = getenv("BNET_IMPORT_CHARACTERS") != "false"
+	c.CharacterDirectory = getenv("CHARACTER_DIRECTORY") != "false"
 	c.AppSignIn = getenv("APP_SIGN_IN") == "true"
 	c.EmailSignIn = getenv("EMAIL_SIGN_IN") == "true"
 	c.AppWidgets = getenv("APP_WIDGETS") == "true"

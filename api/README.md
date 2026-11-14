@@ -44,6 +44,7 @@ make run
 | `BNET_REDIRECT_URL` | no | — | Registered for production and for `http://localhost:8080/v1/auth/battlenet/callback`. |
 | `BNET_PROFILE_GAME` | no | `forever` | The profile-game segment of a Blizzard namespace (`profile-<game>-<region>`, `dynamic-<game>-<region>`). Blizzard serves Forever as `profile-forever-<region>` since 2026-11-03. |
 | `BNET_IMPORT_CHARACTERS` | no | on | The account character import on sign-in, the primary way characters reach the site. `false` is the incident switch: sign-in still works and characters come from the addon alone. |
+| `CHARACTER_DIRECTORY` | no | on | The character directory's hourly refresh in the API (`api/internal/directory`). `false` stops its Blizzard calls; the directory keeps what it has and still ages out at 30 days once turned back on. |
 | `EMAIL_SIGN_IN` | no | off | `true` mounts `POST /v1/auth/email`, the emailed sign-in link. Off (the default since launch), the route answers 404; the link landing `GET /v1/auth/email/callback` stays mounted so a link already sent still redeems. The Battle.net-outage fallback: on its own it brings back no button. See "Email sign-in: the Battle.net-outage fallback" below. |
 | `BNET_REGIONS` | no | `us,eu,tw` | Comma-separated; which regional Blizzard hosts to try for an account during import and refresh. |
 | `BNET_PROBE_GAMES` | no | `forever,classic1x` | Comma-separated; every game namespace segment the nightly refresh's namespace probe checks, logging one line per game (any game other than `BNET_PROFILE_GAME` that answers 200 is logged at WARN as `namespace_appeared`). |
@@ -641,6 +642,19 @@ the same way `api.yml`'s own `deploy` job is gated on `GCP_WIF_PROVIDER`.
 
 Like `parse-report`, `sim-run` and `sim-validate`, `data-addon` is in `.github/workflows/api.yml`'s
 "Point the jobs at the new image" list, so every deploy repoints it at the new image.
+
+### The character directory
+
+`api/internal/directory` keeps every Forever character the site can learn about before its
+player signs in (`character_directory`, keyed by region and Blizzard character id): the members
+of every known guild's roster (`directory_guilds`, read daily), signed-in characters, and names
+from addon rows, logs and ratings. One API instance (advisory lock 79_000_003) runs a pass
+every hour, paced to 20,000 Blizzard calls an hour: rosters, then characters oldest first
+(`/status`, summary, equipment, specializations, professions, media). A character `/status`
+calls invalid is deleted; one that is not public is kept bare while a roster vouches for it;
+every row no source confirmed in 30 days is deleted (Blizzard API terms 2(r), 2(s)). Public
+data only: no BattleTag, nothing behind a user token. `directory-refresh` runs one pass as a
+Cloud Run job (created by hand like the others; it is in the deploy's job list).
 
 ### The bnet-refresh job
 

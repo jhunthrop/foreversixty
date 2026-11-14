@@ -119,6 +119,8 @@ func (c *Client) AccountCharacters(ctx context.Context, region, userToken string
 // data, readable with an app token, used both by the initial import and
 // by the nightly refresh.
 type CharacterProfile struct {
+	// ID is Blizzard's character id, the key the character directory holds it by.
+	ID        int64
 	Name      string
 	Level     int
 	Faction   string
@@ -136,7 +138,10 @@ type CharacterProfile struct {
 	GuildName string
 	// GuildRealmSlug is the guild's own realm, empty when Blizzard names
 	// none (a Forever guild, like a Forever character, may be realmless).
-	GuildRealmSlug     string
+	GuildRealmSlug string
+	// GuildID and GuildSlug are the guild's Blizzard id and URL slug, when it has one.
+	GuildID            int64
+	GuildSlug          string
 	HasGuild           bool
 	LastLoginTimestamp int64
 	// AverageItemLevel and EquippedItemLevel are pointers because the
@@ -148,6 +153,7 @@ type CharacterProfile struct {
 }
 
 type characterProfileResponse struct {
+	ID      int64  `json:"id"`
 	Name    string `json:"name"`
 	Surname string `json:"surname"`
 	Level   int    `json:"level"`
@@ -168,7 +174,9 @@ type characterProfileResponse struct {
 		Name string `json:"name"`
 	} `json:"ruleset"`
 	Guild *struct {
+		ID    int64  `json:"id"`
 		Name  string `json:"name"`
+		Slug  string `json:"slug"`
 		Realm struct {
 			Slug string `json:"slug"`
 		} `json:"realm"`
@@ -198,7 +206,7 @@ func (c *Client) Character(ctx context.Context, region, realmSlug, name string) 
 		return CharacterProfile{}, nil, fmt.Errorf("bnetapi: character: decode: %w", err)
 	}
 	p := CharacterProfile{
-		Name: FullName(res.Name, res.Surname), Level: res.Level, Faction: strings.ToLower(res.Faction.Type),
+		ID: res.ID, Name: FullName(res.Name, res.Surname), Level: res.Level, Faction: strings.ToLower(res.Faction.Type),
 		ClassSlug: classSlug(res.CharacterClass.Name), RaceName: res.Race.Name,
 		RealmSlug: res.Realm.Slug, RealmName: res.Realm.Name,
 		LastLoginTimestamp: res.LastLoginTimestamp,
@@ -210,6 +218,7 @@ func (c *Client) Character(ctx context.Context, region, realmSlug, name string) 
 	if res.Guild != nil {
 		p.GuildName = res.Guild.Name
 		p.GuildRealmSlug = res.Guild.Realm.Slug
+		p.GuildID, p.GuildSlug = res.Guild.ID, res.Guild.Slug
 		p.HasGuild = true
 	}
 	return p, json.RawMessage(body), nil

@@ -17,9 +17,9 @@ type jobCommand struct {
 
 // extraJobs is the table of job commands kept out of main's switch (main.go is at its line
 // budget): a new command is a row here, never another case.
-var extraJobs = append([]jobCommand{
+var extraJobs = slices.Concat([]jobCommand{
 	{rating.RebuildPreparationJobCommand, runRebuildPreparation},
-}, coachJobs...)
+}, coachJobs, directoryJobs)
 
 // setupCommands are run by hand from a checkout, never as Cloud Run jobs, so the deploy does
 // not move them; main runs them through the same table runner.
