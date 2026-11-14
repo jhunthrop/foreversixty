@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat. An item's crit rating
 
 ### Band 20 (dwarf, 0000000000000000-000000000000000000-2530000010000000)
 
-Set DPS (verified): 73.1. Weights run: 7.2s. Verify run: 42.9s. 286 eligible items had no known source.
+Set DPS (verified): 73.1. Weights run: 7.6s. Verify run: 44.1s. 286 eligible items had no known source.
 
 Race sweep: dwarf 73.1 ± 0.0 (heal_score); the guide race dwarf is best.
 
@@ -40,7 +40,7 @@ No-known-source sample (15 of 286, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (dwarf, 0000000000000000-000000000000000000-5530001010411000)
 
-Set DPS (verified): 133.8. Weights run: 7.8s. Verify run: 46.3s. 475 eligible items had no known source.
+Set DPS (verified): 133.8. Weights run: 8.2s. Verify run: 48.0s. 475 eligible items had no known source.
 
 Race sweep: dwarf 133.9 ± 0.0 (heal_score); the guide race dwarf is best.
 
@@ -72,7 +72,7 @@ No-known-source sample (15 of 475, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (dwarf, 0000000000000000-000000000000000000-5530001011513051)
 
-Set DPS (verified): 207.7. Weights run: 15.3s. Verify run: 169.5s. 804 eligible items had no known source.
+Set DPS (verified): 207.7. Weights run: 15.4s. Verify run: 174.0s. 804 eligible items had no known source.
 
 Race sweep: dwarf 207.8 ± 0.1 (heal_score); the guide race dwarf is best.
 
@@ -104,7 +104,7 @@ No-known-source sample (15 of 804, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (dwarf, 0000000000000000-055000000000000000-5530001011513051)
 
-Set DPS (verified): 280.3. Weights run: 16.5s. Verify run: 222.7s. 1053 eligible items had no known source.
+Set DPS (verified): 280.3. Weights run: 16.8s. Verify run: 226.7s. 1053 eligible items had no known source.
 
 Race sweep: dwarf 280.4 ± 0.1 (heal_score); the guide race dwarf is best.
 
@@ -136,7 +136,7 @@ No-known-source sample (15 of 1053, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60 (dwarf, 0000000000000000-055000000000000000-5530003315513151)
 
-Set DPS (verified): 374.1. Weights run: 19.7s. Verify run: 502.9s. 2377 eligible items had no known source.
+Set DPS (verified): 374.1. Weights run: 19.6s. Verify run: 509.9s. 2377 eligible items had no known source.
 
 Race sweep: dwarf 374.0 ± 0.2 (heal_score); the guide race dwarf is best.
 
@@ -168,7 +168,7 @@ No-known-source sample (15 of 2377, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (dwarf, 0000000000000000-055000000000000000-5530003315513151)
 
-Set DPS (verified): 895.5. Weights run: 11.9s. Verify run: 400.0s. 2377 eligible items had no known source.
+Set DPS (verified): 895.5. Weights run: 12.4s. Verify run: 421.2s. 2377 eligible items had no known source.
 
 Race sweep: dwarf 896.0 ± 0.6 (heal_score); the guide race dwarf is best.
 
@@ -202,7 +202,7 @@ No-known-source sample (15 of 2377, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (orc, 0000000000000000-000000000000000000-2530000010000000)
 
-Set DPS (verified): 72.9. Weights run: 7.2s. Verify run: 46.0s. 275 eligible items had no known source.
+Set DPS (verified): 72.9. Weights run: 7.6s. Verify run: 48.1s. 275 eligible items had no known source.
 
 Race sweep: orc 72.9 ± 0.0, windshaper-skyborne 72.8 ± 0.0, troll 72.8 ± 0.0, tauren 72.8 ± 0.0 (heal_score); the guide race orc is best.
 
@@ -234,7 +234,7 @@ No-known-source sample (15 of 275, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (orc, 0000000000000000-000000000000000000-5530001010411000)
 
-Set DPS (verified): 134.5. Weights run: 7.8s. Verify run: 48.1s. 469 eligible items had no known source.
+Set DPS (verified): 134.5. Weights run: 8.2s. Verify run: 49.9s. 469 eligible items had no known source.
 
 Race sweep: orc 134.5 ± 0.0, windshaper-skyborne 134.4 ± 0.0, troll 133.4 ± 0.0, tauren 133.3 ± 0.0 (heal_score); the guide race orc is best.
 
@@ -266,7 +266,7 @@ No-known-source sample (15 of 469, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (orc, 0000000000000000-000000000000000000-5530001011513051)
 
-Set DPS (verified): 208.7. Weights run: 15.3s. Verify run: 173.4s. 787 eligible items had no known source.
+Set DPS (verified): 208.7. Weights run: 15.4s. Verify run: 179.8s. 787 eligible items had no known source.
 
 Race sweep: orc 208.6 ± 0.1, windshaper-skyborne 208.6 ± 0.1, troll 206.2 ± 0.1, tauren 206.2 ± 0.1 (heal_score); the guide race orc is best.
 
@@ -298,7 +298,7 @@ No-known-source sample (15 of 787, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (orc, 0000000000000000-055000000000000000-5530001011513051)
 
-Set DPS (verified): 282.2. Weights run: 16.5s. Verify run: 229.0s. 1021 eligible items had no known source.
+Set DPS (verified): 282.2. Weights run: 16.8s. Verify run: 233.1s. 1021 eligible items had no known source.
 
 Race sweep: orc 282.1 ± 0.1, windshaper-skyborne 282.0 ± 0.1, troll 279.6 ± 0.1, tauren 279.5 ± 0.1 (heal_score); the guide race orc is best.
 
@@ -330,7 +330,7 @@ No-known-source sample (15 of 1021, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60 (orc, 0000000000000000-055000000000000000-5530003315513151)
 
-Set DPS (verified): 376.1. Weights run: 19.7s. Verify run: 512.8s. 2334 eligible items had no known source.
+Set DPS (verified): 376.1. Weights run: 19.6s. Verify run: 518.9s. 2334 eligible items had no known source.
 
 Race sweep: orc 376.0 ± 0.2, windshaper-skyborne 375.9 ± 0.2, troll 374.0 ± 0.2, tauren 372.8 ± 0.2 (heal_score); the guide race orc is best.
 
@@ -362,7 +362,7 @@ No-known-source sample (15 of 2334, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (orc, 0000000000000000-055000000000000000-5530003315513151)
 
-Set DPS (verified): 900.3. Weights run: 11.9s. Verify run: 402.4s. 2334 eligible items had no known source.
+Set DPS (verified): 900.3. Weights run: 12.4s. Verify run: 423.1s. 2334 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 904.8 ± 0.6, orc 900.4 ± 0.6, troll 900.0 ± 0.6, tauren 893.8 ± 0.5 (heal_score); windshaper-skyborne beats the guide race orc by 4.4 (0.48%) ± 0.8, beyond error.
 

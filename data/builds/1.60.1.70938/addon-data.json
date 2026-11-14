@@ -113665,12 +113665,12 @@
               "chance": 0.6,
               "alternatives": [
                 {
-                  "item_id": 14369,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 252435,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
                 },
                 {
-                  "item_id": 252435,
+                  "item_id": 252492,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
                 }
@@ -113737,12 +113737,12 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 252501,
+                  "item_id": 252502,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
                 },
                 {
-                  "item_id": 252502,
+                  "item_id": 252501,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
                 }
@@ -113778,9 +113778,9 @@
                   "source": "WANTED: Chok'sul"
                 },
                 {
-                  "item_id": 12054,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 20431,
+                  "source_kind": "rep",
+                  "source": "Silverwing Sentinels"
                 }
               ]
             },
@@ -113796,9 +113796,9 @@
                   "source": "WANTED: Chok'sul"
                 },
                 {
-                  "item_id": 12054,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 20431,
+                  "source_kind": "rep",
+                  "source": "Silverwing Sentinels"
                 }
               ]
             },
@@ -113896,12 +113896,12 @@
               "chance": 0.6,
               "alternatives": [
                 {
-                  "item_id": 14369,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 252435,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
                 },
                 {
-                  "item_id": 252435,
+                  "item_id": 252492,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
                 }
@@ -113968,12 +113968,12 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 252501,
+                  "item_id": 252502,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
                 },
                 {
-                  "item_id": 252502,
+                  "item_id": 252501,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
                 }
@@ -114009,9 +114009,9 @@
                   "source": "Warsong Outriders"
                 },
                 {
-                  "item_id": 12054,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 20426,
+                  "source_kind": "rep",
+                  "source": "Warsong Outriders"
                 }
               ]
             },
@@ -114027,9 +114027,9 @@
                   "source": "Warsong Outriders"
                 },
                 {
-                  "item_id": 12054,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 20426,
+                  "source_kind": "rep",
+                  "source": "Warsong Outriders"
                 }
               ]
             },
@@ -114089,11 +114089,11 @@
           "attack_power": 1.0,
           "strength": 2.0,
           "agility": 0.902,
-          "crit": 0.755,
-          "hit": 1.375,
+          "crit": 0.76,
+          "hit": 1.396,
           "melee_haste": 6.35,
-          "intellect": 2.34,
-          "spell_power": 1.47
+          "intellect": 2.524,
+          "spell_power": 1.655
         },
         "hit_to_cap": {
           "alliance": {
@@ -114133,12 +114133,12 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 4039,
+                  "item_id": 14584,
                   "source_kind": "world_drop",
                   "source": "World drop"
                 },
                 {
-                  "item_id": 14401,
+                  "item_id": 4039,
                   "source_kind": "world_drop",
                   "source": "World drop"
                 }
@@ -114205,14 +114205,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 9406,
+                  "source_kind": "dungeon",
+                  "source": "Uldaman"
+                },
+                {
                   "item_id": 7065,
                   "source_kind": "crafted",
                   "source": "Tailoring"
-                },
-                {
-                  "item_id": 7728,
-                  "source_kind": "dungeon",
-                  "source": "Scarlet Monastery"
                 }
               ]
             },
@@ -114223,12 +114223,12 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 14590,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 270042,
+                  "source_kind": "quest",
+                  "source": "A Fine Mess"
                 },
                 {
-                  "item_id": 6407,
+                  "item_id": 14590,
                   "source_kind": "world_drop",
                   "source": "World drop"
                 }
@@ -114246,9 +114246,9 @@
                   "source": "World drop"
                 },
                 {
-                  "item_id": 4253,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
+                  "item_id": 270029,
+                  "source_kind": "quest",
+                  "source": "Crime and Punishment"
                 }
               ]
             },
@@ -114277,12 +114277,12 @@
               "chance": 0.6,
               "alternatives": [
                 {
-                  "item_id": 252446,
+                  "item_id": 252458,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
                 },
                 {
-                  "item_id": 252501,
+                  "item_id": 252446,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
                 }
@@ -114313,32 +114313,32 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 2933,
-                  "source_kind": "quest",
-                  "source": "An Audience with the King"
+                  "item_id": 19517,
+                  "source_kind": "rep",
+                  "source": "Silverwing Sentinels"
                 },
                 {
-                  "item_id": 1156,
-                  "source_kind": "dungeon",
-                  "source": "The Deadmines: Gilnid"
+                  "item_id": 273031,
+                  "source_kind": "world",
+                  "source": "Arcane Anomaly"
                 }
               ]
             },
             "finger2": {
-              "item_id": 19517,
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
+              "item_id": 2933,
+              "source_kind": "quest",
+              "source": "An Audience with the King",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 2933,
-                  "source_kind": "quest",
-                  "source": "An Audience with the King"
+                  "item_id": 19517,
+                  "source_kind": "rep",
+                  "source": "Silverwing Sentinels"
                 },
                 {
-                  "item_id": 1156,
-                  "source_kind": "dungeon",
-                  "source": "The Deadmines: Gilnid"
+                  "item_id": 273031,
+                  "source_kind": "world",
+                  "source": "Arcane Anomaly"
                 }
               ]
             },
@@ -114369,12 +114369,12 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 4039,
+                  "item_id": 14584,
                   "source_kind": "world_drop",
                   "source": "World drop"
                 },
                 {
-                  "item_id": 14401,
+                  "item_id": 4039,
                   "source_kind": "world_drop",
                   "source": "World drop"
                 }
@@ -114405,14 +114405,14 @@
               "chance": 0.4,
               "alternatives": [
                 {
+                  "item_id": 7684,
+                  "source_kind": "dungeon",
+                  "source": "Scarlet Monastery: Bloodmage Thalnos"
+                },
+                {
                   "item_id": 12998,
                   "source_kind": "world_drop",
                   "source": "World drop"
-                },
-                {
-                  "item_id": 3748,
-                  "source_kind": "dungeon",
-                  "source": "Shadowfang Keep: Wolf Master Nandos"
                 }
               ]
             },
@@ -114423,14 +114423,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 14593,
+                  "item_id": 14400,
                   "source_kind": "world_drop",
                   "source": "World drop"
                 },
                 {
-                  "item_id": 16661,
-                  "source_kind": "quest",
-                  "source": "Je'neu of the Earthen Ring"
+                  "item_id": 14593,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -114441,14 +114441,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 9406,
+                  "source_kind": "dungeon",
+                  "source": "Uldaman"
+                },
+                {
                   "item_id": 7065,
                   "source_kind": "crafted",
                   "source": "Tailoring"
-                },
-                {
-                  "item_id": 7728,
-                  "source_kind": "dungeon",
-                  "source": "Scarlet Monastery"
                 }
               ]
             },
@@ -114459,12 +114459,12 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 14590,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 270042,
+                  "source_kind": "quest",
+                  "source": "A Fine Mess"
                 },
                 {
-                  "item_id": 6407,
+                  "item_id": 14590,
                   "source_kind": "world_drop",
                   "source": "World drop"
                 }
@@ -114513,12 +114513,12 @@
               "chance": 0.6,
               "alternatives": [
                 {
-                  "item_id": 252446,
+                  "item_id": 252458,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
                 },
                 {
-                  "item_id": 252501,
+                  "item_id": 252446,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
                 }
@@ -114554,9 +114554,9 @@
                   "source": "The Offering of Blood"
                 },
                 {
-                  "item_id": 1156,
-                  "source_kind": "dungeon",
-                  "source": "The Deadmines: Gilnid"
+                  "item_id": 273031,
+                  "source_kind": "world",
+                  "source": "Arcane Anomaly"
                 }
               ]
             },
@@ -114572,9 +114572,9 @@
                   "source": "The Offering of Blood"
                 },
                 {
-                  "item_id": 1156,
-                  "source_kind": "dungeon",
-                  "source": "The Deadmines: Gilnid"
+                  "item_id": 273031,
+                  "source_kind": "world",
+                  "source": "Arcane Anomaly"
                 }
               ]
             },
@@ -114611,7 +114611,7 @@
             6690,
             9454,
             13097,
-            19517,
+            2933,
             13045
           ],
           "horde": [
@@ -114634,11 +114634,11 @@
           "attack_power": 1.0,
           "strength": 2.0,
           "agility": 1.148,
-          "crit": 1.071,
-          "hit": 1.613,
-          "melee_haste": 5.723,
-          "intellect": 2.344,
-          "spell_power": 0.716
+          "crit": 1.065,
+          "hit": 1.769,
+          "melee_haste": 6.1,
+          "intellect": 2.45,
+          "spell_power": 0.777
         },
         "hit_to_cap": {
           "alliance": {
@@ -114750,25 +114750,25 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 273026,
+                  "source_kind": "dungeon",
+                  "source": "Excavation Site: Wetlands: Shadetooth"
+                },
+                {
                   "item_id": 10007,
                   "source_kind": "crafted",
                   "source": "Tailoring"
-                },
-                {
-                  "item_id": 8200,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
                 }
               ]
             },
             "wrist": {
-              "item_id": 13106,
+              "item_id": 14429,
               "source_kind": "world_drop",
               "source": "World drop",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 14429,
+                  "item_id": 13106,
                   "source_kind": "world_drop",
                   "source": "World drop"
                 },
@@ -114791,7 +114791,7 @@
                   "source": "Leatherworking"
                 },
                 {
-                  "item_id": 10018,
+                  "item_id": 10011,
                   "source_kind": "crafted",
                   "source": "Tailoring"
                 }
@@ -114863,9 +114863,9 @@
                   "source": "An Audience with the King"
                 },
                 {
-                  "item_id": 1993,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 6750,
+                  "source_kind": "quest",
+                  "source": "Willix the Importer"
                 }
               ]
             },
@@ -114881,9 +114881,9 @@
                   "source": "An Audience with the King"
                 },
                 {
-                  "item_id": 1993,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 6750,
+                  "source_kind": "quest",
+                  "source": "Willix the Importer"
                 }
               ]
             },
@@ -114901,14 +114901,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 7723,
-                  "source_kind": "dungeon",
-                  "source": "Scarlet Monastery: Scarlet Commander Mograine"
-                },
-                {
                   "item_id": 873,
                   "source_kind": "world_drop",
                   "source": "World drop"
+                },
+                {
+                  "item_id": 7723,
+                  "source_kind": "dungeon",
+                  "source": "Scarlet Monastery: Scarlet Commander Mograine"
                 }
               ]
             }
@@ -114993,32 +114993,32 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 1981,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
-                {
                   "item_id": 10007,
                   "source_kind": "crafted",
                   "source": "Tailoring"
+                },
+                {
+                  "item_id": 14417,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
             "wrist": {
-              "item_id": 13106,
+              "item_id": 14429,
               "source_kind": "world_drop",
               "source": "World drop",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 14429,
+                  "item_id": 13106,
                   "source_kind": "world_drop",
                   "source": "World drop"
                 },
                 {
-                  "item_id": 4545,
-                  "source_kind": "quest",
-                  "source": "Foul Magics"
+                  "item_id": 14600,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -115029,12 +115029,12 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 10011,
+                  "item_id": 8204,
                   "source_kind": "crafted",
-                  "source": "Tailoring"
+                  "source": "Leatherworking"
                 },
                 {
-                  "item_id": 10018,
+                  "item_id": 10011,
                   "source_kind": "crafted",
                   "source": "Tailoring"
                 }
@@ -115164,6 +115164,7 @@
             13115,
             16336,
             1981,
+            14429,
             867,
             10771,
             252465,
@@ -115177,6 +115178,7 @@
             10769,
             13115,
             272077,
+            14429,
             867,
             10771,
             252465,
@@ -115189,12 +115191,12 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 2.0,
-          "agility": 1.332,
-          "crit": 1.583,
-          "hit": 2.77,
-          "melee_haste": 10.412,
-          "intellect": 3.234,
-          "spell_power": 1.021
+          "agility": 1.453,
+          "crit": 1.677,
+          "hit": 3.11,
+          "melee_haste": 7.48,
+          "intellect": 3.256,
+          "spell_power": 1.11
         },
         "hit_to_cap": {
           "alliance": {
@@ -115239,276 +115241,9 @@
                   "source": "Blackrock Depths"
                 },
                 {
-                  "item_id": 10630,
-                  "source_kind": "dungeon",
-                  "source": "Sunken Temple: Atal'ai Warrior"
-                }
-              ]
-            },
-            "neck": {
-              "item_id": 13085,
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 10769,
-                  "source_kind": "dungeon",
-                  "source": "Razorfen Downs: Mordresh Fire Eye"
-                },
-                {
-                  "item_id": 271918,
-                  "source_kind": "rep",
-                  "source": "Theramore Expeditionary Force"
-                }
-              ]
-            },
-            "shoulder": {
-              "item_id": 15067,
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 11722,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Depths: Grizzle"
-                },
-                {
-                  "item_id": 17732,
-                  "source_kind": "dungeon",
-                  "source": "Maraudon: Rotgrip"
-                }
-              ]
-            },
-            "back": {
-              "item_id": 271921,
-              "source_kind": "rep",
-              "source": "Theramore Expeditionary Force",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 8248,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
-                {
-                  "item_id": 16336,
-                  "source_kind": "pvp",
-                  "source": "PvP rank 5 · Sergeant Major · Alliance"
-                }
-              ]
-            },
-            "chest": {
-              "item_id": 940,
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 223078,
-                  "source_kind": "vendor",
-                  "source": "PvP rank 6 · Knight · Alliance"
-                },
-                {
-                  "item_id": 8113,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                }
-              ]
-            },
-            "wrist": {
-              "item_id": 12546,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 9433,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
-                {
-                  "item_id": 11917,
-                  "source_kind": "quest",
-                  "source": "Shizzle's Flyer"
-                }
-              ]
-            },
-            "hands": {
-              "item_id": 867,
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 17007,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
-                {
-                  "item_id": 252547,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
-                }
-              ]
-            },
-            "waist": {
-              "item_id": 12466,
-              "source_kind": "dungeon",
-              "source": "Sunken Temple: Morphaz",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 13144,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
-                {
-                  "item_id": 8253,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                }
-              ]
-            },
-            "legs": {
-              "item_id": 223074,
-              "source_kind": "vendor",
-              "source": "PvP rank 6 · Knight · Alliance",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 8251,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
-                {
-                  "item_id": 10807,
-                  "source_kind": "dungeon",
-                  "source": "Sunken Temple: Jammal'an the Prophet"
-                }
-              ]
-            },
-            "feet": {
-              "item_id": 22240,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: High Interrogator Gerstahn ",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 18697,
-                  "source_kind": "dungeon",
-                  "source": "Scholomance: Old Treasure Chest"
-                },
-                {
-                  "item_id": 252471,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
-                }
-              ]
-            },
-            "finger1": {
-              "item_id": 10634,
-              "source_kind": "dungeon",
-              "source": "Sunken Temple: Atal'ai Warrior",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 17768,
-                  "source_kind": "quest",
-                  "source": "Vyletongue Corruption"
-                },
-                {
-                  "item_id": 17713,
+                  "item_id": 17715,
                   "source_kind": "dungeon",
                   "source": "Maraudon: Princess Theradras"
-                }
-              ]
-            },
-            "finger2": {
-              "item_id": 6440,
-              "source_kind": "dungeon",
-              "source": "Zul'Farrak",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 17768,
-                  "source_kind": "quest",
-                  "source": "Vyletongue Corruption"
-                },
-                {
-                  "item_id": 17713,
-                  "source_kind": "dungeon",
-                  "source": "Maraudon: Princess Theradras"
-                }
-              ]
-            },
-            "trinket1": {
-              "item_id": 249469,
-              "source_kind": "crafted",
-              "source": "Enchanting",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 11302,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
-                {
-                  "item_id": 1713,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                }
-              ]
-            },
-            "trinket2": {
-              "item_id": 744,
-              "source_kind": "quest",
-              "source": "Sweet Amber",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 11302,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                }
-              ]
-            },
-            "main_hand": {
-              "item_id": 1607,
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 2915,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
-                {
-                  "item_id": 812,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                }
-              ]
-            }
-          },
-          "horde": {
-            "head": {
-              "item_id": 11839,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Fineous Darkvire",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 12549,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Depths"
-                },
-                {
-                  "item_id": 10630,
-                  "source_kind": "dungeon",
-                  "source": "Sunken Temple: Atal'ai Warrior"
                 }
               ]
             },
@@ -115537,32 +115272,32 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 11722,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Depths: Grizzle"
-                },
-                {
                   "item_id": 17732,
                   "source_kind": "dungeon",
                   "source": "Maraudon: Rotgrip"
+                },
+                {
+                  "item_id": 11722,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths: Grizzle"
                 }
               ]
             },
             "back": {
-              "item_id": 272076,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk",
+              "item_id": 271921,
+              "source_kind": "rep",
+              "source": "Theramore Expeditionary Force",
               "chance": null,
               "alternatives": [
+                {
+                  "item_id": 16336,
+                  "source_kind": "pvp",
+                  "source": "PvP rank 5 · Sergeant Major · Alliance"
+                },
                 {
                   "item_id": 8248,
                   "source_kind": "world_drop",
                   "source": "World drop"
-                },
-                {
-                  "item_id": 19121,
-                  "source_kind": "quest",
-                  "source": "Wanted: Vile Priestess Hexx and Her Minions"
                 }
               ]
             },
@@ -115573,14 +115308,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 220826,
+                  "item_id": 223078,
                   "source_kind": "vendor",
-                  "source": "PvP rank 6 · Stone Guard · Horde"
+                  "source": "PvP rank 6 · Knight · Alliance"
                 },
                 {
-                  "item_id": 220844,
-                  "source_kind": "vendor",
-                  "source": "PvP rank 6 · Stone Guard · Horde"
+                  "item_id": 13858,
+                  "source_kind": "crafted",
+                  "source": "Tailoring"
                 }
               ]
             },
@@ -115591,32 +115326,32 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 11917,
-                  "source_kind": "quest",
-                  "source": "Shizzle's Flyer"
-                },
-                {
                   "item_id": 15092,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
+                },
+                {
+                  "item_id": 9433,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
             "hands": {
-              "item_id": 17007,
+              "item_id": 867,
               "source_kind": "world_drop",
               "source": "World drop",
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 17007,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
+                },
+                {
                   "item_id": 17736,
                   "source_kind": "dungeon",
                   "source": "Maraudon: Landslide"
-                },
-                {
-                  "item_id": 252547,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
                 }
               ]
             },
@@ -115627,21 +115362,21 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 13144,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 11662,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths: Ok'thor the Breaker"
                 },
                 {
-                  "item_id": 8253,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 20103,
+                  "source_kind": "rep",
+                  "source": "The League of Arathor"
                 }
               ]
             },
             "legs": {
-              "item_id": 220834,
+              "item_id": 223074,
               "source_kind": "vendor",
-              "source": "PvP rank 6 · Stone Guard · Horde",
+              "source": "PvP rank 6 · Knight · Alliance",
               "chance": null,
               "alternatives": [
                 {
@@ -115663,9 +115398,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 18697,
-                  "source_kind": "dungeon",
-                  "source": "Scholomance: Old Treasure Chest"
+                  "item_id": 10846,
+                  "source_kind": "world",
+                  "source": "Avatar of Hakkar"
                 },
                 {
                   "item_id": 252471,
@@ -115681,14 +115416,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 17768,
-                  "source_kind": "quest",
-                  "source": "Vyletongue Corruption"
-                },
-                {
                   "item_id": 17713,
                   "source_kind": "dungeon",
                   "source": "Maraudon: Princess Theradras"
+                },
+                {
+                  "item_id": 11824,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths: Ok'thor the Breaker"
                 }
               ]
             },
@@ -115699,14 +115434,276 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 17768,
-                  "source_kind": "quest",
-                  "source": "Vyletongue Corruption"
+                  "item_id": 17713,
+                  "source_kind": "dungeon",
+                  "source": "Maraudon: Princess Theradras"
                 },
+                {
+                  "item_id": 11824,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths: Ok'thor the Breaker"
+                }
+              ]
+            },
+            "trinket1": {
+              "item_id": 249469,
+              "source_kind": "crafted",
+              "source": "Enchanting",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 11302,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
+                }
+              ]
+            },
+            "trinket2": {
+              "item_id": 744,
+              "source_kind": "quest",
+              "source": "Sweet Amber",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 11302,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
+                }
+              ]
+            },
+            "main_hand": {
+              "item_id": 1607,
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 812,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
+                },
+                {
+                  "item_id": 2915,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
+                }
+              ]
+            }
+          },
+          "horde": {
+            "head": {
+              "item_id": 11839,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Fineous Darkvire",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 12549,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths"
+                },
+                {
+                  "item_id": 17715,
+                  "source_kind": "dungeon",
+                  "source": "Maraudon: Princess Theradras"
+                }
+              ]
+            },
+            "neck": {
+              "item_id": 13085,
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 17707,
+                  "source_kind": "dungeon",
+                  "source": "Maraudon: Princess Theradras"
+                },
+                {
+                  "item_id": 10769,
+                  "source_kind": "dungeon",
+                  "source": "Razorfen Downs: Mordresh Fire Eye"
+                }
+              ]
+            },
+            "shoulder": {
+              "item_id": 15067,
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 17732,
+                  "source_kind": "dungeon",
+                  "source": "Maraudon: Rotgrip"
+                },
+                {
+                  "item_id": 11722,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths: Grizzle"
+                }
+              ]
+            },
+            "back": {
+              "item_id": 272076,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 19121,
+                  "source_kind": "quest",
+                  "source": "Wanted: Vile Priestess Hexx and Her Minions"
+                },
+                {
+                  "item_id": 8248,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
+                }
+              ]
+            },
+            "chest": {
+              "item_id": 940,
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 220844,
+                  "source_kind": "vendor",
+                  "source": "PvP rank 6 · Stone Guard · Horde"
+                },
+                {
+                  "item_id": 220826,
+                  "source_kind": "vendor",
+                  "source": "PvP rank 6 · Stone Guard · Horde"
+                }
+              ]
+            },
+            "wrist": {
+              "item_id": 12546,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 15092,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
+                },
+                {
+                  "item_id": 9433,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
+                }
+              ]
+            },
+            "hands": {
+              "item_id": 17007,
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 17736,
+                  "source_kind": "dungeon",
+                  "source": "Maraudon: Landslide"
+                },
+                {
+                  "item_id": 20369,
+                  "source_kind": "quest",
+                  "source": "Da Voodoo"
+                }
+              ]
+            },
+            "waist": {
+              "item_id": 12466,
+              "source_kind": "dungeon",
+              "source": "Sunken Temple: Morphaz",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 11662,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths: Ok'thor the Breaker"
+                },
+                {
+                  "item_id": 20174,
+                  "source_kind": "rep",
+                  "source": "The Defilers"
+                }
+              ]
+            },
+            "legs": {
+              "item_id": 220834,
+              "source_kind": "vendor",
+              "source": "PvP rank 6 · Stone Guard · Horde",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 220847,
+                  "source_kind": "vendor",
+                  "source": "PvP rank 6 · Stone Guard · Horde"
+                },
+                {
+                  "item_id": 17754,
+                  "source_kind": "dungeon",
+                  "source": "Maraudon: Lord Vyletongue"
+                }
+              ]
+            },
+            "feet": {
+              "item_id": 22240,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: High Interrogator Gerstahn ",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 10846,
+                  "source_kind": "world",
+                  "source": "Avatar of Hakkar"
+                },
+                {
+                  "item_id": 252471,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
+                }
+              ]
+            },
+            "finger1": {
+              "item_id": 10634,
+              "source_kind": "dungeon",
+              "source": "Sunken Temple: Atal'ai Warrior",
+              "chance": null,
+              "alternatives": [
                 {
                   "item_id": 17713,
                   "source_kind": "dungeon",
                   "source": "Maraudon: Princess Theradras"
+                },
+                {
+                  "item_id": 11824,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths: Ok'thor the Breaker"
+                }
+              ]
+            },
+            "finger2": {
+              "item_id": 6440,
+              "source_kind": "dungeon",
+              "source": "Zul'Farrak",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 17713,
+                  "source_kind": "dungeon",
+                  "source": "Maraudon: Princess Theradras"
+                },
+                {
+                  "item_id": 11824,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths: Ok'thor the Breaker"
                 }
               ]
             },
@@ -115733,11 +115730,6 @@
                   "item_id": 11302,
                   "source_kind": "world_drop",
                   "source": "World drop"
-                },
-                {
-                  "item_id": 249470,
-                  "source_kind": "crafted",
-                  "source": "Enchanting"
                 }
               ]
             },
@@ -115748,12 +115740,12 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 2915,
+                  "item_id": 812,
                   "source_kind": "world_drop",
                   "source": "World drop"
                 },
                 {
-                  "item_id": 812,
+                  "item_id": 2915,
                   "source_kind": "world_drop",
                   "source": "World drop"
                 }
@@ -115799,12 +115791,12 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 2.0,
-          "agility": 1.216,
-          "crit": 1.609,
-          "hit": 2.642,
-          "melee_haste": 9.607,
-          "intellect": 4.234,
-          "spell_power": 0.762
+          "agility": 1.514,
+          "crit": 2.289,
+          "hit": 3.71,
+          "melee_haste": 10.962,
+          "intellect": 3.945,
+          "spell_power": 1.311
         },
         "hit_to_cap": {
           "alliance": {
@@ -115844,14 +115836,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 11839,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Depths: Fineous Darkvire"
-                },
-                {
                   "item_id": 12752,
                   "source_kind": "quest",
                   "source": "Cap of the Scarlet Savant"
+                },
+                {
+                  "item_id": 11839,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths: Fineous Darkvire"
                 }
               ]
             },
@@ -115898,14 +115890,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 272414,
-                  "source_kind": "vendor",
-                  "source": "Pix Xizzix"
-                },
-                {
                   "item_id": 13376,
                   "source_kind": "dungeon",
                   "source": "Stratholme: Magistrate Barthilas"
+                },
+                {
+                  "item_id": 272414,
+                  "source_kind": "vendor",
+                  "source": "Pix Xizzix"
                 }
               ]
             },
@@ -115946,9 +115938,9 @@
               ]
             },
             "hands": {
-              "item_id": 271945,
-              "source_kind": "rep",
-              "source": "Theramore Expeditionary Force",
+              "item_id": 14615,
+              "source_kind": "dungeon",
+              "source": "Scholomance",
               "chance": null,
               "alternatives": [
                 {
@@ -115957,9 +115949,9 @@
                   "source": "Blackrock Spire: Shadow Hunter Vosh'gajin"
                 },
                 {
-                  "item_id": 867,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 271946,
+                  "source_kind": "rep",
+                  "source": "Theramore Expeditionary Force"
                 }
               ]
             },
@@ -115982,15 +115974,15 @@
               ]
             },
             "legs": {
-              "item_id": 22750,
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
+              "item_id": 237819,
+              "source_kind": "vendor",
+              "source": "Illiyana Moonblaze",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 237815,
-                  "source_kind": "vendor",
-                  "source": "Illiyana Moonblaze"
+                  "item_id": 22750,
+                  "source_kind": "rep",
+                  "source": "Silverwing Sentinels"
                 },
                 {
                   "item_id": 252603,
@@ -116000,15 +115992,15 @@
               ]
             },
             "feet": {
-              "item_id": 22231,
+              "item_id": 14616,
               "source_kind": "dungeon",
-              "source": "Blackrock Spire: War Master Voone",
+              "source": "Scholomance",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 14616,
+                  "item_id": 22240,
                   "source_kind": "dungeon",
-                  "source": "Scholomance"
+                  "source": "Blackrock Depths: High Interrogator Gerstahn "
                 },
                 {
                   "item_id": 13967,
@@ -116065,27 +116057,27 @@
                   "source": "Blackrock Spire: Mother Smolderweb"
                 },
                 {
-                  "item_id": 249469,
-                  "source_kind": "crafted",
-                  "source": "Enchanting"
+                  "item_id": 13382,
+                  "source_kind": "dungeon",
+                  "source": "Stratholme: Cannon Master Willey"
                 }
               ]
             },
             "trinket2": {
-              "item_id": 13965,
-              "source_kind": "quest",
-              "source": "General Drakkisath's Demise",
-              "chance": null,
+              "item_id": 11819,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Golem Lord Argelmach",
+              "chance": 0.08,
               "alternatives": [
-                {
-                  "item_id": 744,
-                  "source_kind": "quest",
-                  "source": "Sweet Amber"
-                },
                 {
                   "item_id": 13213,
                   "source_kind": "dungeon",
                   "source": "Blackrock Spire: Mother Smolderweb"
+                },
+                {
+                  "item_id": 249469,
+                  "source_kind": "crafted",
+                  "source": "Enchanting"
                 }
               ]
             },
@@ -116165,14 +116157,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 227154,
-                  "source_kind": "pvp",
-                  "source": "PvP rank 10 · Champion · Horde"
-                },
-                {
                   "item_id": 231654,
                   "source_kind": "vendor",
                   "source": "PvP rank 13 · Warlord · Horde"
+                },
+                {
+                  "item_id": 227154,
+                  "source_kind": "pvp",
+                  "source": "PvP rank 10 · Champion · Horde"
                 }
               ]
             },
@@ -116188,9 +116180,9 @@
                   "source": "Pix Xizzix"
                 },
                 {
-                  "item_id": 13376,
-                  "source_kind": "dungeon",
-                  "source": "Stratholme: Magistrate Barthilas"
+                  "item_id": 272063,
+                  "source_kind": "vendor",
+                  "source": "Creeg Bothunk"
                 }
               ]
             },
@@ -116237,13 +116229,13 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 13255,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: Shadow Hunter Vosh'gajin"
-                },
-                {
                   "item_id": 231655,
                   "source_kind": "vendor",
+                  "source": "PvP rank 12 · General · Horde"
+                },
+                {
+                  "item_id": 231660,
+                  "source_kind": "pvp",
                   "source": "PvP rank 12 · General · Horde"
                 }
               ]
@@ -116285,9 +116277,9 @@
               ]
             },
             "feet": {
-              "item_id": 14616,
+              "item_id": 22231,
               "source_kind": "dungeon",
-              "source": "Scholomance",
+              "source": "Blackrock Spire: War Master Voone",
               "chance": null,
               "alternatives": [
                 {
@@ -116296,9 +116288,9 @@
                   "source": "PvP rank 12 · General · Horde"
                 },
                 {
-                  "item_id": 22231,
+                  "item_id": 14616,
                   "source_kind": "dungeon",
-                  "source": "Blackrock Spire: War Master Voone"
+                  "source": "Scholomance"
                 }
               ]
             },
@@ -116327,36 +116319,18 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 13345,
-                  "source_kind": "dungeon",
-                  "source": "Stratholme: Baron Rivendare"
-                },
-                {
                   "item_id": 10634,
                   "source_kind": "dungeon",
                   "source": "Sunken Temple: Atal'ai Warrior"
+                },
+                {
+                  "item_id": 272408,
+                  "source_kind": "vendor",
+                  "source": "Pix Xizzix"
                 }
               ]
             },
             "trinket1": {
-              "item_id": 22321,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Overlord Wyrmthalak",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 13213,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: Mother Smolderweb"
-                },
-                {
-                  "item_id": 19120,
-                  "source_kind": "quest",
-                  "source": "Job Opening: Guard Captain of Revantusk Village"
-                }
-              ]
-            },
-            "trinket2": {
               "item_id": 11832,
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ambassador Flamelash",
@@ -116366,6 +116340,24 @@
                   "item_id": 11819,
                   "source_kind": "dungeon",
                   "source": "Blackrock Depths: Golem Lord Argelmach"
+                },
+                {
+                  "item_id": 13213,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: Mother Smolderweb"
+                }
+              ]
+            },
+            "trinket2": {
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 11815,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths: Emperor Dagran Thaurissan"
                 },
                 {
                   "item_id": 13213,
@@ -116399,9 +116391,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 228176,
-                  "source_kind": "vendor",
-                  "source": "Pix Xizzix"
+                  "item_id": 23200,
+                  "source_kind": "dungeon",
+                  "source": "Scholomance"
                 }
               ]
             }
@@ -116415,14 +116407,14 @@
             272411,
             252484,
             19582,
-            271945,
+            14615,
             272399,
-            22750,
-            22231,
+            237819,
+            14616,
             272406,
             19325,
             11832,
-            13965,
+            11819,
             19323,
             22395
           ],
@@ -116436,10 +116428,9 @@
             272097,
             272399,
             22741,
-            14616,
+            22231,
             272406,
             19325,
-            22321,
             11832,
             19323,
             22395
@@ -116448,12 +116439,12 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 2.0,
-          "agility": 1.695,
-          "crit": 2.83,
-          "hit": 4.492,
-          "melee_haste": 14.989,
-          "intellect": 3.963,
-          "spell_power": 0.868
+          "agility": 1.782,
+          "crit": 3.019,
+          "hit": 4.528,
+          "melee_haste": 14.169,
+          "intellect": 4.498,
+          "spell_power": 0.928
         },
         "hit_to_cap": {
           "alliance": {
@@ -116463,7 +116454,7 @@
             ],
             "white": null,
             "spell": [
-              6.0,
+              5.0,
               16.0
             ],
             "school": null
@@ -116475,7 +116466,7 @@
             ],
             "white": null,
             "spell": [
-              7.0,
+              6.3,
               16.0
             ],
             "school": null
@@ -151578,14 +151569,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 20073,
-                  "source_kind": "rep",
-                  "source": "The League of Arathor"
-                },
-                {
                   "item_id": 13340,
                   "source_kind": "dungeon",
                   "source": "Stratholme: Baron Rivendare"
+                },
+                {
+                  "item_id": 20073,
+                  "source_kind": "rep",
+                  "source": "The League of Arathor"
                 }
               ]
             },
@@ -151686,12 +151677,12 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 252468,
+                  "item_id": 275618,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
                 },
                 {
-                  "item_id": 252469,
+                  "item_id": 252468,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
                 }
@@ -151709,9 +151700,9 @@
                   "source": "Blackrock Spire: General Drakkisath"
                 },
                 {
-                  "item_id": 19514,
-                  "source_kind": "rep",
-                  "source": "Silverwing Sentinels"
+                  "item_id": 22433,
+                  "source_kind": "dungeon",
+                  "source": "Scholomance: Darkmaster Gandling"
                 }
               ]
             },
@@ -151722,9 +151713,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 19514,
-                  "source_kind": "rep",
-                  "source": "Silverwing Sentinels"
+                  "item_id": 13098,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: General Drakkisath"
                 },
                 {
                   "item_id": 22433,
@@ -151740,12 +151731,12 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 13213,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: Mother Smolderweb"
+                  "item_id": 272438,
+                  "source_kind": "vendor",
+                  "source": "Pix Xizzix"
                 },
                 {
-                  "item_id": 272438,
+                  "item_id": 272439,
                   "source_kind": "vendor",
                   "source": "Pix Xizzix"
                 }
@@ -151763,7 +151754,7 @@
                   "source": "World drop"
                 },
                 {
-                  "item_id": 272439,
+                  "item_id": 272438,
                   "source_kind": "vendor",
                   "source": "Pix Xizzix"
                 }
@@ -151781,7 +151772,7 @@
                   "source": "PvP rank 14 · Grand Marshal · Alliance"
                 },
                 {
-                  "item_id": 234568,
+                  "item_id": 234567,
                   "source_kind": "pvp",
                   "source": "PvP rank 14 · Grand Marshal · Alliance"
                 }
@@ -151792,13 +151783,7 @@
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Magmus",
               "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 228176,
-                  "source_kind": "vendor",
-                  "source": "Pix Xizzix"
-                }
-              ]
+              "alternatives": []
             }
           },
           "horde": {
@@ -151809,14 +151794,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 20134,
-                  "source_kind": "quest",
-                  "source": "The Darkreaver Menace"
-                },
-                {
                   "item_id": 231657,
                   "source_kind": "vendor",
                   "source": "PvP rank 13 · Warlord · Horde"
+                },
+                {
+                  "item_id": 12752,
+                  "source_kind": "quest",
+                  "source": "Cap of the Scarlet Savant"
                 }
               ]
             },
@@ -151827,14 +151812,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 14558,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
-                {
                   "item_id": 12929,
                   "source_kind": "dungeon",
                   "source": "Blackrock Spire: Pyroguard Emberseer"
+                },
+                {
+                  "item_id": 1443,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -151881,14 +151866,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 11726,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Depths: Gorosh the Dervish"
-                },
-                {
                   "item_id": 231653,
                   "source_kind": "vendor",
                   "source": "PvP rank 13 · Warlord · Horde"
+                },
+                {
+                  "item_id": 11726,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths: Gorosh the Dervish"
                 }
               ]
             },
@@ -151902,13 +151887,18 @@
                   "item_id": 19582,
                   "source_kind": "rep",
                   "source": "Warsong Outriders"
+                },
+                {
+                  "item_id": 252539,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
                 }
               ]
             },
             "hands": {
-              "item_id": 14615,
-              "source_kind": "dungeon",
-              "source": "Scholomance",
+              "item_id": 15063,
+              "source_kind": "crafted",
+              "source": "Leatherworking",
               "chance": null,
               "alternatives": [
                 {
@@ -151924,27 +151914,27 @@
               ]
             },
             "waist": {
-              "item_id": 20171,
+              "item_id": 20150,
               "source_kind": "rep",
               "source": "The Defilers",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 20150,
+                  "item_id": 20190,
                   "source_kind": "rep",
                   "source": "The Defilers"
                 },
                 {
-                  "item_id": 20190,
-                  "source_kind": "rep",
-                  "source": "The Defilers"
+                  "item_id": 272410,
+                  "source_kind": "vendor",
+                  "source": "Pix Xizzix"
                 }
               ]
             },
             "legs": {
-              "item_id": 22741,
-              "source_kind": "rep",
-              "source": "Warsong Outriders",
+              "item_id": 15062,
+              "source_kind": "crafted",
+              "source": "Leatherworking",
               "chance": null,
               "alternatives": [
                 {
@@ -151971,49 +151961,67 @@
                   "source": "PvP rank 12 · General · Horde"
                 },
                 {
-                  "item_id": 275618,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
+                  "item_id": 231661,
+                  "source_kind": "vendor",
+                  "source": "PvP rank 12 · General · Horde"
                 }
               ]
             },
             "finger1": {
-              "item_id": 13098,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: General Drakkisath",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 19510,
-                  "source_kind": "rep",
-                  "source": "Warsong Outriders"
-                },
-                {
-                  "item_id": 22433,
-                  "source_kind": "dungeon",
-                  "source": "Scholomance: Darkmaster Gandling"
-                }
-              ]
-            },
-            "finger2": {
               "item_id": 19325,
               "source_kind": "rep",
               "source": "Frostwolf Clan",
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 22433,
+                  "source_kind": "dungeon",
+                  "source": "Scholomance: Darkmaster Gandling"
+                },
+                {
                   "item_id": 19510,
                   "source_kind": "rep",
                   "source": "Warsong Outriders"
-                },
+                }
+              ]
+            },
+            "finger2": {
+              "item_id": 13098,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: General Drakkisath",
+              "chance": null,
+              "alternatives": [
                 {
                   "item_id": 22433,
                   "source_kind": "dungeon",
                   "source": "Scholomance: Darkmaster Gandling"
+                },
+                {
+                  "item_id": 19510,
+                  "source_kind": "rep",
+                  "source": "Warsong Outriders"
                 }
               ]
             },
             "trinket1": {
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 272438,
+                  "source_kind": "vendor",
+                  "source": "Pix Xizzix"
+                },
+                {
+                  "item_id": 11815,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths: Emperor Dagran Thaurissan"
+                }
+              ]
+            },
+            "trinket2": {
               "item_id": 13965,
               "source_kind": "quest",
               "source": "For The Horde!",
@@ -152025,27 +152033,9 @@
                   "source": "Blackrock Depths: Emperor Dagran Thaurissan"
                 },
                 {
-                  "item_id": 19120,
-                  "source_kind": "quest",
-                  "source": "Job Opening: Guard Captain of Revantusk Village"
-                }
-              ]
-            },
-            "trinket2": {
-              "item_id": 13213,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Mother Smolderweb",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 11815,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Depths: Emperor Dagran Thaurissan"
-                },
-                {
-                  "item_id": 19120,
-                  "source_kind": "quest",
-                  "source": "Job Opening: Guard Captain of Revantusk Village"
+                  "item_id": 272438,
+                  "source_kind": "vendor",
+                  "source": "Pix Xizzix"
                 }
               ]
             },
@@ -152061,7 +152051,7 @@
                   "source": "PvP rank 14 · High Warlord · Horde"
                 },
                 {
-                  "item_id": 234545,
+                  "item_id": 234546,
                   "source_kind": "pvp",
                   "source": "PvP rank 14 · High Warlord · Horde"
                 }
@@ -152072,7 +152062,13 @@
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Magmus",
               "chance": null,
-              "alternatives": []
+              "alternatives": [
+                {
+                  "item_id": 228176,
+                  "source_kind": "vendor",
+                  "source": "Pix Xizzix"
+                }
+              ]
             }
           }
         },
@@ -152102,14 +152098,14 @@
             13340,
             252484,
             19587,
-            14615,
-            20171,
-            22741,
+            15063,
+            20150,
+            15062,
             14616,
-            13098,
             19325,
+            13098,
+            19120,
             13965,
-            13213,
             19323,
             22395
           ]
@@ -152117,11 +152113,11 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 2.2,
-          "agility": 1.339,
-          "crit": 2.236,
-          "melee_haste": 19.365,
-          "intellect": 1.583,
-          "spell_power": 0.806
+          "agility": 1.44,
+          "crit": 2.439,
+          "melee_haste": 24.72,
+          "intellect": 1.691,
+          "spell_power": 0.915
         },
         "hit_to_cap": {
           "alliance": {
@@ -152138,12 +152134,12 @@
           },
           "horde": {
             "hit": [
-              1.0,
+              0.0,
               9.0
             ],
             "white": null,
             "spell": [
-              8.0,
+              6.3,
               16.0
             ],
             "school": null
@@ -174179,7 +174175,6 @@
     "8071": "Sizzle Stick",
     "8110": "Hibernal Gloves",
     "8111": "Hibernal Mantle",
-    "8113": "Hibernal Robe",
     "8119": "Heraldic Breastplate",
     "8120": "Heraldic Cloak",
     "8137": "Chromite Bracers",
@@ -174193,7 +174188,6 @@
     "8193": "Nightscape Pants",
     "8195": "Nightscape Cloak",
     "8198": "Turtle Scale Bracers",
-    "8200": "Big Voodoo Robe",
     "8201": "Big Voodoo Mask",
     "8203": "Tough Scorpid Breastplate",
     "8204": "Tough Scorpid Gloves",
@@ -174796,6 +174790,7 @@
     "14406": "Resilient Cord",
     "14408": "Stonecloth Boots",
     "14416": "Stonecloth Bindings",
+    "14417": "Silksand Tunic",
     "14419": "Silksand Bracers",
     "14429": "Windchaser Cuffs",
     "14431": "Windchaser Handguards",
@@ -175440,6 +175435,7 @@
     "22204": "Wristguards of Renown",
     "22206": "Bouquet of Red Roses",
     "22207": "Sash of the Grand Hunt",
+    "22208": "Lavastone Hammer",
     "22223": "Foreman's Head Protector",
     "22231": "Kayser's Boots of Precision",
     "22232": "Marksman's Girdle",
@@ -176298,6 +176294,7 @@
     "271936": "Guerrilla's Jagged Mace",
     "271940": "Theramore Gauntlets",
     "271945": "Theramore Handwraps",
+    "271946": "Theramore Handwraps",
     "271948": "Theramore Gloves",
     "271950": "Theramore Handguards",
     "271953": "Theramore Shoulderpads",
@@ -176310,6 +176307,7 @@
     "272060": "Relentless Raider's Seal",
     "272061": "Darkspear Voodoo Seal",
     "272062": "Relentless Raider's Seal",
+    "272063": "Darkspear Raider's Cloak",
     "272064": "Insurgent's Band",
     "272065": "Insurgent's Band",
     "272066": "Insurgent's Band",
@@ -176818,6 +176816,7 @@
     "20220": 42.1,
     "20504": 44.9,
     "20556": 33.6,
+    "22208": 49.7,
     "22254": 55.7,
     "22317": 40.0,
     "22318": 31.2,
