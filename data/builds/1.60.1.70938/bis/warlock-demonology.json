@@ -1,8 +1,8 @@
 {
   "spec": "warlock-demonology",
   "build": "1.60.1.70938",
-  "engine_version": "f0f90b5f9",
-  "generated_at": "2026-11-14T05:05:59Z",
+  "engine_version": "f9385b498",
+  "generated_at": "2026-11-14T07:19:38Z",
   "bands": [
     {
       "spec": "warlock-demonology",
@@ -1183,8 +1183,8 @@
         "off_hand: Dwarven Tome",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 3.670785053,
-      "verify_run_seconds": 3.014513416,
+      "weights_run_seconds": 3.3760803839999998,
+      "verify_run_seconds": 3.1893749160000002,
       "coverage": {
         "back": {
           "eligible": 104,
@@ -2472,8 +2472,8 @@
         "off_hand: Antipodean Rod",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 3.670785053,
-      "verify_run_seconds": 3.254571802,
+      "weights_run_seconds": 3.3760803839999998,
+      "verify_run_seconds": 3.354915024,
       "coverage": {
         "back": {
           "eligible": 105,
@@ -3870,8 +3870,8 @@
         "off_hand: Orb of Soran'ruk",
         "ranged: Thunderwood"
       ],
-      "weights_run_seconds": 3.6374558009999998,
-      "verify_run_seconds": 3.2936584780000002,
+      "weights_run_seconds": 3.589853347,
+      "verify_run_seconds": 3.502084602,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -5260,8 +5260,8 @@
         "off_hand: Orb of Soran'ruk",
         "ranged: Thunderwood"
       ],
-      "weights_run_seconds": 3.6374558009999998,
-      "verify_run_seconds": 3.5199267589999996,
+      "weights_run_seconds": 3.589853347,
+      "verify_run_seconds": 3.4907892339999997,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -6652,8 +6652,8 @@
         "main_hand: Staff of Jordan",
         "ranged: Twisted Nether Wand"
       ],
-      "weights_run_seconds": 3.696614911,
-      "verify_run_seconds": 6.707665411000001,
+      "weights_run_seconds": 3.688095068,
+      "verify_run_seconds": 6.934413477,
       "coverage": {
         "back": {
           "eligible": 257,
@@ -8013,8 +8013,8 @@
         "main_hand: Staff of Jordan",
         "ranged: Twisted Nether Wand"
       ],
-      "weights_run_seconds": 3.696614911,
-      "verify_run_seconds": 5.656310995999999,
+      "weights_run_seconds": 3.688095068,
+      "verify_run_seconds": 6.049426326,
       "coverage": {
         "back": {
           "eligible": 259,
@@ -9698,8 +9698,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Lesser Eternal Wand"
       ],
-      "weights_run_seconds": 3.707953538,
-      "verify_run_seconds": 5.38698367,
+      "weights_run_seconds": 3.704350971,
+      "verify_run_seconds": 5.650349922999999,
       "coverage": {
         "back": {
           "eligible": 330,
@@ -11394,8 +11394,8 @@
         "off_hand: Orb of the Forgotten Seer",
         "ranged: Lesser Eternal Wand"
       ],
-      "weights_run_seconds": 3.707953538,
-      "verify_run_seconds": 4.987363328,
+      "weights_run_seconds": 3.704350971,
+      "verify_run_seconds": 5.299766207,
       "coverage": {
         "back": {
           "eligible": 335,
@@ -13186,8 +13186,8 @@
         "off_hand: Therazane's Touch",
         "ranged: Oblivion's Touch"
       ],
-      "weights_run_seconds": 3.541393244,
-      "verify_run_seconds": 18.122014487999998,
+      "weights_run_seconds": 3.632855965,
+      "verify_run_seconds": 18.63769624,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -14984,8 +14984,8 @@
         "off_hand: Therazane's Touch",
         "ranged: Bonecreeper Stylus"
       ],
-      "weights_run_seconds": 3.541393244,
-      "verify_run_seconds": 18.567078824,
+      "weights_run_seconds": 3.632855965,
+      "verify_run_seconds": 18.649342467,
       "coverage": {
         "back": {
           "eligible": 472,
@@ -16682,8 +16682,8 @@
         "main_hand: Ironbark Staff",
         "ranged: Bonecreeper Stylus"
       ],
-      "weights_run_seconds": 3.969949522,
-      "verify_run_seconds": 21.269108642,
+      "weights_run_seconds": 4.026652208,
+      "verify_run_seconds": 22.390646432,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -18399,8 +18399,8 @@
         "main_hand: Ironbark Staff",
         "ranged: Bonecreeper Stylus"
       ],
-      "weights_run_seconds": 3.969949522,
-      "verify_run_seconds": 21.440671072,
+      "weights_run_seconds": 4.026652208,
+      "verify_run_seconds": 22.164095018,
       "coverage": {
         "back": {
           "eligible": 472,
