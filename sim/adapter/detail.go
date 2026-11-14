@@ -40,13 +40,6 @@ const (
 	amountDecimals = 10
 )
 
-// windfuryTotemSpellIDs is the id each Windfury Totem rank grants its extra
-// attacks under (sim/core/buffs.go WindfuryBuffSpellId), which is the buff a
-// request names as windfury_totem.
-var windfuryTotemSpellIDs = map[int32]bool{8516: true, 10608: true, 10610: true}
-
-const windfuryTotemBuffID = "windfury_totem"
-
 // WithDetail lays the page's detail over a finished run's result. The summary
 // gains the target's debuff tracks and loses what the engine registered but no
 // fight ever had. It returns a new result and leaves its argument alone.
@@ -266,9 +259,6 @@ func extraAttackSwings(u *proto.UnitMetrics) int64 {
 }
 
 func extraAttackSourceKey(id *proto.ActionID) string {
-	if windfuryTotemSpellIDs[id.GetSpellId()] {
-		return windfuryTotemBuffID
-	}
 	_, key := ActionName(id)
 	return key
 }

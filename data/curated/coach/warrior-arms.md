@@ -23,7 +23,7 @@ This is the best Arms Warrior on Forever. Arms is the two-handed warrior: Rend, 
 
 - Bloodrage whenever Rage drops below eighty, since Rage limits everything else here.
 - Spend the Charge's rage on Battle Shout as you arrive, unless a raid warrior's shout is already on you. Then press Bloodrage as your first swing lands.
-- Rend kept ticking: the bleed ignores armor. Once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too.
+- Rend kept ticking: the bleed ignores armor and grows with your attack power. Once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too.
 - Overpower the moment it lights up, even ahead of Mortal Strike from forty. A dodge opens it for a few seconds, and a Bloodthrill proc does too once the talent is in.
 - Mortal Strike on cooldown from forty, and from fifty-seven in the raid build Reckless Swings right behind it.
 - Slam only with Improved Slam, between Mortal Strikes from forty: the talent keeps your swing timer running through the cast.

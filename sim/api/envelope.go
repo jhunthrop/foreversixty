@@ -728,8 +728,9 @@ type TargetStats struct {
 
 // ExtraAttackSource is one source's extra swings, average per fight.
 type ExtraAttackSource struct {
-	// Source is a simbuffs id where the source is a buff the request names
-	// (windfury_totem), otherwise the action key of the proc.
+	// Source is the action key of the proc. Results saved before push
+	// 113887 made Windfury Totem's attack a strike name it by its simbuffs
+	// id, windfury_totem.
 	Source string  `json:"source"`
 	Count  float64 `json:"count"`
 }

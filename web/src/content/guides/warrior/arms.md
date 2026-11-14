@@ -116,7 +116,7 @@ Enchanting changes your gear: Frozen Heart of the Mountain is a bind-on-pickup t
 
 ### Levels 1 to 19
 
-Charge and Rend train at 4, Thunder Clap at 6, Hamstring at 8 and Overpower at 12. Rend's bleed ignores armor, so put it on anything that will live through it. Tactical Mastery at 14 lets you keep 10 Rage through a stance swap.
+Charge and Rend train at 4, Thunder Clap at 6, Hamstring at 8 and Overpower at 12. Rend's bleed ignores armor and grows with your attack power, so put it on anything that will live through it. Tactical Mastery at 14 lets you keep 10 Rage through a stance swap.
 
 At 10, Bloodrage trains, and your race's warrior quest teaches Defensive Stance, Sunder Armor and Taunt; its follow-up rewards a one-hander, a good pick if your two-hander is still the starter.
 

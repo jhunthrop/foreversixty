@@ -181,7 +181,7 @@
         }
       },
       {
-        "notes": "Keep it ticking: the bleed ignores armor, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too.",
+        "notes": "Keep it ticking: the bleed ignores armor and grows with your attack power, and once Bloodthrill is in, your main-hand hits on a target bleeding from your Rend can light Overpower too.",
         "action": {
           "condition": {
             "not": {
@@ -321,7 +321,7 @@
             }
           }
         },
-        "notes": "Only with a Windfury Totem on you, on a free global, and never from 25% down: 10 rage for a main-hand hit that can trigger the totem's extra attack. Without the totem it is rage your other attacks need."
+        "notes": "Only with a Windfury Totem on you, on a free global, and never from 25% down: 10 rage for a main-hand hit that can trigger the totem's strike. Without the totem it is rage your other attacks need."
       },
       {
         "notes": "Only above 90 rage, so a full bar does not waste what your swings make. Below that, keep the rage for the attacks that lose damage when they wait: Overpower from 12, Execute from 24 and Mortal Strike from 40.",

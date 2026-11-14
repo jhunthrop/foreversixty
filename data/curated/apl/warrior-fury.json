@@ -277,6 +277,39 @@
         }
       },
       {
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "rank": 3,
+              "spellId": 7373
+            }
+          },
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "auraIsKnown": {
+                    "auraId": {
+                      "spellId": 10610
+                    }
+                  }
+                },
+                {
+                  "not": {
+                    "val": {
+                      "isExecutePhase": {
+                        "threshold": "E25"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "notes": "With a Windfury Totem on you, right after Reckless Swings, and never from 25% down: 10 rage for a main-hand hit that can trigger the totem's strike. Without the totem it is rage Bloodthirst and Whirlwind need."
+      },
+      {
         "notes": "From 36, on cooldown under 80 rage, except hold it for the fears on Magmadar, Onyxia and Nefarian: rage from the hits you take, and 5 rage at once with Improved Berserker Rage 1/2 or 10 with 2/2.",
         "action": {
           "condition": {
@@ -402,6 +435,15 @@
       }
     ]
   },
+  "inert": [
+    10610
+  ],
+  "expected_idle": [
+    {
+      "id": 7373,
+      "reason": "Hamstring is gated on the Windfury Totem buff (spell 10610), which the engine registers only for a character a totem reaches; the ladder character has no raid around it, so the gate is false and the line correctly never fires at any level. In the raid-ready run it is a free-global filler between Reckless Swings and Berserker Rage."
+    }
+  ],
   "panel_when": {
     "1": "under 80 rage",
     "2": "on the pull, below 20%, or in the last 30 s of the fight",
@@ -420,8 +462,9 @@
         "text": "on cooldown, after Whirlwind"
       }
     ],
-    "9": "on cooldown under 80 rage",
-    "10": "the moment it lights up",
-    "11": "at 60 rage while the target is above 25%"
+    "9": "with Windfury Totem up, target above 25%",
+    "10": "on cooldown under 80 rage",
+    "11": "the moment it lights up",
+    "12": "at 60 rage while the target is above 25%"
   }
 }

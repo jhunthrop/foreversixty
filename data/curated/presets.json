@@ -80,7 +80,7 @@
         {
           "id": "windfury_totem",
           "label": "Windfury Totem",
-          "reason": "In the 1.60 client the totem (spells 8512, 10613, 10614) is an aura on every party member that gives each main-hand hit a 20% chance of one extra attack with 246 extra attack power at rank 3, not a weapon enchant (only the shaman's own Windfury Weapon is), so it stacks with a poison or a sharpening stone on the weapon. A shaman with Windfury Weapon on the main hand does not receive it. The totem's aura (8515, 10609, 10612) has no duration: it ends with the totem, with none of vanilla's 10-second linger."
+          "reason": "In the 1.60 client the totem (spells 8512, 10613, 10614) is an aura on every party member that gives each main-hand hit a 20% chance of a main-hand weapon strike with 246 extra attack power at rank 3 (a strike of its own since push 113887 on 13 November 2026, no longer an extra white swing), not a weapon enchant (only the shaman's own Windfury Weapon is), so it stacks with a poison or a sharpening stone on the weapon. A shaman with Windfury Weapon on the main hand does not receive it. The totem's aura (8515, 10609, 10612) has no duration: it ends with the totem, with none of vanilla's 10-second linger."
         },
         {
           "id": "mana_spring_totem:improved",

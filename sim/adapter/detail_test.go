@@ -82,13 +82,16 @@ func TestBloodrageIsAGainAndHealthIsNotAResource(t *testing.T) {
 	}
 }
 
-func TestWindfuryIsNamedAsTheBuffAndProcsByTheirKey(t *testing.T) {
+// Every source is named by its action key. Windfury Totem granted extra
+// swings until push 113887 made its attack a strike of its own; results
+// saved before still carry its simbuffs id (web/src/lib/sim/extra-attacks.ts).
+func TestExtraAttackSourcesAreNamedByTheirKey(t *testing.T) {
 	u := &proto.UnitMetrics{ExtraAttacks: []*proto.ExtraAttackMetrics{
 		{Id: spellAction(15600), Attacks: 50},
-		{Id: spellAction(10610), Attacks: 212},
+		{Id: spellAction(13964), Attacks: 212},
 	}}
 	got := extraAttackSources(u, 10)
-	if len(got) != 2 || got[0] != (api.ExtraAttackSource{Source: "windfury_totem", Count: 21.2}) || got[1].Source != "spell:15600" {
+	if len(got) != 2 || got[0] != (api.ExtraAttackSource{Source: "spell:13964", Count: 21.2}) || got[1].Source != "spell:15600" {
 		t.Errorf("sources = %+v", got)
 	}
 }
@@ -98,7 +101,7 @@ func TestWindfuryIsNamedAsTheBuffAndProcsByTheirKey(t *testing.T) {
 func TestExtraAttackSourcesAgreeWithTheExtraSwingsRow(t *testing.T) {
 	u := &proto.UnitMetrics{
 		ExtraAttacks: []*proto.ExtraAttackMetrics{
-			{Id: spellAction(10610), Attacks: 300},
+			{Id: spellAction(13964), Attacks: 300},
 			{Id: spellAction(15600), Attacks: 100},
 		},
 		Actions: []*proto.ActionMetrics{

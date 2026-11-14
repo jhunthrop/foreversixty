@@ -1,0 +1,10 @@
+fury raid 60 alliance seed 1 card 1040.5 0.6 hamstring 1053.9 0.6
+arms raid 60 alliance seed 1 card 954.4 0.6 slam-first 964.7 0.6
+fury raid 60 horde seed 1 card 1028.8 0.6 hamstring 1042.2 0.6
+arms raid 60 horde seed 1 card 951.1 0.6 slam-first 961.6 0.6
+fury raid 60 alliance seed 50001 card 1039.4 0.6 hamstring 1053.9 0.6
+arms raid 60 alliance seed 50001 card 952.9 0.6 slam-first 964.0 0.6
+fury raid 60 horde seed 50001 card 1030.2 0.6 hamstring 1043.0 0.6
+arms raid 60 horde seed 50001 card 949.7 0.6 slam-first 959.9 0.6
+fury bare 60 alliance card 361.6 0.2 hamstring 361.6 0.2
+fury bare 50 alliance card 230.8 0.1 hamstring 230.8 0.1
