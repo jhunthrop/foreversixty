@@ -104,4 +104,4 @@ Other moves: 20 melee and hunter entries moved onto Icemail Jerkin 1981 (24 Agil
 ## Open (not ranker bugs)
 
 - Holy priest bare 40 and 50 Horde reproduce 0.3% under the published figure (3.3 sigma); the next ranking replaces the file.
-- The next ranking (on 037798db1) owes MR108, MR109 and Mental Agility on Shadowform; it also clears the Enhancement stale entry.
+- The next ranking (on 037798db1) owes MR108, MR109 and Mental Agility on Shadowform; it also clears the Enhancement stale entry. It started landing while this round ran (5060a7eb7 warlocks, 5c468f999 mages, 00:07 to 00:10 UTC 14 Nov); those files are not verified here, and the published-file tests pass on main with them (sanity 28 of 28, guides 27 plus Enhancement skipped).
