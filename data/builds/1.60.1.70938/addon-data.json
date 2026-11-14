@@ -53804,9 +53804,9 @@
                   "source": "Willix the Importer"
                 },
                 {
-                  "item_id": 272070,
-                  "source_kind": "vendor",
-                  "source": "Creeg Bothunk"
+                  "item_id": 273030,
+                  "source_kind": "dungeon",
+                  "source": "Excavation Site: Wetlands: Relic Guardian"
                 }
               ]
             },
@@ -54593,14 +54593,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 18727,
-                  "source_kind": "dungeon",
-                  "source": "Stratholme: Magistrate Barthilas"
-                },
-                {
                   "item_id": 231695,
                   "source_kind": "vendor",
                   "source": "PvP rank 13 · Field Marshal · Alliance"
+                },
+                {
+                  "item_id": 227192,
+                  "source_kind": "vendor",
+                  "source": "PvP rank 10 · Lieutenant Commander · Alliance"
                 }
               ]
             },
@@ -54719,14 +54719,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 11662,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Depths: Ok'thor the Breaker"
-                },
-                {
                   "item_id": 20047,
                   "source_kind": "rep",
                   "source": "The League of Arathor"
+                },
+                {
+                  "item_id": 11662,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths: Ok'thor the Breaker"
                 }
               ]
             },
@@ -54767,38 +54767,38 @@
               ]
             },
             "finger1": {
+              "item_id": 272406,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 12543,
+                  "source_kind": "quest",
+                  "source": "The Princess's Surprise"
+                },
+                {
+                  "item_id": 22433,
+                  "source_kind": "dungeon",
+                  "source": "Scholomance: Darkmaster Gandling"
+                }
+              ]
+            },
+            "finger2": {
               "item_id": 13001,
               "source_kind": "world_drop",
               "source": "World drop",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 272407,
-                  "source_kind": "vendor",
-                  "source": "Pix Xizzix"
+                  "item_id": 12543,
+                  "source_kind": "quest",
+                  "source": "The Princess's Surprise"
                 },
                 {
-                  "item_id": 19522,
-                  "source_kind": "rep",
-                  "source": "Silverwing Sentinels"
-                }
-              ]
-            },
-            "finger2": {
-              "item_id": 12543,
-              "source_kind": "quest",
-              "source": "The Princess's Surprise",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 272407,
-                  "source_kind": "vendor",
-                  "source": "Pix Xizzix"
-                },
-                {
-                  "item_id": 19522,
-                  "source_kind": "rep",
-                  "source": "Silverwing Sentinels"
+                  "item_id": 22433,
+                  "source_kind": "dungeon",
+                  "source": "Scholomance: Darkmaster Gandling"
                 }
               ]
             },
@@ -54814,9 +54814,9 @@
                   "source": "Blackrock Depths: Golem Lord Argelmach"
                 },
                 {
-                  "item_id": 13213,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: Mother Smolderweb"
+                  "item_id": 272439,
+                  "source_kind": "vendor",
+                  "source": "Pix Xizzix"
                 }
               ]
             },
@@ -54827,9 +54827,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 11832,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Depths: Ambassador Flamelash"
+                  "item_id": 11302,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 },
                 {
                   "item_id": 13213,
@@ -54901,9 +54901,9 @@
                   "source": "PvP rank 13 · Warlord · Horde"
                 },
                 {
-                  "item_id": 18727,
-                  "source_kind": "dungeon",
-                  "source": "Stratholme: Magistrate Barthilas"
+                  "item_id": 227186,
+                  "source_kind": "pvp",
+                  "source": "PvP rank 10 · Champion · Horde"
                 }
               ]
             },
@@ -54926,20 +54926,20 @@
               ]
             },
             "shoulder": {
-              "item_id": 19050,
+              "item_id": 15067,
               "source_kind": "crafted",
-              "source": "Tailoring",
+              "source": "Leatherworking",
               "chance": null,
               "alternatives": [
-                {
-                  "item_id": 231681,
-                  "source_kind": "vendor",
-                  "source": "PvP rank 13 · Warlord · Horde"
-                },
                 {
                   "item_id": 227184,
                   "source_kind": "pvp",
                   "source": "PvP rank 10 · Champion · Horde"
+                },
+                {
+                  "item_id": 231681,
+                  "source_kind": "vendor",
+                  "source": "PvP rank 13 · Warlord · Horde"
                 }
               ]
             },
@@ -54962,9 +54962,9 @@
               ]
             },
             "chest": {
-              "item_id": 13388,
-              "source_kind": "dungeon",
-              "source": "Stratholme: Postmaster Malown",
+              "item_id": 15066,
+              "source_kind": "crafted",
+              "source": "Leatherworking",
               "chance": null,
               "alternatives": [
                 {
@@ -55022,14 +55022,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 11662,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Depths: Ok'thor the Breaker"
-                },
-                {
                   "item_id": 20163,
                   "source_kind": "rep",
                   "source": "The Defilers"
+                },
+                {
+                  "item_id": 11662,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths: Ok'thor the Breaker"
                 }
               ]
             },
@@ -55045,16 +55045,16 @@
                   "source": "PvP rank 12 · General · Horde"
                 },
                 {
-                  "item_id": 227185,
-                  "source_kind": "vendor",
-                  "source": "PvP rank 8 · Legionnaire · Horde"
+                  "item_id": 22747,
+                  "source_kind": "rep",
+                  "source": "Warsong Outriders"
                 }
               ]
             },
             "feet": {
-              "item_id": 13391,
+              "item_id": 11822,
               "source_kind": "dungeon",
-              "source": "Stratholme: Postmaster Malown",
+              "source": "Blackrock Depths: Golem Lord Argelmach",
               "chance": null,
               "alternatives": [
                 {
@@ -55070,51 +55070,51 @@
               ]
             },
             "finger1": {
-              "item_id": 13392,
-              "source_kind": "dungeon",
-              "source": "Stratholme: Postmaster Malown",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 19518,
-                  "source_kind": "rep",
-                  "source": "Warsong Outriders"
-                },
-                {
-                  "item_id": 272407,
-                  "source_kind": "vendor",
-                  "source": "Pix Xizzix"
-                }
-              ]
-            },
-            "finger2": {
-              "item_id": 12545,
-              "source_kind": "quest",
-              "source": "The Princess Saved?",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 13001,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
-                {
-                  "item_id": 19518,
-                  "source_kind": "rep",
-                  "source": "Warsong Outriders"
-                }
-              ]
-            },
-            "trinket1": {
-              "item_id": 272438,
+              "item_id": 272406,
               "source_kind": "vendor",
               "source": "Pix Xizzix",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 11832,
+                  "item_id": 12545,
+                  "source_kind": "quest",
+                  "source": "The Princess Saved?"
+                },
+                {
+                  "item_id": 22433,
                   "source_kind": "dungeon",
-                  "source": "Blackrock Depths: Ambassador Flamelash"
+                  "source": "Scholomance: Darkmaster Gandling"
+                }
+              ]
+            },
+            "finger2": {
+              "item_id": 13001,
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 12545,
+                  "source_kind": "quest",
+                  "source": "The Princess Saved?"
+                },
+                {
+                  "item_id": 22433,
+                  "source_kind": "dungeon",
+                  "source": "Scholomance: Darkmaster Gandling"
+                }
+              ]
+            },
+            "trinket1": {
+              "item_id": 11819,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Golem Lord Argelmach",
+              "chance": 0.08,
+              "alternatives": [
+                {
+                  "item_id": 11302,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 },
                 {
                   "item_id": 13213,
@@ -55124,20 +55124,20 @@
               ]
             },
             "trinket2": {
-              "item_id": 13968,
-              "source_kind": "quest",
-              "source": "For The Horde!",
+              "item_id": 272438,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 11832,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Depths: Ambassador Flamelash"
+                  "item_id": 13968,
+                  "source_kind": "quest",
+                  "source": "For The Horde!"
                 },
                 {
-                  "item_id": 13213,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: Mother Smolderweb"
+                  "item_id": 272439,
+                  "source_kind": "vendor",
+                  "source": "Pix Xizzix"
                 }
               ]
             },
@@ -55153,9 +55153,9 @@
                   "source": "PvP rank 14 · High Warlord · Horde"
                 },
                 {
-                  "item_id": 13937,
-                  "source_kind": "dungeon",
-                  "source": "Scholomance: Darkmaster Gandling"
+                  "item_id": 20214,
+                  "source_kind": "rep",
+                  "source": "The Defilers"
                 }
               ]
             },
@@ -55178,15 +55178,15 @@
               ]
             },
             "ranged": {
-              "item_id": 249441,
-              "source_kind": "crafted",
-              "source": "Enchanting",
+              "item_id": 23197,
+              "source_kind": "world_drop",
+              "source": "World drop",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 23197,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 23198,
+                  "source_kind": "dungeon",
+                  "source": "Stratholme: Magistrate Barthilas"
                 }
               ]
             }
@@ -55202,8 +55202,8 @@
             272401,
             252486,
             11822,
+            272406,
             13001,
-            12543,
             272438,
             13968,
             2243,
@@ -55212,36 +55212,36 @@
           "horde": [
             22267,
             22403,
-            19050,
             272411,
-            13388,
+            15066,
             19595,
             272401,
             252486,
-            13391,
-            13392,
-            12545,
+            11822,
+            272406,
+            13001,
+            11819,
             272438,
-            13968,
             2243,
-            19315
+            19315,
+            23197
           ]
         },
         "weights": {
           "spell_power": 1.0,
-          "intellect": 0.359,
-          "crit": 0.445,
-          "hit": 0.759,
-          "spell_haste": 3.436,
-          "nature_power": 0.493,
-          "arcane_power": 0.507
+          "intellect": 0.338,
+          "crit": 0.468,
+          "hit": 0.678,
+          "spell_haste": 3.267,
+          "nature_power": 0.483,
+          "arcane_power": 0.517
         },
         "hit_to_cap": {
           "alliance": {
             "hit": null,
             "white": null,
             "spell": [
-              9.0,
+              8.0,
               16.0
             ],
             "school": null
@@ -55250,7 +55250,7 @@
             "hit": null,
             "white": null,
             "spell": [
-              9.0,
+              8.0,
               16.0
             ],
             "school": null
@@ -63653,20 +63653,20 @@
           },
           "horde": {
             "head": {
-              "item_id": 252561,
-              "source_kind": "crafted",
-              "source": "Leatherworking",
+              "item_id": 16693,
+              "source_kind": "dungeon",
+              "source": "Scholomance: Darkmaster Gandling",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 227205,
-                  "source_kind": "vendor",
-                  "source": "PvP rank 10 · Champion · Horde"
+                  "item_id": 13113,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 },
                 {
-                  "item_id": 16720,
-                  "source_kind": "dungeon",
-                  "source": "Scholomance: Darkmaster Gandling"
+                  "item_id": 252561,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
                 }
               ]
             },
@@ -63713,14 +63713,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 6832,
-                  "source_kind": "quest",
-                  "source": "Nothing But The Truth"
-                },
-                {
                   "item_id": 14683,
                   "source_kind": "world_drop",
                   "source": "World drop"
+                },
+                {
+                  "item_id": 6832,
+                  "source_kind": "quest",
+                  "source": "Nothing But The Truth"
                 }
               ]
             },
@@ -63772,9 +63772,9 @@
                   "source": "Tailoring"
                 },
                 {
-                  "item_id": 12554,
+                  "item_id": 10808,
                   "source_kind": "dungeon",
-                  "source": "Blackrock Depths: Princess Moira Bronzebeard "
+                  "source": "Sunken Temple: Jammal'an the Prophet"
                 }
               ]
             },
@@ -63790,9 +63790,9 @@
                   "source": "World drop"
                 },
                 {
-                  "item_id": 19047,
-                  "source_kind": "crafted",
-                  "source": "Tailoring"
+                  "item_id": 16556,
+                  "source_kind": "pvp",
+                  "source": "PvP rank 12 · General · Horde"
                 }
               ]
             },
@@ -63808,9 +63808,9 @@
                   "source": "Blackrock Depths"
                 },
                 {
-                  "item_id": 13206,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: Gizrul the Slavener"
+                  "item_id": 9402,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -63821,14 +63821,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 15802,
-                  "source_kind": "crafted",
-                  "source": "Tailoring"
-                },
-                {
                   "item_id": 16715,
                   "source_kind": "dungeon",
                   "source": "Blackrock Spire: Mother Smolderweb"
+                },
+                {
+                  "item_id": 15802,
+                  "source_kind": "crafted",
+                  "source": "Tailoring"
                 }
               ]
             },
@@ -63839,21 +63839,21 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 13096,
+                  "item_id": 5266,
                   "source_kind": "world_drop",
                   "source": "World drop"
                 },
                 {
-                  "item_id": 5266,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 272406,
+                  "source_kind": "vendor",
+                  "source": "Pix Xizzix"
                 }
               ]
             },
             "finger2": {
-              "item_id": 22334,
-              "source_kind": "dungeon",
-              "source": "Stratholme: Balnazzar",
+              "item_id": 13096,
+              "source_kind": "world_drop",
+              "source": "World drop",
               "chance": null,
               "alternatives": [
                 {
@@ -63862,9 +63862,9 @@
                   "source": "World drop"
                 },
                 {
-                  "item_id": 13096,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 272406,
+                  "source_kind": "vendor",
+                  "source": "Pix Xizzix"
                 }
               ]
             },
@@ -63911,14 +63911,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 15854,
+                  "source_kind": "quest",
+                  "source": "Dawn's Gambit"
+                },
+                {
                   "item_id": 18717,
                   "source_kind": "dungeon",
                   "source": "Stratholme: Balnazzar"
-                },
-                {
-                  "item_id": 22406,
-                  "source_kind": "dungeon",
-                  "source": "Stratholme: Cannon Master Willey"
                 }
               ]
             },
@@ -63953,7 +63953,7 @@
             272429
           ],
           "horde": [
-            252561,
+            16693,
             1443,
             16695,
             16697,
@@ -63962,7 +63962,7 @@
             16694,
             16691,
             13392,
-            22334,
+            13096,
             22394,
             272429
           ]
@@ -138505,14 +138505,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 20697,
-                  "source_kind": "world",
-                  "source": "Chillwind Ravager"
-                },
-                {
                   "item_id": 11623,
                   "source_kind": "dungeon",
                   "source": "Blackrock Depths: High Interrogator Gerstahn "
+                },
+                {
+                  "item_id": 20697,
+                  "source_kind": "world",
+                  "source": "Chillwind Ravager"
                 }
               ]
             },
@@ -138625,9 +138625,9 @@
               ]
             },
             "finger1": {
-              "item_id": 13001,
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "item_id": 272406,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
               "chance": null,
               "alternatives": [
                 {
@@ -138643,20 +138643,20 @@
               ]
             },
             "finger2": {
-              "item_id": 272407,
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
+              "item_id": 13001,
+              "source_kind": "world_drop",
+              "source": "World drop",
               "chance": null,
               "alternatives": [
+                {
+                  "item_id": 12543,
+                  "source_kind": "quest",
+                  "source": "The Princess's Surprise"
+                },
                 {
                   "item_id": 22433,
                   "source_kind": "dungeon",
                   "source": "Scholomance: Darkmaster Gandling"
-                },
-                {
-                  "item_id": 19522,
-                  "source_kind": "rep",
-                  "source": "Silverwing Sentinels"
                 }
               ]
             },
@@ -138708,9 +138708,9 @@
                   "source": "PvP rank 14 · Grand Marshal · Alliance"
                 },
                 {
-                  "item_id": 13937,
+                  "item_id": 13161,
                   "source_kind": "dungeon",
-                  "source": "Scholomance: Darkmaster Gandling"
+                  "source": "Blackrock Spire: Overlord Wyrmthalak"
                 }
               ]
             },
@@ -138754,9 +138754,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 12103,
+                  "item_id": 12929,
                   "source_kind": "dungeon",
-                  "source": "Stratholme: Balnazzar"
+                  "source": "Blackrock Spire: Pyroguard Emberseer"
                 },
                 {
                   "item_id": 14558,
@@ -138772,14 +138772,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 19059,
-                  "source_kind": "crafted",
-                  "source": "Tailoring"
-                },
-                {
                   "item_id": 231681,
                   "source_kind": "vendor",
                   "source": "PvP rank 13 · Warlord · Horde"
+                },
+                {
+                  "item_id": 227184,
+                  "source_kind": "pvp",
+                  "source": "PvP rank 10 · Champion · Horde"
                 }
               ]
             },
@@ -138844,27 +138844,27 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 231677,
-                  "source_kind": "pvp",
-                  "source": "PvP rank 12 · General · Horde"
-                },
-                {
                   "item_id": 13253,
                   "source_kind": "dungeon",
                   "source": "Blackrock Spire: Quartermaster Zigris"
+                },
+                {
+                  "item_id": 231677,
+                  "source_kind": "pvp",
+                  "source": "PvP rank 12 · General · Horde"
                 }
               ]
             },
             "waist": {
-              "item_id": 11662,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Ok'thor the Breaker",
+              "item_id": 20163,
+              "source_kind": "rep",
+              "source": "The Defilers",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 20163,
-                  "source_kind": "rep",
-                  "source": "The Defilers"
+                  "item_id": 11662,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths: Ok'thor the Breaker"
                 },
                 {
                   "item_id": 272401,
@@ -138903,13 +138903,31 @@
                   "source": "PvP rank 12 · General · Horde"
                 },
                 {
-                  "item_id": 11822,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Depths: Golem Lord Argelmach"
+                  "item_id": 227188,
+                  "source_kind": "pvp",
+                  "source": "PvP rank 7 · Blood Guard · Horde"
                 }
               ]
             },
             "finger1": {
+              "item_id": 272406,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 22433,
+                  "source_kind": "dungeon",
+                  "source": "Scholomance: Darkmaster Gandling"
+                },
+                {
+                  "item_id": 13001,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
+                }
+              ]
+            },
+            "finger2": {
               "item_id": 19325,
               "source_kind": "rep",
               "source": "Frostwolf Clan",
@@ -138927,57 +138945,39 @@
                 }
               ]
             },
-            "finger2": {
-              "item_id": 272407,
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
+            "trinket1": {
+              "item_id": 13968,
+              "source_kind": "quest",
+              "source": "For The Horde!",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 22433,
+                  "item_id": 13213,
                   "source_kind": "dungeon",
-                  "source": "Scholomance: Darkmaster Gandling"
+                  "source": "Blackrock Spire: Mother Smolderweb"
                 },
                 {
-                  "item_id": 13001,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 249469,
+                  "source_kind": "crafted",
+                  "source": "Enchanting"
                 }
               ]
             },
-            "trinket1": {
+            "trinket2": {
               "item_id": 272438,
               "source_kind": "vendor",
               "source": "Pix Xizzix",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 13968,
-                  "source_kind": "quest",
-                  "source": "For The Horde!"
-                },
-                {
-                  "item_id": 13213,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: Mother Smolderweb"
-                }
-              ]
-            },
-            "trinket2": {
-              "item_id": 11819,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Golem Lord Argelmach",
-              "chance": 0.08,
-              "alternatives": [
-                {
                   "item_id": 13213,
                   "source_kind": "dungeon",
                   "source": "Blackrock Spire: Mother Smolderweb"
                 },
                 {
-                  "item_id": 19120,
-                  "source_kind": "quest",
-                  "source": "Job Opening: Guard Captain of Revantusk Village"
+                  "item_id": 249469,
+                  "source_kind": "crafted",
+                  "source": "Enchanting"
                 }
               ]
             },
@@ -139026,8 +139026,8 @@
             11662,
             237815,
             11822,
+            272406,
             13001,
-            272407,
             13968,
             272438,
             20069,
@@ -139041,13 +139041,13 @@
             22409,
             19595,
             17721,
-            11662,
+            20163,
             252486,
             220863,
+            272406,
             19325,
-            272407,
+            13968,
             272438,
-            11819,
             20220,
             23197
           ]
@@ -139075,7 +139075,7 @@
             "hit": null,
             "white": null,
             "spell": [
-              5.0,
+              6.0,
               16.0
             ],
             "school": null
@@ -174997,6 +174997,7 @@
     "16547": "General's Plate Girdle",
     "16550": "Warlord's Dragonhide Helmet",
     "16553": "General's Dragonhide Bracers",
+    "16556": "General's Dragonhide Belt",
     "16557": "General's Leather Girdle",
     "16559": "General's Leather Armsplints",
     "16565": "Warlord's Chain Chestpiece",
@@ -175444,7 +175445,6 @@
     "22253": "Tome of the Lost",
     "22254": "Wand of Eternal Light",
     "22255": "Magma Forged Band",
-    "22257": "Bloodclot Band",
     "22267": "Spellweaver's Turban",
     "22269": "Shadow Prowler's Cloak",
     "22270": "Entrenching Boots",
@@ -176323,6 +176323,7 @@
     "272076": "Darkspear Raider's Cloak",
     "272077": "Darkspear Raider's Cloak",
     "272078": "Darkspear Raider's Cloak",
+    "272083": "Darkspear Insurgent's Spellblade",
     "272091": "Darkspear Skirmisher's Bludgeon",
     "272095": "Raider Gauntlets",
     "272097": "Raider Handwraps",
@@ -176897,6 +176898,7 @@
     "270018": 20.4,
     "271928": 27.5,
     "271936": 41.4,
+    "272083": 27.5,
     "272091": 41.4,
     "273029": 16.6,
     "273033": 15.4,
