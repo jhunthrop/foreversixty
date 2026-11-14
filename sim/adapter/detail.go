@@ -25,10 +25,8 @@ const (
 
 	// extraAttackBookkeepingKey is the engine's store of pending extra
 	// attacks, a permanent counter aura it files under Thrash's id
-	// (sim/core/attack.go StoreExtraMHAttack, sim/core/buffs.go
-	// CreateExtraAttackAuraCommon). It is up all fight on every character a
-	// Windfury Totem reaches and no player has such a buff, so it never
-	// reaches a page.
+	// (sim/core/attack.go, registered on a character's first extra attack).
+	// No player has such a buff, so it never reaches a page.
 	extraAttackBookkeepingKey = "spell:21919"
 
 	// maxHistogramBins is the widest spread drawn bin by bin. The engine bins

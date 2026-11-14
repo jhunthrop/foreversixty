@@ -254,7 +254,7 @@
           }
         }
       },
-      "notes": "With a Windfury Totem on you, right after Reckless Swings, and never from 25% down: 10 rage for a main-hand hit that can trigger the totem's strike. Without the totem it is rage Bloodthirst and Whirlwind need."
+      "notes": "With a Windfury Totem on you, right after Reckless Swings, while the target is above 25%: 10 rage for a main-hand hit that can trigger the totem's strike. Without the totem it is rage Bloodthirst and Whirlwind need."
     },
     {
       "notes": "From 36, on cooldown under 80 rage, except hold it for the fears on Magmadar, Onyxia and Nefarian: rage from the hits you take, and 5 rage at once with Improved Berserker Rage 1/2 or 10 with 2/2.",
