@@ -1,0 +1,47 @@
+remote-test: 531cb5bf3d5cd7cef77139b76cf1023c7efa3d22 -> forever-ci on 192.168.1.182 (run 20261114031239-531cb5bf3-57386, in sim): bash ../design/reviews/2026-11-13-sim-accuracy/warriors-70938/bands.sh
+remote-test: engine pinned to 00e13541b
+go: downloading github.com/jhunthrop/wowsims-forever v1.0.15-0.20261114031012-00e13541b3fb
+engine replace github.com/wowsims/classic => github.com/jhunthrop/wowsims-forever v1.0.15-0.20261114031012-00e13541b3fb
+warrior-arms raid 60 alliance dps 954.4 0.6
+warrior-arms raid 60 horde dps 951.1 0.6
+warrior-arms bare 60 alliance dps 316.7 0.2
+warrior-arms bare 60 horde dps 316.5 0.2
+warrior-fury raid 60 alliance dps 1040.5 0.6
+warrior-fury raid 60 horde dps 1028.8 0.6
+warrior-fury bare 60 alliance dps 361.6 0.2
+warrior-fury bare 60 horde dps 361.8 0.2
+rogue-assassination raid 60 alliance dps 957.1 0.5
+rogue-assassination raid 60 horde dps 959.6 0.5
+rogue-assassination bare 60 alliance dps 346.7 0.2
+rogue-assassination bare 60 horde dps 350.9 0.2
+rogue-combat raid 60 alliance dps 929.5 0.4
+rogue-combat raid 60 horde dps 927.3 0.4
+rogue-combat bare 60 alliance dps 313.9 0.1
+rogue-combat bare 60 horde dps 318.0 0.1
+rogue-subtlety raid 60 alliance dps 922.6 0.4
+rogue-subtlety raid 60 horde dps 927.8 0.4
+rogue-subtlety bare 60 alliance dps 407.2 0.2
+rogue-subtlety bare 60 horde dps 410.8 0.2
+paladin-retribution raid 60 alliance dps 834.2 0.5
+paladin-retribution raid 60 horde dps 840.5 0.5
+paladin-retribution bare 60 alliance dps 356.9 0.1
+paladin-retribution bare 60 horde dps 360.3 0.1
+shaman-enhancement raid 60 alliance dps 909.9 0.7
+shaman-enhancement raid 60 horde dps 896.7 0.7
+shaman-enhancement bare 60 alliance dps 342.2 0.2
+shaman-enhancement bare 60 horde dps 341.9 0.2
+druid-feral raid 60 alliance dps 1101.2 0.4
+druid-feral raid 60 horde dps 1085.5 0.4
+druid-feral bare 60 alliance dps 457.3 0.2
+druid-feral bare 60 horde dps 452.2 0.2
+hunter-survival raid 60 alliance dps 1056.3 0.6
+hunter-survival raid 60 horde dps 1045.0 0.6
+hunter-survival bare 60 alliance dps 410.2 0.2
+hunter-survival bare 60 horde dps 402.9 0.2
+warrior-protection raid 60 alliance | threat /s | 1687.55 +/- 1.01 | | damage taken /s | 233.7 | | chance of death | 0.0% |
+warrior-protection raid 60 horde | threat /s | 1661.25 +/- 0.97 | | damage taken /s | 232.3 | | chance of death | 0.0% |
+paladin-protection raid 60 alliance | threat /s | 1159.76 +/- 0.58 | | damage taken /s | 297.1 | | chance of death | 0.0% |
+paladin-protection raid 60 horde | threat /s | 1135.94 +/- 0.58 | | damage taken /s | 296.2 | | chance of death | 0.0% |
+druid-feral-bear raid 60 alliance | threat /s | 1864.47 +/- 1.07 | | damage taken /s | 298.4 | | chance of death | 0.0% |
+druid-feral-bear raid 60 horde | threat /s | 2071.84 +/- 1.20 | | damage taken /s | 296.3 | | chance of death | 0.0% |
+remote-test: exit 0 in 42s (531cb5bf3d5cd7cef77139b76cf1023c7efa3d22)

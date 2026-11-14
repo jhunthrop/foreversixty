@@ -1,0 +1,63 @@
+### red at acd929dff
+    rend_attack_power_test.go:38: Rend's tick gains 0.00000 a point of attack power, want 0.0129
+--- FAIL: TestRendTickAddsAShareOfAttackPower (0.00s)
+FAIL
+FAIL	github.com/wowsims/classic/sim/warrior/dps_warrior	0.020s
+FAIL
+### green at 00e13541b
+--- PASS: TestRendTickAddsAShareOfAttackPower (0.00s)
+ok  	github.com/wowsims/classic/sim/warrior/dps_warrior	0.020s
+### suites
+ok  	github.com/wowsims/classic/sim/warrior	0.506s
+ok  	github.com/wowsims/classic/sim/warrior/dps_warrior	4.092s
+ok  	github.com/wowsims/classic/sim/warrior/tank_warrior	6.738s
+ok  	github.com/wowsims/classic/sim/core	1.353s
+ok  	github.com/wowsims/classic/sim/conformance	1.631s
+ok  	github.com/wowsims/classic/sim/druid	0.462s
+ok  	github.com/wowsims/classic/sim/druid/balance	0.037s
+ok  	github.com/wowsims/classic/sim/druid/feral	0.051s
+ok  	github.com/wowsims/classic/sim/druid/restoration	1.181s
+ok  	github.com/wowsims/classic/sim/druid/tank	3.266s
+ok  	github.com/wowsims/classic/sim/paladin	0.548s
+ok  	github.com/wowsims/classic/sim/paladin/holy	2.577s
+ok  	github.com/wowsims/classic/sim/paladin/protection	14.401s
+ok  	github.com/wowsims/classic/sim/paladin/retribution	0.230s
+ok  	github.com/wowsims/classic/sim/hunter	0.503s
+ok  	github.com/wowsims/classic/sim/rogue	0.247s
+ok  	github.com/wowsims/classic/sim/rogue/dps_rogue	0.048s
+ok  	github.com/wowsims/classic/sim/shaman	0.391s
+ok  	github.com/wowsims/classic/sim/shaman/elemental	4.595s
+ok  	github.com/wowsims/classic/sim/shaman/enhancement	8.014s
+ok  	github.com/wowsims/classic/sim/shaman/restoration	0.167s
+ok  	github.com/wowsims/classic/sim/shaman/warden	0.032s
+### goldens
+updated sim/warrior/tank_warrior/TestP1TankWarrior.results
+updated sim/warrior/dps_warrior/TestP1DPSWarrior.results
+updated sim/shaman/enhancement/TestEnhancement.results
+updated sim/shaman/elemental/TestElemental.results
+updated sim/paladin/protection/TestProtection.results
+updated sim/druid/tank/TestFeralTank.results
+ok  	github.com/wowsims/classic/sim/warrior	0.457s
+ok  	github.com/wowsims/classic/sim/warrior/dps_warrior	3.813s
+ok  	github.com/wowsims/classic/sim/warrior/tank_warrior	6.311s
+ok  	github.com/wowsims/classic/sim/core	1.307s
+ok  	github.com/wowsims/classic/sim/conformance	1.536s
+ok  	github.com/wowsims/classic/sim/druid	0.452s
+ok  	github.com/wowsims/classic/sim/druid/balance	0.048s
+ok  	github.com/wowsims/classic/sim/druid/feral	0.063s
+ok  	github.com/wowsims/classic/sim/druid/restoration	1.204s
+ok  	github.com/wowsims/classic/sim/druid/tank	3.100s
+ok  	github.com/wowsims/classic/sim/paladin	0.466s
+ok  	github.com/wowsims/classic/sim/paladin/holy	2.520s
+ok  	github.com/wowsims/classic/sim/paladin/protection	15.646s
+ok  	github.com/wowsims/classic/sim/paladin/retribution	0.249s
+ok  	github.com/wowsims/classic/sim/hunter	0.579s
+ok  	github.com/wowsims/classic/sim/rogue	0.241s
+ok  	github.com/wowsims/classic/sim/rogue/dps_rogue	0.037s
+ok  	github.com/wowsims/classic/sim/shaman	0.410s
+ok  	github.com/wowsims/classic/sim/shaman/elemental	4.874s
+ok  	github.com/wowsims/classic/sim/shaman/enhancement	8.978s
+ok  	github.com/wowsims/classic/sim/shaman/restoration	0.166s
+ok  	github.com/wowsims/classic/sim/shaman/warden	0.026s
+=====PATCH=====
+=====END=====
