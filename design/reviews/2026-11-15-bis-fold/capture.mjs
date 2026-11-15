@@ -30,6 +30,15 @@ for (const shot of SHOTS) {
     await page.route("**/v1/**", (route) => route.fulfill({ status: 401, body: "{}" }));
     await page.goto(`${BASE}${shot.url}`, { waitUntil: "networkidle" });
     await page.waitForFunction(() => !document.documentElement.hasAttribute("data-bis-pending"));
+    // Walk the page so every lazy icon loads before the full-page shot, then back to the top.
+    await page.evaluate(async () => {
+      for (let y = 0; y < document.body.scrollHeight; y += 600) {
+        window.scrollTo(0, y);
+        await new Promise((resolve) => setTimeout(resolve, 60));
+      }
+      window.scrollTo(0, 0);
+    });
+    await page.waitForLoadState("networkidle");
     await page.waitForTimeout(800);
     const file = join(OUT, `${shot.name}-${width}.png`);
     await page.screenshot({ path: file, fullPage: true });

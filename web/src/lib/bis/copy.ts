@@ -445,12 +445,11 @@ export const bisCopy = {
       : `No ${slotLower} you can get at ${bandLabel} raises your ${outcomeNoun(unit)}. The first that does comes at ${nextRealBand}.`,
   /** `no_sourced_item`, a LATER empty band for a slot this file's already named once (spec
    *  §4.D) -- `undefined` the same way `noSourcedItemFirst`'s own clause is: no later band
-   *  ever sources it either. Same plain-band-number rule as above (mock: "Nothing here
-   *  either until 30."). */
+   *  ever sources it either. Same plain-band-number rule as above: "None until 30.", which
+   *  reads right whether or not the full sentence sits above it (the spec page's Leveling
+   *  section lists a band without the one before it; 2026-11-15 persona round). */
   noSourcedItemLater: (nextRealBand: number | undefined): string =>
-    nextRealBand === undefined
-      ? 'Nothing here helps at this level either.'
-      : `Nothing here either until ${nextRealBand}.`,
+    nextRealBand === undefined ? 'None at this level.' : `None until ${nextRealBand}.`,
 
   // --- Character card action (the shared character header carries the rest) ----------------
   upgradesLabel: 'Upgrades',

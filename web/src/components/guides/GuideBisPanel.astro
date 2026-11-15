@@ -14,8 +14,11 @@ import { listedBisRows, type GuideBisPanel } from '../../lib/guides/guide-bis';
 interface Props {
   build: string;
   panel: GuideBisPanel;
+  /** Whose picks they are, under the label below 60; off where the page's own race and faction
+   *  controls already say it (the BiS spec page's Leveling section). */
+  caption?: boolean;
 }
-const { build, panel } = Astro.props;
+const { build, panel, caption = true } = Astro.props;
 const faction = panel.faction === 'alliance' ? guidesCopy.alliancePicksHeading : guidesCopy.hordePicksHeading;
 const rows = listedBisRows(panel);
 const blocks = [
@@ -26,7 +29,7 @@ const blocks = [
 
 <LaneBlock
   label={guidesCopy.levelRangeLabel(panel.band)}
-  meta={panel.band === 60 ? undefined : guidesCopy.bisCaption(panel.raceName, faction)}
+  meta={panel.band === 60 || !caption ? undefined : guidesCopy.bisCaption(panel.raceName, faction)}
   testid="guide-bis-panel"
 >
   <div class="guide-bis-items" data-wrap-list data-band={panel.band} data-faction={panel.faction}>
