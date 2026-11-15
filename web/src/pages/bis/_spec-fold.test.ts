@@ -57,9 +57,16 @@ describe.each(SPECS)('/bis/%s/%s', (classSlug, specSlug) => {
   });
 });
 
+/** getStaticPaths builds every spec's page data: about 35 s on the test box. */
+const ALL_SPECS_TIMEOUT_MS = 120_000;
+
 describe('band pages', () => {
-  it('generate level 60 alone: the folded bands 301 to the spec page instead', async () => {
-    const slugs = new Set((await bandPaths()).map((path) => path.params.band));
-    expect(slugs).toEqual(new Set(['60']));
-  });
+  it(
+    'generate level 60 alone: the folded bands 301 to the spec page instead',
+    async () => {
+      const slugs = new Set((await bandPaths()).map((path) => path.params.band));
+      expect(slugs).toEqual(new Set(['60']));
+    },
+    ALL_SPECS_TIMEOUT_MS,
+  );
 });
