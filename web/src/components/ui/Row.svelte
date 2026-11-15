@@ -32,6 +32,7 @@
     foot,
     item = false,
     labelledby,
+    align = 'center',
   }: {
     title: string;
     titleTone?: TitleTone;
@@ -61,6 +62,9 @@
     item?: boolean;
     /** The id of the element that names the row (aria-labelledby). */
     labelledby?: string;
+    /** `start` tops the lead, body and trail on the first line: a tall sub (a block per spec on
+     *  the sim landing) would otherwise centre the crest and title on rows of uneven height. */
+    align?: 'center' | 'start';
     /** Never rendered: an Astro caller's whitespace between named slots arrives as children. */
     children?: Snippet;
   } = $props();
@@ -73,7 +77,8 @@
   this={element}
   href={element === 'a' ? href : undefined}
   class={[
-    'ui-row border-line-soft relative grid items-center gap-x-3 border-b last:border-b-0',
+    'ui-row border-line-soft relative grid gap-x-3 border-b last:border-b-0',
+    align === 'start' ? 'items-start' : 'items-center',
     fillTrail && 'ui-row-fill',
     hasLead ? 'grid-cols-[auto_minmax(0,1fr)_auto]' : 'grid-cols-[minmax(0,1fr)_auto]',
     // A narrow phone row with nothing at its right gives the body that column and its gap.

@@ -165,20 +165,52 @@
       <p class="text-small text-wipe mt-2" role="alert" data-testid="sim-landing-message">{message}</p>
     {/if}
   </Section>
-  <Section title={copy.sections.bisSet} panel testid="sim-bis-sets">
+  <Section
+    title={copy.sections.bisSet}
+    meta={copy.sections.bisSetMeta}
+    action={{ label: copy.bisSet.weights, href: copy.bisSet.weightsHref }}
+    panel
+    testid="sim-bis-sets"
+  >
     <RowGrid cols={3}>
       {#each bisSets as klass (klass.slug)}
-        <Row title={klass.name} titleTone={classTone(klass.slug)} open>
+        <Row title={klass.name} titleTone={classTone(klass.slug)} open align="start">
           {#snippet lead()}<Crest cls={klass.slug} size={32} />{/snippet}
           {#snippet subContent()}
-            <!-- On a phone each spec link takes its own line (no orphans, no collisions); one line from 768. -->
-            <span class="flex flex-col pt-[2px] md:flex-row md:flex-wrap md:gap-x-4 md:gap-y-1">
+            <!-- One block per spec: the set's sim link and DPS, its strongest stats, then its guide
+                 and BiS page. Class order, no bar or gap: the tier list owns the ranking. -->
+            <span class="flex flex-col gap-2 pt-[2px]">
               {#each klass.specs as spec (spec.href)}
-                <!-- A 44 px hit area on a touch screen (spec §5, Touch); the line stays 20 px on desktop. -->
-                <a
-                  class="text-gold inline-flex min-h-11 items-center text-[14px] font-semibold whitespace-nowrap md:min-h-0"
-                  href={spec.href}>{spec.name} ›</a
-                >
+                <span class="flex flex-col" data-testid="sim-bis-spec">
+                  <span class="flex flex-wrap items-baseline gap-x-3">
+                    <!-- A 44 px hit area on a touch screen (spec §5, Touch); the line stays 20 px on desktop. -->
+                    <a
+                      class="text-gold inline-flex min-h-11 items-center text-[14px] font-semibold whitespace-nowrap md:min-h-0"
+                      href={spec.href}>{spec.name} ›</a
+                    >
+                    {#if spec.dps !== null}
+                      <span class="text-strong text-[14px] font-semibold tabular-nums"
+                        >{copy.bisSet.dps(spec.dps)}</span
+                      >
+                    {/if}
+                    <span class="text-small ml-auto flex gap-3">
+                      <a class="text-gold inline-flex min-h-11 items-center md:min-h-0" href={spec.guideHref}
+                        >{copy.bisSet.guide}</a
+                      >
+                      <a class="text-gold inline-flex min-h-11 items-center md:min-h-0" href={spec.bisHref}
+                        >{copy.bisSet.bis}</a
+                      >
+                    </span>
+                  </span>
+                  {#if spec.stats.length > 0}
+                    <span class="text-small text-muted">
+                      {#each spec.stats as stat, index (stat.label)}{#if index > 0}{' · '}{/if}<span
+                          class="whitespace-nowrap"
+                          >{stat.label} <span class="tabular-nums">{stat.factor}</span></span
+                        >{/each}
+                    </span>
+                  {/if}
+                </span>
               {/each}
             </span>
           {/snippet}

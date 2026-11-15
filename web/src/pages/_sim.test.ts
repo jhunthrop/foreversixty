@@ -9,7 +9,9 @@ import type { experimental_AstroContainer as AstroContainer } from 'astro/contai
 import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
 import { createPageContainer } from '../test-support/page-container';
 import { beforeAll, describe, expect, it } from 'vitest';
+import activeBuild from '../data/active-build.json';
 import { FIXTURE_SIM_ID } from '../lib/report/shell-paths';
+import { loadBisSetRail } from '../lib/sim/bis-set-rail';
 import Sim from './sim.astro';
 import SimById from './sim/[id].astro';
 import Specs from './sim/specs.astro';
@@ -85,6 +87,23 @@ describe('the shells', () => {
     expect(html).toContain('data-region="section-sim-a-best-in-slot-set"');
     expect(html).toContain('data-bis-sets=');
     expect(html).not.toContain('current-character-bar');
+  });
+
+  // SEO lane 2026-11-15: the rail's spec lines carry the set's DPS, its top stats and the spec's
+  // guide and BiS links in the server HTML, from the build's own BiS files.
+  it('sim.astro server-renders every spec line with its DPS, stats, guide and BiS link', async () => {
+    const html = await container.renderToString(Sim);
+    const rail = loadBisSetRail(activeBuild.build);
+    const specs = rail.flatMap((klass) => klass.specs);
+    expect(specs.length).toBeGreaterThan(0);
+    expect(html.match(/data-testid="sim-bis-spec"/g)?.length).toBe(specs.length);
+    for (const spec of specs) {
+      expect(html, spec.guideHref).toContain(`href="${spec.guideHref}"`);
+      expect(html, spec.bisHref).toContain(`href="${spec.bisHref}"`);
+      if (spec.dps !== null) expect(html, spec.name).toContain(`${spec.dps} DPS`);
+      for (const stat of spec.stats) expect(html, stat.label).toContain(stat.label);
+    }
+    expect(html).toContain('href="/sim/weights"');
   });
 
   // The page is the tool head and the grid's mount on the flat primitives (b6ab00174): no view-gap

@@ -12,11 +12,12 @@ import { staticWords } from '../test-support/static-text';
 import Home from './index.astro';
 import Rankings from './rankings.astro';
 import RankingsEncounter from './rankings/[slug].astro';
+import Sim from './sim.astro';
 
 /** The floors, a little under what each page draws today: home 290 (the brief asked for about 300;
  *  the shared class picker names one spec per talent tree since lane D, so home draws about 296), the
  *  rankings landing and an encounter's page 150 (the fixture snapshot's rows). */
-export const TEXT_FLOORS = { home: 290, rankings: 150, encounter: 150 } as const;
+export const TEXT_FLOORS = { home: 290, rankings: 150, encounter: 150, sim: 300 } as const;
 
 let container: AstroContainer;
 
@@ -48,6 +49,12 @@ describe('server-rendered text floors', () => {
   it(`the rankings landing reads at least ${TEXT_FLOORS.rankings} words`, async () => {
     const words = staticWords(await container.renderToString(Rankings));
     expect(words.length).toBeGreaterThanOrEqual(TEXT_FLOORS.rankings);
+  });
+
+  // SEO lane 2026-11-15: /sim's landing server-renders each spec's set DPS, stats and links.
+  it(`the simulator landing reads at least ${TEXT_FLOORS.sim} words`, async () => {
+    const words = staticWords(await container.renderToString(Sim));
+    expect(words.length).toBeGreaterThanOrEqual(TEXT_FLOORS.sim);
   });
 
   it(`an encounter's rankings page reads at least ${TEXT_FLOORS.encounter} words`, async () => {

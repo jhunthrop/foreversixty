@@ -12,6 +12,9 @@ export const simPageCopy = {
     simYourCharacter: 'Sim your character',
     otherWaysIn: 'Other ways in',
     bisSet: 'Sim a best-in-slot set',
+    /** The best-in-slot panel's meta: what each spec line's figures are. */
+    bisSetMeta:
+      'Raid-ready level 60 sets, buffed and fed, on one boss. DPS, then the stats each spec wants most.',
     yourSims: 'Your sims',
     yourSimsAll: 'All',
   },
@@ -23,6 +26,14 @@ export const simPageCopy = {
     setUp: 'Get set up ›',
     setUpHref: '/setup#paste',
     invalid: 'That does not look like an addon export or a build code.',
+  },
+  bisSet: {
+    dps: (figure: string): string => `${figure} DPS`,
+    guide: 'Guide',
+    bis: 'BiS',
+    /** The panel's head link: every stat's weight for one spec. */
+    weights: 'All stat weights',
+    weightsHref: '/sim/weights',
   },
   ways: {
     characters: 'Your characters',
