@@ -3,7 +3,7 @@
      the import could not type a realm for, "Which realm type is <name> on?" with the site's four
      rulesets as one-tap buttons. A tap saves the answer (POST /v1/me/realm-answers), the pressed
      button busy meanwhile; a refusal shows the API's sentence in the wipe colour. `onAnswered`
-     re-reads the account, which drops the answered block. -->
+     re-reads the account, which drops the answered block. Ruled draws the hairline under each block. -->
 <script lang="ts">
   import { answerRealm } from '../../lib/account/api';
   import type { MeCharacter } from '../../lib/account/me-types';
@@ -11,6 +11,7 @@
   import { busyCopy, withRetry } from '../../lib/ui/copy';
   import Button from '../ui/Button.svelte';
   import CharacterName from '../ui/CharacterName.svelte';
+  import Ruled from '../ui/Ruled.svelte';
 
   let {
     characters,
@@ -54,7 +55,7 @@
 </script>
 
 {#if characters.length > 0}
-  <div class="unknown-realm border-line-soft border-b" data-testid={testid}>
+  <Ruled edge="bottom" {testid}>
     {#each characters as character (character.key)}
       {@const headingId = `${testid}-${character.key.replaceAll('/', '-')}`}
       <section
@@ -89,16 +90,13 @@
         {/if}
       </section>
     {/each}
-  </div>
+  </Ruled>
 {/if}
 
 <style>
   /* The next thing to do on the plate: the gold rule a step that waits on the player carries. */
   .unknown-realm-item {
     box-shadow: inset 2px 0 0 var(--color-gold);
-  }
-  .unknown-realm-item + .unknown-realm-item {
-    border-top: 1px solid var(--color-line-soft);
   }
   /* Four equal buttons, so "Saving…" never moves its neighbours; two by two on a phone. */
   .unknown-realm-choices {
