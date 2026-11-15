@@ -94,7 +94,7 @@ test.describe('What it does in the game (L8.3)', () => {
     await page.goto('/setup');
     const commands = page.getByTestId('setup-commands');
     await expect(commands.locator('dt')).toHaveCount(addonCopy.commands.length);
-    await expect(commands.locator('dt').first()).toHaveText('paste or copy a build');
+    await expect(commands.locator('dt').first()).toHaveText(addonCopy.commands[0]!.description);
     await expect(commands.locator('dd code').first()).toHaveText('/fs');
     await expect(commands.locator('dd code').last()).toHaveText('/fs help');
     await expect(page.getByTestId('setup-handshake')).toContainText('Site has your save from');

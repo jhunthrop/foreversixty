@@ -1,6 +1,6 @@
 <!-- web/src/components/setup/SetupRail.svelte -->
 <!-- /setup's rail (setup spec 4, rulings U9, U11): Try an export open (the Korea way in, and a Mac's while there is no Mac build),
-     the 14 /fs commands as a key-binding list (what it does at the left, the command at the right
+     the addon's /fs commands (its Locale.lua settingsCommands) as a key-binding list (what it does at the left, the command at the right
      as Code), the companion handshake, and the two flows (out of the game, into it). -->
 <script lang="ts">
   import { addonCopy } from '../../lib/addon/copy';

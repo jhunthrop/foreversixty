@@ -345,15 +345,10 @@ describe('/setup: what it does in the game (L8.3)', () => {
     expect(source).toContain('addonCopy.commands');
     const expected = localeSettingsCommands();
     expect(addonCopy.commands.map((c) => `${c.command}: ${c.description}`)).toEqual(expected);
-    // Fourteen since the guild redesign added /fs job (raid assignments) after /fs ready;
-    // fifteen since /fs tour (replay the tour) joined after /fs chip.
-    expect(addonCopy.commands).toHaveLength(15);
-    expect(addonCopy.commands.map((c) => c.command).slice(8, 12)).toEqual([
-      '/fs ready',
-      '/fs job',
-      '/fs loot',
-      '/fs floor N',
-    ]);
+    // Ten since addon 2.0.55 folded the tabs into one line and dropped /fs build, chip, inspect,
+    // group, job and floor N.
+    expect(addonCopy.commands).toHaveLength(10);
+    expect(addonCopy.commands.map((c) => c.command).slice(5, 7)).toEqual(['/fs ready', '/fs loot']);
   });
 
   it('draws the commands as a key-binding list: the description, then the command as Code', () => {
