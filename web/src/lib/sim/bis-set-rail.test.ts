@@ -24,6 +24,16 @@ describe('the best-in-slot set rail', () => {
       expect(factors).toEqual([...factors].sort((a, b) => b - a));
       expect(spec.guideHref).toMatch(/^\/guides\/[a-z]+\/[a-z-]+$/);
       expect(spec.bisHref).toMatch(/^\/bis\/[a-z]+\/[a-z-]+/);
+      expect(spec.stats.every((stat) => !stat.label.endsWith(' rating'))).toBe(true);
+    }
+  });
+
+  it('never names a school of spell damage that is worth exactly what spell power is', () => {
+    for (const spec of rail.flatMap((klass) => klass.specs)) {
+      const spellPower = spec.stats.find((stat) => stat.label === 'Spell power');
+      if (spellPower === undefined) continue;
+      const twins = spec.stats.filter((stat) => stat !== spellPower && stat.label.endsWith(' power'));
+      for (const twin of twins) expect(twin.factor, `${spec.name} ${twin.label}`).not.toBe(spellPower.factor);
     }
   });
 });

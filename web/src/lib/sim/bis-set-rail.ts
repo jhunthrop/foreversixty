@@ -13,10 +13,12 @@ import { MIN_BAND } from '../bis/band-levels';
 import { bisBandPath } from '../bis/band-path';
 import { bandScaleView } from '../bis/band-scale-view';
 import { bandEntry, loadBisFile, readSpecCatalog } from '../bis/load';
+import type { ScaleRow } from '../bis/scale-view';
 import type { BisBand, BisFile, SpecCatalogEntry } from '../bis/types';
 import { oneDecimal } from '../format/number';
 import { classRows } from '../planner/reference';
 import { tierRankingSimHref } from '../tiers/tier-load';
+import { statLabelForSpec } from './weights-display';
 
 /** The band the published ranking sims run: level 60, raid-ready (the tier list's band). */
 const RAIL_BAND = 60;
@@ -26,7 +28,7 @@ const RAIL_FACTION = 'alliance';
 const TOP_STATS = 3;
 
 export interface BisSetStat {
-  /** "Strength", "Crit rating". */
+  /** "Strength", "Crit". */
   label: string;
   /** The scale factor, two decimals: the top stat reads "1.00". */
   factor: string;
@@ -71,11 +73,35 @@ export function buildBisSetRail(deps: BisSetRailDeps): BisSetClass[] {
   });
 }
 
+/** One school's spell damage: on a spec whose spells are all that school it is worth exactly
+ *  what spell power is, so it is the same stat twice and would push a real one off the line. */
+const SCHOOL_POWER = new Set([
+  'arcane_power',
+  'fire_power',
+  'frost_power',
+  'holy_power',
+  'nature_power',
+  'shadow_power',
+]);
+const SPELL_POWER = 'spell_power';
+/** Two factors closer than this read the same at two decimals. */
+const SAME_FACTOR = 0.005;
+
+function duplicatesSpellPower(row: ScaleRow, spellPower: ScaleRow | undefined): boolean {
+  if (spellPower === undefined || !SCHOOL_POWER.has(row.stat)) return false;
+  return Math.abs(row.scaleFactor - spellPower.scaleFactor) <= Math.max(row.scaleError, SAME_FACTOR);
+}
+
 function topStats(band: BisBand, spec: string): BisSetStat[] {
-  return bandScaleView(band, spec, 'dps')
-    .rows.filter((row) => row.significant)
-    .slice(0, TOP_STATS)
-    .map((row) => ({ label: row.label, factor: row.scaleFactor.toFixed(2) }));
+  const rows = bandScaleView(band, spec, 'dps').rows.filter((row) => row.significant);
+  const spellPower = rows.find((row) => row.stat === SPELL_POWER);
+  return (
+    rows
+      .filter((row) => !duplicatesSpellPower(row, spellPower))
+      .slice(0, TOP_STATS)
+      // The bare stat name: the line is per point, as the panel's meta says ("Hit", not "Hit rating").
+      .map((row) => ({ label: statLabelForSpec(row.stat, spec), factor: row.scaleFactor.toFixed(2) }))
+  );
 }
 
 function specLine(entry: SpecCatalogEntry, band: BisBand, href: string): BisSetSpec {

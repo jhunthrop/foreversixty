@@ -45,6 +45,10 @@
     railTail?: Snippet;
   } = $props();
 
+  /** A spec's Guide and BiS: quiet beside its gold sim link, gold on hover; a 44 px square on a phone. */
+  const SECONDARY_LINK =
+    'text-muted hover:text-gold focus-visible:text-gold inline-flex min-h-11 min-w-11 items-center justify-center md:min-h-0 md:min-w-0';
+
   let paste = $state('');
   let buildRef = $state('');
   let fightRef = $state('');
@@ -179,7 +183,7 @@
           {#snippet subContent()}
             <!-- One block per spec: the set's sim link and DPS, its strongest stats, then its guide
                  and BiS page. Class order, no bar or gap: the tier list owns the ranking. -->
-            <span class="flex flex-col gap-2 pt-[2px]">
+            <span class="flex flex-col gap-3 pt-[2px]">
               {#each klass.specs as spec (spec.href)}
                 <span class="flex flex-col" data-testid="sim-bis-spec">
                   <span class="flex flex-wrap items-baseline gap-x-3">
@@ -193,13 +197,9 @@
                         >{copy.bisSet.dps(spec.dps)}</span
                       >
                     {/if}
-                    <span class="text-small ml-auto flex gap-3">
-                      <a class="text-gold inline-flex min-h-11 items-center md:min-h-0" href={spec.guideHref}
-                        >{copy.bisSet.guide}</a
-                      >
-                      <a class="text-gold inline-flex min-h-11 items-center md:min-h-0" href={spec.bisHref}
-                        >{copy.bisSet.bis}</a
-                      >
+                    <span class="text-small ml-auto flex gap-1 md:gap-3">
+                      <a class={SECONDARY_LINK} href={spec.guideHref}>{copy.bisSet.guide}</a>
+                      <a class={SECONDARY_LINK} href={spec.bisHref}>{copy.bisSet.bis}</a>
                     </span>
                   </span>
                   {#if spec.stats.length > 0}

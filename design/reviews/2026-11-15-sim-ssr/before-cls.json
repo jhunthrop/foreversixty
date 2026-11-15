@@ -1,0 +1,38 @@
+[
+  {
+    "width": 1440,
+    "state": "server",
+    "height": 1257,
+    "cls": null
+  },
+  {
+    "width": 1440,
+    "state": "hydrated",
+    "height": 1257,
+    "cls": 0
+  },
+  {
+    "width": 1440,
+    "state": "nojs",
+    "height": 1278,
+    "cls": null
+  },
+  {
+    "width": 390,
+    "state": "server",
+    "height": 2574,
+    "cls": null
+  },
+  {
+    "width": 390,
+    "state": "hydrated",
+    "height": 2574,
+    "cls": 0
+  },
+  {
+    "width": 390,
+    "state": "nojs",
+    "height": 2616,
+    "cls": null
+  }
+]
