@@ -193,6 +193,15 @@ describe('the Premium card when the account has Premium', () => {
         expect((await runOn(blocked)).premiumNav).toBe('hide');
       });
 
+      it('the session cookie alone shows the tag (/b/{id} has no data-session)', async () => {
+        const { storageOf } = withVisits(undefined);
+        const text = sourceScripts(await renderPremium())[0]?.textContent ?? '';
+        const doc = new JSDOM('<!doctype html><html></html>').window.document;
+        doc.cookie = 'fs_csrf=abc';
+        new Function('localStorage', 'document', text)(storageOf(), doc);
+        expect(doc.documentElement.dataset.premiumNav).toBeUndefined();
+      });
+
       it('Premium still hides the tag for a returning visitor', async () => {
         const { storageOf } = withVisits(['2026-11-10', '2026-11-12']);
         expect((await runOn(storageOf, '<html data-server-sims="1">')).premiumNav).toBe('hide');

@@ -94,7 +94,9 @@ const DOOR_ICON_PX = 20;
       // Storage blocked or malformed: counted as a first visit, so the tag stays out.
       days = [];
     }
-    const returning = root.dataset.session === '1' || days.length >= minDays;
+    // The session hint is read here too: /b/{id} has no Base.astro head to stamp data-session.
+    const signedIn = root.dataset.session === '1' || /(?:^|;\s*)fs_csrf=[^;]+/.test(document.cookie);
+    const returning = signedIn || days.length >= minDays;
     if (root.dataset.premium || root.dataset.serverSims || !returning) root.dataset.premiumNav = 'hide';
   </script>
   <a href="/" class="site-wordmark">
