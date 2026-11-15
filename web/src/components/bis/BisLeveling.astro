@@ -53,10 +53,12 @@ const toLevel = Math.max(...bands) + 9;
   .bis-leveling-band[data-faction='horde'] {
     display: none;
   }
-  :global(.bis-page:has([data-testid='bis-page'][data-bis-faction='horde'])) .bis-leveling-band[data-faction='horde'] {
+  :global(.bis-page:has([data-testid='bis-page'][data-bis-faction='horde']))
+    .bis-leveling-band[data-faction='horde'] {
     display: block;
   }
-  :global(.bis-page:has([data-testid='bis-page'][data-bis-faction='horde'])) .bis-leveling-band[data-faction='alliance'] {
+  :global(.bis-page:has([data-testid='bis-page'][data-bis-faction='horde']))
+    .bis-leveling-band[data-faction='alliance'] {
     display: none;
   }
 </style>

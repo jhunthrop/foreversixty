@@ -251,9 +251,9 @@ const jsonLd = [
       <PageHeader slot="header" title={title} tone={{ classSlug: classSlug as ClassSlug }}>
         <Crest slot="crest" cls={classSlug} size={56} eager />
         <span slot="meta">{guidesCopy.headerMeta(role, formatDate(updated))}</span>
-        <a slot="actions" class={LINK} href={INSTALL_ADDON_LINK.href} data-testid="guide-install-addon"
-          >{INSTALL_ADDON_LINK.label} ›</a
-        >
+        <a slot="actions" class={LINK} href={INSTALL_ADDON_LINK.href} data-testid="guide-install-addon">
+          {INSTALL_ADDON_LINK.label} ›
+        </a>
         <GuideAnswer
           slot="answer"
           page={{

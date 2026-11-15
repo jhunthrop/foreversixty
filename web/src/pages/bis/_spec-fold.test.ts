@@ -50,10 +50,13 @@ describe.each(SPECS)('/bis/%s/%s', (classSlug, specSlug) => {
     for (const panel of panels) {
       expect(section).toMatch(new RegExp(`data-band="${panel.band}"[^>]*data-faction="${panel.faction}"`));
       for (const row of listedBisRows(panel)) {
-        if (row.itemId !== undefined && !row.empty) expect(section).toContain(`data-bis-item="${row.itemId}"`);
+        if (row.itemId !== undefined && !row.empty)
+          expect(section).toContain(`data-bis-item="${row.itemId}"`);
       }
     }
-    expect(html).toMatch(new RegExp(`rel="canonical" href="https://foreversixty\\.gg/bis/${classSlug}/${specSlug}"`));
+    expect(html).toMatch(
+      new RegExp(`rel="canonical" href="https://foreversixty\\.gg/bis/${classSlug}/${specSlug}"`),
+    );
   });
 });
 

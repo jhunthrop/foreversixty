@@ -21,7 +21,10 @@ test.describe('without JavaScript, as a crawler fetches', () => {
     await expect(page.getByTestId('bis-doll')).toContainText(/\S/);
     // The band controls are real links: the first band the spec's own path, a folded band its hash.
     await expect(page.getByTestId('control-band-20')).toHaveAttribute('href', '/bis/warrior/fury');
-    await expect(page.getByTestId('control-band-40')).toHaveAttribute('href', '/bis/warrior/fury#levels-40-49');
+    await expect(page.getByTestId('control-band-40')).toHaveAttribute(
+      'href',
+      '/bis/warrior/fury#levels-40-49',
+    );
     await expect(page.getByTestId('control-band-60')).toHaveAttribute('href', '/bis/warrior/fury/60');
     // The folded bands live on the spec page alone.
     await expect(page.getByTestId('bis-leveling')).toHaveCount(0);

@@ -18,7 +18,11 @@ describe('public/_redirects', () => {
       .split('\n')
       .map((line) => line.trim().split(/\s+/));
     for (const band of [30, 40, 50]) {
-      expect(rules).toContainEqual([`/bis/:class/:spec/${bandSlug(band)}`, `/bis/:class/:spec${bandHash(band)}`, '301']);
+      expect(rules).toContainEqual([
+        `/bis/:class/:spec/${bandSlug(band)}`,
+        `/bis/:class/:spec${bandHash(band)}`,
+        '301',
+      ]);
     }
     expect(rules.some((rule) => rule[0] === '/bis/:class/:spec/60')).toBe(false);
   });

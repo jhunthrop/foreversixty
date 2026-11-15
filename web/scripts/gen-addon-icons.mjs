@@ -36,12 +36,37 @@ const SELF = fileURLToPath(import.meta.url);
 
 /** The site glyphs the addon draws (spec section 3): the six tab icons, then the row glyphs. */
 export const ADDON_ICONS = [
-  'character', 'planner', 'bis', 'sim', 'guild', 'manage',
-  'close', 'chevron-right', 'chevron-down', 'check', 'upgrade', 'skull', 'target', 'refresh', 'bolt',
-  'pin', 'search', 'spinner',
+  'character',
+  'planner',
+  'bis',
+  'sim',
+  'guild',
+  'manage',
+  'close',
+  'chevron-right',
+  'chevron-down',
+  'check',
+  'upgrade',
+  'skull',
+  'target',
+  'refresh',
+  'bolt',
+  'pin',
+  'search',
+  'spinner',
 ];
 /** The nine classes, the addon's lower-case class slugs. */
-export const CLASSES = ['warrior', 'paladin', 'hunter', 'rogue', 'priest', 'shaman', 'mage', 'warlock', 'druid'];
+export const CLASSES = [
+  'warrior',
+  'paladin',
+  'hunter',
+  'rogue',
+  'priest',
+  'shaman',
+  'mage',
+  'warlock',
+  'druid',
+];
 /** Each header mood: its source in web/public/art, the crop as fractions (left, top, right, bottom)
  *  and whether it is mirrored. The approved mock's crops (design/mocks/addon_brand.py BAND_CROPS). */
 export const BAND_CROPS = {
@@ -54,7 +79,17 @@ export const BAND_CROPS = {
 /** The raid plate's backdrop: the cave mouth and its glow, in source pixels (x, y, width, height). */
 const CAVE_PLATE = { source: 'cave-1600.webp', region: [480, 60, 1120, 560] };
 /** Texture sides, in px. */
-const SIZE = { icon: 32, seal: 64, filigree: 64, ground: 256, bandW: 512, bandH: 64, caveW: 256, caveH: 128, crest: 128 };
+const SIZE = {
+  icon: 32,
+  seal: 64,
+  filigree: 64,
+  ground: 256,
+  bandW: 512,
+  bandH: 64,
+  caveW: 256,
+  caveH: 128,
+  crest: 128,
+};
 /** The ring: its outer radius and thickness at the 128 px crest (the 64 px ring's 31 and 4, doubled). */
 const RING = { outer: 62, width: 8 };
 
@@ -62,8 +97,10 @@ const isPow2 = (n) => n > 0 && (n & (n - 1)) === 0;
 
 /** RGBA pixels (top row first) to a 32-bit uncompressed, top-left-origin TGA. */
 export function tga(width, height, rgba) {
-  if (!isPow2(width) || !isPow2(height)) throw new Error(`${width}x${height}: the client reads power-of-two sides only`);
-  if (rgba.length !== width * height * 4) throw new Error(`${width}x${height}: ${rgba.length} bytes is not RGBA`);
+  if (!isPow2(width) || !isPow2(height))
+    throw new Error(`${width}x${height}: the client reads power-of-two sides only`);
+  if (rgba.length !== width * height * 4)
+    throw new Error(`${width}x${height}: ${rgba.length} bytes is not RGBA`);
   const out = Buffer.alloc(18 + rgba.length);
   out[2] = 2; // uncompressed true colour
   out.writeUInt16LE(width, 12);
@@ -80,8 +117,12 @@ export function tga(width, height, rgba) {
 }
 
 function svgPixels(svg, side) {
-  const image = new Resvg(svg, { fitTo: { mode: 'width', value: side }, background: 'rgba(0,0,0,0)' }).render();
-  if (image.width !== side || image.height !== side) throw new Error(`svg rendered ${image.width}x${image.height}`);
+  const image = new Resvg(svg, {
+    fitTo: { mode: 'width', value: side },
+    background: 'rgba(0,0,0,0)',
+  }).render();
+  if (image.width !== side || image.height !== side)
+    throw new Error(`svg rendered ${image.width}x${image.height}`);
   return Buffer.from(image.pixels);
 }
 
@@ -104,8 +145,12 @@ async function bandTga({ source, box, mirror }) {
   const { width, height } = await image.metadata();
   const [l, t, r, b] = box;
   let cut = image
-    .extract({ left: Math.round(l * width), top: Math.round(t * height),
-      width: Math.round((r - l) * width), height: Math.round((b - t) * height) })
+    .extract({
+      left: Math.round(l * width),
+      top: Math.round(t * height),
+      width: Math.round((r - l) * width),
+      height: Math.round((b - t) * height),
+    })
     .resize(SIZE.bandW, SIZE.bandH, { fit: 'fill', kernel: 'lanczos3' });
   if (mirror) cut = cut.flop();
   return rasterTga(cut, SIZE.bandW, SIZE.bandH);
@@ -122,7 +167,10 @@ function sources() {
   });
   const files = [
     ...icons.map((entry) => entry.file),
-    SEAL_SVG, CORNER_SVG, path.join(ART, 'ground.webp'), path.join(ART, CAVE_PLATE.source),
+    SEAL_SVG,
+    CORNER_SVG,
+    path.join(ART, 'ground.webp'),
+    path.join(ART, CAVE_PLATE.source),
     ...new Set(Object.values(BAND_CROPS).map((crop) => path.join(ART, crop.source))),
     ...CLASSES.map((slug) => path.join(CRESTS, `${slug}.webp`)),
   ];
@@ -144,18 +192,34 @@ export async function renderAddonMedia() {
   const cornerSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${corner.box} ${corner.box}" fill="#fff">${corner.body}</svg>`;
   out.set('filigree.tga', tga(SIZE.filigree, SIZE.filigree, svgPixels(cornerSvg, SIZE.filigree)));
   // The whole tile, so the texture repeats without a seam; the addon draws it at Theme.SIZES.groundRepeat.
-  out.set('ground.tga', await rasterTga(
-    sharp(path.join(ART, 'ground.webp')).resize(SIZE.ground, SIZE.ground, { kernel: 'lanczos3' }), SIZE.ground, SIZE.ground));
+  out.set(
+    'ground.tga',
+    await rasterTga(
+      sharp(path.join(ART, 'ground.webp')).resize(SIZE.ground, SIZE.ground, { kernel: 'lanczos3' }),
+      SIZE.ground,
+      SIZE.ground,
+    ),
+  );
   for (const [mood, crop] of Object.entries(BAND_CROPS)) out.set(`band-${mood}.tga`, await bandTga(crop));
   const [x, y, w, h] = CAVE_PLATE.region;
-  out.set('cave.tga', await rasterTga(
-    sharp(path.join(ART, CAVE_PLATE.source)).extract({ left: x, top: y, width: w, height: h })
-      .resize(SIZE.caveW, SIZE.caveH, { fit: 'fill', kernel: 'lanczos3' }), SIZE.caveW, SIZE.caveH));
+  out.set(
+    'cave.tga',
+    await rasterTga(
+      sharp(path.join(ART, CAVE_PLATE.source))
+        .extract({ left: x, top: y, width: w, height: h })
+        .resize(SIZE.caveW, SIZE.caveH, { fit: 'fill', kernel: 'lanczos3' }),
+      SIZE.caveW,
+      SIZE.caveH,
+    ),
+  );
   for (const slug of CLASSES) {
     const source = sharp(path.join(CRESTS, `${slug}.webp`));
     const { data } = await source.clone().ensureAlpha().raw().toBuffer({ resolveWithObject: true });
     if (data[3] > 8) throw new Error(`${slug}.webp: the corner is not transparent; not the round crest`);
-    out.set(`crests/${slug}.tga`, await rasterTga(source.resize(SIZE.crest, SIZE.crest, { kernel: 'lanczos3' }), SIZE.crest, SIZE.crest));
+    out.set(
+      `crests/${slug}.tga`,
+      await rasterTga(source.resize(SIZE.crest, SIZE.crest, { kernel: 'lanczos3' }), SIZE.crest, SIZE.crest),
+    );
   }
   const c = SIZE.crest / 2;
   const ring = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${SIZE.crest} ${SIZE.crest}"><circle cx="${c}" cy="${c}" r="${RING.outer - RING.width / 2}" fill="none" stroke="#fff" stroke-width="${RING.width}"/></svg>`;
@@ -167,7 +231,12 @@ export async function renderAddonMedia() {
 export function manifestFor(files) {
   const entries = {};
   for (const [file, bytes] of [...files].sort(([a], [b]) => a.localeCompare(b))) {
-    entries[file] = { width: bytes.readUInt16LE(12), height: bytes.readUInt16LE(14), bytes: bytes.length, sha256: sha(bytes) };
+    entries[file] = {
+      width: bytes.readUInt16LE(12),
+      height: bytes.readUInt16LE(14),
+      bytes: bytes.length,
+      sha256: sha(bytes),
+    };
   }
   const { files: inputs } = sources();
   const sourceHashes = Object.fromEntries(inputs.map((file) => [rel(file), sha(readFileSync(file))]));
@@ -193,13 +262,15 @@ function listMedia(dir = MEDIA, prefix = '') {
 export function checkAddonMedia() {
   const manifest = JSON.parse(readFileSync(MANIFEST, 'utf8'));
   const problems = [];
-  if (manifest.generator.sha256 !== sha(readFileSync(SELF))) problems.push('the generator changed since the media were written');
+  if (manifest.generator.sha256 !== sha(readFileSync(SELF)))
+    problems.push('the generator changed since the media were written');
   const { files: inputs } = sources();
   const now = Object.fromEntries(inputs.map((file) => [rel(file), sha(readFileSync(file))]));
   for (const [file, hash] of Object.entries(now)) {
     if (manifest.sources[file] !== hash) problems.push(`source ${file} changed or is new`);
   }
-  for (const file of Object.keys(manifest.sources)) if (!(file in now)) problems.push(`source ${file} is no longer read`);
+  for (const file of Object.keys(manifest.sources))
+    if (!(file in now)) problems.push(`source ${file} is no longer read`);
   for (const [file, entry] of Object.entries(manifest.files)) {
     let bytes;
     try {
@@ -237,6 +308,8 @@ if (process.argv[1] === SELF) {
     }
     const manifest = manifestFor(files);
     writeFileSync(MANIFEST, `${JSON.stringify(manifest, null, 2)}\n`);
-    console.log(`wrote ${files.size} textures, ${Math.round(manifest.totalBytes / 1024)} KB, and media/MANIFEST.json`);
+    console.log(
+      `wrote ${files.size} textures, ${Math.round(manifest.totalBytes / 1024)} KB, and media/MANIFEST.json`,
+    );
   }
 }

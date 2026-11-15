@@ -209,8 +209,9 @@
                   </span>
                   {#if spec.stats.length > 0}
                     <span class="text-small text-muted">
-                      {#each spec.stats as stat, index (stat.label)}{#if index > 0} · {/if}<span
-                          class="whitespace-nowrap"
+                      {#each spec.stats as stat, index (stat.label)}{#if index > 0}
+                          ·
+                        {/if}<span class="whitespace-nowrap"
                           >{stat.label} <span class="tabular-nums">{stat.factor}</span></span
                         >{/each}
                     </span>

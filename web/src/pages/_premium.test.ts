@@ -196,7 +196,8 @@ describe('the Premium card when the account has Premium', () => {
       it('the session cookie alone shows the tag (/b/{id} has no data-session)', async () => {
         const { storageOf } = withVisits(undefined);
         const text = sourceScripts(await renderPremium())[0]?.textContent ?? '';
-        const doc = new JSDOM('<!doctype html><html></html>', { url: 'https://foreversixty.gg/' }).window.document;
+        const doc = new JSDOM('<!doctype html><html></html>', { url: 'https://foreversixty.gg/' }).window
+          .document;
         doc.cookie = 'fs_csrf=abc';
         new Function('localStorage', 'document', text)(storageOf(), doc);
         expect(doc.documentElement.dataset.premiumNav).toBeUndefined();

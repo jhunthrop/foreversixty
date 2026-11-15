@@ -24,7 +24,8 @@ describe('band paths', () => {
 
   it('keeps the first and the folded bands on the spec’s own path, level 60 on its own', () => {
     expect(bisSpecPath('warrior', 'fury')).toBe('/bis/warrior/fury');
-    for (const band of [20, 30, 40, 50]) expect(bisBandPath('warrior', 'fury', band, 20)).toBe('/bis/warrior/fury');
+    for (const band of [20, 30, 40, 50])
+      expect(bisBandPath('warrior', 'fury', band, 20)).toBe('/bis/warrior/fury');
     expect(bisBandPath('warrior', 'fury', 60, 20)).toBe('/bis/warrior/fury/60');
   });
 
@@ -36,8 +37,12 @@ describe('band paths', () => {
   it('links a folded band by its hash after the query, the rest by path', () => {
     expect(bisBandHref('warrior', 'fury', 20, 20)).toBe('/bis/warrior/fury');
     expect(bisBandHref('warrior', 'fury', 40, 20)).toBe('/bis/warrior/fury#levels-40-49');
-    expect(bisBandHref('warrior', 'fury', 40, 20, '?faction=horde')).toBe('/bis/warrior/fury?faction=horde#levels-40-49');
-    expect(bisBandHref('warrior', 'fury', 60, 20, '?faction=horde')).toBe('/bis/warrior/fury/60?faction=horde');
+    expect(bisBandHref('warrior', 'fury', 40, 20, '?faction=horde')).toBe(
+      '/bis/warrior/fury?faction=horde#levels-40-49',
+    );
+    expect(bisBandHref('warrior', 'fury', 60, 20, '?faction=horde')).toBe(
+      '/bis/warrior/fury/60?faction=horde',
+    );
   });
 
   it('reads back only the band hashes it writes', () => {

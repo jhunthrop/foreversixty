@@ -1040,9 +1040,7 @@ describe('bandInfosFor: no_sourced_item across bands (bis rebuild spec §4.D)', 
     expect(infos[0].rows.find((r) => r.slot === 'trinket1')?.emptyCopy).toBe(
       'No trinket you can get at 20 to 29 raises your damage.',
     );
-    expect(infos[1].rows.find((r) => r.slot === 'trinket1')?.emptyCopy).toBe(
-      'None at this level.',
-    );
+    expect(infos[1].rows.find((r) => r.slot === 'trinket1')?.emptyCopy).toBe('None at this level.');
   });
 
   it('plain 60 never reads "60 to 69"', () => {
