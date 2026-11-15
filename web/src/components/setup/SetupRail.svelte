@@ -51,11 +51,10 @@
     color: var(--color-text);
     padding-right: 12px;
   }
-  /* A command never breaks and keeps its width: the description takes the rest and wraps. */
+  /* A command keeps its width up to 45% of the rail: the description takes the rest and wraps.
+     Only the one long command (/fs me, builds, gear, rotation, guild, officer) reaches the cap,
+     and it wraps between its words. */
   .setup-commands :global(dl) {
-    grid-template-columns: minmax(0, 1fr) auto;
-  }
-  .setup-commands :global(dd) {
-    white-space: nowrap;
+    grid-template-columns: minmax(0, 1fr) fit-content(45%);
   }
 </style>
