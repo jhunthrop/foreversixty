@@ -11,7 +11,12 @@ import {
 } from '../lib/nav';
 import { pickerClasses } from '../lib/class-picker';
 import { OPEN_SELECTOR_EVENT } from '../lib/character-selector/config';
-import { PREMIUM_SOURCE_KEY, STORED_SOURCES } from '../lib/account/premium-hint';
+import {
+  PREMIUM_NAV_MIN_VISIT_DAYS,
+  PREMIUM_SOURCE_KEY,
+  STORED_SOURCES,
+  VISIT_DAYS_KEY,
+} from '../lib/account/premium-hint';
 import HeaderPanel from './HeaderPanel.astro';
 import HeaderSearch from './HeaderSearch.astro';
 import Seal from './Seal.astro';
@@ -51,22 +56,46 @@ const DOOR_ICON_PX = 20;
 ---
 
 <header class="site-header" data-site-header data-region={REGION.siteHeader}>
-  <script is:inline define:vars={{ key: PREMIUM_SOURCE_KEY, sources: STORED_SOURCES }}>
-    // Who pays for Premium, before the doors are parsed (spec 2026-10-29-premium-entry section 4).
-    // It lives in the header, not the site's head, so the API's /b/{id} page (which wears this
-    // header and none of Base.astro's head) hides the tag too. The stored hint
-    // (lib/account/premium-hint.ts) becomes data-premium, which /premium's cards key off, and
-    // data-premium-nav="hide" takes the Premium tag out when the hint, or the cached /v1/me's
-    // server sims (data-server-sims, from Base.astro's head script on the site), says Premium.
-    // After paint the tag is only ever held (lib/premium-nav.ts), never removed.
+  <script
+    is:inline
+    define:vars={{
+      key: PREMIUM_SOURCE_KEY,
+      sources: STORED_SOURCES,
+      visitKey: VISIT_DAYS_KEY,
+      minDays: PREMIUM_NAV_MIN_VISIT_DAYS,
+    }}
+  >
+    // Who sees the Premium tag, before the doors are parsed (spec 2026-10-29-premium-entry
+    // section 4, and 2026-11-14: returning visitors only). It lives in the header, not the site's
+    // head, so the API's /b/{id} page (which wears this header and none of Base.astro's head)
+    // hides the tag too. The stored hint (lib/account/premium-hint.ts) becomes data-premium,
+    // which /premium's cards key off. data-premium-nav="hide" takes the tag out when the hint, or
+    // the cached /v1/me's server sims (data-server-sims, from Base.astro's head script), says
+    // Premium, and for a signed-out visitor (no data-session) seen on fewer than minDays distinct
+    // days. After paint the tag is only ever held (lib/premium-nav.ts), never removed.
     const root = document.documentElement;
     try {
       const source = localStorage.getItem(key);
       if (sources.includes(source)) root.dataset.premium = source;
     } catch {
-      // Storage blocked: the cards keep their default state and the tag shows.
+      // Storage blocked: the cards keep their default state.
     }
-    if (root.dataset.premium || root.dataset.serverSims) root.dataset.premiumNav = 'hide';
+    let days = [];
+    try {
+      const now = new Date();
+      const today = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
+      const stored = JSON.parse(localStorage.getItem(visitKey) || '[]');
+      days = Array.isArray(stored) ? stored.filter((day) => typeof day === 'string') : [];
+      if (!days.includes(today)) {
+        days = [...days, today].slice(-minDays);
+        localStorage.setItem(visitKey, JSON.stringify(days));
+      }
+    } catch {
+      // Storage blocked or malformed: counted as a first visit, so the tag stays out.
+      days = [];
+    }
+    const returning = root.dataset.session === '1' || days.length >= minDays;
+    if (root.dataset.premium || root.dataset.serverSims || !returning) root.dataset.premiumNav = 'hide';
   </script>
   <a href="/" class="site-wordmark">
     <Seal size={40} eager class="site-wordmark-seal" />

@@ -116,7 +116,10 @@ describe('the Premium card when the account has Premium', () => {
       const text = sourceScripts(await renderPremium())[0]?.textContent ?? '';
       const doc = new JSDOM(`<!doctype html>${html}</html>`).window.document;
       // The script reads the `localStorage` and `document` globals: hand it fakes of both.
-      const lazyStorage = { getItem: (key: string) => storageOf().getItem(key) };
+      const lazyStorage = {
+        getItem: (key: string) => storageOf().getItem(key),
+        setItem: (key: string, value: string) => storageOf().setItem?.(key, value),
+      };
       new Function('localStorage', 'document', text)(lazyStorage, doc);
       return doc.documentElement.dataset;
     };
@@ -131,10 +134,70 @@ describe('the Premium card when the account has Premium', () => {
       expect((await runOn(storing(null), '<html data-server-sims="1">')).premiumNav).toBe('hide');
     });
 
-    it('no hint and no server sims: the tag shows', async () => {
-      expect((await runOn(storing(null))).premiumNav).toBeUndefined();
+    it('signed in, no hint and no server sims: the tag shows', async () => {
+      expect((await runOn(storing(null), '<html data-session="1">')).premiumNav).toBeUndefined();
     });
     const storing = (value: string | null) => (): Storage => ({ getItem: () => value }) as unknown as Storage;
+
+    describe('signed out: the tag waits for a returning visitor (2026-11-14)', () => {
+      const VISIT_KEY = 'fs.visitDays';
+      const now = new Date();
+      const today = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
+      const withVisits = (days: unknown) => {
+        const store = new Map<string, string>();
+        if (days !== undefined) store.set(VISIT_KEY, typeof days === 'string' ? days : JSON.stringify(days));
+        const storage = {
+          getItem: (key: string) => store.get(key) ?? null,
+          setItem: (key: string, value: string) => void store.set(key, value),
+        } as unknown as Storage;
+        return { store, storageOf: () => storage };
+      };
+      const visitsOf = (store: Map<string, string>): string[] => JSON.parse(store.get(VISIT_KEY) ?? '[]');
+
+      it('a first visit hides the tag and records today', async () => {
+        const { store, storageOf } = withVisits(undefined);
+        expect((await runOn(storageOf)).premiumNav).toBe('hide');
+        expect(visitsOf(store)).toEqual([today]);
+      });
+
+      it('more page loads on the same day count once', async () => {
+        const { store, storageOf } = withVisits(['2026-11-12', today]);
+        expect((await runOn(storageOf)).premiumNav).toBe('hide');
+        expect(visitsOf(store)).toEqual(['2026-11-12', today]);
+      });
+
+      it('the third distinct day shows the tag', async () => {
+        const { store, storageOf } = withVisits(['2026-11-10', '2026-11-12']);
+        expect((await runOn(storageOf)).premiumNav).toBeUndefined();
+        expect(visitsOf(store)).toEqual(['2026-11-10', '2026-11-12', today]);
+      });
+
+      it('keeps only the last three days, so the tag keeps showing', async () => {
+        const { store, storageOf } = withVisits(['2026-11-01', '2026-11-05', '2026-11-09']);
+        expect((await runOn(storageOf)).premiumNav).toBeUndefined();
+        expect(visitsOf(store)).toEqual(['2026-11-05', '2026-11-09', today]);
+      });
+
+      it('a malformed record counts as a first visit', async () => {
+        const { storageOf } = withVisits('{not json');
+        expect((await runOn(storageOf)).premiumNav).toBe('hide');
+      });
+
+      it('blocked storage hides the tag', async () => {
+        const blocked = (): Storage =>
+          ({
+            getItem: () => {
+              throw new Error('blocked');
+            },
+          }) as unknown as Storage;
+        expect((await runOn(blocked)).premiumNav).toBe('hide');
+      });
+
+      it('Premium still hides the tag for a returning visitor', async () => {
+        const { storageOf } = withVisits(['2026-11-10', '2026-11-12']);
+        expect((await runOn(storageOf, '<html data-server-sims="1">')).premiumNav).toBe('hide');
+      });
+    });
 
     it.each(SOURCES)('%s sets the attribute', async (word) => {
       expect(await run(storing(word))).toBe(word);

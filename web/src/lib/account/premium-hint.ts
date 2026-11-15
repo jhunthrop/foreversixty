@@ -6,6 +6,10 @@ import { storage } from '../layout-reserve';
 
 export const PREMIUM_SOURCE_KEY = 'fs.premiumSource';
 export const ME_GUILD_COUNT_KEY = 'fs.meGuildCount';
+/** The distinct days (local dates) a signed-out visitor has opened the site, newest last. */
+export const VISIT_DAYS_KEY = 'fs.visitDays';
+/** The header's Premium tag shows a signed-out visitor from this many distinct days on. */
+export const PREMIUM_NAV_MIN_VISIT_DAYS = 3;
 export type StoredPremiumSource = 'own' | 'seat' | 'grant';
 
 /** The three words the session stores; Header.astro's inline script accepts only these. */
