@@ -1,7 +1,7 @@
 {
   "generator": {
     "path": "web/scripts/gen-addon-icons.mjs",
-    "sha256": "533a0fec53d9c9437c3ab81d52c0471a28e66ae802374b7854dff6300533aee5"
+    "sha256": "24a75a273709b61bc6d855f7ee58ff4bbe19ec9dec8c595403c6e5facdde50ca"
   },
   "sources": {
     "design/assets/icons/ui/bis.svg": "4869cc91379c3caa9525f822121d2dad297401a31041d9224628ee8a4f684906",
