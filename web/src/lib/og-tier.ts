@@ -10,8 +10,7 @@ import path from 'node:path';
 import sharp from 'sharp';
 import type { TierCardGroup, TierCardModel, TierCardSpec } from './tiers/tier-card';
 import type { TierLetter } from './tiers/tier-rules';
-import { classCrestSrc } from './class-crest';
-import { isClassSlug } from './ui/primitives';
+import { crestImage as classCrest } from './class-crest';
 import { INK, OG_BRAND, OG_SIZE, box, renderCardPng, sealImage, text } from './og';
 
 const TOKENS_CSS = readFileSync(path.resolve(process.cwd(), 'src/styles/tokens.css'), 'utf8');
@@ -62,8 +61,9 @@ function classColour(slug: string): string {
 
 /** The class's HD crest as a PNG data URI: the site serves WebP, which the card's renderer cannot read. */
 async function crestUri(slug: string): Promise<string> {
-  if (!isClassSlug(slug)) throw new Error(`og-tier: no crest for class ${slug}`);
-  const file = path.resolve(process.cwd(), 'public', classCrestSrc(slug).replace(/^\//, ''));
+  const crest = classCrest(slug, CREST_PX);
+  if (!crest.known) throw new Error(`og-tier: no crest for class ${slug}`);
+  const file = path.resolve(process.cwd(), 'public', crest.src.replace(/^\//, ''));
   const png = await sharp(file)
     .resize(CREST_PX * 2, CREST_PX * 2)
     .png()
