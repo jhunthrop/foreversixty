@@ -46,6 +46,8 @@ export const bisCopy = {
   noDataYet: 'No leveling BiS list yet for this spec.',
   noDataYetBody:
     'The simulator has not ranked this spec’s gear across the level ranges yet. Check back once the nightly ranking run covers it.',
+  /** The spec page's Leveling section head (lib/bis/leveling-fold.ts): "Leveling 30 to 59". */
+  levelingTitle: (fromLevel: number, toLevel: number): string => `Leveling ${fromLevel} to ${toLevel}`,
   backToIndex: 'Back to BiS',
   classGuideLink: 'See leveling BiS gear for this class',
   levelLabel: (band: number): string => `Level ${band}`,

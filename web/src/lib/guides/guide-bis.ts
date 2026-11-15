@@ -159,17 +159,13 @@ export function loadGuideBis(
   const file = rankedBisFile(build, spec);
   const faction = factionForFirstRace(classSlug, recommendedRaces);
   if (file === undefined || faction === undefined) return undefined;
+  return guideBisFrom(file, faction, guideBisDeps(build, classSlug, spec), (slug) => raceNameFor(build, slug));
+}
+
+/** The view builder's inputs for one spec on the build: the item details, the loot table, the
+ *  tooltips. Shared by the guide's lane and the BiS page's Leveling section (lib/bis/leveling-fold.ts). */
+export function guideBisDeps(build: string, classSlug: string, spec: string): Parameters<typeof bandInfosFor>[3] {
   const tooltipFor = (itemId: number): ItemTooltipModel | undefined =>
     readItemTooltipModel(build, classSlug, itemId) ?? undefined;
-  return guideBisFrom(
-    file,
-    faction,
-    {
-      itemDetails: itemDetails(build, classSlug),
-      loot: loadLootFile(build),
-      tooltipFor,
-      spec,
-    },
-    (slug) => raceNameFor(build, slug),
-  );
+  return { itemDetails: itemDetails(build, classSlug), loot: loadLootFile(build), tooltipFor, spec };
 }

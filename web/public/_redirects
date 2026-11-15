@@ -11,3 +11,6 @@
 /addon                      /setup        301
 /pricing                    /premium      301
 /sources                    /about        301
+/bis/:class/:spec/30-39     /bis/:class/:spec#levels-30-39  301
+/bis/:class/:spec/40-49     /bis/:class/:spec#levels-40-49  301
+/bis/:class/:spec/50-59     /bis/:class/:spec#levels-50-59  301

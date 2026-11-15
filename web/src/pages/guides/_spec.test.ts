@@ -396,9 +396,9 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
     // Every band's own BiS page and the role's tier list (SEO lane 2026-11-08).
     for (const href of [
       '/bis/mage/frost',
-      '/bis/mage/frost/30-39',
-      '/bis/mage/frost/40-49',
-      '/bis/mage/frost/50-59',
+      '/bis/mage/frost#levels-30-39',
+      '/bis/mage/frost#levels-40-49',
+      '/bis/mage/frost#levels-50-59',
     ])
       expect(bis).toContain(`href="${href}"`);
     expect(bis).toMatch(/href="\/tiers"[^>]*data-testid="guide-tier-list"/);

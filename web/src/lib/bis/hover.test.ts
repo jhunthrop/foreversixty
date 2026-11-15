@@ -144,7 +144,7 @@ describe('slotHoverDiff', () => {
 
 describe('bisPageHref', () => {
   it('links to the band’s own page, Horde in the query', () => {
-    expect(bisPageHref('hunter-marksmanship', 'alliance', 30)).toBe('/bis/hunter/marksmanship/30-39');
+    expect(bisPageHref('hunter-marksmanship', 'alliance', 30)).toBe('/bis/hunter/marksmanship#levels-30-39');
     expect(bisPageHref('hunter-marksmanship', 'horde', 60)).toBe('/bis/hunter/marksmanship/60?faction=horde');
     expect(bisPageHref('hunter-marksmanship', 'alliance', 20)).toBe('/bis/hunter/marksmanship');
   });

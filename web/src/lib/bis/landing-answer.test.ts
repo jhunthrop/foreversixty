@@ -170,7 +170,7 @@ describe('landingAction', () => {
   it('opens the character’s own spec at its own band and faction', () => {
     expect(landingAction(character({ faction: 'horde' }), CONFIG)).toEqual({
       label: 'Fury gear for 40 to 49',
-      href: '/bis/warrior/fury/40-49?faction=horde',
+      href: '/bis/warrior/fury?faction=horde#levels-40-49',
     });
   });
 
@@ -188,7 +188,7 @@ describe('landingAction', () => {
   it('a character with no spec yet opens the class’s leveling spec', () => {
     expect(landingAction(character({ spec: undefined }), CONFIG)).toEqual({
       label: 'Arms gear for 40 to 49',
-      href: '/bis/warrior/arms/40-49',
+      href: '/bis/warrior/arms#levels-40-49',
     });
   });
 

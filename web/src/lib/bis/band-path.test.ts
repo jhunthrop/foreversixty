@@ -1,6 +1,16 @@
 // web/src/lib/bis/band-path.test.ts
 import { describe, expect, it } from 'vitest';
-import { bandFromSlug, bandSlug, bandWords, bisBandPath, bisSpecPath } from './band-path';
+import {
+  bandFromHash,
+  bandFromSlug,
+  bandHash,
+  bandSlug,
+  bandWords,
+  bisBandHref,
+  bisBandPath,
+  bisSpecPath,
+  isFoldedBand,
+} from './band-path';
 
 describe('band paths', () => {
   it('names each band by its range, the top band as 60', () => {
@@ -12,11 +22,29 @@ describe('band paths', () => {
     for (const slug of ['40-48', '41-50', '60-69', '70', 'abc', '']) expect(bandFromSlug(slug)).toBeNull();
   });
 
-  it('keeps the first band on the spec’s own path, every other on its own', () => {
+  it('keeps the first and the folded bands on the spec’s own path, level 60 on its own', () => {
     expect(bisSpecPath('warrior', 'fury')).toBe('/bis/warrior/fury');
-    expect(bisBandPath('warrior', 'fury', 20, 20)).toBe('/bis/warrior/fury');
-    expect(bisBandPath('warrior', 'fury', 40, 20)).toBe('/bis/warrior/fury/40-49');
+    for (const band of [20, 30, 40, 50]) expect(bisBandPath('warrior', 'fury', band, 20)).toBe('/bis/warrior/fury');
     expect(bisBandPath('warrior', 'fury', 60, 20)).toBe('/bis/warrior/fury/60');
+  });
+
+  it('folds only the bands between the first and 60', () => {
+    expect([20, 30, 40, 50, 60].filter((band) => isFoldedBand(band, 20))).toEqual([30, 40, 50]);
+    expect([40, 50, 60].filter((band) => isFoldedBand(band, 40))).toEqual([50]);
+  });
+
+  it('links a folded band by its hash after the query, the rest by path', () => {
+    expect(bisBandHref('warrior', 'fury', 20, 20)).toBe('/bis/warrior/fury');
+    expect(bisBandHref('warrior', 'fury', 40, 20)).toBe('/bis/warrior/fury#levels-40-49');
+    expect(bisBandHref('warrior', 'fury', 40, 20, '?faction=horde')).toBe('/bis/warrior/fury?faction=horde#levels-40-49');
+    expect(bisBandHref('warrior', 'fury', 60, 20, '?faction=horde')).toBe('/bis/warrior/fury/60?faction=horde');
+  });
+
+  it('reads back only the band hashes it writes', () => {
+    for (const band of [20, 30, 40, 50]) expect(bandFromHash(bandHash(band))).toBe(band);
+    for (const hash of ['#levels-60-69', '#levels-41-50', '#band-alliance-40', '#leveling', '']) {
+      expect(bandFromHash(hash)).toBeNull();
+    }
   });
 
   it('says the band in words', () => {

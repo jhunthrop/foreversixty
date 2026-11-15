@@ -66,7 +66,7 @@ describe('bisHref', () => {
   // the race gives one, faction), the same route and anchor the /bis landing links use.
   it('opens the spec’s page at the character’s band and faction (fix round 4 item 2)', () => {
     expect(bisHref('Priest', 'Holy', 60, 'Night Elf')).toBe('/bis/priest/holy/60');
-    expect(bisHref('Warrior', 'Fury', 37, 'Orc')).toBe('/bis/warrior/fury/30-39?faction=horde');
+    expect(bisHref('Warrior', 'Fury', 37, 'Orc')).toBe('/bis/warrior/fury?faction=horde#levels-30-39');
     // Below 20 the earliest band; an unknown race keeps the band, with the default panel.
     expect(bisHref('Priest', 'Holy', 12, null)).toBe('/bis/priest/holy');
   });

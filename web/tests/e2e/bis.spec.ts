@@ -55,7 +55,7 @@ test('BiS: index links to a spec, faction and band controls switch the doll with
   await chooseControl(page, 'band', '30');
   const band30 = page.getByTestId('bis-band-alliance-30');
   await expect(band30).toBeVisible();
-  await expect(page).toHaveURL(/\/bis\/hunter\/marksmanship\/30-39(\?|$)/);
+  await expect(page).toHaveURL(/\/bis\/hunter\/marksmanship(\?[^#]*)?#levels-30-39$/);
   await expectNoReloadSoFar(page);
   // Band 30's picks include a quest reward: the itinerary has its Quest stop.
   await expect(band30.getByTestId('bis-itinerary')).toContainText('Quest');

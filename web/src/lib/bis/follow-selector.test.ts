@@ -25,7 +25,7 @@ describe('decideBisFollow', () => {
         level: 45,
         faction: 'alliance',
       }),
-    ).toEqual({ kind: 'navigate', href: '/bis/hunter/marksmanship/40-49' });
+    ).toEqual({ kind: 'navigate', href: '/bis/hunter/marksmanship#levels-40-49' });
   });
 
   it('updates band and faction in place when class and spec match', () => {

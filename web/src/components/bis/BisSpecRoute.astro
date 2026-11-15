@@ -1,9 +1,10 @@
 ---
 // web/src/components/bis/BisSpecRoute.astro
 // The Best in slot page (web layout spec 2026-11-05 §5, mock web-bis rev 3) for one spec at one
-// band: /bis/<class>/<spec> is its first band, /bis/<class>/<spec>/<band> each other one
-// (lib/bis/band-path.ts), every one its own server-rendered URL with its own title, description,
-// canonical, h1 and breadcrumb, so a crawler reads each band's list without running the page.
+// band: /bis/<class>/<spec> is its first band with the mid-level bands folded in under the doll
+// (components/bis/BisLeveling.astro), /bis/<class>/<spec>/60 level 60 (lib/bis/band-path.ts),
+// each its own server-rendered URL with its own title, description, canonical, h1 and
+// breadcrumb, so a crawler reads every band's list without running the page.
 // One island (components/bis/BisSpecPage.svelte, the paperdoll page) server-rendered at the page's band, so first
 // paint needs no script. The page builds the compact per-band view models once
 // (lib/bis/page-data.ts), registers the page band's slice for the server render and inlines it
@@ -15,6 +16,7 @@ import PageHeader from '../ui/PageHeader.svelte';
 import Notice from '../ui/Notice.svelte';
 import BisSpecPage from './BisSpecPage.svelte';
 import BisTooltipHost from '../BisTooltipHost.svelte';
+import BisLeveling from './BisLeveling.astro';
 import classes from '../../data/classes.json';
 import activeBuild from '../../data/active-build.json';
 import { bisCopy } from '../../lib/bis/copy';
@@ -22,6 +24,7 @@ import { bisSeoCopy } from '../../lib/bis/seo-copy';
 import { bisBandPath, bisSpecPath } from '../../lib/bis/band-path';
 import { PRE_RAID_SLUG } from '../../lib/bis/pre-raid';
 import { readSpecCatalog } from '../../lib/bis/load';
+import { loadFoldedPanels } from '../../lib/bis/leveling-fold';
 import { bisPreRaid, bisServerPage, defaultSlice, sliceTooltips } from '../../lib/bis/page-server';
 import {
   BIS_PAGE_DATA_ID,
@@ -63,6 +66,9 @@ const bandPath =
     ? specPath
     : bisBandPath(classSlug, specEntry.spec_slug, band, firstBand);
 const path = preRaidPage ? `${bandPath}/${PRE_RAID_SLUG}` : bandPath;
+// The spec's own page carries the folded mid-level bands; a band page carries its band alone.
+const foldedPanels =
+  server === undefined || isBandPage || preRaidPage ? [] : loadFoldedPanels(build, classSlug, specEntry.spec);
 // While the plain level 60 list holds no raid or PvP pick it is the pre-raid list itself, so
 // /60/pre-raid points its canonical at /60; once raid gear enters the data it is its own page.
 const canonicalPath = preRaidPage && subject.preRaid ? bandPath : path;
@@ -166,6 +172,7 @@ const raceOptions: Record<Faction, { value: string; label: string }[]> = {
           raceOptions={raceOptions}
           dataHref={`${specPath}.json`}
         />
+        <BisLeveling build={build} panels={foldedPanels} />
         {/* The data the islands read at hydration sits after the markup, so the first paint never
             waits on it streaming in (the page band's state is already server-rendered above). */}
         <script

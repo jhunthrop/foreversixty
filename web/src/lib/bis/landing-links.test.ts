@@ -9,7 +9,7 @@ describe('specLinkHref', () => {
 
   it('opens a later band at its own page, the character’s Horde faction in the query', () => {
     expect(specLinkHref({ classSlug: 'warrior', specSlug: 'fury', band: 40, faction: 'horde' })).toBe(
-      '/bis/warrior/fury/40-49?faction=horde',
+      '/bis/warrior/fury?faction=horde#levels-40-49',
     );
   });
 
