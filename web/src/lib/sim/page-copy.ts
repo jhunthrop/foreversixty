@@ -13,7 +13,7 @@ export const simPageCopy = {
     otherWaysIn: 'Other ways in',
     bisSet: 'Sim a best-in-slot set',
     /** The best-in-slot panel's meta: what each spec line's figures are. */
-    bisSetMeta: 'Pre-raid sets with raid buffs and consumables, single target. Strongest stat = 1.00.',
+    bisSetMeta: 'Level 60 sets, raid buffed, single target. Strongest stat = 1.00.',
     yourSims: 'Your sims',
     yourSimsAll: 'All',
   },

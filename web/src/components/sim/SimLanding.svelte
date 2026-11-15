@@ -45,9 +45,10 @@
     railTail?: Snippet;
   } = $props();
 
-  /** A spec's Guide and BiS: quiet beside its gold sim link, gold on hover; a 44 px square on a phone. */
+  /** A spec's Guide and BiS: quiet beside its gold sim link, gold on hover. On a phone the target is
+   *  44 px square through padding the line does not grow by (the negative margin takes it back). */
   const SECONDARY_LINK =
-    'text-muted hover:text-gold focus-visible:text-gold inline-flex min-h-11 min-w-11 items-center justify-center md:min-h-0 md:min-w-0';
+    'text-muted hover:text-gold focus-visible:text-gold inline-flex min-w-11 items-center justify-center -my-[13px] py-[13px] md:my-0 md:min-w-0 md:py-0';
 
   let paste = $state('');
   let buildRef = $state('');
@@ -186,18 +187,22 @@
             <span class="flex flex-col gap-3 pt-[2px]">
               {#each klass.specs as spec (spec.href)}
                 <span class="flex flex-col" data-testid="sim-bis-spec">
-                  <span class="flex flex-wrap items-baseline gap-x-3">
-                    <!-- A 44 px hit area on a touch screen (spec §5, Touch); the line stays 20 px on desktop. -->
-                    <a
-                      class="text-gold inline-flex min-h-11 items-center text-[14px] font-semibold whitespace-nowrap md:min-h-0"
-                      href={spec.href}>{spec.name} ›</a
-                    >
-                    {#if spec.dps !== null}
-                      <span class="text-strong text-[14px] font-semibold tabular-nums"
-                        >{copy.bisSet.dps(spec.dps)}</span
+                  <!-- The name and its DPS wrap inside their own group, so Guide and BiS keep the
+                       first line's right edge at every width and the stats keep the full width. -->
+                  <span class="flex items-baseline gap-x-3">
+                    <span class="flex min-w-0 flex-1 flex-wrap items-baseline gap-x-3">
+                      <!-- A 44 px hit area on a touch screen (spec §5, Touch); the line stays 20 px on desktop. -->
+                      <a
+                        class="text-gold inline-flex min-h-11 items-center text-[14px] font-semibold whitespace-nowrap md:min-h-0"
+                        href={spec.href}>{spec.name} ›</a
                       >
-                    {/if}
-                    <span class="text-small ml-auto flex gap-1 md:gap-3">
+                      {#if spec.dps !== null}
+                        <span class="text-strong text-[14px] font-semibold tabular-nums"
+                          >{copy.bisSet.dps(spec.dps)}</span
+                        >
+                      {/if}
+                    </span>
+                    <span class="text-small flex shrink-0 gap-1 md:gap-3">
                       <a class={SECONDARY_LINK} href={spec.guideHref}>{copy.bisSet.guide}</a>
                       <a class={SECONDARY_LINK} href={spec.bisHref}>{copy.bisSet.bis}</a>
                     </span>
