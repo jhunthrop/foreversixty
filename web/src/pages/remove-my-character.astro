@@ -4,10 +4,11 @@
 // character comes from the form, or from the query after a Battle.net sign-in.
 import Base from '../layouts/Base.astro';
 import RemoveCharacter from '../components/RemoveCharacter.svelte';
+import { optOutCopy } from '../lib/directory/opt-out-copy';
 ---
 
 <Base
-  title="Remove my character"
+  title={optOutCopy.title}
   description="Remove a character from what Forever Sixty reads from Blizzard, and keep it out."
   path="/remove-my-character"
 >

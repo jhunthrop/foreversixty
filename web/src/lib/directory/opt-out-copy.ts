@@ -1,5 +1,7 @@
 // web/src/lib/directory/opt-out-copy.ts
 // The "Remove my character" page's words. Blizzard is named as the source (API terms 2(m)).
+import { withRetry } from '../ui/copy';
+
 export const optOutCopy = {
   title: 'Remove my character',
   lead: 'Forever Sixty reads public character data from Blizzard so guild rosters and Discord raid sign-ups know who is who. Remove a character and we delete what we hold for it and never store it again.',
@@ -25,7 +27,7 @@ export const optOutCopy = {
   removeAnother: 'Remove another character',
   removed: (name: string): string => `We hold nothing for ${name} and will not store it again.`,
   notYours: 'That character is not on the Battle.net account you signed in with. Use the guild note instead.',
-  failed: 'That did not go through. Try again in a minute.',
+  failed: withRetry('That did not go through.'),
   regions: [
     { value: 'us', label: 'Americas' },
     { value: 'eu', label: 'Europe' },
