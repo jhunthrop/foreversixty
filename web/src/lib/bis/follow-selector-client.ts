@@ -7,6 +7,7 @@
 // Lighthouse trace then counted all of it toward the BiS LCP, which swung between ~1.95 s and
 // ~2.7 s run to run against a 1.9 s budget.
 import { CURRENT_CHARACTER_STORAGE_KEY, onCurrentCharacterChange } from '../current-character-events';
+import { bandFromHash } from './band-path';
 
 export function mountBisFollow(root: HTMLElement): () => void {
   return onCurrentCharacterChange((change) => {
@@ -15,21 +16,21 @@ export function mountBisFollow(root: HTMLElement): () => void {
   });
 }
 
-const BAND_HASH = /^#band-(?:alliance|horde)-\d+$/;
+const LEGACY_BAND_HASH = /^#band-(?:alliance|horde)-\d+$/;
 /** A `?band=` the page reads (follow-selector.ts bandFromParam's shape), checked here without
  *  importing the spec tables, so this eagerly loaded script stays a few hundred bytes. */
 const BAND_PARAM = /^\d{1,2}$/;
 
 /**
- * The band a BiS page opens on when its URL names none: a band page's path, a shared link's `?band=` (or the legacy
- * `#band-<faction>-<band>` hash) is the island's own to read, so this does nothing then; else the
+ * The band a BiS page opens on when its URL names none: a band page's path, a folded band's
+ * `#levels-40-49`, a shared link's `?band=` (or the legacy `#band-<faction>-<band>` hash) is the island's own to read, so this does nothing then; else the
  * selected character's own band and faction. The character lookup waits for the page to finish
  * loading and go idle, for the same LCP reason as mountBisFollow above.
  */
 export function applyBisDefaultBand(root: HTMLElement, win: Window = window): void {
   // A band page (/bis/<class>/<spec>/<band>, lib/bis/band-path.ts) names its band in the path.
   if (root.dataset.bisPathBand !== undefined) return;
-  if (BAND_HASH.test(win.location.hash)) return;
+  if (LEGACY_BAND_HASH.test(win.location.hash) || bandFromHash(win.location.hash) !== null) return;
   if (BAND_PARAM.test(new URLSearchParams(win.location.search).get('band') ?? '')) return;
   let stored: string | null = null;
   try {

@@ -64,4 +64,14 @@ describe('removedRouteFailures', () => {
       'dist/zones/ still has files: elwynn.html',
     ]);
   });
+
+  it('names a folded BiS band page that is still built, and keeps the level 60 page', () => {
+    writeFileSync(path.join(dist, 'setup.html'), '');
+    const spec = path.join(dist, 'bis', 'warrior', 'fury');
+    mkdirSync(spec, { recursive: true });
+    writeFileSync(path.join(dist, 'bis', 'warrior', 'fury.html'), '');
+    writeFileSync(path.join(spec, '60.html'), '');
+    writeFileSync(path.join(spec, '40-49.html'), '');
+    expect(removedRouteFailures(dist)).toEqual(['dist/bis/warrior/fury/40-49.html still exists']);
+  });
 });

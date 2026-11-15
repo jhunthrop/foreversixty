@@ -50,7 +50,7 @@
   import type { BisPresetId, Faction, SourceFilterKind } from '../../lib/bis/types';
   import { controlSummary, type ControlGroup, type ControlOption } from '../../lib/ui/primitives';
   import { bisContext, presetLabel } from '../../lib/bis/page-context';
-  import { bandSlug, bisBandPath } from '../../lib/bis/band-path';
+  import { bandHash, bandSlug, bisBandHref, bisBandPath, isFoldedBand } from '../../lib/bis/band-path';
   import { bisSeoCopy } from '../../lib/bis/seo-copy';
   import {
     PRE_RAID_KINDS,
@@ -95,11 +95,13 @@
   let lateTooltips = $state.raw<ReadonlyMap<number, ItemTooltipModel>>(new Map());
   let data = $state.raw(inline);
   const context = $derived(bisContext(data, raceOptions, pathBand, pathPreRaid));
-  /** A band's own page: the spec's path for its first band, else /bis/<class>/<spec>/<band>. */
-  const bandHref = (band: number): string => bisBandPath(classSlug, specSlug, band, data.bands[0] ?? band);
-  /** A state's page: its band's, and /pre-raid under 60 for the pre-raid list. */
+  const firstBand = (): number => data.bands[0] ?? pathBand;
+  /** A state's page (lib/bis/band-path.ts): /60 at level 60, else the spec's path; /pre-raid under
+   *  60 for the pre-raid list. */
   const stateHref = (next: Pick<BisPageState, 'band' | 'sources'>): string =>
-    `${bandHref(next.band)}${isPreRaidView(next.band, next.sources) ? `/${PRE_RAID_SLUG}` : ''}`;
+    `${bisBandPath(classSlug, specSlug, next.band, firstBand())}${isPreRaidView(next.band, next.sources) ? `/${PRE_RAID_SLUG}` : ''}`;
+  /** A folded band's hash (`#levels-40-49`), the part of the URL after the query. */
+  const stateHash = (band: number): string => (isFoldedBand(band, firstBand()) ? bandHash(band) : '');
   /** Settles once the full data is in (at once when the page inlined all of it). */
   let ready: Promise<void> = Promise.resolve();
 
@@ -203,7 +205,7 @@
         options: data.bands.map((band) => ({
           value: String(band),
           label: bandSlug(band),
-          href: bandHref(band),
+          href: bisBandHref(classSlug, specSlug, band, firstBand()),
           inPlace: true,
         })),
         value: String(state.band),
@@ -251,7 +253,7 @@
       character = undefined;
     state = next;
     if (!push) return;
-    const url = `${stateHref(next)}${stateSearch(next, context)}`;
+    const url = `${stateHref(next)}${stateSearch(next, context)}${stateHash(next.band)}`;
     window.history.replaceState(null, '', url);
   }
 

@@ -1,0 +1,62 @@
+---
+// web/src/components/bis/BisLeveling.astro
+// The spec page's Leveling section under the doll and the itinerary (2026-11-15, the SEO fold):
+// the mid-level bands (lib/bis/leveling-fold.ts) as the guide's own band panels, one per band, in
+// one panel, server-rendered with no script, so the spec page's HTML carries every leveling pick
+// the old band pages did. Both factions are in the HTML; the one the doll shows is the one that
+// shows here (the island's data-bis-faction, read by :has).
+import Section from '../ui/Section.svelte';
+import GuideBisPanel from '../guides/GuideBisPanel.astro';
+import { bisCopy } from '../../lib/bis/copy';
+import type { GuideBisPanel as Panel } from '../../lib/guides/guide-bis';
+
+interface Props {
+  build: string;
+  panels: readonly Panel[];
+}
+const { build, panels } = Astro.props;
+const bands = panels.map((panel) => panel.band);
+const fromLevel = Math.min(...bands);
+const toLevel = Math.max(...bands) + 9;
+---
+
+{panels.length > 0 && (
+  <div class="bis-leveling">
+    <Section title={bisCopy.levelingTitle(fromLevel, toLevel)} id="leveling" panel testid="bis-leveling">
+      <div class="bis-leveling-grid">
+        {panels.map((panel) => (
+          <div class="bis-leveling-band" data-faction={panel.faction} data-band={panel.band}>
+            <GuideBisPanel build={build} panel={panel} caption={false} />
+          </div>
+        ))}
+      </div>
+    </Section>
+  </div>
+)}
+
+<style>
+  .bis-leveling {
+    margin-top: var(--section-gap);
+    padding-inline: var(--page-inset);
+  }
+  .bis-leveling-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px 40px;
+  }
+  @media (min-width: 1100px) {
+    .bis-leveling-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  /* The doll's faction: Alliance until the island says Horde. */
+  .bis-leveling-band[data-faction='horde'] {
+    display: none;
+  }
+  :global(.bis-page:has([data-testid='bis-page'][data-bis-faction='horde'])) .bis-leveling-band[data-faction='horde'] {
+    display: block;
+  }
+  :global(.bis-page:has([data-testid='bis-page'][data-bis-faction='horde'])) .bis-leveling-band[data-faction='alliance'] {
+    display: none;
+  }
+</style>

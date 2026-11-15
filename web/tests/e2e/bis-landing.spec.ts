@@ -120,7 +120,7 @@ test.describe('signed out, desktop', () => {
     await band(page, 40).click();
     await expect(band(page, 40)).toHaveAttribute('aria-checked', 'true');
     await expect(page).toHaveURL(/\?band=40$/);
-    await expect(specRow(page, 'warrior', 'fury')).toHaveAttribute('href', '/bis/warrior/fury/40-49');
+    await expect(specRow(page, 'warrior', 'fury')).toHaveAttribute('href', '/bis/warrior/fury#levels-40-49');
     await page.goto('/bis');
     await expect(band(page, 40)).toHaveAttribute('aria-checked', 'true');
   });
@@ -154,7 +154,7 @@ test.describe('signed in, desktop', () => {
     await expect(page.getByTestId('bis-answer-figure')).toContainText(`of ${sourcedPicks.length} slots`);
     await expect(action(page)).toHaveText('Fury gear for 40 to 49');
     await expect(action(page)).toHaveCSS('text-transform', 'none');
-    await expect(action(page)).toHaveAttribute('href', '/bis/warrior/fury/40-49');
+    await expect(action(page)).toHaveAttribute('href', '/bis/warrior/fury#levels-40-49');
   });
 
   test('the range follows the character, even over a stored pick, and its spec row is Yours', async ({
@@ -165,7 +165,7 @@ test.describe('signed in, desktop', () => {
     await expect(band(page, 40)).toHaveAttribute('aria-checked', 'true');
     await expect(specRow(page, 'warrior', 'fury')).toHaveAttribute('aria-current', 'true');
     await expect(page.locator('[data-your-spec]:visible')).toHaveCount(1);
-    await expect(specRow(page, 'mage', 'frost')).toHaveAttribute('href', '/bis/mage/frost/40-49');
+    await expect(specRow(page, 'mage', 'frost')).toHaveAttribute('href', '/bis/mage/frost#levels-40-49');
   });
 
   test('another range keeps the answer and offers the way back to the own range', async ({ page }) => {
@@ -184,7 +184,7 @@ test.describe('signed in, desktop', () => {
     await choose(page, HUNTER);
     await expect(answer(page)).toContainText('Quickshot');
     await expect(action(page)).toHaveText('Marksmanship gear for 30 to 39');
-    await expect(action(page)).toHaveAttribute('href', '/bis/hunter/marksmanship/30-39?faction=horde');
+    await expect(action(page)).toHaveAttribute('href', '/bis/hunter/marksmanship?faction=horde#levels-30-39');
     await expect(band(page, 30)).toHaveAttribute('aria-checked', 'true');
     await expect(specRow(page, 'hunter', 'marksmanship')).toHaveAttribute('aria-current', 'true');
     await expect(specRow(page, 'warrior', 'fury')).not.toHaveAttribute('aria-current', 'true');

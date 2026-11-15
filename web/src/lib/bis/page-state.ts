@@ -1,6 +1,7 @@
 // web/src/lib/bis/page-state.ts
 // The BiS spec page's state, with the URL as the truth (web layout spec 2026-11-05 §3.4, R1): the
-// band is the path (lib/bis/band-path.ts: /bis/hunter/marksmanship/60), the rest the query,
+// band is the path (lib/bis/band-path.ts: /bis/hunter/marksmanship/60) or, for a mid-level band
+// folded into the spec page, its hash (`#levels-40-49`); the rest the query,
 // `?faction=horde&race=orc&view=where&sources=dungeon,quest&preset=bare`. A parameter at its
 // default is left out of the URL. A `?band=` and the legacy `#band-<faction>-<band>` hash (every
 // link the site and the header selector wrote before band paths) still open that band and faction.
@@ -8,6 +9,7 @@
 // Reputation off (standings up to Friendly kept); at 60 on By slot with every source on.
 import { MAX_BAND } from './band-levels';
 import { bandForLevel } from './hover';
+import { bandFromHash } from './band-path';
 import { SOURCE_FILTER_KINDS } from './source-filter';
 import { PRE_RAID_KINDS, isPreRaidView } from './pre-raid';
 import type { BisPresetId, Faction, SourceFilterKind } from './types';
@@ -81,7 +83,7 @@ export function parseState(search: string, hash: string, context: BisStateContex
   const legacy = LEGACY_HASH.exec(hash);
   const factionParam = legacy?.[1] ?? params.get('faction');
   const faction: Faction = factionParam === 'horde' ? 'horde' : 'alliance';
-  const bandParam = legacy?.[2] ?? params.get('band');
+  const bandParam = legacy?.[2] ?? bandFromHash(hash)?.toString() ?? params.get('band');
   const band =
     bandParam !== null && /^\d{1,2}$/.test(bandParam)
       ? nearestBand(context.bands, Number(bandParam))
@@ -107,7 +109,7 @@ export function parseState(search: string, hash: string, context: BisStateContex
 }
 
 /** The query string for a state: only what differs from its defaults, in a fixed order. The band
- *  is never in it: the page's path carries it (lib/bis/band-path.ts). */
+ *  is never in it: the page's path or hash carries it (lib/bis/band-path.ts). */
 export function stateSearch(state: BisPageState, context: BisStateContext): string {
   const params = new URLSearchParams();
   if (state.faction !== 'alliance') params.set('faction', state.faction);

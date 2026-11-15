@@ -189,8 +189,8 @@ function firstRealPickBandAfter(
  *  "is this the earliest occurrence"), or a SIBLING slot in the same band sharing this
  *  slot's own collapsed display label (wow-player review round 1: both ring or both
  *  trinket rows read as one group to a player, so the second one must defer to the short
- *  "Nothing here either" line rather than repeat the first row's full sentence verbatim) --
- *  gets the shorter "Nothing here either until Y" follow-up instead. `isFirstInGroupThisBand`
+ *  "None until Y" line rather than repeat the first row's full sentence verbatim) --
+ *  gets the shorter "None until Y" follow-up instead. `isFirstInGroupThisBand`
  *  is the caller's own answer to that second condition (`bandInfosFor` computes it once per
  *  band, in canonical slot order, before building any row). */
 function noSourcedItemCopyFor(
@@ -554,7 +554,7 @@ export function bandInfosFor(
     // Which slot, per display-label group (Ring/Trinket collapse every pair to one group),
     // is the FIRST this band to show `no_sourced_item` -- computed once, in canonical slot
     // order, before any row is built, so the second ring/trinket row always defers to the
-    // short "Nothing here either" line rather than repeat the first row's full sentence
+    // short "None until Y" line rather than repeat the first row's full sentence
     // (wow-player review round 1). A slot is its own group's first claimant the moment
     // nothing earlier in `slotRows`' own order already claimed that label this band.
     const groupFirstSlot = new Map<string, string>();

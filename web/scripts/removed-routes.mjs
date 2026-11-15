@@ -31,6 +31,28 @@ export const MUST_NOT_EXIST = [
 /** Dynamic sections that build one file per entry under their own directory. */
 export const MUST_NOT_EXIST_DIRS = ['zones', 'dungeons'];
 
+/** The BiS mid-level band pages folded into the spec page on 2026-11-15
+ *  (src/lib/bis/band-path.ts): edge 301s to /bis/<class>/<spec>#levels-<slug> (public/_redirects),
+ *  so dist/bis/<class>/<spec>/<slug>.html must never ship. */
+export const FOLDED_BIS_BAND_SLUGS = ['30-39', '40-49', '50-59'];
+
+/** Every folded BiS band page under dist/bis, as dist-relative paths. */
+function foldedBisBandPages(dist) {
+  const bis = join(dist, 'bis');
+  if (!existsSync(bis)) return [];
+  const dirs = (path) =>
+    readdirSync(path, { withFileTypes: true })
+      .filter((entry) => entry.isDirectory())
+      .map((entry) => entry.name);
+  return dirs(bis).flatMap((classSlug) =>
+    dirs(join(bis, classSlug)).flatMap((specSlug) =>
+      FOLDED_BIS_BAND_SLUGS.map((slug) => `bis/${classSlug}/${specSlug}/${slug}.html`).filter((file) =>
+        existsSync(join(dist, file)),
+      ),
+    ),
+  );
+}
+
 /** The `dist/` directory beside the `scripts/` directory a script URL sits in. */
 export function distDirOf(scriptUrl) {
   return fileURLToPath(new URL('../dist/', scriptUrl));
@@ -48,6 +70,7 @@ export function removedRouteFailures(dist) {
       failures.push(`dist/${dir}/ still has files: ${readdirSync(path).join(', ')}`);
     }
   }
+  for (const file of foldedBisBandPages(dist)) failures.push(`dist/${file} still exists`);
   if (!existsSync(join(dist, 'setup.html'))) {
     failures.push('dist/setup.html is missing -- /setup should replace /addon');
   }

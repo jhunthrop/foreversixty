@@ -1,20 +1,25 @@
 ---
 // web/src/pages/bis/[class]/[spec]/[band].astro
-// One page per BiS level band after the spec's first (/bis/warrior/fury/40-49, /bis/warrior/fury/60,
-// lib/bis/band-path.ts): its own title, description, canonical and h1, its list server-rendered.
-// The first band lives at /bis/<class>/<spec> and gets no second URL here.
+// A page per BiS level band that has one of its own besides the spec page: level 60
+// (/bis/warrior/fury/60, lib/bis/band-path.ts), its own title, description, canonical and h1, its
+// list server-rendered. The first band and the folded mid-level bands live on /bis/<class>/<spec>
+// and get no second URL here; their old band URLs 301 there (public/_redirects).
 import BisSpecRoute from '../../../../components/bis/BisSpecRoute.astro';
-import { bandSlug } from '../../../../lib/bis/band-path';
+import { bandSlug, isFoldedBand } from '../../../../lib/bis/band-path';
 import { readSpecCatalog } from '../../../../lib/bis/load';
 import { bisServerPage } from '../../../../lib/bis/page-server';
 
 export async function getStaticPaths() {
   return readSpecCatalog().flatMap((spec) => {
     const bands = bisServerPage(spec.spec, spec.class_slug)?.data.bands ?? [];
-    return bands.slice(1).map((band) => ({
-      params: { class: spec.class_slug, spec: spec.spec_slug, band: bandSlug(band) },
-      props: { spec, band },
-    }));
+    const first = bands[0];
+    if (first === undefined) return [];
+    return bands
+      .filter((band) => band !== first && !isFoldedBand(band, first))
+      .map((band) => ({
+        params: { class: spec.class_slug, spec: spec.spec_slug, band: bandSlug(band) },
+        props: { spec, band },
+      }));
   });
 }
 

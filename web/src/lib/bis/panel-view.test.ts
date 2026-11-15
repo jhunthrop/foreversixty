@@ -1027,7 +1027,7 @@ describe('bandInfosFor: no_sourced_item across bands (bis rebuild spec §4.D)', 
     expect(infos[0].rows.find((r) => r.slot === 'trinket1')?.emptyCopy).toBe(
       'No trinket you can get at 20 to 29 raises your damage. The first that does comes at 40.',
     ); // "comes at N" names the plain band number, never its own "N to N+9" range
-    expect(infos[1].rows.find((r) => r.slot === 'trinket1')?.emptyCopy).toBe('Nothing here either until 40.');
+    expect(infos[1].rows.find((r) => r.slot === 'trinket1')?.emptyCopy).toBe('None until 40.');
     expect(infos[2].rows.find((r) => r.slot === 'trinket1')?.emptyCopy).toBeUndefined();
   });
 
@@ -1041,7 +1041,7 @@ describe('bandInfosFor: no_sourced_item across bands (bis rebuild spec §4.D)', 
       'No trinket you can get at 20 to 29 raises your damage.',
     );
     expect(infos[1].rows.find((r) => r.slot === 'trinket1')?.emptyCopy).toBe(
-      'Nothing here helps at this level either.',
+      'None at this level.',
     );
   });
 
@@ -1063,7 +1063,7 @@ describe('bandInfosFor: no_sourced_item across bands (bis rebuild spec §4.D)', 
     expect(infos[0].rows.find((r) => r.slot === 'trinket1')?.emptyCopy).toBe(
       'No trinket you can get at 20 to 29 raises your damage. The first that does comes at 40.',
     );
-    expect(infos[0].rows.find((r) => r.slot === 'trinket2')?.emptyCopy).toBe('Nothing here either until 40.');
+    expect(infos[0].rows.find((r) => r.slot === 'trinket2')?.emptyCopy).toBe('None until 40.');
   });
 });
 
@@ -1081,9 +1081,9 @@ describe('bandInfosFor: no_sourced_item against the real published file (ux-desi
     expect(band20.rows.find((r) => r.slot === 'trinket1')?.emptyCopy).toBe(
       'No trinket you can get at 20 to 29 raises your damage. The first that does comes at 50.',
     );
-    expect(band20.rows.find((r) => r.slot === 'trinket2')?.emptyCopy).toBe('Nothing here either until 50.');
+    expect(band20.rows.find((r) => r.slot === 'trinket2')?.emptyCopy).toBe('None until 50.');
     const band40 = infos.find((info) => info.band === 40)!;
-    expect(band40.rows.find((r) => r.slot === 'trinket1')?.emptyCopy).toBe('Nothing here either until 50.');
+    expect(band40.rows.find((r) => r.slot === 'trinket1')?.emptyCopy).toBe('None until 50.');
     const band50 = infos.find((info) => info.band === 50)!;
     expect(band50.rows.find((r) => r.slot === 'trinket1')?.empty).toBe(false);
   });

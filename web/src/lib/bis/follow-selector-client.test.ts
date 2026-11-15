@@ -71,4 +71,12 @@ describe('applyBisDefaultBand', () => {
     applyBisDefaultBand(document.createElement('div'));
     expect(window.location.hash).toBe('#band-alliance-30');
   });
+
+  it('leaves a folded band hash (#levels-40-49) to the page and never looks up the character', () => {
+    window.history.replaceState(null, '', '/bis/hunter/beast-mastery#levels-40-49');
+    const getItem = vi.spyOn(Storage.prototype, 'getItem');
+    applyBisDefaultBand(document.createElement('div'));
+    expect(getItem).not.toHaveBeenCalled();
+    getItem.mockRestore();
+  });
 });

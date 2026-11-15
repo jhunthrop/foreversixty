@@ -14,7 +14,7 @@ import { selectBand } from './presets';
 import type { BisBand, BisFile, BisSlot, Faction } from './types';
 
 import { BAND_STEP, MAX_BAND, MIN_BAND } from './band-levels';
-import { bisBandPath } from './band-path';
+import { bisBandHref } from './band-path';
 
 export { BAND_STEP, MAX_BAND, MIN_BAND };
 
@@ -89,8 +89,8 @@ export function slotHoverDiff(file: BisFile, band: number, faction: Faction, slo
 }
 
 /**
- * The band's own page (lib/bis/band-path.ts), `/bis/<class>/<spec>/<band>`, with
- * `?faction=horde` for Horde, built from the spec key the planner already computes
+ * The page that holds the band (lib/bis/band-path.ts bisBandHref): `/bis/<class>/<spec>/60`, or
+ * the spec page with a mid-level band's anchor, with `?faction=horde` for Horde, built from the spec key the planner already computes
  * (addon/score.ts's specKeyFor) rather than a class/spec slug pair the caller would otherwise
  * have to carry alongside it. An unrecognised spec key links to the index rather than a
  * broken route.
@@ -98,8 +98,8 @@ export function slotHoverDiff(file: BisFile, band: number, faction: Faction, slo
 export function bisPageHref(spec: string, faction: Faction, band: number): string {
   const row = specRow(spec);
   if (row === null) return '/bis';
-  const path = bisBandPath(row.class_slug, row.spec_slug, bandForLevel(band), MIN_BAND);
-  return faction === 'horde' ? `${path}?faction=horde` : path;
+  const query = faction === 'horde' ? '?faction=horde' : '';
+  return bisBandHref(row.class_slug, row.spec_slug, bandForLevel(band), MIN_BAND, query);
 }
 
 // --- fetch + in-memory cache -------------------------------------------------------------
