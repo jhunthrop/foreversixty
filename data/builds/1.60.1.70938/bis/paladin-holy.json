@@ -2,7 +2,7 @@
   "spec": "paladin-holy",
   "build": "1.60.1.70938",
   "engine_version": "f9385b498",
-  "generated_at": "2026-11-14T14:21:14Z",
+  "generated_at": "2026-11-16T16:50:48Z",
   "bands": [
     {
       "spec": "paladin-holy",
@@ -1099,8 +1099,8 @@
         "finger2: Minor Channeling Ring",
         "main_hand: Taskmaster Axe"
       ],
-      "weights_run_seconds": 5.634913946,
-      "verify_run_seconds": 40.910770508,
+      "weights_run_seconds": 5.759718951,
+      "verify_run_seconds": 41.017324400999996,
       "coverage": {
         "back": {
           "eligible": 104,
@@ -2312,8 +2312,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Taskmaster Axe"
       ],
-      "weights_run_seconds": 5.634913946,
-      "verify_run_seconds": 37.690573733,
+      "weights_run_seconds": 5.759718951,
+      "verify_run_seconds": 37.667889703,
       "coverage": {
         "back": {
           "eligible": 105,
@@ -3670,8 +3670,8 @@
         "main_hand: Death Speaker Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 6.525630778,
-      "verify_run_seconds": 45.514923051000004,
+      "weights_run_seconds": 6.527456885,
+      "verify_run_seconds": 45.644525685,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -5003,8 +5003,8 @@
         "main_hand: Death Speaker Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 6.525630778,
-      "verify_run_seconds": 45.743269897000005,
+      "weights_run_seconds": 6.527456885,
+      "verify_run_seconds": 45.954560087,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -6437,8 +6437,8 @@
         "main_hand: Hand of Righteousness",
         "off_hand: Beacon of Hope"
       ],
-      "weights_run_seconds": 5.083682574,
-      "verify_run_seconds": 31.155926334,
+      "weights_run_seconds": 5.129810676,
+      "verify_run_seconds": 31.90559597,
       "coverage": {
         "back": {
           "eligible": 257,
@@ -7847,8 +7847,8 @@
         "main_hand: Hand of Righteousness",
         "off_hand: Prophetic Cane"
       ],
-      "weights_run_seconds": 5.083682574,
-      "verify_run_seconds": 31.293209753,
+      "weights_run_seconds": 5.129810676,
+      "verify_run_seconds": 31.930594488,
       "coverage": {
         "back": {
           "eligible": 259,
@@ -9497,8 +9497,8 @@
         "trinket1: Enriched Seal",
         "off_hand: Gizlock's Hypertech Buckler"
       ],
-      "weights_run_seconds": 12.07542651,
-      "verify_run_seconds": 171.99325980400002,
+      "weights_run_seconds": 12.116691104,
+      "verify_run_seconds": 170.990450073,
       "coverage": {
         "back": {
           "eligible": 330,
@@ -11102,8 +11102,8 @@
         "trinket1: Darkspear Voodoo Seal",
         "off_hand: Gizlock's Hypertech Buckler"
       ],
-      "weights_run_seconds": 12.07542651,
-      "verify_run_seconds": 167.267327236,
+      "weights_run_seconds": 12.116691104,
+      "verify_run_seconds": 167.084732107,
       "coverage": {
         "back": {
           "eligible": 335,
@@ -12877,8 +12877,8 @@
         "main_hand: The Hammer of Grace",
         "off_hand: Lei of the Lifegiver"
       ],
-      "weights_run_seconds": 13.365349354,
-      "verify_run_seconds": 673.782559075,
+      "weights_run_seconds": 13.376460407,
+      "verify_run_seconds": 672.193000879,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -14571,8 +14571,8 @@
         "trinket2: Shard of the Splithooves",
         "main_hand: Hammer of the Grand Crusader"
       ],
-      "weights_run_seconds": 13.365349354,
-      "verify_run_seconds": 630.6163600599999,
+      "weights_run_seconds": 13.376460407,
+      "verify_run_seconds": 632.966406321,
       "coverage": {
         "back": {
           "eligible": 471,
@@ -16304,8 +16304,8 @@
         "trinket2: Dormant Heart of the Mountain",
         "main_hand: Hammer of the Grand Crusader"
       ],
-      "weights_run_seconds": 7.674848782,
-      "verify_run_seconds": 367.099276685,
+      "weights_run_seconds": 7.552405348,
+      "verify_run_seconds": 365.981439614,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -17967,8 +17967,8 @@
         "trinket2: Burst of Knowledge",
         "main_hand: Hammer of the Grand Crusader"
       ],
-      "weights_run_seconds": 7.674848782,
-      "verify_run_seconds": 358.387568093,
+      "weights_run_seconds": 7.552405348,
+      "verify_run_seconds": 357.08533411,
       "coverage": {
         "back": {
           "eligible": 471,
