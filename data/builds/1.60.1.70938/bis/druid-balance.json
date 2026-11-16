@@ -2,7 +2,7 @@
   "spec": "druid-balance",
   "build": "1.60.1.70938",
   "engine_version": "f9385b498",
-  "generated_at": "2026-11-14T13:55:02Z",
+  "generated_at": "2026-11-16T16:22:54Z",
   "bands": [
     {
       "spec": "druid-balance",
@@ -1148,8 +1148,8 @@
         "main_hand: Evocator's Blade",
         "off_hand: Dwarven Tome"
       ],
-      "weights_run_seconds": 4.149402818,
-      "verify_run_seconds": 6.2543577180000005,
+      "weights_run_seconds": 5.576048327,
+      "verify_run_seconds": 7.369182725,
       "coverage": {
         "back": {
           "eligible": 104,
@@ -2396,8 +2396,8 @@
         "main_hand: Evocator's Blade",
         "off_hand: Spellbinder Orb"
       ],
-      "weights_run_seconds": 4.149402818,
-      "verify_run_seconds": 6.603365753,
+      "weights_run_seconds": 5.576048327,
+      "verify_run_seconds": 8.204289061,
       "coverage": {
         "back": {
           "eligible": 105,
@@ -3747,8 +3747,8 @@
         "main_hand: Swinetusk Shank",
         "off_hand: Orb of Mystic Insight"
       ],
-      "weights_run_seconds": 4.450478541,
-      "verify_run_seconds": 6.577415469,
+      "weights_run_seconds": 5.566242826,
+      "verify_run_seconds": 8.410579516,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -5093,8 +5093,8 @@
         "main_hand: Swinetusk Shank",
         "off_hand: Orb of Mystic Insight"
       ],
-      "weights_run_seconds": 4.450478541,
-      "verify_run_seconds": 6.599550039,
+      "weights_run_seconds": 5.566242826,
+      "verify_run_seconds": 8.377858945,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -6506,8 +6506,8 @@
         "main_hand: Staff of Jordan",
         "ranged: Talons of Wrath"
       ],
-      "weights_run_seconds": 4.5822483510000005,
-      "verify_run_seconds": 8.263389531,
+      "weights_run_seconds": 5.90975085,
+      "verify_run_seconds": 10.795240737,
       "coverage": {
         "back": {
           "eligible": 257,
@@ -7888,8 +7888,8 @@
         "main_hand: Staff of Jordan",
         "ranged: Talons of Wrath"
       ],
-      "weights_run_seconds": 4.5822483510000005,
-      "verify_run_seconds": 8.266432618,
+      "weights_run_seconds": 5.90975085,
+      "verify_run_seconds": 10.405018106,
       "coverage": {
         "back": {
           "eligible": 259,
@@ -9559,8 +9559,8 @@
         "main_hand: Blade of Eternal Darkness",
         "off_hand: Truesilver Conduit"
       ],
-      "weights_run_seconds": 4.780299636,
-      "verify_run_seconds": 8.032676024,
+      "weights_run_seconds": 5.9863353759999995,
+      "verify_run_seconds": 9.838237856000001,
       "coverage": {
         "back": {
           "eligible": 330,
@@ -11216,8 +11216,8 @@
         "main_hand: Blade of Eternal Darkness",
         "off_hand: Truesilver Conduit"
       ],
-      "weights_run_seconds": 4.780299636,
-      "verify_run_seconds": 7.541448559,
+      "weights_run_seconds": 5.9863353759999995,
+      "verify_run_seconds": 8.990776348,
       "coverage": {
         "back": {
           "eligible": 335,
@@ -13010,8 +13010,8 @@
         "main_hand: Hand of Edward the Odd",
         "off_hand: Therazane's Touch"
       ],
-      "weights_run_seconds": 3.715681708,
-      "verify_run_seconds": 31.795942604,
+      "weights_run_seconds": 4.884695593,
+      "verify_run_seconds": 39.940452681,
       "coverage": {
         "back": {
           "eligible": 467,
@@ -14826,8 +14826,8 @@
         "off_hand: Therazane's Touch",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 3.715681708,
-      "verify_run_seconds": 29.499564523,
+      "weights_run_seconds": 4.884695593,
+      "verify_run_seconds": 36.74401988,
       "coverage": {
         "back": {
           "eligible": 473,
@@ -16573,8 +16573,8 @@
         "main_hand: Ironbark Staff",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 3.58455991,
-      "verify_run_seconds": 30.925033224000003,
+      "weights_run_seconds": 4.586431193,
+      "verify_run_seconds": 39.339104232,
       "coverage": {
         "back": {
           "eligible": 467,
@@ -18239,8 +18239,8 @@
         "main_hand: Ironbark Staff",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 3.58455991,
-      "verify_run_seconds": 27.6257315,
+      "weights_run_seconds": 4.586431193,
+      "verify_run_seconds": 34.993599718999995,
       "coverage": {
         "back": {
           "eligible": 473,
