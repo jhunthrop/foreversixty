@@ -2,7 +2,7 @@
   "spec": "mage-frost",
   "build": "1.60.1.70938",
   "engine_version": "f9385b498",
-  "generated_at": "2026-11-14T13:57:47Z",
+  "generated_at": "2026-11-16T16:29:14Z",
   "bands": [
     {
       "spec": "mage-frost",
@@ -1206,8 +1206,8 @@
         "off_hand: Antipodean Rod",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.268642181,
-      "verify_run_seconds": 1.9765584560000002,
+      "weights_run_seconds": 2.855388926,
+      "verify_run_seconds": 2.5577265419999997,
       "coverage": {
         "back": {
           "eligible": 104,
@@ -2514,8 +2514,8 @@
         "off_hand: Antipodean Rod",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 2.268642181,
-      "verify_run_seconds": 2.81801483,
+      "weights_run_seconds": 2.855388926,
+      "verify_run_seconds": 3.5590375979999997,
       "coverage": {
         "back": {
           "eligible": 105,
@@ -3892,8 +3892,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Thunderwood"
       ],
-      "weights_run_seconds": 2.18719285,
-      "verify_run_seconds": 2.117772866,
+      "weights_run_seconds": 2.83750397,
+      "verify_run_seconds": 2.921771439,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -5267,8 +5267,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Greater Mystic Wand"
       ],
-      "weights_run_seconds": 2.18719285,
-      "verify_run_seconds": 2.582481737,
+      "weights_run_seconds": 2.83750397,
+      "verify_run_seconds": 3.298948624,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -6711,8 +6711,8 @@
         "main_hand: Staff of Jordan",
         "ranged: Icefury Wand"
       ],
-      "weights_run_seconds": 2.3778572909999998,
-      "verify_run_seconds": 3.188088279,
+      "weights_run_seconds": 3.391430232,
+      "verify_run_seconds": 4.001335086,
       "coverage": {
         "back": {
           "eligible": 257,
@@ -8133,8 +8133,8 @@
         "main_hand: Staff of Jordan",
         "ranged: Icefury Wand"
       ],
-      "weights_run_seconds": 2.3778572909999998,
-      "verify_run_seconds": 3.2345469060000003,
+      "weights_run_seconds": 3.391430232,
+      "verify_run_seconds": 4.025189682,
       "coverage": {
         "back": {
           "eligible": 259,
@@ -9772,8 +9772,8 @@
         "off_hand: Celestial Orb",
         "ranged: Freezing Shard"
       ],
-      "weights_run_seconds": 2.427842556,
-      "verify_run_seconds": 5.890654314,
+      "weights_run_seconds": 3.049196139,
+      "verify_run_seconds": 7.716391873,
       "coverage": {
         "back": {
           "eligible": 330,
@@ -11486,8 +11486,8 @@
         "main_hand: Blade of Eternal Darkness",
         "off_hand: Celestial Orb"
       ],
-      "weights_run_seconds": 2.427842556,
-      "verify_run_seconds": 6.021662152,
+      "weights_run_seconds": 3.049196139,
+      "verify_run_seconds": 8.150414602,
       "coverage": {
         "back": {
           "eligible": 335,
@@ -13259,8 +13259,8 @@
         "off_hand: Therazane's Touch",
         "ranged: Bonecreeper Stylus"
       ],
-      "weights_run_seconds": 2.733125372,
-      "verify_run_seconds": 16.257444061,
+      "weights_run_seconds": 3.566542054,
+      "verify_run_seconds": 20.50690652,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -15021,8 +15021,8 @@
         "off_hand: Therazane's Touch",
         "ranged: Wand of Biting Cold"
       ],
-      "weights_run_seconds": 2.733125372,
-      "verify_run_seconds": 17.948507735,
+      "weights_run_seconds": 3.566542054,
+      "verify_run_seconds": 22.588403586000002,
       "coverage": {
         "back": {
           "eligible": 472,
@@ -16732,8 +16732,8 @@
         "main_hand: Ironbark Staff",
         "ranged: Wand of Biting Cold"
       ],
-      "weights_run_seconds": 2.932570939,
-      "verify_run_seconds": 18.617242136999998,
+      "weights_run_seconds": 3.9086315369999998,
+      "verify_run_seconds": 23.157773686,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -18425,8 +18425,8 @@
         "main_hand: Ironbark Staff",
         "ranged: Wand of Biting Cold"
       ],
-      "weights_run_seconds": 2.932570939,
-      "verify_run_seconds": 18.931822063000002,
+      "weights_run_seconds": 3.9086315369999998,
+      "verify_run_seconds": 23.834832834,
       "coverage": {
         "back": {
           "eligible": 472,
