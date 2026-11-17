@@ -104157,6 +104157,7 @@
       "id": "vendor:230317",
       "kind": "vendor",
       "name": "Mokvar",
+      "opens": "later",
       "npc_id": 230317,
       "items": [
         226772,
@@ -104254,6 +104255,7 @@
       "id": "vendor:230319",
       "kind": "vendor",
       "name": "Deliana",
+      "opens": "later",
       "npc_id": 230319,
       "items": [
         226772,
@@ -104351,6 +104353,7 @@
       "id": "vendor:230565",
       "kind": "vendor",
       "name": "Ironforge Guard",
+      "opens": "later",
       "npc_id": 230565,
       "items": [
         226772,
@@ -104448,6 +104451,7 @@
       "id": "vendor:230566",
       "kind": "vendor",
       "name": "Kor'kron Elite",
+      "opens": "later",
       "npc_id": 230566,
       "items": [
         226772,
@@ -117695,23 +117699,7 @@
         21737,
         21738,
         21812,
-        21995,
-        21999,
-        22003,
-        22006,
-        22015,
         22057,
-        22061,
-        22064,
-        22066,
-        22081,
-        22087,
-        22091,
-        22096,
-        22106,
-        22107,
-        22108,
-        22110,
         22137,
         22149,
         22150,
@@ -117878,23 +117866,33 @@
         217017,
         217274,
         217315,
+        226772,
         226773,
+        226774,
+        226775,
         226776,
+        226777,
         226778,
         226779,
         226825,
         226826,
         226827,
+        226828,
         226829,
         226830,
+        226831,
         226832,
+        226857,
         226858,
         226859,
+        226860,
         226861,
         226862,
         226863,
         226864,
+        226881,
         226882,
+        226883,
         226884,
         226885,
         226886,
@@ -117909,6 +117907,8 @@
         226911,
         226912,
         226929,
+        226930,
+        226931,
         226932,
         226933,
         226934,
@@ -117919,6 +117919,7 @@
         226947,
         226948,
         226949,
+        226950,
         226951,
         226952,
         226969,
@@ -117926,13 +117927,16 @@
         226971,
         226972,
         226973,
+        226974,
         226975,
+        226976,
         227001,
         227002,
         227003,
         227004,
         227005,
         227006,
+        227007,
         227008,
         227727,
         228659,
@@ -118205,7 +118209,23 @@
         "287966": 118,
         "287967": 858,
         "287968": 2455,
-        "287975": 2459
+        "287975": 2459,
+        "226857": 21995,
+        "226860": 21999,
+        "226831": 22003,
+        "226828": 22006,
+        "226772": 22106,
+        "226774": 22107,
+        "226775": 22108,
+        "226777": 22110,
+        "226950": 22081,
+        "226883": 22015,
+        "226881": 22061,
+        "226974": 22087,
+        "226976": 22091,
+        "226931": 22064,
+        "226930": 22066,
+        "227007": 22096
       }
     }
   ],
@@ -149514,160 +149534,6 @@
         "level_source": "classic-db"
       }
     ],
-    "21995": [
-      {
-        "quest_id": 8959,
-        "name": "Anthion's Parting Words",
-        "faction": "alliance",
-        "faction_source": "classic-db",
-        "min_level": 58,
-        "level": 60,
-        "level_source": "classic-db",
-        "opens": "later",
-        "classes": [
-          "warrior"
-        ],
-        "zone_id": 1537,
-        "zone": "Ironforge"
-      },
-      {
-        "quest_id": 9022,
-        "name": "Anthion's Parting Words",
-        "faction": "horde",
-        "faction_source": "classic-db",
-        "min_level": 58,
-        "level": 60,
-        "level_source": "classic-db",
-        "opens": "later",
-        "classes": [
-          "warrior"
-        ],
-        "zone_id": 1637,
-        "zone": "Orgrimmar"
-      }
-    ],
-    "21999": [
-      {
-        "quest_id": 9006,
-        "name": "Saving the Best for Last",
-        "faction": "alliance",
-        "faction_source": "classic-db",
-        "min_level": 58,
-        "level": 60,
-        "level_source": "classic-db",
-        "classes": [
-          "warrior"
-        ],
-        "zone_id": 1537,
-        "zone": "Ironforge"
-      },
-      {
-        "quest_id": 9013,
-        "name": "Saving the Best for Last",
-        "faction": "horde",
-        "faction_source": "classic-db",
-        "min_level": 58,
-        "level": 60,
-        "level_source": "classic-db",
-        "classes": [
-          "warrior"
-        ],
-        "zone_id": 1637,
-        "zone": "Orgrimmar"
-      }
-    ],
-    "22003": [
-      {
-        "quest_id": 8956,
-        "name": "Anthion's Parting Words",
-        "faction": "alliance",
-        "faction_source": "classic-db",
-        "min_level": 58,
-        "level": 60,
-        "level_source": "classic-db",
-        "opens": "later",
-        "classes": [
-          "rogue"
-        ],
-        "zone_id": 1537,
-        "zone": "Ironforge"
-      },
-      {
-        "quest_id": 9020,
-        "name": "Anthion's Parting Words",
-        "faction": "horde",
-        "faction_source": "classic-db",
-        "min_level": 58,
-        "level": 60,
-        "level_source": "classic-db",
-        "opens": "later",
-        "classes": [
-          "rogue"
-        ],
-        "zone_id": 1637,
-        "zone": "Orgrimmar"
-      }
-    ],
-    "22006": [
-      {
-        "quest_id": 8935,
-        "name": "Just Compensation",
-        "faction": "alliance",
-        "faction_source": "classic-db",
-        "min_level": 58,
-        "level": 60,
-        "level_source": "classic-db",
-        "classes": [
-          "rogue"
-        ],
-        "zone_id": 1537,
-        "zone": "Ironforge"
-      },
-      {
-        "quest_id": 8941,
-        "name": "Just Compensation",
-        "faction": "horde",
-        "faction_source": "classic-db",
-        "min_level": 58,
-        "level": 60,
-        "level_source": "classic-db",
-        "classes": [
-          "rogue"
-        ],
-        "zone_id": 1637,
-        "zone": "Orgrimmar"
-      }
-    ],
-    "22015": [
-      {
-        "quest_id": 8931,
-        "name": "Just Compensation",
-        "faction": "alliance",
-        "faction_source": "classic-db",
-        "min_level": 58,
-        "level": 60,
-        "level_source": "classic-db",
-        "classes": [
-          "hunter"
-        ],
-        "zone_id": 1537,
-        "zone": "Ironforge"
-      },
-      {
-        "quest_id": 8938,
-        "name": "Just Compensation",
-        "faction": "horde",
-        "faction_source": "classic-db",
-        "min_level": 58,
-        "level": 60,
-        "level_source": "classic-db",
-        "classes": [
-          "hunter"
-        ],
-        "zone_id": 1637,
-        "zone": "Orgrimmar"
-      }
-    ],
     "22057": [
       {
         "quest_id": 8996,
@@ -149679,302 +149545,6 @@
         "level_source": "classic-db",
         "zone_id": 25,
         "zone": "Blackrock Mountain"
-      }
-    ],
-    "22061": [
-      {
-        "quest_id": 8952,
-        "name": "Anthion's Parting Words",
-        "faction": "alliance",
-        "faction_source": "classic-db",
-        "min_level": 58,
-        "level": 60,
-        "level_source": "classic-db",
-        "opens": "later",
-        "classes": [
-          "hunter"
-        ],
-        "zone_id": 1537,
-        "zone": "Ironforge"
-      },
-      {
-        "quest_id": 9017,
-        "name": "Anthion's Parting Words",
-        "faction": "horde",
-        "faction_source": "classic-db",
-        "min_level": 58,
-        "level": 60,
-        "level_source": "classic-db",
-        "opens": "later",
-        "classes": [
-          "hunter"
-        ],
-        "zone_id": 1637,
-        "zone": "Orgrimmar"
-      }
-    ],
-    "22064": [
-      {
-        "quest_id": 8953,
-        "name": "Anthion's Parting Words",
-        "faction": "alliance",
-        "faction_source": "classic-db",
-        "min_level": 58,
-        "level": 60,
-        "level_source": "classic-db",
-        "opens": "later",
-        "classes": [
-          "mage"
-        ],
-        "zone_id": 1537,
-        "zone": "Ironforge"
-      },
-      {
-        "quest_id": 9018,
-        "name": "Anthion's Parting Words",
-        "faction": "horde",
-        "faction_source": "classic-db",
-        "min_level": 58,
-        "level": 60,
-        "level_source": "classic-db",
-        "opens": "later",
-        "classes": [
-          "mage"
-        ],
-        "zone_id": 1637,
-        "zone": "Orgrimmar"
-      }
-    ],
-    "22066": [
-      {
-        "quest_id": 8932,
-        "name": "Just Compensation",
-        "faction": "alliance",
-        "faction_source": "classic-db",
-        "min_level": 58,
-        "level": 60,
-        "level_source": "classic-db",
-        "classes": [
-          "mage"
-        ],
-        "zone_id": 1537,
-        "zone": "Ironforge"
-      },
-      {
-        "quest_id": 8939,
-        "name": "Just Compensation",
-        "faction": "horde",
-        "faction_source": "classic-db",
-        "min_level": 58,
-        "level": 60,
-        "level_source": "classic-db",
-        "classes": [
-          "mage"
-        ],
-        "zone_id": 1637,
-        "zone": "Orgrimmar"
-      }
-    ],
-    "22081": [
-      {
-        "quest_id": 8934,
-        "name": "Just Compensation",
-        "faction": "alliance",
-        "faction_source": "classic-db",
-        "min_level": 58,
-        "level": 60,
-        "level_source": "classic-db",
-        "classes": [
-          "priest"
-        ],
-        "zone_id": 1537,
-        "zone": "Ironforge"
-      },
-      {
-        "quest_id": 8940,
-        "name": "Just Compensation",
-        "faction": "horde",
-        "faction_source": "classic-db",
-        "min_level": 58,
-        "level": 60,
-        "level_source": "classic-db",
-        "classes": [
-          "priest"
-        ],
-        "zone_id": 1637,
-        "zone": "Orgrimmar"
-      }
-    ],
-    "22087": [
-      {
-        "quest_id": 8954,
-        "name": "Anthion's Parting Words",
-        "faction": "alliance",
-        "faction_source": "classic-db",
-        "min_level": 58,
-        "level": 60,
-        "level_source": "classic-db",
-        "opens": "later",
-        "classes": [
-          "paladin"
-        ],
-        "zone_id": 1537,
-        "zone": "Ironforge"
-      }
-    ],
-    "22091": [
-      {
-        "quest_id": 9002,
-        "name": "Saving the Best for Last",
-        "faction": "alliance",
-        "faction_source": "classic-db",
-        "min_level": 58,
-        "level": 60,
-        "level_source": "classic-db",
-        "classes": [
-          "paladin"
-        ],
-        "zone_id": 1537,
-        "zone": "Ironforge"
-      }
-    ],
-    "22096": [
-      {
-        "quest_id": 8957,
-        "name": "Anthion's Parting Words",
-        "faction": "horde",
-        "faction_source": "classic-db",
-        "min_level": 58,
-        "level": 60,
-        "level_source": "classic-db",
-        "opens": "later",
-        "classes": [
-          "shaman"
-        ],
-        "zone_id": 1637,
-        "zone": "Orgrimmar"
-      }
-    ],
-    "22106": [
-      {
-        "quest_id": 8926,
-        "name": "Just Compensation",
-        "faction": "alliance",
-        "faction_source": "classic-db",
-        "min_level": 58,
-        "level": 60,
-        "level_source": "classic-db",
-        "classes": [
-          "druid"
-        ],
-        "zone_id": 1537,
-        "zone": "Ironforge"
-      },
-      {
-        "quest_id": 8927,
-        "name": "Just Compensation",
-        "faction": "horde",
-        "faction_source": "classic-db",
-        "min_level": 58,
-        "level": 60,
-        "level_source": "classic-db",
-        "classes": [
-          "druid"
-        ],
-        "zone_id": 1637,
-        "zone": "Orgrimmar"
-      }
-    ],
-    "22107": [
-      {
-        "quest_id": 8951,
-        "name": "Anthion's Parting Words",
-        "faction": "alliance",
-        "faction_source": "classic-db",
-        "min_level": 58,
-        "level": 60,
-        "level_source": "classic-db",
-        "opens": "later",
-        "classes": [
-          "druid"
-        ],
-        "zone_id": 1537,
-        "zone": "Ironforge"
-      },
-      {
-        "quest_id": 9016,
-        "name": "Anthion's Parting Words",
-        "faction": "horde",
-        "faction_source": "classic-db",
-        "min_level": 58,
-        "level": 60,
-        "level_source": "classic-db",
-        "opens": "later",
-        "classes": [
-          "druid"
-        ],
-        "zone_id": 1637,
-        "zone": "Orgrimmar"
-      }
-    ],
-    "22108": [
-      {
-        "quest_id": 8905,
-        "name": "An Earnest Proposition",
-        "faction": "alliance",
-        "faction_source": "classic-db",
-        "min_level": 58,
-        "level": 60,
-        "level_source": "classic-db",
-        "classes": [
-          "druid"
-        ],
-        "zone_id": 1537,
-        "zone": "Ironforge"
-      },
-      {
-        "quest_id": 8913,
-        "name": "An Earnest Proposition",
-        "faction": "horde",
-        "faction_source": "classic-db",
-        "min_level": 58,
-        "level": 60,
-        "level_source": "classic-db",
-        "classes": [
-          "druid"
-        ],
-        "zone_id": 1637,
-        "zone": "Orgrimmar"
-      }
-    ],
-    "22110": [
-      {
-        "quest_id": 8926,
-        "name": "Just Compensation",
-        "faction": "alliance",
-        "faction_source": "classic-db",
-        "min_level": 58,
-        "level": 60,
-        "level_source": "classic-db",
-        "classes": [
-          "druid"
-        ],
-        "zone_id": 1537,
-        "zone": "Ironforge"
-      },
-      {
-        "quest_id": 8927,
-        "name": "Just Compensation",
-        "faction": "horde",
-        "faction_source": "classic-db",
-        "min_level": 58,
-        "level": 60,
-        "level_source": "classic-db",
-        "classes": [
-          "druid"
-        ],
-        "zone_id": 1637,
-        "zone": "Orgrimmar"
       }
     ],
     "22137": [
@@ -156957,6 +156527,36 @@
         "zone": "Orgrimmar"
       }
     ],
+    "226828": [
+      {
+        "quest_id": 8935,
+        "name": "Just Compensation",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "classic-db",
+        "classes": [
+          "rogue"
+        ],
+        "zone_id": 1537,
+        "zone": "Ironforge"
+      },
+      {
+        "quest_id": 8941,
+        "name": "Just Compensation",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "classic-db",
+        "classes": [
+          "rogue"
+        ],
+        "zone_id": 1637,
+        "zone": "Orgrimmar"
+      }
+    ],
     "226829": [
       {
         "quest_id": 9004,
@@ -157017,6 +156617,38 @@
         "zone": "Orgrimmar"
       }
     ],
+    "226831": [
+      {
+        "quest_id": 8956,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "classic-db",
+        "opens": "later",
+        "classes": [
+          "rogue"
+        ],
+        "zone_id": 1537,
+        "zone": "Ironforge"
+      },
+      {
+        "quest_id": 9020,
+        "name": "Anthion's Parting Words",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "classic-db",
+        "opens": "later",
+        "classes": [
+          "rogue"
+        ],
+        "zone_id": 1637,
+        "zone": "Orgrimmar"
+      }
+    ],
     "226832": [
       {
         "quest_id": 8935,
@@ -157042,6 +156674,38 @@
         "level_source": "classic-db",
         "classes": [
           "rogue"
+        ],
+        "zone_id": 1637,
+        "zone": "Orgrimmar"
+      }
+    ],
+    "226857": [
+      {
+        "quest_id": 8959,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "classic-db",
+        "opens": "later",
+        "classes": [
+          "warrior"
+        ],
+        "zone_id": 1537,
+        "zone": "Ironforge"
+      },
+      {
+        "quest_id": 9022,
+        "name": "Anthion's Parting Words",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "classic-db",
+        "opens": "later",
+        "classes": [
+          "warrior"
         ],
         "zone_id": 1637,
         "zone": "Orgrimmar"
@@ -157104,6 +156768,36 @@
         "level": 60,
         "level_source": "classic-db",
         "opens": "later",
+        "classes": [
+          "warrior"
+        ],
+        "zone_id": 1637,
+        "zone": "Orgrimmar"
+      }
+    ],
+    "226860": [
+      {
+        "quest_id": 9006,
+        "name": "Saving the Best for Last",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "classic-db",
+        "classes": [
+          "warrior"
+        ],
+        "zone_id": 1537,
+        "zone": "Ironforge"
+      },
+      {
+        "quest_id": 9013,
+        "name": "Saving the Best for Last",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "classic-db",
         "classes": [
           "warrior"
         ],
@@ -157400,6 +157094,36 @@
       }
     ],
     "226888": [
+      {
+        "quest_id": 8931,
+        "name": "Just Compensation",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "classic-db",
+        "classes": [
+          "hunter"
+        ],
+        "zone_id": 1537,
+        "zone": "Ironforge"
+      },
+      {
+        "quest_id": 8938,
+        "name": "Just Compensation",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "classic-db",
+        "classes": [
+          "hunter"
+        ],
+        "zone_id": 1637,
+        "zone": "Orgrimmar"
+      }
+    ],
+    "226883": [
       {
         "quest_id": 8931,
         "name": "Just Compensation",
@@ -157841,6 +157565,68 @@
         "zone": "Orgrimmar"
       }
     ],
+    "226930": [
+      {
+        "quest_id": 8932,
+        "name": "Just Compensation",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "classic-db",
+        "classes": [
+          "mage"
+        ],
+        "zone_id": 1537,
+        "zone": "Ironforge"
+      },
+      {
+        "quest_id": 8939,
+        "name": "Just Compensation",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "classic-db",
+        "classes": [
+          "mage"
+        ],
+        "zone_id": 1637,
+        "zone": "Orgrimmar"
+      }
+    ],
+    "226931": [
+      {
+        "quest_id": 8953,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "classic-db",
+        "opens": "later",
+        "classes": [
+          "mage"
+        ],
+        "zone_id": 1537,
+        "zone": "Ironforge"
+      },
+      {
+        "quest_id": 9018,
+        "name": "Anthion's Parting Words",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "classic-db",
+        "opens": "later",
+        "classes": [
+          "mage"
+        ],
+        "zone_id": 1637,
+        "zone": "Orgrimmar"
+      }
+    ],
     "226932": [
       {
         "quest_id": 9001,
@@ -158211,6 +157997,36 @@
         "zone": "Orgrimmar"
       }
     ],
+    "226950": [
+      {
+        "quest_id": 8934,
+        "name": "Just Compensation",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "classic-db",
+        "classes": [
+          "priest"
+        ],
+        "zone_id": 1537,
+        "zone": "Ironforge"
+      },
+      {
+        "quest_id": 8940,
+        "name": "Just Compensation",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "classic-db",
+        "classes": [
+          "priest"
+        ],
+        "zone_id": 1637,
+        "zone": "Orgrimmar"
+      }
+    ],
     "226969": [
       {
         "quest_id": 8954,
@@ -158293,10 +158109,43 @@
         "zone": "Ironforge"
       }
     ],
+    "226974": [
+      {
+        "quest_id": 8954,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "classic-db",
+        "opens": "later",
+        "classes": [
+          "paladin"
+        ],
+        "zone_id": 1537,
+        "zone": "Ironforge"
+      }
+    ],
     "226975": [
       {
         "quest_id": 8933,
         "name": "Just Compensation",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "classic-db",
+        "classes": [
+          "paladin"
+        ],
+        "zone_id": 1537,
+        "zone": "Ironforge"
+      }
+    ],
+    "226976": [
+      {
+        "quest_id": 9002,
+        "name": "Saving the Best for Last",
         "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 58,
@@ -158436,6 +158285,23 @@
         "zone": "Orgrimmar"
       }
     ],
+    "227007": [
+      {
+        "quest_id": 8957,
+        "name": "Anthion's Parting Words",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "classic-db",
+        "opens": "later",
+        "classes": [
+          "shaman"
+        ],
+        "zone_id": 1637,
+        "zone": "Orgrimmar"
+      }
+    ],
     "287966": [
       {
         "quest_id": 103,
@@ -158543,6 +158409,38 @@
         "zone": "The Barrens"
       }
     ],
+    "226881": [
+      {
+        "quest_id": 8952,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "classic-db",
+        "opens": "later",
+        "classes": [
+          "hunter"
+        ],
+        "zone_id": 1537,
+        "zone": "Ironforge"
+      },
+      {
+        "quest_id": 9017,
+        "name": "Anthion's Parting Words",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "classic-db",
+        "opens": "later",
+        "classes": [
+          "hunter"
+        ],
+        "zone_id": 1637,
+        "zone": "Orgrimmar"
+      }
+    ],
     "228659": [
       {
         "quest_id": 7636,
@@ -158608,6 +158506,36 @@
         "profession": "fishing"
       }
     ],
+    "226772": [
+      {
+        "quest_id": 8926,
+        "name": "Just Compensation",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "classic-db",
+        "classes": [
+          "druid"
+        ],
+        "zone_id": 1537,
+        "zone": "Ironforge"
+      },
+      {
+        "quest_id": 8927,
+        "name": "Just Compensation",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "classic-db",
+        "classes": [
+          "druid"
+        ],
+        "zone_id": 1637,
+        "zone": "Orgrimmar"
+      }
+    ],
     "226773": [
       {
         "quest_id": 8999,
@@ -158638,6 +158566,68 @@
         "zone": "Orgrimmar"
       }
     ],
+    "226774": [
+      {
+        "quest_id": 8951,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "classic-db",
+        "opens": "later",
+        "classes": [
+          "druid"
+        ],
+        "zone_id": 1537,
+        "zone": "Ironforge"
+      },
+      {
+        "quest_id": 9016,
+        "name": "Anthion's Parting Words",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "classic-db",
+        "opens": "later",
+        "classes": [
+          "druid"
+        ],
+        "zone_id": 1637,
+        "zone": "Orgrimmar"
+      }
+    ],
+    "226775": [
+      {
+        "quest_id": 8905,
+        "name": "An Earnest Proposition",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "classic-db",
+        "classes": [
+          "druid"
+        ],
+        "zone_id": 1537,
+        "zone": "Ironforge"
+      },
+      {
+        "quest_id": 8913,
+        "name": "An Earnest Proposition",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "classic-db",
+        "classes": [
+          "druid"
+        ],
+        "zone_id": 1637,
+        "zone": "Orgrimmar"
+      }
+    ],
     "226776": [
       {
         "quest_id": 8999,
@@ -158656,6 +158646,36 @@
       {
         "quest_id": 9007,
         "name": "Saving the Best for Last",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "classic-db",
+        "classes": [
+          "druid"
+        ],
+        "zone_id": 1637,
+        "zone": "Orgrimmar"
+      }
+    ],
+    "226777": [
+      {
+        "quest_id": 8926,
+        "name": "Just Compensation",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 58,
+        "level": 60,
+        "level_source": "classic-db",
+        "classes": [
+          "druid"
+        ],
+        "zone_id": 1537,
+        "zone": "Ironforge"
+      },
+      {
+        "quest_id": 8927,
+        "name": "Just Compensation",
         "faction": "horde",
         "faction_source": "classic-db",
         "min_level": 58,
