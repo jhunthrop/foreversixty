@@ -21665,6 +21665,52 @@
           "rank": 1
         },
         {
+          "id": "dungeon:blackrock-spire:16042",
+          "name": "Lord Valthalak",
+          "npc_id": 16042,
+          "items": [
+            14047,
+            22302,
+            22335,
+            22336,
+            22337,
+            22339,
+            22340,
+            22342,
+            22343
+          ],
+          "item_chances": {
+            "14047": 10.0,
+            "22302": 27.72,
+            "22335": 14.67,
+            "22336": 17.66,
+            "22337": 23.37,
+            "22339": 15.49,
+            "22340": 17.66,
+            "22342": 23.1,
+            "22343": 20.11
+          },
+          "rank": 3
+        },
+        {
+          "id": "dungeon:blackrock-spire:16080",
+          "name": "Mor Grayhoof",
+          "npc_id": 16080,
+          "items": [
+            21984,
+            22046,
+            22306,
+            22319,
+            22322,
+            22325
+          ],
+          "item_chances": {
+            "21984": 100.0,
+            "22046": 100.0
+          },
+          "rank": 1
+        },
+        {
           "id": "dungeon:blackrock-spire:175245",
           "name": "Father Flame",
           "npc_id": 175245,
@@ -21825,63 +21871,6 @@
         16716,
         16735,
         16736
-      ],
-      "level_min": 55,
-      "level_max": 60
-    },
-    {
-      "id": "dungeon:blackrock-spire:tier-0-5",
-      "kind": "dungeon",
-      "name": "Blackrock Spire",
-      "zone_id": 1583,
-      "opens": "later",
-      "bosses": [
-        {
-          "id": "dungeon:blackrock-spire:16042",
-          "name": "Lord Valthalak",
-          "npc_id": 16042,
-          "items": [
-            14047,
-            22302,
-            22335,
-            22336,
-            22337,
-            22339,
-            22340,
-            22342,
-            22343
-          ],
-          "item_chances": {
-            "14047": 10.0,
-            "22302": 27.72,
-            "22335": 14.67,
-            "22336": 17.66,
-            "22337": 23.37,
-            "22339": 15.49,
-            "22340": 17.66,
-            "22342": 23.1,
-            "22343": 20.11
-          },
-          "rank": 3
-        },
-        {
-          "id": "dungeon:blackrock-spire:16080",
-          "name": "Mor Grayhoof",
-          "npc_id": 16080,
-          "items": [
-            21984,
-            22046,
-            22306,
-            22319,
-            22322,
-            22325
-          ],
-          "item_chances": {
-            "21984": 100.0,
-            "22046": 100.0
-          },
-          "rank": 1
-        }
       ],
       "level_min": 55,
       "level_max": 60
@@ -25688,6 +25677,24 @@
           "rank": 1
         },
         {
+          "id": "dungeon:dire-maul:16097",
+          "name": "Isalien",
+          "npc_id": 16097,
+          "items": [
+            21984,
+            22046,
+            22304,
+            22314,
+            22315,
+            22472
+          ],
+          "item_chances": {
+            "21984": 100.0,
+            "22046": 100.0
+          },
+          "rank": 1
+        },
+        {
           "id": "dungeon:dire-maul:16141",
           "name": "Ghoul Berserker",
           "npc_id": 16141,
@@ -26091,35 +26098,6 @@
             "7080": 53.3333
           },
           "rank": 3
-        }
-      ],
-      "level_min": 54,
-      "level_max": 60
-    },
-    {
-      "id": "dungeon:dire-maul:tier-0-5",
-      "kind": "dungeon",
-      "name": "Dire Maul",
-      "zone_id": 2557,
-      "opens": "later",
-      "bosses": [
-        {
-          "id": "dungeon:dire-maul:16097",
-          "name": "Isalien",
-          "npc_id": 16097,
-          "items": [
-            21984,
-            22046,
-            22304,
-            22314,
-            22315,
-            22472
-          ],
-          "item_chances": {
-            "21984": 100.0,
-            "22046": 100.0
-          },
-          "rank": 1
         }
       ],
       "level_min": 54,
@@ -38833,6 +38811,24 @@
           "rank": 1
         },
         {
+          "id": "dungeon:scholomance:16118",
+          "name": "Kormok",
+          "npc_id": 16118,
+          "items": [
+            21984,
+            22046,
+            22303,
+            22326,
+            22331,
+            22333
+          ],
+          "item_chances": {
+            "21984": 100.0,
+            "22046": 100.0
+          },
+          "rank": 1
+        },
+        {
           "id": "dungeon:scholomance:175965",
           "name": "Frostwhisper's Embalming Fluid",
           "npc_id": 175965,
@@ -39258,35 +39254,6 @@
           },
           "reitemised_from": {
             "287964": 8766
-          },
-          "rank": 1
-        }
-      ],
-      "level_min": 58,
-      "level_max": 60
-    },
-    {
-      "id": "dungeon:scholomance:tier-0-5",
-      "kind": "dungeon",
-      "name": "Scholomance",
-      "zone_id": 2057,
-      "opens": "later",
-      "bosses": [
-        {
-          "id": "dungeon:scholomance:16118",
-          "name": "Kormok",
-          "npc_id": 16118,
-          "items": [
-            21984,
-            22046,
-            22303,
-            22326,
-            22331,
-            22333
-          ],
-          "item_chances": {
-            "21984": 100.0,
-            "22046": 100.0
           },
           "rank": 1
         }
@@ -44126,6 +44093,23 @@
           }
         },
         {
+          "id": "dungeon:stratholme:181083",
+          "name": "Sothos and Jarien's Heirlooms",
+          "npc_id": 181083,
+          "items": [
+            22301,
+            22327,
+            22328,
+            22329
+          ],
+          "item_source_origin": {
+            "22301": "fork",
+            "22327": "fork",
+            "22328": "fork",
+            "22329": "fork"
+          }
+        },
+        {
           "id": "dungeon:stratholme:181085",
           "name": "Stratholme Supply Crate",
           "npc_id": 181085,
@@ -44219,34 +44203,6 @@
             "287964": 8766
           },
           "rank": 1
-        }
-      ],
-      "level_min": 58,
-      "level_max": 60
-    },
-    {
-      "id": "dungeon:stratholme:tier-0-5",
-      "kind": "dungeon",
-      "name": "Stratholme",
-      "zone_id": 2017,
-      "opens": "later",
-      "bosses": [
-        {
-          "id": "dungeon:stratholme:181083",
-          "name": "Sothos and Jarien's Heirlooms",
-          "npc_id": 181083,
-          "items": [
-            22301,
-            22327,
-            22328,
-            22329
-          ],
-          "item_source_origin": {
-            "22301": "fork",
-            "22327": "fork",
-            "22328": "fork",
-            "22329": "fork"
-          }
         }
       ],
       "level_min": 58,
@@ -68233,7 +68189,6 @@
       "id": "world:jarien",
       "kind": "world",
       "name": "Jarien",
-      "opens": "later",
       "items": [
         21984,
         22046,
@@ -71094,7 +71049,6 @@
       "id": "world:magma-lord-bokk",
       "kind": "world",
       "name": "Magma Lord Bokk",
-      "opens": "later",
       "items": [
         21938
       ],
@@ -80426,7 +80380,6 @@
       "id": "world:sothos",
       "kind": "world",
       "name": "Sothos",
-      "opens": "later",
       "items": [
         21984,
         22046,
@@ -80446,7 +80399,6 @@
       "id": "world:sothos-and-jariens-heirlooms",
       "kind": "world",
       "name": "Sothos and Jarien's Heirlooms",
-      "opens": "later",
       "items": [
         22301,
         22327,
@@ -104205,7 +104157,6 @@
       "id": "vendor:230317",
       "kind": "vendor",
       "name": "Mokvar",
-      "opens": "later",
       "npc_id": 230317,
       "items": [
         226772,
@@ -104303,7 +104254,6 @@
       "id": "vendor:230319",
       "kind": "vendor",
       "name": "Deliana",
-      "opens": "later",
       "npc_id": 230319,
       "items": [
         226772,
@@ -104401,7 +104351,6 @@
       "id": "vendor:230565",
       "kind": "vendor",
       "name": "Ironforge Guard",
-      "opens": "later",
       "npc_id": 230565,
       "items": [
         226772,
@@ -104499,7 +104448,6 @@
       "id": "vendor:230566",
       "kind": "vendor",
       "name": "Kor'kron Elite",
-      "opens": "later",
       "npc_id": 230566,
       "items": [
         226772,
@@ -149607,7 +149555,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "warrior"
         ],
@@ -149622,7 +149569,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "warrior"
         ],
@@ -149671,7 +149617,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "rogue"
         ],
@@ -149686,7 +149631,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "rogue"
         ],
@@ -149703,7 +149647,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "hunter"
         ],
@@ -149718,7 +149661,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "hunter"
         ],
@@ -149812,7 +149754,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "mage"
         ],
@@ -149827,7 +149768,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "mage"
         ],
@@ -149844,7 +149784,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "priest"
         ],
@@ -149859,7 +149798,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "priest"
         ],
@@ -149893,7 +149831,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "paladin"
         ],
@@ -149927,7 +149864,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "druid"
         ],
@@ -149942,7 +149878,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "druid"
         ],
@@ -149991,7 +149926,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "druid"
         ],
@@ -150006,7 +149940,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "druid"
         ],
@@ -150023,7 +149956,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "druid"
         ],
@@ -150038,7 +149970,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "druid"
         ],
@@ -150068,7 +149999,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "zone_id": 2557,
         "zone": "Dire Maul"
       }
@@ -150082,7 +150012,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "zone_id": 2557,
         "zone": "Dire Maul"
       }
@@ -150096,7 +150025,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "zone_id": 25,
         "zone": "Blackrock Mountain"
       },
@@ -150108,7 +150036,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "zone_id": 25,
         "zone": "Blackrock Mountain"
       },
@@ -150120,7 +150047,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "zone_id": 25,
         "zone": "Blackrock Mountain"
       },
@@ -150132,7 +150058,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "zone_id": 25,
         "zone": "Blackrock Mountain"
       }
@@ -150146,7 +150071,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "zone_id": 25,
         "zone": "Blackrock Mountain"
       },
@@ -150158,7 +150082,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "zone_id": 25,
         "zone": "Blackrock Mountain"
       },
@@ -150170,7 +150093,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "zone_id": 25,
         "zone": "Blackrock Mountain"
       },
@@ -150182,7 +150104,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "zone_id": 25,
         "zone": "Blackrock Mountain"
       }
@@ -156951,7 +156872,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "rogue"
         ],
@@ -156966,7 +156886,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "rogue"
         ],
@@ -157047,7 +156966,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "rogue"
         ],
@@ -157062,7 +156980,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "rogue"
         ],
@@ -157079,7 +156996,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "rogue"
         ],
@@ -157094,7 +157010,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "rogue"
         ],
@@ -157111,7 +157026,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "rogue"
         ],
@@ -157126,7 +157040,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "rogue"
         ],
@@ -157207,7 +157120,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "warrior"
         ],
@@ -157222,7 +157134,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "warrior"
         ],
@@ -157239,7 +157150,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "warrior"
         ],
@@ -157254,7 +157164,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "warrior"
         ],
@@ -157271,7 +157180,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "warrior"
         ],
@@ -157286,7 +157194,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "warrior"
         ],
@@ -157303,7 +157210,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "warrior"
         ],
@@ -157318,7 +157224,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "warrior"
         ],
@@ -157413,7 +157318,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "hunter"
         ],
@@ -157428,7 +157332,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "hunter"
         ],
@@ -157445,7 +157348,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "hunter"
         ],
@@ -157460,7 +157362,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "hunter"
         ],
@@ -157477,7 +157378,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "hunter"
         ],
@@ -157492,7 +157392,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "hunter"
         ],
@@ -157509,7 +157408,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "hunter"
         ],
@@ -157524,7 +157422,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "hunter"
         ],
@@ -157677,7 +157574,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "warlock"
         ],
@@ -157692,7 +157588,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "warlock"
         ],
@@ -157709,7 +157604,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "warlock"
         ],
@@ -157724,7 +157618,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "warlock"
         ],
@@ -157741,7 +157634,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "warlock"
         ],
@@ -157756,7 +157648,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "warlock"
         ],
@@ -157805,7 +157696,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "warlock"
         ],
@@ -157820,7 +157710,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "warlock"
         ],
@@ -157869,7 +157758,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "warlock"
         ],
@@ -157884,7 +157772,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "warlock"
         ],
@@ -157933,7 +157820,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "mage"
         ],
@@ -157948,7 +157834,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "mage"
         ],
@@ -157965,7 +157850,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "mage"
         ],
@@ -157980,7 +157864,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "mage"
         ],
@@ -158029,7 +157912,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "mage"
         ],
@@ -158044,7 +157926,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "mage"
         ],
@@ -158061,7 +157942,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "mage"
         ],
@@ -158076,7 +157956,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "mage"
         ],
@@ -158125,7 +158004,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "priest"
         ],
@@ -158140,7 +158018,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "priest"
         ],
@@ -158189,7 +158066,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "priest"
         ],
@@ -158204,7 +158080,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "priest"
         ],
@@ -158221,7 +158096,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "priest"
         ],
@@ -158236,7 +158110,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "priest"
         ],
@@ -158253,7 +158126,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "priest"
         ],
@@ -158268,7 +158140,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "priest"
         ],
@@ -158366,7 +158237,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "paladin"
         ],
@@ -158383,7 +158253,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "paladin"
         ],
@@ -158417,7 +158286,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "paladin"
         ],
@@ -158434,7 +158302,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "paladin"
         ],
@@ -158464,7 +158331,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "shaman"
         ],
@@ -158481,7 +158347,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "shaman"
         ],
@@ -158515,7 +158380,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "shaman"
         ],
@@ -158532,7 +158396,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "shaman"
         ],
@@ -158566,7 +158429,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "shaman"
         ],
@@ -158755,7 +158617,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "druid"
         ],
@@ -158770,7 +158631,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "druid"
         ],
@@ -158787,7 +158647,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "druid"
         ],
@@ -158802,7 +158661,6 @@
         "min_level": 58,
         "level": 60,
         "level_source": "classic-db",
-        "opens": "later",
         "classes": [
           "druid"
         ],
