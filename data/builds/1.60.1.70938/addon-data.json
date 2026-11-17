@@ -131223,14 +131223,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 12103,
+                  "item_id": 22340,
                   "source_kind": "dungeon",
-                  "source": "Stratholme: Balnazzar"
+                  "source": "Blackrock Spire: Lord Valthalak"
                 },
                 {
-                  "item_id": 12929,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: Pyroguard Emberseer"
+                  "item_id": 22150,
+                  "source_kind": "quest",
+                  "source": "Falrin's Vendetta"
                 }
               ]
             },
@@ -131513,14 +131513,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 12103,
+                  "item_id": 22340,
                   "source_kind": "dungeon",
-                  "source": "Stratholme: Balnazzar"
+                  "source": "Blackrock Spire: Lord Valthalak"
                 },
                 {
-                  "item_id": 12929,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: Pyroguard Emberseer"
+                  "item_id": 22150,
+                  "source_kind": "quest",
+                  "source": "Falrin's Vendetta"
                 }
               ]
             },
@@ -134383,14 +134383,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 17044,
+                  "item_id": 22150,
                   "source_kind": "quest",
-                  "source": "Aurius' Reckoning"
+                  "source": "Falrin's Vendetta"
                 },
                 {
-                  "item_id": 11933,
+                  "item_id": 22340,
                   "source_kind": "dungeon",
-                  "source": "Blackrock Depths: Emperor Dagran Thaurissan"
+                  "source": "Blackrock Spire: Lord Valthalak"
                 }
               ]
             },
@@ -134473,9 +134473,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 19049,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
+                  "item_id": 226861,
+                  "source_kind": "quest",
+                  "source": "Just Compensation"
                 },
                 {
                   "item_id": 231541,
@@ -134691,9 +134691,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 12103,
-                  "source_kind": "dungeon",
-                  "source": "Stratholme: Balnazzar"
+                  "item_id": 22150,
+                  "source_kind": "quest",
+                  "source": "Falrin's Vendetta"
                 },
                 {
                   "item_id": 12929,
@@ -137750,9 +137750,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 16731,
-                  "source_kind": "dungeon",
-                  "source": "Scholomance: Darkmaster Gandling"
+                  "item_id": 226860,
+                  "source_kind": "quest",
+                  "source": "Saving the Best for Last"
                 },
                 {
                   "item_id": 227044,
@@ -137845,9 +137845,9 @@
                   "source": "PvP rank 12 · Marshal · Alliance"
                 },
                 {
-                  "item_id": 19578,
-                  "source_kind": "rep",
-                  "source": "Silverwing Sentinels"
+                  "item_id": 18445,
+                  "source_kind": "vendor",
+                  "source": "PvP rank 5 · Sergeant Major · Alliance"
                 }
               ]
             },
@@ -137930,14 +137930,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 22331,
+                  "source_kind": "dungeon",
+                  "source": "Scholomance: Kormok"
+                },
+                {
                   "item_id": 13373,
                   "source_kind": "dungeon",
                   "source": "Stratholme: Ramstein the Gorger"
-                },
-                {
-                  "item_id": 271908,
-                  "source_kind": "rep",
-                  "source": "Theramore Expeditionary Force"
                 }
               ]
             },
@@ -137948,14 +137948,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 22331,
+                  "source_kind": "dungeon",
+                  "source": "Scholomance: Kormok"
+                },
+                {
                   "item_id": 13373,
                   "source_kind": "dungeon",
                   "source": "Stratholme: Ramstein the Gorger"
-                },
-                {
-                  "item_id": 271908,
-                  "source_kind": "rep",
-                  "source": "Theramore Expeditionary Force"
                 }
               ]
             },
@@ -138058,9 +138058,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 16731,
-                  "source_kind": "dungeon",
-                  "source": "Scholomance: Darkmaster Gandling"
+                  "item_id": 226860,
+                  "source_kind": "quest",
+                  "source": "Saving the Best for Last"
                 },
                 {
                   "item_id": 227043,
@@ -138153,9 +138153,9 @@
                   "source": "PvP rank 12 · General · Horde"
                 },
                 {
-                  "item_id": 19578,
-                  "source_kind": "rep",
-                  "source": "Warsong Outriders"
+                  "item_id": 18429,
+                  "source_kind": "vendor",
+                  "source": "PvP rank 5 · First Sergeant · Horde"
                 }
               ]
             },
@@ -138196,20 +138196,20 @@
               ]
             },
             "legs": {
-              "item_id": 22651,
-              "source_kind": "rep",
-              "source": "Warsong Outriders",
+              "item_id": 22328,
+              "source_kind": "dungeon",
+              "source": "Stratholme: Sothos and Jarien's Heirlooms",
               "chance": null,
               "alternatives": [
+                {
+                  "item_id": 14554,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
+                },
                 {
                   "item_id": 231533,
                   "source_kind": "pvp",
                   "source": "PvP rank 12 · General · Horde"
-                },
-                {
-                  "item_id": 250596,
-                  "source_kind": "crafted",
-                  "source": "Blacksmithing"
                 }
               ]
             },
@@ -138243,9 +138243,9 @@
                   "source": "Blackrock Depths: Golem Lord Argelmach"
                 },
                 {
-                  "item_id": 13373,
+                  "item_id": 22331,
                   "source_kind": "dungeon",
-                  "source": "Stratholme: Ramstein the Gorger"
+                  "source": "Scholomance: Kormok"
                 }
               ]
             },
@@ -138256,14 +138256,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 22331,
+                  "source_kind": "dungeon",
+                  "source": "Scholomance: Kormok"
+                },
+                {
                   "item_id": 13373,
                   "source_kind": "dungeon",
                   "source": "Stratholme: Ramstein the Gorger"
-                },
-                {
-                  "item_id": 272064,
-                  "source_kind": "vendor",
-                  "source": "Creeg Bothunk"
                 }
               ]
             },
@@ -138388,7 +138388,7 @@
             13951,
             12639,
             272403,
-            22651,
+            22328,
             13259,
             2246,
             272409,
@@ -154736,9 +154736,9 @@
                   "source": "Stratholme: Balnazzar"
                 },
                 {
-                  "item_id": 22403,
-                  "source_kind": "dungeon",
-                  "source": "Stratholme: Cannon Master Willey"
+                  "item_id": 22150,
+                  "source_kind": "quest",
+                  "source": "Falrin's Vendetta"
                 }
               ]
             },
@@ -154790,9 +154790,9 @@
                   "source": "Leatherworking"
                 },
                 {
-                  "item_id": 11726,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Depths: Gorosh the Dervish"
+                  "item_id": 226862,
+                  "source_kind": "quest",
+                  "source": "Saving the Best for Last"
                 }
               ]
             },
@@ -154898,9 +154898,9 @@
                   "source": "Maraudon: Princess Theradras"
                 },
                 {
-                  "item_id": 272406,
-                  "source_kind": "vendor",
-                  "source": "Pix Xizzix"
+                  "item_id": 22339,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: Lord Valthalak"
                 }
               ]
             },
@@ -154916,9 +154916,9 @@
                   "source": "Maraudon: Princess Theradras"
                 },
                 {
-                  "item_id": 272406,
-                  "source_kind": "vendor",
-                  "source": "Pix Xizzix"
+                  "item_id": 22339,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: Lord Valthalak"
                 }
               ]
             },
@@ -155003,14 +155003,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 13404,
-                  "source_kind": "dungeon",
-                  "source": "Stratholme: The Unforgiven"
+                  "item_id": 231535,
+                  "source_kind": "pvp",
+                  "source": "PvP rank 13 · Warlord · Horde"
                 },
                 {
-                  "item_id": 250599,
-                  "source_kind": "crafted",
-                  "source": "Blacksmithing"
+                  "item_id": 12587,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: Warchief Rend Blackhand"
                 }
               ]
             },
@@ -155021,14 +155021,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 12103,
-                  "source_kind": "dungeon",
-                  "source": "Stratholme: Balnazzar"
+                  "item_id": 13089,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 },
                 {
-                  "item_id": 22403,
+                  "item_id": 12929,
                   "source_kind": "dungeon",
-                  "source": "Stratholme: Cannon Master Willey"
+                  "source": "Blackrock Spire: Pyroguard Emberseer"
                 }
               ]
             },
@@ -155039,14 +155039,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 12082,
-                  "source_kind": "quest",
-                  "source": "A Taste of Flame"
+                  "item_id": 272106,
+                  "source_kind": "vendor",
+                  "source": "Creeg Bothunk"
                 },
                 {
-                  "item_id": 12927,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: Pyroguard Emberseer"
+                  "item_id": 227042,
+                  "source_kind": "pvp",
+                  "source": "PvP rank 10 · Champion · Horde"
                 }
               ]
             },
@@ -155057,14 +155057,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 3475,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 20068,
+                  "source_kind": "rep",
+                  "source": "The Defilers"
                 },
                 {
-                  "item_id": 272414,
-                  "source_kind": "vendor",
-                  "source": "Pix Xizzix"
+                  "item_id": 11626,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths: High Interrogator Gerstahn "
                 }
               ]
             },
@@ -155075,14 +155075,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 252483,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
-                },
-                {
                   "item_id": 11726,
                   "source_kind": "dungeon",
                   "source": "Blackrock Depths: Gorosh the Dervish"
+                },
+                {
+                  "item_id": 252483,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
                 }
               ]
             },
@@ -155093,14 +155093,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 13211,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: Halycon"
+                  "item_id": 19578,
+                  "source_kind": "rep",
+                  "source": "Warsong Outriders"
                 },
                 {
-                  "item_id": 12966,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: The Beast"
+                  "item_id": 19587,
+                  "source_kind": "rep",
+                  "source": "Warsong Outriders"
                 }
               ]
             },
@@ -155111,14 +155111,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 13255,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: Shadow Hunter Vosh'gajin"
+                  "item_id": 231532,
+                  "source_kind": "pvp",
+                  "source": "PvP rank 12 · General · Horde"
                 },
                 {
-                  "item_id": 13963,
-                  "source_kind": "quest",
-                  "source": "Warlord's Command"
+                  "item_id": 272095,
+                  "source_kind": "vendor",
+                  "source": "Creeg Bothunk"
                 }
               ]
             },
@@ -155129,14 +155129,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 22207,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Depths: Emperor Dagran Thaurissan"
+                  "item_id": 16547,
+                  "source_kind": "pvp",
+                  "source": "PvP rank 12 · General · Horde"
                 },
                 {
-                  "item_id": 13142,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: General Drakkisath"
+                  "item_id": 19044,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
                 }
               ]
             },
@@ -155165,14 +155165,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 231531,
-                  "source_kind": "pvp",
-                  "source": "PvP rank 12 · General · Horde"
+                  "item_id": 12555,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths"
                 },
                 {
-                  "item_id": 14616,
-                  "source_kind": "dungeon",
-                  "source": "Scholomance"
+                  "item_id": 20208,
+                  "source_kind": "rep",
+                  "source": "The Defilers"
                 }
               ]
             },
@@ -155183,14 +155183,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 17713,
-                  "source_kind": "dungeon",
-                  "source": "Maraudon: Princess Theradras"
+                  "item_id": 19510,
+                  "source_kind": "rep",
+                  "source": "Warsong Outriders"
                 },
                 {
-                  "item_id": 272406,
-                  "source_kind": "vendor",
-                  "source": "Pix Xizzix"
+                  "item_id": 13098,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: General Drakkisath"
                 }
               ]
             },
@@ -155201,14 +155201,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 17713,
+                  "item_id": 13098,
                   "source_kind": "dungeon",
-                  "source": "Maraudon: Princess Theradras"
+                  "source": "Blackrock Spire: General Drakkisath"
                 },
                 {
-                  "item_id": 272406,
-                  "source_kind": "vendor",
-                  "source": "Pix Xizzix"
+                  "item_id": 19510,
+                  "source_kind": "rep",
+                  "source": "Warsong Outriders"
                 }
               ]
             },
@@ -155219,14 +155219,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 13213,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: Mother Smolderweb"
-                },
-                {
                   "item_id": 19120,
                   "source_kind": "quest",
                   "source": "Job Opening: Guard Captain of Revantusk Village"
+                },
+                {
+                  "item_id": 13968,
+                  "source_kind": "quest",
+                  "source": "For The Horde!"
                 }
               ]
             },
@@ -155237,9 +155237,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 13213,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: Mother Smolderweb"
+                  "item_id": 13968,
+                  "source_kind": "quest",
+                  "source": "For The Horde!"
                 },
                 {
                   "item_id": 19120,
@@ -155273,14 +155273,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 12651,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: Shadow Hunter Vosh'gajin"
-                },
-                {
                   "item_id": 19107,
                   "source_kind": "quest",
                   "source": "The Legend of Korrak"
+                },
+                {
+                  "item_id": 12653,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: Shadow Hunter Vosh'gajin"
                 }
               ]
             }
@@ -155371,9 +155371,9 @@
                   "source": "PvP rank 10 · Lieutenant Commander · Alliance"
                 },
                 {
-                  "item_id": 20521,
-                  "source_kind": "quest",
-                  "source": "Voodoo Feathers"
+                  "item_id": 231538,
+                  "source_kind": "pvp",
+                  "source": "PvP rank 13 · Field Marshal · Alliance"
                 }
               ]
             },
@@ -155384,14 +155384,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 11933,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Depths: Emperor Dagran Thaurissan"
+                  "item_id": 22150,
+                  "source_kind": "quest",
+                  "source": "Falrin's Vendetta"
                 },
                 {
-                  "item_id": 12103,
+                  "item_id": 22340,
                   "source_kind": "dungeon",
-                  "source": "Stratholme: Balnazzar"
+                  "source": "Blackrock Spire: Lord Valthalak"
                 }
               ]
             },
@@ -155461,9 +155461,9 @@
                   "source": "Silverwing Sentinels"
                 },
                 {
-                  "item_id": 12936,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: Warchief Rend Blackhand"
+                  "item_id": 16481,
+                  "source_kind": "pvp",
+                  "source": "PvP rank 12 · Marshal · Alliance"
                 }
               ]
             },
@@ -155474,14 +155474,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 231541,
-                  "source_kind": "pvp",
-                  "source": "PvP rank 12 · Marshal · Alliance"
-                },
-                {
                   "item_id": 19049,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
+                },
+                {
+                  "item_id": 231541,
+                  "source_kind": "pvp",
+                  "source": "PvP rank 12 · Marshal · Alliance"
                 }
               ]
             },
@@ -155546,14 +155546,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 17713,
-                  "source_kind": "dungeon",
-                  "source": "Maraudon: Princess Theradras"
-                },
-                {
                   "item_id": 19514,
                   "source_kind": "rep",
                   "source": "Silverwing Sentinels"
+                },
+                {
+                  "item_id": 12548,
+                  "source_kind": "quest",
+                  "source": "The Princess's Surprise"
                 }
               ]
             },
@@ -155564,9 +155564,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 17713,
-                  "source_kind": "dungeon",
-                  "source": "Maraudon: Princess Theradras"
+                  "item_id": 12548,
+                  "source_kind": "quest",
+                  "source": "The Princess's Surprise"
                 },
                 {
                   "item_id": 19514,
@@ -155582,14 +155582,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 13382,
-                  "source_kind": "dungeon",
-                  "source": "Stratholme: Cannon Master Willey"
-                },
-                {
                   "item_id": 249469,
                   "source_kind": "crafted",
                   "source": "Enchanting"
+                },
+                {
+                  "item_id": 13382,
+                  "source_kind": "dungeon",
+                  "source": "Stratholme: Cannon Master Willey"
                 }
               ]
             },
@@ -155623,8 +155623,8 @@
                   "source": "PvP rank 14 · Grand Marshal · Alliance"
                 },
                 {
-                  "item_id": 234570,
-                  "source_kind": "vendor",
+                  "item_id": 234566,
+                  "source_kind": "pvp",
                   "source": "PvP rank 14 · Grand Marshal · Alliance"
                 }
               ]
@@ -155654,14 +155654,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 12651,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: Shadow Hunter Vosh'gajin"
-                },
-                {
                   "item_id": 2100,
                   "source_kind": "world_drop",
                   "source": "World drop"
+                },
+                {
+                  "item_id": 12651,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: Shadow Hunter Vosh'gajin"
                 }
               ]
             }
@@ -155679,9 +155679,9 @@
                   "source": "PvP rank 10 · Champion · Horde"
                 },
                 {
-                  "item_id": 20521,
-                  "source_kind": "quest",
-                  "source": "Voodoo Feathers"
+                  "item_id": 231535,
+                  "source_kind": "pvp",
+                  "source": "PvP rank 13 · Warlord · Horde"
                 }
               ]
             },
@@ -155692,14 +155692,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 11933,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Depths: Emperor Dagran Thaurissan"
+                  "item_id": 22150,
+                  "source_kind": "quest",
+                  "source": "Falrin's Vendetta"
                 },
                 {
-                  "item_id": 12103,
+                  "item_id": 22340,
                   "source_kind": "dungeon",
-                  "source": "Stratholme: Balnazzar"
+                  "source": "Blackrock Spire: Lord Valthalak"
                 }
               ]
             },
@@ -155764,12 +155764,12 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 19578,
-                  "source_kind": "rep",
-                  "source": "Warsong Outriders"
+                  "item_id": 16546,
+                  "source_kind": "pvp",
+                  "source": "PvP rank 12 · General · Horde"
                 },
                 {
-                  "item_id": 19587,
+                  "item_id": 19578,
                   "source_kind": "rep",
                   "source": "Warsong Outriders"
                 }
@@ -155782,14 +155782,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 19049,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
+                },
+                {
                   "item_id": 231532,
                   "source_kind": "pvp",
                   "source": "PvP rank 12 · General · Horde"
-                },
-                {
-                  "item_id": 272095,
-                  "source_kind": "vendor",
-                  "source": "Creeg Bothunk"
                 }
               ]
             },
@@ -155854,14 +155854,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 272408,
-                  "source_kind": "vendor",
-                  "source": "Pix Xizzix"
-                },
-                {
                   "item_id": 19510,
                   "source_kind": "rep",
                   "source": "Warsong Outriders"
+                },
+                {
+                  "item_id": 272408,
+                  "source_kind": "vendor",
+                  "source": "Pix Xizzix"
                 }
               ]
             },
@@ -155872,14 +155872,14 @@
               "chance": 0.25,
               "alternatives": [
                 {
-                  "item_id": 272408,
-                  "source_kind": "vendor",
-                  "source": "Pix Xizzix"
-                },
-                {
                   "item_id": 19510,
                   "source_kind": "rep",
                   "source": "Warsong Outriders"
+                },
+                {
+                  "item_id": 272408,
+                  "source_kind": "vendor",
+                  "source": "Pix Xizzix"
                 }
               ]
             },
@@ -155962,14 +155962,14 @@
               "chance": 0.08,
               "alternatives": [
                 {
-                  "item_id": 19107,
-                  "source_kind": "quest",
-                  "source": "The Legend of Korrak"
-                },
-                {
                   "item_id": 2100,
                   "source_kind": "world_drop",
                   "source": "World drop"
+                },
+                {
+                  "item_id": 19107,
+                  "source_kind": "quest",
+                  "source": "The Legend of Korrak"
                 }
               ]
             }
@@ -156018,10 +156018,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 2.2,
-          "agility": 1.486,
-          "crit": 1.947,
-          "hit": 2.365,
-          "melee_haste": 21.728
+          "agility": 1.591,
+          "crit": 1.992,
+          "hit": 1.994,
+          "melee_haste": 22.391
         },
         "hit_to_cap": {
           "alliance": {
@@ -156063,14 +156063,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 16429,
-                  "source_kind": "pvp",
-                  "source": "PvP rank 10 · Lieutenant Commander · Alliance"
+                  "item_id": 16731,
+                  "source_kind": "dungeon",
+                  "source": "Scholomance: Darkmaster Gandling"
                 },
                 {
-                  "item_id": 231538,
-                  "source_kind": "pvp",
-                  "source": "PvP rank 13 · Field Marshal · Alliance"
+                  "item_id": 227044,
+                  "source_kind": "vendor",
+                  "source": "PvP rank 10 · Lieutenant Commander · Alliance"
                 }
               ]
             },
@@ -156086,9 +156086,9 @@
                   "source": "Blackrock Depths: Verek"
                 },
                 {
-                  "item_id": 19538,
-                  "source_kind": "rep",
-                  "source": "Silverwing Sentinels"
+                  "item_id": 13091,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -156104,9 +156104,9 @@
                   "source": "PvP rank 13 · Field Marshal · Alliance"
                 },
                 {
-                  "item_id": 227045,
-                  "source_kind": "pvp",
-                  "source": "PvP rank 10 · Lieutenant Commander · Alliance"
+                  "item_id": 20058,
+                  "source_kind": "rep",
+                  "source": "The League of Arathor"
                 }
               ]
             },
@@ -156117,14 +156117,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 12967,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: The Beast"
-                },
-                {
                   "item_id": 22269,
                   "source_kind": "dungeon",
                   "source": "Blackrock Spire: General Drakkisath"
+                },
+                {
+                  "item_id": 12967,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: The Beast"
                 }
               ]
             },
@@ -156140,9 +156140,9 @@
                   "source": "PvP rank 13 · Field Marshal · Alliance"
                 },
                 {
-                  "item_id": 227046,
-                  "source_kind": "pvp",
-                  "source": "PvP rank 8 · Knight-Captain · Alliance"
+                  "item_id": 10845,
+                  "source_kind": "world",
+                  "source": "Avatar of Hakkar"
                 }
               ]
             },
@@ -156158,9 +156158,9 @@
                   "source": "PvP rank 12 · Marshal · Alliance"
                 },
                 {
-                  "item_id": 19578,
-                  "source_kind": "rep",
-                  "source": "Silverwing Sentinels"
+                  "item_id": 250582,
+                  "source_kind": "crafted",
+                  "source": "Blacksmithing"
                 }
               ]
             },
@@ -156176,9 +156176,9 @@
                   "source": "PvP rank 12 · Marshal · Alliance"
                 },
                 {
-                  "item_id": 227053,
-                  "source_kind": "vendor",
-                  "source": "PvP rank 7 · Knight-Lieutenant · Alliance"
+                  "item_id": 250552,
+                  "source_kind": "crafted",
+                  "source": "Blacksmithing"
                 }
               ]
             },
@@ -156212,7 +156212,7 @@
                   "source": "PvP rank 12 · Marshal · Alliance"
                 },
                 {
-                  "item_id": 237814,
+                  "item_id": 237819,
                   "source_kind": "vendor",
                   "source": "Illiyana Moonblaze"
                 }
@@ -156225,54 +156225,72 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 16405,
+                  "item_id": 227052,
                   "source_kind": "pvp",
                   "source": "PvP rank 7 · Knight-Lieutenant · Alliance"
                 },
                 {
-                  "item_id": 227052,
+                  "item_id": 231539,
                   "source_kind": "pvp",
-                  "source": "PvP rank 7 · Knight-Lieutenant · Alliance"
+                  "source": "PvP rank 12 · Marshal · Alliance"
                 }
               ]
             },
             "finger1": {
-              "item_id": 2246,
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 272408,
-                  "source_kind": "vendor",
-                  "source": "Pix Xizzix"
-                },
-                {
-                  "item_id": 18701,
-                  "source_kind": "dungeon",
-                  "source": "Scholomance: Scholomance Handler"
-                }
-              ]
-            },
-            "finger2": {
               "item_id": 272409,
               "source_kind": "vendor",
               "source": "Pix Xizzix",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 272408,
-                  "source_kind": "vendor",
-                  "source": "Pix Xizzix"
+                  "item_id": 11669,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths: Golem Lord Argelmach"
                 },
                 {
-                  "item_id": 18701,
+                  "item_id": 22331,
                   "source_kind": "dungeon",
-                  "source": "Scholomance: Scholomance Handler"
+                  "source": "Scholomance: Kormok"
+                }
+              ]
+            },
+            "finger2": {
+              "item_id": 272408,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 22331,
+                  "source_kind": "dungeon",
+                  "source": "Scholomance: Kormok"
+                },
+                {
+                  "item_id": 2246,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
             "trinket1": {
+              "item_id": 272440,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 272437,
+                  "source_kind": "vendor",
+                  "source": "Pix Xizzix"
+                },
+                {
+                  "item_id": 14557,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
+                }
+              ]
+            },
+            "trinket2": {
               "item_id": 17904,
               "source_kind": "quest",
               "source": "The Eye of Command",
@@ -156284,27 +156302,9 @@
                   "source": "The League of Arathor"
                 },
                 {
-                  "item_id": 271903,
-                  "source_kind": "rep",
-                  "source": "Theramore Expeditionary Force"
-                }
-              ]
-            },
-            "trinket2": {
-              "item_id": 272440,
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 20071,
-                  "source_kind": "rep",
-                  "source": "The League of Arathor"
-                },
-                {
-                  "item_id": 272437,
-                  "source_kind": "vendor",
-                  "source": "Pix Xizzix"
+                  "item_id": 14557,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -156345,20 +156345,20 @@
               ]
             },
             "ranged": {
-              "item_id": 19562,
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
+              "item_id": 18738,
+              "source_kind": "dungeon",
+              "source": "Stratholme: Nerub'enkan",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 18738,
-                  "source_kind": "dungeon",
-                  "source": "Stratholme: Nerub'enkan"
+                  "item_id": 19562,
+                  "source_kind": "rep",
+                  "source": "Silverwing Sentinels"
                 },
                 {
-                  "item_id": 16996,
-                  "source_kind": "quest",
-                  "source": "Order Must Be Restored"
+                  "item_id": 13040,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             }
@@ -156389,14 +156389,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 11755,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Depths: Verek"
-                },
-                {
                   "item_id": 19534,
                   "source_kind": "rep",
                   "source": "Warsong Outriders"
+                },
+                {
+                  "item_id": 11755,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths: Verek"
                 }
               ]
             },
@@ -156509,9 +156509,9 @@
               ]
             },
             "legs": {
-              "item_id": 12935,
+              "item_id": 22328,
               "source_kind": "dungeon",
-              "source": "Blackrock Spire: Warchief Rend Blackhand",
+              "source": "Stratholme: Sothos and Jarien's Heirlooms",
               "chance": null,
               "alternatives": [
                 {
@@ -156520,9 +156520,9 @@
                   "source": "PvP rank 12 · General · Horde"
                 },
                 {
-                  "item_id": 14554,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 12935,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: Warchief Rend Blackhand"
                 }
               ]
             },
@@ -156551,9 +156551,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 11669,
+                  "item_id": 22331,
                   "source_kind": "dungeon",
-                  "source": "Blackrock Depths: Golem Lord Argelmach"
+                  "source": "Scholomance: Kormok"
                 },
                 {
                   "item_id": 272408,
@@ -156569,9 +156569,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 11669,
+                  "item_id": 22331,
                   "source_kind": "dungeon",
-                  "source": "Blackrock Depths: Golem Lord Argelmach"
+                  "source": "Scholomance: Kormok"
                 },
                 {
                   "item_id": 272408,
@@ -156581,24 +156581,6 @@
               ]
             },
             "trinket1": {
-              "item_id": 17909,
-              "source_kind": "quest",
-              "source": "The Eye of Command",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 20072,
-                  "source_kind": "rep",
-                  "source": "The Defilers"
-                },
-                {
-                  "item_id": 272061,
-                  "source_kind": "vendor",
-                  "source": "Creeg Bothunk"
-                }
-              ]
-            },
-            "trinket2": {
               "item_id": 272440,
               "source_kind": "vendor",
               "source": "Pix Xizzix",
@@ -156613,6 +156595,24 @@
                   "item_id": 272437,
                   "source_kind": "vendor",
                   "source": "Pix Xizzix"
+                }
+              ]
+            },
+            "trinket2": {
+              "item_id": 17909,
+              "source_kind": "quest",
+              "source": "The Eye of Command",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 20072,
+                  "source_kind": "rep",
+                  "source": "The Defilers"
+                },
+                {
+                  "item_id": 272061,
+                  "source_kind": "vendor",
+                  "source": "Creeg Bothunk"
                 }
               ]
             },
@@ -156684,13 +156684,13 @@
             272403,
             237825,
             13259,
-            2246,
             272409,
-            17904,
+            272408,
             272440,
+            17904,
             250618,
             19321,
-            19562
+            18738
           ],
           "horde": [
             12620,
@@ -156701,12 +156701,12 @@
             13951,
             12639,
             272403,
-            12935,
+            22328,
             13259,
             2246,
             272409,
-            17909,
             272440,
+            17909,
             250618,
             19321,
             19558
@@ -156714,21 +156714,20 @@
         },
         "weights": {
           "stamina": 1.0,
-          "armor": 0.05,
-          "defense": 1.159,
-          "dodge": 0.774,
-          "parry": 0.613,
-          "block_value": 0.718,
-          "strength": 0.121,
-          "agility": 0.668,
-          "attack_power": 0.038,
-          "crit": 0.063,
-          "expertise": 10.477
+          "armor": 0.072,
+          "defense": 2.113,
+          "dodge": 1.309,
+          "parry": 1.045,
+          "strength": 0.18,
+          "agility": 1.114,
+          "attack_power": 0.043,
+          "crit": 0.125,
+          "expertise": 8.06
         },
         "hit_to_cap": {
           "alliance": {
             "hit": [
-              7.7,
+              6.7,
               9.0
             ],
             "white": null,
@@ -156737,7 +156736,7 @@
           },
           "horde": {
             "hit": [
-              8.7,
+              7.7,
               9.0
             ],
             "white": null,
@@ -174585,6 +174584,7 @@
     "13037": "Crystalpine Stinger",
     "13038": "Swiftwind",
     "13039": "Skull Splitting Crossbow",
+    "13040": "Heartseeking Crossbow",
     "13045": "Viscous Hammer",
     "13046": "Blanchard's Stout",
     "13048": "Looming Gavel",
@@ -174648,6 +174648,7 @@
     "13142": "Brigam Girdle",
     "13144": "Serenity Belt",
     "13161": "Trindlehaven Staff",
+    "13162": "Reiver Claws",
     "13170": "Skyshroud Leggings",
     "13177": "Talisman of Evasion",
     "13178": "Rosewine Circle",
@@ -174931,8 +174932,6 @@
     "16342": "Sergeant's Cape",
     "16396": "Knight-Lieutenant's Leather Gauntlets",
     "16402": "Knight-Captain's Chain Armguards",
-    "16405": "Knight-Lieutenant's Plate Boots",
-    "16429": "Lieutenant Commander's Plate Helm",
     "16434": "Lieutenant Commander's Lamellar Headguard",
     "16438": "Marshal's Silk Bracers",
     "16439": "Marshal's Silk Sash",
@@ -175009,6 +175008,7 @@
     "16728": "Lightforge Legplates",
     "16729": "Lightforge Spaulders",
     "16731": "Helm of Valor",
+    "16732": "Legplates of Valor",
     "16733": "Spaulders of Valor",
     "16734": "Boots of Valor",
     "16738": "Witherseed Gloves",
@@ -175124,6 +175124,7 @@
     "18457": "Sergeant Major's Silk Cuffs",
     "18461": "Sergeant's Cloak",
     "18673": "Avalanchion's Stony Hide",
+    "18674": "Hardened Stone Band",
     "18676": "Sash of the Windreaver",
     "18680": "Ancient Bone Bow",
     "18681": "Burial Shawl",
@@ -175161,6 +175162,7 @@
     "18807": "Helm of Latent Power",
     "18948": "Barbaric Bracers",
     "18951": "Evonice's Landin' Pilla",
+    "19024": "Arena Grand Master",
     "19038": "Ring of Subtlety",
     "19044": "Might of the Timbermaw",
     "19047": "Wisdom of the Timbermaw",
@@ -175395,6 +175397,7 @@
     "21567": "Rune of Duty",
     "21568": "Rune of Duty",
     "22149": "Beads of Ogre Mojo",
+    "22150": "Beads of Ogre Might",
     "22204": "Wristguards of Renown",
     "22206": "Bouquet of Red Roses",
     "22207": "Sash of the Grand Hunt",
@@ -175417,12 +175420,15 @@
     "22272": "Forest's Embrace",
     "22274": "Grizzled Pelt",
     "22275": "Firemoss Boots",
-    "22317": "Lefty's Brass Knuckle",
     "22318": "Malgen's Long Bow",
     "22321": "Heart of Wyrmthalak",
+    "22322": "The Jaw Breaker",
+    "22328": "Legplates of Vigilance",
     "22329": "Scepter of Interminable Focus",
+    "22331": "Band of the Steadfast Hero",
     "22334": "Band of Mending",
     "22339": "Rune Band of Wizardry",
+    "22340": "Pendant of Celerity",
     "22342": "Leggings of Torment",
     "22383": "Sageblade",
     "22384": "Persuader",
@@ -175583,6 +175589,11 @@
     "223076": "Sergeant Major's Mail Gauntlets",
     "223077": "Sergeant Major's Mail Sabatons",
     "223078": "Knight's Mail Armor",
+    "226860": "Crown of Heroism",
+    "226861": "Gauntlets of Heroism",
+    "226862": "Breastplate of Heroism",
+    "226863": "Bracers of Heroism",
+    "226864": "Belt of Heroism",
     "226905": "Deathmist Belt",
     "226906": "Deathmist Robe",
     "226909": "Deathmist Mask",
@@ -175677,6 +175688,7 @@
     "231532": "General's Plate Gauntlets",
     "231533": "General's Plate Leggings",
     "231534": "Warlord's Plate Shoulders",
+    "231535": "Warlord's Plate Headpiece",
     "231536": "Field Marshal's Plate Armor",
     "231537": "Field Marshal's Plate Shoulderguards",
     "231538": "Field Marshal's Plate Helm",
@@ -176699,6 +176711,7 @@
     "13037": 15.9,
     "13038": 21.2,
     "13039": 25.2,
+    "13040": 28.9,
     "13045": 30.2,
     "13046": 43.4,
     "13048": 19.8,
@@ -176788,8 +176801,8 @@
     "20556": 33.6,
     "22208": 49.7,
     "22254": 55.7,
-    "22317": 40.0,
     "22318": 31.2,
+    "22322": 40.3,
     "22383": 31.1,
     "22384": 45.7,
     "22394": 39.3,
