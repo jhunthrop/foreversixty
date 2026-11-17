@@ -98,7 +98,7 @@ from pipeline.loot.pvp_faction import (
     unlock_title_only_ranks,
 )
 from pipeline.loot.quest_class_gate import apply_quest_class_gate_to_class_items
-from pipeline.loot.reitemise import apply_reitemisation
+from pipeline.loot.reitemise import apply_reitemisation, load_renamed_pairs
 from pipeline.loot.sources import (
     LootStats,
     apply_crafted_opens_gate,
@@ -226,8 +226,9 @@ def _build_and_write_loot(
     # A Forever-new item still wholly unsourced inherits its classic
     # namesake's sources; then a legacy id listed next to its replacement
     # is deduplicated. Both run before the overlay so a curated fact wins.
-    document, reitemised = apply_reitemisation(document, item_rows)
-    superseded = superseded_pairs(document, item_rows)
+    renamed = load_renamed_pairs(curated_dir)
+    document, reitemised = apply_reitemisation(document, item_rows, renamed)
+    superseded = superseded_pairs(document, item_rows, renamed)
     document, superseded_removed = apply_supersession(document, superseded)
     # After supersession, which only dedupes a legacy id inside one source:
     # a rank only the title implies becomes an unranked PvP reward.

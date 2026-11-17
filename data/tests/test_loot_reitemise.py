@@ -6,9 +6,16 @@ but only when it is plausibly the same item re-tuned (src-classicdb-fixes
 lane, 2026-09-29): item levels within `ITEM_LEVEL_TOLERANCE` and the same
 armor/weapon subclass, or nothing is inherited."""
 
+import json
+from pathlib import Path
+
+import pytest
+
 from pipeline.loot.reitemise import (
     ITEM_LEVEL_TOLERANCE,
+    RENAMED_PAIRS_FILE,
     apply_reitemisation,
+    load_renamed_pairs,
     reitemised_pairs,
 )
 from pipeline.models import LootBoss, LootFile, LootSource, QuestSource
@@ -247,3 +254,76 @@ def test_reitemised_pairs_rejects_a_matching_item_level_but_different_subclass()
     ]
     pairs = reitemised_pairs(rows)
     assert NEW_ID not in pairs
+
+
+# A re-itemisation that also renamed the piece: Darkmantle Gloves 22006
+# became Darkmantle Grips 226828 (Tier 0.5), so name-and-slot pairing
+# misses it and only the curated renamed pairs find it.
+RENAMED_CLASSIC_ID = 22006
+RENAMED_NEW_ID = 226828
+RENAMED_ROWS = [
+    {"id": RENAMED_CLASSIC_ID, "name": "Darkmantle Gloves", "inventory_type": 10,
+     "item_level": 55, "class_id": 4, "subclass_id": 2},
+    {"id": RENAMED_NEW_ID, "name": "Darkmantle Grips", "inventory_type": 10,
+     "item_level": 55, "class_id": 4, "subclass_id": 2},
+]
+
+
+def test_reitemised_pairs_adds_a_curated_renamed_pair():
+    assert RENAMED_NEW_ID not in reitemised_pairs(RENAMED_ROWS)
+    pairs = reitemised_pairs(RENAMED_ROWS, {RENAMED_NEW_ID: RENAMED_CLASSIC_ID})
+    assert pairs[RENAMED_NEW_ID] == RENAMED_CLASSIC_ID
+
+
+def test_reitemised_pairs_rejects_a_renamed_pair_in_another_slot():
+    rows = [RENAMED_ROWS[0], {**RENAMED_ROWS[1], "inventory_type": 8}]
+    with pytest.raises(ValueError, match="slot"):
+        reitemised_pairs(rows, {RENAMED_NEW_ID: RENAMED_CLASSIC_ID})
+
+
+def test_reitemised_pairs_rejects_a_renamed_pair_missing_from_items():
+    with pytest.raises(ValueError, match="missing"):
+        reitemised_pairs(RENAMED_ROWS[:1], {RENAMED_NEW_ID: RENAMED_CLASSIC_ID})
+
+
+def test_apply_reitemisation_sources_a_renamed_piece_from_its_classic_quest():
+    document = LootFile(
+        sources=[
+            LootSource(id="quest", kind="quest", name="Quest rewards", items=[RENAMED_CLASSIC_ID])
+        ],
+        quests={
+            str(RENAMED_CLASSIC_ID): [
+                QuestSource(
+                    quest_id=8935, name="Just Compensation", faction="alliance",
+                    faction_source="classic-db", min_level=58, level=60, level_source="classic-db",
+                )
+            ]
+        },
+    )
+    renamed = {RENAMED_NEW_ID: RENAMED_CLASSIC_ID}
+    updated, filled = apply_reitemisation(document, RENAMED_ROWS, renamed)
+    assert filled == 1
+    assert RENAMED_NEW_ID in updated.sources[0].items
+    assert updated.quests[str(RENAMED_NEW_ID)][0].quest_id == 8935
+
+
+def test_load_renamed_pairs_reads_the_curated_file(tmp_path):
+    (tmp_path / "loot").mkdir()
+    (tmp_path / RENAMED_PAIRS_FILE).write_text(json.dumps({
+        "sources": [{"label": "x", "url": "https://example.com", "kind": "datamined"}],
+        "pairs": [{"new_id": RENAMED_NEW_ID, "classic_id": RENAMED_CLASSIC_ID}],
+    }))
+    assert load_renamed_pairs(tmp_path) == {RENAMED_NEW_ID: RENAMED_CLASSIC_ID}
+    assert load_renamed_pairs(tmp_path / "absent") == {}
+
+
+def test_load_renamed_pairs_needs_a_source(tmp_path):
+    (tmp_path / "loot").mkdir()
+    (tmp_path / RENAMED_PAIRS_FILE).write_text(json.dumps({"sources": [], "pairs": []}))
+    with pytest.raises(ValueError, match="source"):
+        load_renamed_pairs(tmp_path)
+
+
+def test_the_curated_renamed_pairs_load():
+    pairs = load_renamed_pairs(Path(__file__).resolve().parents[1] / "curated")
+    assert pairs[RENAMED_NEW_ID] == RENAMED_CLASSIC_ID

@@ -1,0 +1,25 @@
+{
+  "notes": "Forever re-itemisations that changed the item's NAME, so pipeline.loot.reitemise's name-and-slot pairing cannot find them. Each entry maps the Forever item id to the Classic id it replaces. Today these are the Tier 0.5 (Dungeon Set 2) pieces: Forever rewrote the bonuses of the 226xxx sets (1667 to 1681, now 2 to 6 pieces like its reworked Tier 0) and left the Classic sets 511 to 519 at their 1.10 bonuses, and the client puts the 226xxx pieces in the reworked sets. Six of each class's eight pieces keep their Classic name and pair on their own; these are the renamed rest, each the one piece of the same slot in the same contiguous id block as its class's already paired pieces.",
+  "sources": [
+    {"label": "Forever client ItemSet and ItemSparse, build 1.60.1.70938 (sets 1667 to 1681 vs 511 to 519)", "url": "https://wago.tools/db2/ItemSet?build=1.60.1.70938", "kind": "datamined"},
+    {"label": "Blizzard, Get to Know the World of Warcraft: Forever Legacy System (Lord Valthalak dungeon set questline)", "url": "https://news.blizzard.com/en-us/article/24307383/get-to-know-the-world-of-warcraft-forever-legacy-system", "kind": "blizzard"}
+  ],
+  "pairs": [
+    {"new_id": 226857, "classic_id": 21995, "name": "Battleboots of Heroism", "was": "Boots of Heroism"},
+    {"new_id": 226860, "classic_id": 21999, "name": "Crown of Heroism", "was": "Helm of Heroism"},
+    {"new_id": 226831, "classic_id": 22003, "name": "Darkmantle Footpads", "was": "Darkmantle Boots"},
+    {"new_id": 226828, "classic_id": 22006, "name": "Darkmantle Grips", "was": "Darkmantle Gloves"},
+    {"new_id": 226772, "classic_id": 22106, "name": "Feralheart Sash", "was": "Feralheart Belt"},
+    {"new_id": 226774, "classic_id": 22107, "name": "Feralheart Galoshes", "was": "Feralheart Boots"},
+    {"new_id": 226775, "classic_id": 22108, "name": "Feralheart Wraps", "was": "Feralheart Bracers"},
+    {"new_id": 226777, "classic_id": 22110, "name": "Feralheart Hands", "was": "Feralheart Gloves"},
+    {"new_id": 226950, "classic_id": 22081, "name": "Virtuous Mitts", "was": "Virtuous Gloves"},
+    {"new_id": 226883, "classic_id": 22015, "name": "Beastmaster's Gauntlets", "was": "Beastmaster's Gloves"},
+    {"new_id": 226881, "classic_id": 22061, "name": "Beastmaster's Treads", "was": "Beastmaster's Boots"},
+    {"new_id": 226974, "classic_id": 22087, "name": "Soulforge Warboots", "was": "Soulforge Boots"},
+    {"new_id": 226976, "classic_id": 22091, "name": "Soulforge Greathelm", "was": "Soulforge Helm"},
+    {"new_id": 226931, "classic_id": 22064, "name": "Sorcerer's Sandals", "was": "Sorcerer's Boots"},
+    {"new_id": 226930, "classic_id": 22066, "name": "Sorcerer's Gauntlets", "was": "Sorcerer's Gloves"},
+    {"new_id": 227007, "classic_id": 22096, "name": "Slippers of The Five Thunders", "was": "Boots of The Five Thunders"}
+  ]
+}

@@ -41,8 +41,10 @@ copied from), the same per-item dict shape `item_chances` already uses.
 
 from __future__ import annotations
 
+import json
 import logging
 from collections import defaultdict
+from pathlib import Path
 
 from pipeline.models import LootBoss, LootFile, LootSource
 
@@ -52,6 +54,10 @@ logger = logging.getLogger(__name__)
 #: a real Blizzard/Classic one (`pipeline.normalize.items`' own
 #: convention, unchanged since the itemisation design landed).
 NEW_ITEM_ID_FLOOR = 200000
+
+#: The curated re-itemisations whose Forever name differs from the
+#: Classic one (`load_renamed_pairs`), relative to the curated directory.
+RENAMED_PAIRS_FILE = Path("loot") / "renamed-reitemisations.json"
 
 #: How far a new item's `item_level` may drift from the classic item it
 #: would inherit sources from before the two are treated as unrelated
@@ -79,12 +85,57 @@ def _plausibly_the_same_item(new_row: dict, classic_row: dict) -> bool:
     return ilvl_gap <= ITEM_LEVEL_TOLERANCE and same_subclass
 
 
-def reitemised_pairs(item_rows: list[dict]) -> dict[int, int]:
+def load_renamed_pairs(curated_dir: Path) -> dict[int, int]:
+    """Forever-new item id -> Classic item id, from the curated file of
+    re-itemisations that also changed the item's name (Darkmantle Gloves
+    22006 became Darkmantle Grips 226828), which name-and-slot pairing
+    cannot see. A missing file means no such pairs."""
+    path = curated_dir / RENAMED_PAIRS_FILE
+    if not path.exists():
+        return {}
+    raw = json.loads(path.read_text(encoding="utf-8"))
+    if not raw.get("sources"):
+        raise ValueError(f"{path} needs at least one source")
+    pairs: dict[int, int] = {}
+    for entry in raw["pairs"]:
+        new_id, classic_id = int(entry["new_id"]), int(entry["classic_id"])
+        if new_id < NEW_ITEM_ID_FLOOR or classic_id >= NEW_ITEM_ID_FLOOR:
+            raise ValueError(f"{path}: {new_id} -> {classic_id} is not a new id -> classic id pair")
+        if new_id in pairs:
+            raise ValueError(f"{path}: {new_id} is listed twice")
+        pairs[new_id] = classic_id
+    return pairs
+
+
+def _checked_renamed_pairs(item_rows: list[dict], renamed: dict[int, int]) -> dict[int, int]:
+    """`renamed` with every pair validated against `item_rows`: both ids
+    present, the same slot, and plausibly the same item. A curated pair
+    that fails is a stale curated file, so it stops the build."""
+    rows = {int(row["id"]): row for row in item_rows}
+    for new_id, classic_id in renamed.items():
+        new_row, classic_row = rows.get(new_id), rows.get(classic_id)
+        if new_row is None or classic_row is None:
+            raise ValueError(
+                f"renamed re-itemisation {new_id} -> {classic_id}: id missing from items"
+            )
+        same_slot = int(new_row["inventory_type"]) == int(classic_row["inventory_type"])
+        if not same_slot or not _plausibly_the_same_item(new_row, classic_row):
+            raise ValueError(
+                f"renamed re-itemisation {new_id} -> {classic_id}: "
+                "slot, item level or subclass differ"
+            )
+    return dict(renamed)
+
+
+def reitemised_pairs(
+    item_rows: list[dict], renamed: dict[int, int] | None = None
+) -> dict[int, int]:
     """Forever-new item id -> the single Classic item id sharing its
     exact `(name, inventory_type)`, for every such pair that is both
     UNAMBIGUOUS (exactly one classic candidate) and plausibly the same
-    item (`_plausibly_the_same_item`). `item_rows` is a build's
-    `items.json` (or any list of dicts with `id`/`name`/
+    item (`_plausibly_the_same_item`), plus the curated `renamed` pairs
+    (`load_renamed_pairs`), each checked the same way. `item_rows` is a
+    build's `items.json` (or any list of dicts with `id`/`name`/
     `inventory_type`/`item_level`/`class_id`/`subclass_id`).
     """
     classic_by_key: dict[tuple[str, int], list[dict]] = defaultdict(list)
@@ -116,7 +167,7 @@ def reitemised_pairs(item_rows: list[dict]) -> dict[int, int]:
             )
             continue
         pairs[item_id] = int(classic_row["id"])
-    return pairs
+    return {**pairs, **_checked_renamed_pairs(item_rows, renamed or {})}
 
 
 def _copy_boss(boss: LootBoss, new_id: int, classic_id: int) -> LootBoss:
@@ -150,7 +201,9 @@ def _copy_into_source(source: LootSource, new_id: int, classic_id: int) -> LootS
     return source.model_copy(update=update) if update else source
 
 
-def apply_reitemisation(document: LootFile, item_rows: list[dict]) -> tuple[LootFile, int]:
+def apply_reitemisation(
+    document: LootFile, item_rows: list[dict], renamed: dict[int, int] | None = None
+) -> tuple[LootFile, int]:
     """`document` with every unsourced Forever-new item that
     `reitemised_pairs` can resolve added alongside its classic
     counterpart, everywhere that counterpart already appears (including
@@ -164,7 +217,7 @@ def apply_reitemisation(document: LootFile, item_rows: list[dict]) -> tuple[Loot
     already_named = {item_id for source in document.sources for item_id in source_item_ids(source)}
     pairs = {
         new_id: classic_id
-        for new_id, classic_id in reitemised_pairs(item_rows).items()
+        for new_id, classic_id in reitemised_pairs(item_rows, renamed).items()
         if new_id not in already_named and classic_id in already_named
     }
     if not pairs:

@@ -57,12 +57,14 @@ from pipeline.models import ClassItems, Item, LootBoss, LootFile, LootSource
 from pipeline.normalize import write_json, write_model
 
 
-def superseded_pairs(document: LootFile, item_rows: list[dict]) -> dict[int, int]:
+def superseded_pairs(
+    document: LootFile, item_rows: list[dict], renamed: dict[int, int] | None = None
+) -> dict[int, int]:
     """Legacy (classic) item id -> the Forever-new id that supersedes it,
     for every `reitemised_pairs()` entry where BOTH ids are already named
     in the exact same source bucket -- `document`'s own `sources`, via
     `source_item_ids` (flat `items`/`trash`, or a boss's own `items`)."""
-    pairs = reitemised_pairs(item_rows)
+    pairs = reitemised_pairs(item_rows, renamed)
     if not pairs:
         return {}
     superseded: dict[int, int] = {}
