@@ -2,7 +2,7 @@
   "spec": "hunter-marksmanship",
   "build": "1.60.1.70938",
   "engine_version": "f9385b498",
-  "generated_at": "2026-11-16T16:28:59Z",
+  "generated_at": "2026-11-17T05:25:39Z",
   "bands": [
     {
       "spec": "hunter-marksmanship",
@@ -1145,8 +1145,8 @@
         "main_hand: Impaling Harpoon",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 4.580710913,
-      "verify_run_seconds": 10.732044287999999,
+      "weights_run_seconds": 5.977713106,
+      "verify_run_seconds": 13.934721655,
       "coverage": {
         "back": {
           "eligible": 104,
@@ -2397,8 +2397,8 @@
         "main_hand: Impaling Harpoon",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 4.580710913,
-      "verify_run_seconds": 8.918030343,
+      "weights_run_seconds": 5.977713106,
+      "verify_run_seconds": 11.348646408,
       "coverage": {
         "back": {
           "eligible": 105,
@@ -3731,8 +3731,8 @@
         "finger2: Seal of Wrynn",
         "ranged: Crystalpine Stinger"
       ],
-      "weights_run_seconds": 4.541846393,
-      "verify_run_seconds": 15.289188112000001,
+      "weights_run_seconds": 5.811752181,
+      "verify_run_seconds": 18.866463438,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -5071,8 +5071,8 @@
         "main_hand: Crescent Staff",
         "ranged: Crystalpine Stinger"
       ],
-      "weights_run_seconds": 4.541846393,
-      "verify_run_seconds": 15.630726840000001,
+      "weights_run_seconds": 5.811752181,
+      "verify_run_seconds": 19.713212122,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -6443,8 +6443,8 @@
         "main_hand: Staff of Jordan",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 4.626800428,
-      "verify_run_seconds": 14.647030169,
+      "weights_run_seconds": 5.831399831,
+      "verify_run_seconds": 18.655871759,
       "coverage": {
         "back": {
           "eligible": 257,
@@ -7818,8 +7818,8 @@
         "main_hand: Staff of Jordan",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 4.626800428,
-      "verify_run_seconds": 14.519394141000001,
+      "weights_run_seconds": 5.831399831,
+      "verify_run_seconds": 18.117276897,
       "coverage": {
         "back": {
           "eligible": 259,
@@ -9251,7 +9251,7 @@
           "trinket2"
         ]
       },
-      "no_source_count": 1065,
+      "no_source_count": 1064,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -9287,8 +9287,8 @@
         "main_hand: Warmonger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 4.783020876,
-      "verify_run_seconds": 20.189251910000003,
+      "weights_run_seconds": 6.062269782,
+      "verify_run_seconds": 25.016251622,
       "coverage": {
         "back": {
           "eligible": 330,
@@ -9316,7 +9316,7 @@
           "rare_spawn_skipped": 5
         },
         "hands": {
-          "eligible": 435,
+          "eligible": 434,
           "sourced": 376,
           "rare_spawn_skipped": 10
         },
@@ -10829,7 +10829,7 @@
           "changed_slots": 0
         }
       },
-      "no_source_count": 1056,
+      "no_source_count": 1055,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -10865,8 +10865,8 @@
         "main_hand: Warmonger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 4.783020876,
-      "verify_run_seconds": 19.528155697,
+      "weights_run_seconds": 6.062269782,
+      "verify_run_seconds": 24.872581122,
       "coverage": {
         "back": {
           "eligible": 335,
@@ -10894,7 +10894,7 @@
           "rare_spawn_skipped": 5
         },
         "hands": {
-          "eligible": 435,
+          "eligible": 434,
           "sourced": 371,
           "rare_spawn_skipped": 10
         },
@@ -10974,34 +10974,34 @@
         {
           "stat": "ranged_attack_power",
           "weight": 1,
-          "error": 0.0007796082512884051,
+          "error": 0.0007903733738177035,
           "insignificant": false,
           "weight_per_percent": 1,
-          "scale_factor": 0.31944318135742583,
-          "dps_per_point": 0.14935304541864286,
-          "scale_error": 0.00024904054000406757
+          "scale_factor": 0.31779647782487913,
+          "dps_per_point": 0.15047925068690124,
+          "scale_error": 0.0002511778743658327
         },
         {
           "stat": "agility",
-          "weight": 3.1304471604328827,
-          "error": 0.016575680420170887,
+          "weight": 3.1466679770788626,
+          "error": 0.017586305367747468,
           "insignificant": false,
-          "weight_per_percent": 3.1304471604328827,
+          "weight_per_percent": 3.1466679770788626,
           "scale_factor": 1,
-          "dps_per_point": 0.4675418169327939,
-          "scale_error": 0.005294988086583381
+          "dps_per_point": 0.47350823935129455,
+          "scale_error": 0.005588865903822911
         },
         {
           "stat": "crit",
-          "weight": 2.242633881300754,
-          "error": 0.03506676160339066,
+          "weight": 2.302600097550379,
+          "error": 0.037187599706501664,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 14,
-          "weight_per_percent": 31.396874338210555,
-          "scale_factor": 0.7163941016626645,
-          "dps_per_point": 0.3349441999312988,
-          "scale_error": 0.011201837886489537
+          "weight_per_percent": 32.236401365705305,
+          "scale_factor": 0.7317582008407335,
+          "dps_per_point": 0.3464935373109667,
+          "scale_error": 0.011818088205487737
         },
         {
           "stat": "hit",
@@ -11017,23 +11017,23 @@
         },
         {
           "stat": "melee_haste",
-          "weight": 13.161584573456988,
-          "error": 1.2969181244595593,
+          "weight": 13.563340425882457,
+          "error": 1.3306134227038235,
           "insignificant": false,
-          "weight_per_percent": 13.161584573456988,
-          "scale_factor": 4.204378447849918,
-          "dps_per_point": 1.9657227385808307,
-          "scale_error": 0.41429165163746756
+          "weight_per_percent": 13.563340425882457,
+          "scale_factor": 4.310381814885241,
+          "dps_per_point": 2.041001304098148,
+          "scale_error": 0.42286425908178216
         },
         {
           "stat": "intellect",
-          "weight": 1.2099999999999944,
-          "error": 0.0009433259840584185,
+          "weight": 1.2718339957584857,
+          "error": 0.007940520845256871,
           "insignificant": false,
-          "weight_per_percent": 1.2099999999999944,
-          "scale_factor": 0.3865262494424834,
-          "dps_per_point": 0.18071718495655703,
-          "scale_error": 0.00030133905340474555
+          "weight_per_percent": 1.2718339957584857,
+          "scale_factor": 0.404184364229989,
+          "dps_per_point": 0.19138462667986444,
+          "scale_error": 0.0025234695567176654
         },
         {
           "stat": "spell_power",
@@ -11053,7 +11053,7 @@
           "item_name": "Black Dragonscale Helm",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 143.116264707,
+          "score": 146.646120723,
           "verified": true,
           "alternatives": [
             {
@@ -11068,14 +11068,14 @@
               "item_name": "Field Marshal's Chain Greathelm",
               "source_kind": "vendor",
               "source": "PvP rank 13 · Field Marshal · Alliance",
-              "dps_delta": -1.192104441
+              "dps_delta": -1.452780226
             },
             {
               "item_id": 227066,
               "item_name": "Lieutenant Commander's Chain Helm",
               "source_kind": "pvp",
               "source": "PvP rank 10 · Lieutenant Commander · Alliance",
-              "dps_delta": -1.954205015
+              "dps_delta": -2.119769369
             }
           ],
           "runners_up": [
@@ -11095,20 +11095,20 @@
               "item_id": 16677,
               "rank": 3,
               "source": "Scholomance: Darkmaster Gandling",
-              "dps_delta": -9.67
+              "dps_delta": -10.11
             },
             "quest": {
-              "item_id": 11124,
-              "rank": 9,
-              "source": "Jammal'an the Prophet",
-              "dps_delta": -12.98
+              "item_id": 226887,
+              "rank": 2,
+              "source": "Saving the Best for Last",
+              "dps_delta": -8.5
             },
             "world": {
               "item_id": 2245,
-              "rank": 2,
+              "rank": 4,
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -9.67
+              "dps_delta": -10.23
             }
           }
         },
@@ -11118,7 +11118,7 @@
           "item_name": "Mark of Fordring",
           "source": "In Dreams",
           "source_kind": "quest",
-          "score": 57.396874338,
+          "score": 58.236401366,
           "verified": true,
           "alternatives": [
             {
@@ -11126,21 +11126,21 @@
               "item_name": "Sentinel's Medallion",
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
-              "dps_delta": -1.559270726
+              "dps_delta": -1.66074645
+            },
+            {
+              "item_id": 22340,
+              "item_name": "Pendant of Celerity",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Lord Valthalak",
+              "dps_delta": -1.66074645
             },
             {
               "item_id": 13089,
               "item_name": "Skibi's Pendant",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -2.49435436
-            },
-            {
-              "item_id": 20649,
-              "item_name": "Sunprism Pendant",
-              "source_kind": "quest",
-              "source": "Vyral the Vile",
-              "dps_delta": -2.961896177
+              "dps_delta": -2.607762929
             }
           ],
           "runners_up": [
@@ -11150,38 +11150,38 @@
               "source": "Silverwing Sentinels"
             },
             {
-              "item_id": 13089,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 22340,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Lord Valthalak"
             }
           ],
           "by_kind": {
             "dungeon": {
-              "item_id": 11933,
-              "rank": 7,
-              "source": "Blackrock Depths: Emperor Dagran Thaurissan",
-              "dps_delta": -3.79
+              "item_id": 22340,
+              "rank": 3,
+              "source": "Blackrock Spire: Lord Valthalak",
+              "dps_delta": -1.66
             },
             "rep": {
               "item_id": 19538,
               "rank": 2,
               "source": "Silverwing Sentinels",
-              "dps_delta": -1.56,
+              "dps_delta": -1.66,
               "standing": "honored"
             },
             "vendor": {
               "item_id": 19538,
               "rank": 2,
               "source": "Illiyana Moonblaze",
-              "dps_delta": -1.56,
+              "dps_delta": -1.66,
               "standing": "honored"
             },
             "world": {
               "item_id": 13089,
-              "rank": 3,
+              "rank": 4,
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -2.49
+              "dps_delta": -2.61
             }
           }
         },
@@ -11191,7 +11191,7 @@
           "item_name": "Theramore Pauldrons",
           "source": "Theramore Expeditionary Force",
           "source_kind": "rep",
-          "score": 115.91894767,
+          "score": 117.196436747,
           "verified": true,
           "ties": [
             {
@@ -11212,14 +11212,14 @@
               "item_name": "Field Marshal's Chain Spaulders",
               "source_kind": "vendor",
               "source": "PvP rank 13 · Field Marshal · Alliance",
-              "dps_delta": -3.349588766
+              "dps_delta": -3.410571495
             },
             {
               "item_id": 231576,
               "item_name": "Field Marshal's Chain Shoulders",
               "source_kind": "vendor",
               "source": "PvP rank 13 · Field Marshal · Alliance",
-              "dps_delta": -3.349588766
+              "dps_delta": -3.410571495
             }
           ],
           "runners_up": [
@@ -11243,25 +11243,25 @@
               "item_id": 19050,
               "rank": 16,
               "source": "Tailoring",
-              "dps_delta": -10.27
+              "dps_delta": -10.3
             },
             "dungeon": {
               "item_id": 18742,
               "rank": 6,
               "source": "Stratholme: Crimson Sorcerer",
-              "dps_delta": -5.94
+              "dps_delta": -6.07
             },
             "quest": {
               "item_id": 15822,
               "rank": 11,
               "source": "Runecloth",
-              "dps_delta": -8.9
+              "dps_delta": -9.11
             },
             "vendor": {
               "item_id": 20059,
               "rank": 3,
               "source": "Samuel Hawke",
-              "dps_delta": -4.42,
+              "dps_delta": -4.6,
               "standing": "exalted"
             },
             "world": {
@@ -11269,7 +11269,7 @@
               "rank": 8,
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -6.3
+              "dps_delta": -6.45
             }
           }
         },
@@ -11286,21 +11286,21 @@
               "item_name": "Shadow Prowler's Cloak",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: General Drakkisath",
-              "dps_delta": -2.519519091
+              "dps_delta": -2.536076774
             },
             {
               "item_id": 20073,
               "item_name": "Cloak of the Honor Guard",
               "source_kind": "rep",
               "source": "The League of Arathor",
-              "dps_delta": -2.584475533
+              "dps_delta": -2.628372884
             },
             {
               "item_id": 13122,
               "item_name": "Dark Phantom Cape",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -2.987060908
+              "dps_delta": -3.009585014
             }
           ],
           "runners_up": [
@@ -11320,32 +11320,32 @@
               "item_id": 8195,
               "rank": 12,
               "source": "Leatherworking",
-              "dps_delta": -5.32
+              "dps_delta": -5.38
             },
             "pvp": {
               "item_id": 16337,
               "rank": 9,
               "source": "PvP rank 5 · Sergeant Major · Alliance",
-              "dps_delta": -4.81
+              "dps_delta": -4.79
             },
             "quest": {
               "item_id": 15789,
               "rank": 10,
               "source": "Strange Sources",
-              "dps_delta": -4.86
+              "dps_delta": -4.9
             },
             "rep": {
               "item_id": 20073,
               "rank": 3,
               "source": "The League of Arathor",
-              "dps_delta": -2.58,
+              "dps_delta": -2.63,
               "standing": "exalted"
             },
             "vendor": {
               "item_id": 20073,
               "rank": 3,
               "source": "Samuel Hawke",
-              "dps_delta": -2.58,
+              "dps_delta": -2.63,
               "standing": "exalted"
             },
             "world": {
@@ -11353,7 +11353,7 @@
               "rank": 4,
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -2.99
+              "dps_delta": -3.01
             }
           }
         },
@@ -11363,7 +11363,7 @@
           "item_name": "Dawn Armor",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 147.223419274,
+          "score": 148.663116518,
           "verified": true,
           "alternatives": [
             {
@@ -11385,7 +11385,7 @@
               "item_name": "Field Marshal's Chain Armor",
               "source_kind": "vendor",
               "source": "PvP rank 13 · Field Marshal · Alliance",
-              "dps_delta": -1.805520484
+              "dps_delta": -1.756296242
             }
           ],
           "runners_up": [
@@ -11403,34 +11403,34 @@
           "by_kind": {
             "dungeon": {
               "item_id": 11726,
-              "rank": 2,
+              "rank": 3,
               "source": "Blackrock Depths: Gorosh the Dervish",
-              "dps_delta": -8.41
+              "dps_delta": -8.47
             },
             "pvp": {
               "item_id": 220828,
-              "rank": 3,
+              "rank": 4,
               "source": "PvP rank 6 · Knight · Alliance",
-              "dps_delta": -8.48
+              "dps_delta": -8.5
             },
             "quest": {
-              "item_id": 11193,
-              "rank": 11,
-              "source": "Tremors of the Earth",
-              "dps_delta": -11.23
+              "item_id": 226886,
+              "rank": 2,
+              "source": "Saving the Best for Last",
+              "dps_delta": -3.19
             },
             "vendor": {
               "item_id": 220828,
-              "rank": 3,
+              "rank": 4,
               "source": "PvP rank 6 · Knight · Alliance",
-              "dps_delta": -8.48
+              "dps_delta": -8.5
             },
             "world": {
               "item_id": 14670,
-              "rank": 8,
+              "rank": 9,
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -10.77
+              "dps_delta": -11.01
             }
           }
         },
@@ -11440,7 +11440,6 @@
           "item_name": "Forest Stalker's Bracers",
           "source": "Silverwing Sentinels",
           "source_kind": "rep",
-          "score": 59.478496048,
           "verified": true,
           "alternatives": [
             {
@@ -11451,18 +11450,18 @@
               "dps_delta": 0
             },
             {
+              "item_id": 226885,
+              "item_name": "Beastmaster's Bindings",
+              "source_kind": "quest",
+              "source": "An Earnest Proposition",
+              "dps_delta": -0.080832331
+            },
+            {
               "item_id": 16402,
               "item_name": "Knight-Captain's Chain Armguards",
               "source_kind": "pvp",
               "source": "PvP rank 8 · Knight-Captain · Alliance",
-              "dps_delta": -0.935083634
-            },
-            {
-              "item_id": 19582,
-              "item_name": "Windtalker's Wristguards",
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
-              "dps_delta": -1.762141316
+              "dps_delta": -0.947016479
             }
           ],
           "runners_up": [
@@ -11472,9 +11471,9 @@
               "source": "PvP rank 12 · Marshal · Alliance"
             },
             {
-              "item_id": 16402,
-              "source_kind": "pvp",
-              "source": "PvP rank 8 · Knight-Captain · Alliance"
+              "item_id": 226885,
+              "source_kind": "quest",
+              "source": "An Earnest Proposition"
             }
           ],
           "kinds": [
@@ -11489,34 +11488,34 @@
           "by_kind": {
             "crafted": {
               "item_id": 20481,
-              "rank": 10,
+              "rank": 11,
               "source": "Leatherworking",
-              "dps_delta": -3.05
+              "dps_delta": -3.01
             },
             "dungeon": {
               "item_id": 16681,
-              "rank": 4,
+              "rank": 5,
               "source": "Stratholme: Fleshflayer Ghoul",
-              "dps_delta": -1.87
+              "dps_delta": -1.89
             },
             "pvp": {
               "item_id": 18448,
-              "rank": 94,
+              "rank": 95,
               "source": "PvP rank 5 · Sergeant Major · Alliance",
-              "dps_delta": -7.62
+              "dps_delta": -7.66
             },
             "quest": {
-              "item_id": 12112,
-              "rank": 8,
-              "source": "Incendius!",
-              "dps_delta": -2.48
+              "item_id": 226885,
+              "rank": 2,
+              "source": "An Earnest Proposition",
+              "dps_delta": -0.08
             },
             "world": {
               "item_id": 16710,
-              "rank": 5,
+              "rank": 6,
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -1.87
+              "dps_delta": -1.89
             }
           }
         },
@@ -11571,14 +11570,14 @@
             },
             "pvp": {
               "item_id": 220829,
-              "rank": 11,
+              "rank": 12,
               "source": "PvP rank 5 · Sergeant Major · Alliance",
               "dps_delta": 0
             },
             "quest": {
-              "item_id": 11918,
-              "rank": 8,
-              "source": "Beware of Pterrordax",
+              "item_id": 226883,
+              "rank": 6,
+              "source": "Just Compensation",
               "dps_delta": 0
             },
             "rep": {
@@ -11590,7 +11589,7 @@
             },
             "vendor": {
               "item_id": 220829,
-              "rank": 11,
+              "rank": 12,
               "source": "PvP rank 5 · Sergeant Major · Alliance",
               "dps_delta": 0
             },
@@ -11609,7 +11608,7 @@
           "item_name": "Ranger's Belt",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 92.07073185,
+          "score": 93.325707391,
           "verified": true,
           "alternatives": [
             {
@@ -11617,21 +11616,21 @@
               "item_name": "Marshal's Chain Girdle",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Marshal · Alliance",
-              "dps_delta": -2.082382162
+              "dps_delta": -2.075510929
             },
             {
-              "item_id": 22232,
-              "item_name": "Marksman's Girdle",
+              "item_id": 22325,
+              "item_name": "Belt of the Trickster",
               "source_kind": "dungeon",
-              "source": "Blackrock Spire: Urok Doomhowl",
-              "dps_delta": -3.93266604
+              "source": "Blackrock Spire: Mor Grayhoof",
+              "dps_delta": -3.626401252
             },
             {
               "item_id": 20043,
               "item_name": "Highlander's Chain Girdle",
               "source_kind": "rep",
               "source": "The League of Arathor",
-              "dps_delta": -3.983821852
+              "dps_delta": -4.076378472
             }
           ],
           "runners_up": [
@@ -11641,43 +11640,43 @@
               "source": "PvP rank 12 · Marshal · Alliance"
             },
             {
-              "item_id": 22232,
+              "item_id": 22325,
               "source_kind": "dungeon",
-              "source": "Blackrock Spire: Urok Doomhowl"
+              "source": "Blackrock Spire: Mor Grayhoof"
             }
           ],
           "by_kind": {
             "crafted": {
               "item_id": 252588,
-              "rank": 5,
+              "rank": 7,
               "source": "Leatherworking",
-              "dps_delta": -5.4
+              "dps_delta": -5.5
             },
             "dungeon": {
-              "item_id": 22232,
+              "item_id": 22325,
               "rank": 2,
-              "source": "Blackrock Spire: Urok Doomhowl",
-              "dps_delta": -3.93
+              "source": "Blackrock Spire: Mor Grayhoof",
+              "dps_delta": -3.63
             },
             "quest": {
-              "item_id": 17778,
-              "rank": 14,
-              "source": "Vyletongue Corruption",
-              "dps_delta": -6.98
+              "item_id": 226888,
+              "rank": 6,
+              "source": "Just Compensation",
+              "dps_delta": -4.55
             },
             "rep": {
               "item_id": 20043,
               "rank": 3,
               "source": "The League of Arathor",
-              "dps_delta": -3.98,
+              "dps_delta": -4.08,
               "standing": "honored"
             },
             "world": {
               "item_id": 13118,
-              "rank": 19,
+              "rank": 23,
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -7.21
+              "dps_delta": -7.41
             }
           }
         },
@@ -11687,7 +11686,7 @@
           "item_name": "Sentinel's Chain Leggings",
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
-          "score": 172.359399292,
+          "score": 174.606181929,
           "verified": true,
           "alternatives": [
             {
@@ -11695,21 +11694,21 @@
               "item_name": "Marshal's Chain Legguards",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Marshal · Alliance",
-              "dps_delta": -2.988154397
+              "dps_delta": -3.027802242
             },
             {
               "item_id": 237818,
               "item_name": "Sentinel's Leather Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -3.740334536
+              "dps_delta": -3.788065915
             },
             {
               "item_id": 231558,
               "item_name": "Marshal's Chain Legplates",
               "source_kind": "vendor",
               "source": "PvP rank 12 · Marshal · Alliance",
-              "dps_delta": -5.559655649
+              "dps_delta": -5.660189286
             }
           ],
           "runners_up": [
@@ -11729,31 +11728,31 @@
               "item_id": 15062,
               "rank": 11,
               "source": "Leatherworking",
-              "dps_delta": -14.18
+              "dps_delta": -14.5
             },
             "dungeon": {
-              "item_id": 18736,
+              "item_id": 16678,
               "rank": 6,
-              "source": "Stratholme: Fleshflayer Ghoul",
-              "dps_delta": -11.72
+              "source": "Stratholme: Baron Rivendare",
+              "dps_delta": -12.05
             },
             "pvp": {
               "item_id": 220832,
               "rank": 8,
               "source": "PvP rank 6 · Knight · Alliance",
-              "dps_delta": -12.7
+              "dps_delta": -12.88
             },
             "quest": {
               "item_id": 12903,
               "rank": 5,
               "source": "Legplates of the Chromatic Defier",
-              "dps_delta": -9.98
+              "dps_delta": -10.26
             },
             "rep": {
               "item_id": 22748,
               "rank": 3,
               "source": "Silverwing Sentinels",
-              "dps_delta": -4.69,
+              "dps_delta": -4.85,
               "standing": "exalted"
             },
             "world": {
@@ -11761,7 +11760,7 @@
               "rank": 9,
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -13.12
+              "dps_delta": -13.49
             }
           }
         },
@@ -11812,32 +11811,32 @@
               "item_id": 275618,
               "rank": 7,
               "source": "Leatherworking",
-              "dps_delta": -0.66
+              "dps_delta": -0.73
             },
             "pvp": {
               "item_id": 220837,
               "rank": 19,
               "source": "PvP rank 5 · Sergeant Major · Alliance",
-              "dps_delta": -3.06
+              "dps_delta": -3.13
             },
             "quest": {
               "item_id": 15861,
               "rank": 26,
               "source": "Delivery to Ridgewell",
-              "dps_delta": -3.53
+              "dps_delta": -3.61
             },
             "rep": {
               "item_id": 20050,
               "rank": 10,
               "source": "The League of Arathor",
-              "dps_delta": -1.61,
+              "dps_delta": -1.6,
               "standing": "revered"
             },
             "vendor": {
               "item_id": 20050,
               "rank": 10,
               "source": "Samuel Hawke",
-              "dps_delta": -1.61,
+              "dps_delta": -1.6,
               "standing": "revered"
             },
             "world": {
@@ -11845,7 +11844,7 @@
               "rank": 12,
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -1.66
+              "dps_delta": -1.71
             }
           }
         },
@@ -11865,18 +11864,18 @@
               "dps_delta": 0
             },
             {
-              "item_id": 9533,
-              "item_name": "Masons Fraternity Ring",
-              "source_kind": "quest",
-              "source": "Divino-matic Rod",
-              "dps_delta": -0.234575998
-            },
-            {
               "item_id": 13098,
               "item_name": "Painweaver Band",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: General Drakkisath",
-              "dps_delta": -0.298706091
+              "dps_delta": -0.300958501
+            },
+            {
+              "item_id": 9533,
+              "item_name": "Masons Fraternity Ring",
+              "source_kind": "quest",
+              "source": "Divino-matic Rod",
+              "dps_delta": -0.328503681
             }
           ],
           "runners_up": [
@@ -11886,9 +11885,9 @@
               "source": "Scholomance: Scholomance Handler"
             },
             {
-              "item_id": 9533,
-              "source_kind": "quest",
-              "source": "Divino-matic Rod"
+              "item_id": 13098,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: General Drakkisath"
             }
           ],
           "kinds": [
@@ -11908,15 +11907,15 @@
             },
             "quest": {
               "item_id": 9533,
-              "rank": 3,
+              "rank": 4,
               "source": "Divino-matic Rod",
-              "dps_delta": -0.23
+              "dps_delta": -0.33
             },
             "vendor": {
               "item_id": 272408,
-              "rank": 4,
+              "rank": 5,
               "source": "Pix Xizzix",
-              "dps_delta": -0.23
+              "dps_delta": -0.33
             }
           }
         },
@@ -11936,18 +11935,18 @@
               "dps_delta": 0
             },
             {
+              "item_id": 13098,
+              "item_name": "Painweaver Band",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: General Drakkisath",
+              "dps_delta": 0
+            },
+            {
               "item_id": 18701,
               "item_name": "Innervating Band",
               "source_kind": "dungeon",
               "source": "Scholomance: Scholomance Handler",
               "dps_delta": 0
-            },
-            {
-              "item_id": 13098,
-              "item_name": "Painweaver Band",
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: General Drakkisath",
-              "dps_delta": -0.064130093
             }
           ],
           "runners_up": [
@@ -11957,9 +11956,9 @@
               "source": "Divino-matic Rod"
             },
             {
-              "item_id": 18701,
+              "item_id": 13098,
               "source_kind": "dungeon",
-              "source": "Scholomance: Scholomance Handler"
+              "source": "Blackrock Spire: General Drakkisath"
             }
           ],
           "not_with": [
@@ -11976,14 +11975,14 @@
               ],
               "next": {
                 "item_id": 13098,
-                "rank": 5,
+                "rank": 3,
                 "source": "Blackrock Spire: General Drakkisath",
-                "dps_delta": -0.06
+                "dps_delta": 0
               }
             },
             "quest": {
               "item_id": 9533,
-              "rank": 3,
+              "rank": 4,
               "source": "Divino-matic Rod",
               "dps_delta": 0,
               "not_with": [
@@ -11991,9 +11990,9 @@
               ],
               "next": {
                 "item_id": 13217,
-                "rank": 8,
+                "rank": 9,
                 "source": "Houses of the Holy",
-                "dps_delta": -1.86
+                "dps_delta": -1.78
               }
             },
             "rep": {
@@ -12007,17 +12006,17 @@
               ],
               "next": {
                 "item_id": 19514,
-                "rank": 7,
+                "rank": 8,
                 "source": "Silverwing Sentinels",
-                "dps_delta": -1.4,
+                "dps_delta": -1.42,
                 "standing": "honored"
               }
             },
             "vendor": {
               "item_id": 19514,
-              "rank": 7,
+              "rank": 8,
               "source": "Illiyana Moonblaze",
-              "dps_delta": -1.4,
+              "dps_delta": -1.42,
               "standing": "honored"
             },
             "world": {
@@ -12030,10 +12029,10 @@
               ],
               "next": {
                 "item_id": 2951,
-                "rank": 13,
+                "rank": 14,
                 "source_kind": "world_drop",
                 "source": "World drop",
-                "dps_delta": -1.87
+                "dps_delta": -1.89
               }
             }
           }
@@ -12153,14 +12152,14 @@
               "item_name": "Hand of Justice",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Emperor Dagran Thaurissan",
-              "dps_delta": -0.597412182
+              "dps_delta": -0.601917003
             },
             {
               "item_id": 13968,
               "item_name": "Eye of the Beast",
               "source_kind": "quest",
               "source": "General Drakkisath's Demise",
-              "dps_delta": -2.054704527
+              "dps_delta": -2.061174474
             }
           ],
           "runners_up": [
@@ -12194,7 +12193,7 @@
                 "item_id": 13968,
                 "rank": 4,
                 "source": "General Drakkisath's Demise",
-                "dps_delta": -2.05
+                "dps_delta": -2.06
               }
             }
           }
@@ -12219,14 +12218,14 @@
               "item_name": "Grand Marshal's Stave",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Grand Marshal · Alliance",
-              "dps_delta": -2.010800672
+              "dps_delta": -1.598345908
             },
             {
               "item_id": 18725,
               "item_name": "Peacemaker",
               "source_kind": "dungeon",
               "source": "Stratholme: Magistrate Barthilas",
-              "dps_delta": -2.492744181
+              "dps_delta": -2.424263806
             }
           ],
           "runners_up": [
@@ -12247,21 +12246,21 @@
               "item_id": 18725,
               "rank": 2,
               "source": "Stratholme: Magistrate Barthilas",
-              "dps_delta": -2.49,
+              "dps_delta": -2.42,
               "two_hand": true
             },
             "quest": {
               "item_id": 19106,
               "rank": 7,
               "source": "Korrak the Bloodrager",
-              "dps_delta": -5.73,
+              "dps_delta": -5.76,
               "two_hand": true
             },
             "rep": {
               "item_id": 20069,
               "rank": 3,
               "source": "The League of Arathor",
-              "dps_delta": -3.46,
+              "dps_delta": -3.13,
               "two_hand": true,
               "standing": "exalted"
             },
@@ -12269,7 +12268,7 @@
               "item_id": 20069,
               "rank": 3,
               "source": "Samuel Hawke",
-              "dps_delta": -3.46,
+              "dps_delta": -3.13,
               "two_hand": true,
               "standing": "exalted"
             },
@@ -12278,7 +12277,7 @@
               "rank": 9,
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -7.6,
+              "dps_delta": -7.65,
               "two_hand": true
             }
           }
@@ -12370,7 +12369,7 @@
               "item_id": 16007,
               "rank": 10,
               "source": "Engineering",
-              "dps_delta": -5.39
+              "dps_delta": -5.45
             },
             "dungeon": {
               "item_id": 18680,
@@ -12382,20 +12381,20 @@
               "item_id": 19107,
               "rank": 2,
               "source": "Korrak the Bloodrager",
-              "dps_delta": -1.3
+              "dps_delta": -1.31
             },
             "rep": {
               "item_id": 19562,
               "rank": 4,
               "source": "Silverwing Sentinels",
-              "dps_delta": -2.66,
+              "dps_delta": -2.69,
               "standing": "revered"
             },
             "vendor": {
               "item_id": 19562,
               "rank": 4,
               "source": "Illiyana Moonblaze",
-              "dps_delta": -2.66,
+              "dps_delta": -2.69,
               "standing": "revered"
             }
           }
@@ -12444,7 +12443,7 @@
           "changed_slots": 0
         },
         "dungeon": {
-          "dps": 415.1,
+          "dps": 422.1,
           "error": 0.3,
           "changed_slots": 12
         },
@@ -12458,17 +12457,18 @@
         "kept": "the previous published set",
         "kept_score": 477.8455402866226,
         "kept_error": 0.3220174272644952,
-        "new_score": 473.5214362311897,
-        "new_error": 0.37372874423686314,
+        "new_score": 474.90239617789695,
+        "new_error": 0.36616255951785437,
         "differing_slots": [
           "feet",
           "finger1",
           "finger2",
           "hands",
-          "trinket2"
+          "trinket2",
+          "wrist"
         ]
       },
-      "no_source_count": 2313,
+      "no_source_count": 2294,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -12504,17 +12504,17 @@
         "main_hand: Legionite Glaive",
         "ranged: Eaglehorn Long Bow"
       ],
-      "weights_run_seconds": 4.1681984,
-      "verify_run_seconds": 50.851715992,
+      "weights_run_seconds": 5.614777824,
+      "verify_run_seconds": 66.727083161,
       "coverage": {
         "back": {
           "eligible": 466,
-          "sourced": 324,
+          "sourced": 325,
           "rare_spawn_skipped": 21
         },
         "chest": {
           "eligible": 732,
-          "sourced": 588,
+          "sourced": 589,
           "rare_spawn_skipped": 20
         },
         "feet": {
@@ -12524,42 +12524,42 @@
         },
         "finger1": {
           "eligible": 394,
-          "sourced": 146,
+          "sourced": 149,
           "rare_spawn_skipped": 6
         },
         "finger2": {
           "eligible": 394,
-          "sourced": 146,
+          "sourced": 149,
           "rare_spawn_skipped": 6
         },
         "hands": {
           "eligible": 614,
-          "sourced": 468,
+          "sourced": 470,
           "rare_spawn_skipped": 12
         },
         "head": {
           "eligible": 458,
-          "sourced": 340,
+          "sourced": 341,
           "rare_spawn_skipped": 10
         },
         "legs": {
           "eligible": 616,
-          "sourced": 460,
+          "sourced": 461,
           "rare_spawn_skipped": 11
         },
         "main_hand": {
           "eligible": 1088,
-          "sourced": 665,
+          "sourced": 666,
           "rare_spawn_skipped": 53
         },
         "neck": {
           "eligible": 219,
-          "sourced": 76,
+          "sourced": 80,
           "rare_spawn_skipped": 5
         },
         "off_hand": {
           "eligible": 174,
-          "sourced": 100,
+          "sourced": 102,
           "rare_spawn_skipped": 25
         },
         "ranged": {
@@ -12584,19 +12584,19 @@
         },
         "waist": {
           "eligible": 560,
-          "sourced": 439,
+          "sourced": 441,
           "rare_spawn_skipped": 14
         },
         "wrist": {
           "eligible": 477,
-          "sourced": 346,
+          "sourced": 347,
           "rare_spawn_skipped": 9
         }
       },
-      "reference_dps_per_point": 0.14935304541864286,
+      "reference_dps_per_point": 0.15047925068690124,
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "agility",
-      "haste_scale_factor": 4.204378447849918,
+      "haste_scale_factor": 4.310381814885241,
       "hit_to_cap": {
         "baseline": 9,
         "specials": 0
@@ -12615,34 +12615,34 @@
         {
           "stat": "ranged_attack_power",
           "weight": 1,
-          "error": 0.0007796082512884051,
+          "error": 0.0007903733738177035,
           "insignificant": false,
           "weight_per_percent": 1,
-          "scale_factor": 0.31944318135742583,
-          "dps_per_point": 0.14935304541864286,
-          "scale_error": 0.00024904054000406757
+          "scale_factor": 0.31779647782487913,
+          "dps_per_point": 0.15047925068690124,
+          "scale_error": 0.0002511778743658327
         },
         {
           "stat": "agility",
-          "weight": 3.1304471604328827,
-          "error": 0.016575680420170887,
+          "weight": 3.1466679770788626,
+          "error": 0.017586305367747468,
           "insignificant": false,
-          "weight_per_percent": 3.1304471604328827,
+          "weight_per_percent": 3.1466679770788626,
           "scale_factor": 1,
-          "dps_per_point": 0.4675418169327939,
-          "scale_error": 0.005294988086583381
+          "dps_per_point": 0.47350823935129455,
+          "scale_error": 0.005588865903822911
         },
         {
           "stat": "crit",
-          "weight": 2.242633881300754,
-          "error": 0.03506676160339066,
+          "weight": 2.302600097550379,
+          "error": 0.037187599706501664,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 14,
-          "weight_per_percent": 31.396874338210555,
-          "scale_factor": 0.7163941016626645,
-          "dps_per_point": 0.3349441999312988,
-          "scale_error": 0.011201837886489537
+          "weight_per_percent": 32.236401365705305,
+          "scale_factor": 0.7317582008407335,
+          "dps_per_point": 0.3464935373109667,
+          "scale_error": 0.011818088205487737
         },
         {
           "stat": "hit",
@@ -12658,23 +12658,23 @@
         },
         {
           "stat": "melee_haste",
-          "weight": 13.161584573456988,
-          "error": 1.2969181244595593,
+          "weight": 13.563340425882457,
+          "error": 1.3306134227038235,
           "insignificant": false,
-          "weight_per_percent": 13.161584573456988,
-          "scale_factor": 4.204378447849918,
-          "dps_per_point": 1.9657227385808307,
-          "scale_error": 0.41429165163746756
+          "weight_per_percent": 13.563340425882457,
+          "scale_factor": 4.310381814885241,
+          "dps_per_point": 2.041001304098148,
+          "scale_error": 0.42286425908178216
         },
         {
           "stat": "intellect",
-          "weight": 1.2099999999999944,
-          "error": 0.0009433259840584185,
+          "weight": 1.2718339957584857,
+          "error": 0.007940520845256871,
           "insignificant": false,
-          "weight_per_percent": 1.2099999999999944,
-          "scale_factor": 0.3865262494424834,
-          "dps_per_point": 0.18071718495655703,
-          "scale_error": 0.00030133905340474555
+          "weight_per_percent": 1.2718339957584857,
+          "scale_factor": 0.404184364229989,
+          "dps_per_point": 0.19138462667986444,
+          "scale_error": 0.0025234695567176654
         },
         {
           "stat": "spell_power",
@@ -12694,7 +12694,7 @@
           "item_name": "Black Dragonscale Helm",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 143.116264707,
+          "score": 146.646120723,
           "verified": true,
           "alternatives": [
             {
@@ -12712,11 +12712,12 @@
               "dps_delta": 0
             },
             {
-              "item_id": 231568,
-              "item_name": "Warlord's Chain Greathelm",
-              "source_kind": "vendor",
-              "source": "PvP rank 13 · Warlord · Horde",
-              "dps_delta": -1.192104441
+              "item_id": 226887,
+              "item_name": "Beastmaster's Cap",
+              "source_kind": "quest",
+              "source": "Saving the Best for Last",
+              "dps_delta": -10.283497125,
+              "verified": true
             }
           ],
           "runners_up": [
@@ -12736,20 +12737,20 @@
               "item_id": 16677,
               "rank": 3,
               "source": "Scholomance: Darkmaster Gandling",
-              "dps_delta": -9.67
+              "dps_delta": -10.11
             },
             "quest": {
-              "item_id": 11124,
-              "rank": 9,
-              "source": "Jammal'an the Prophet",
-              "dps_delta": -12.98
+              "item_id": 226887,
+              "rank": 2,
+              "source": "Saving the Best for Last",
+              "dps_delta": -10.28
             },
             "world": {
               "item_id": 2245,
-              "rank": 2,
+              "rank": 4,
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -9.67
+              "dps_delta": -10.23
             }
           }
         },
@@ -12759,7 +12760,7 @@
           "item_name": "Mark of Fordring",
           "source": "In Dreams",
           "source_kind": "quest",
-          "score": 57.396874338,
+          "score": 58.236401366,
           "verified": true,
           "alternatives": [
             {
@@ -12767,21 +12768,22 @@
               "item_name": "Scout's Medallion",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -1.559270726
+              "dps_delta": -1.656826081,
+              "verified": true
+            },
+            {
+              "item_id": 22340,
+              "item_name": "Pendant of Celerity",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Lord Valthalak",
+              "dps_delta": -1.66074645
             },
             {
               "item_id": 13089,
               "item_name": "Skibi's Pendant",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -2.49435436
-            },
-            {
-              "item_id": 20649,
-              "item_name": "Sunprism Pendant",
-              "source_kind": "quest",
-              "source": "Vyral the Vile",
-              "dps_delta": -2.961896177
+              "dps_delta": -2.607762929
             }
           ],
           "runners_up": [
@@ -12791,38 +12793,38 @@
               "source": "Warsong Outriders"
             },
             {
-              "item_id": 13089,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 22340,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Lord Valthalak"
             }
           ],
           "by_kind": {
             "dungeon": {
-              "item_id": 11933,
-              "rank": 7,
-              "source": "Blackrock Depths: Emperor Dagran Thaurissan",
-              "dps_delta": -3.79
+              "item_id": 22340,
+              "rank": 3,
+              "source": "Blackrock Spire: Lord Valthalak",
+              "dps_delta": -1.66
             },
             "rep": {
               "item_id": 19534,
               "rank": 2,
               "source": "Warsong Outriders",
-              "dps_delta": -1.56,
+              "dps_delta": -1.66,
               "standing": "honored"
             },
             "vendor": {
               "item_id": 19534,
               "rank": 2,
               "source": "Kelm Hargunth",
-              "dps_delta": -1.56,
+              "dps_delta": -1.66,
               "standing": "honored"
             },
             "world": {
               "item_id": 13089,
-              "rank": 3,
+              "rank": 4,
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -2.49
+              "dps_delta": -2.61
             }
           }
         },
@@ -12832,7 +12834,7 @@
           "item_name": "Darkspear Pauldrons",
           "source": "Creeg Bothunk",
           "source_kind": "vendor",
-          "score": 115.91894767,
+          "score": 117.196436747,
           "verified": true,
           "ties": [
             {
@@ -12853,14 +12855,14 @@
               "item_name": "Warlord's Chain Shoulders",
               "source_kind": "pvp",
               "source": "PvP rank 13 · Warlord · Horde",
-              "dps_delta": -3.349588766
+              "dps_delta": -3.410571495
             },
             {
               "item_id": 227069,
               "item_name": "Champion's Chain Shoulders",
               "source_kind": "pvp",
               "source": "PvP rank 10 · Champion · Horde",
-              "dps_delta": -4.207876352
+              "dps_delta": -4.261574154
             }
           ],
           "runners_up": [
@@ -12884,25 +12886,25 @@
               "item_id": 19050,
               "rank": 17,
               "source": "Tailoring",
-              "dps_delta": -10.27
+              "dps_delta": -10.3
             },
             "dungeon": {
               "item_id": 18742,
               "rank": 6,
               "source": "Stratholme: Crimson Sorcerer",
-              "dps_delta": -5.94
+              "dps_delta": -6.07
             },
             "quest": {
               "item_id": 15822,
               "rank": 11,
               "source": "Runecloth",
-              "dps_delta": -8.9
+              "dps_delta": -9.11
             },
             "rep": {
               "item_id": 20194,
               "rank": 3,
               "source": "The Defilers",
-              "dps_delta": -4.42,
+              "dps_delta": -4.6,
               "standing": "exalted"
             },
             "world": {
@@ -12910,7 +12912,7 @@
               "rank": 8,
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -6.3
+              "dps_delta": -6.45
             }
           }
         },
@@ -12927,21 +12929,22 @@
               "item_name": "Shadow Prowler's Cloak",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: General Drakkisath",
-              "dps_delta": -2.519519091
+              "dps_delta": -2.535051958,
+              "verified": true
             },
             {
               "item_id": 20068,
               "item_name": "Deathguard's Cloak",
               "source_kind": "rep",
               "source": "The Defilers",
-              "dps_delta": -2.584475533
+              "dps_delta": -2.628372884
             },
             {
               "item_id": 13122,
               "item_name": "Dark Phantom Cape",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -2.987060908
+              "dps_delta": -3.009585014
             }
           ],
           "runners_up": [
@@ -12961,26 +12964,26 @@
               "item_id": 8195,
               "rank": 11,
               "source": "Leatherworking",
-              "dps_delta": -5.32
+              "dps_delta": -5.38
             },
             "quest": {
               "item_id": 15789,
               "rank": 9,
               "source": "Strange Sources",
-              "dps_delta": -4.86
+              "dps_delta": -4.9
             },
             "rep": {
               "item_id": 20068,
               "rank": 3,
               "source": "The Defilers",
-              "dps_delta": -2.58,
+              "dps_delta": -2.63,
               "standing": "exalted"
             },
             "vendor": {
               "item_id": 20068,
               "rank": 3,
               "source": "Rutherford Twing",
-              "dps_delta": -2.58,
+              "dps_delta": -2.63,
               "standing": "exalted"
             },
             "world": {
@@ -12988,7 +12991,7 @@
               "rank": 4,
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -2.99
+              "dps_delta": -3.01
             }
           }
         },
@@ -12998,7 +13001,7 @@
           "item_name": "Dawn Armor",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 147.223419274,
+          "score": 148.663116518,
           "verified": true,
           "alternatives": [
             {
@@ -13016,11 +13019,12 @@
               "dps_delta": 0
             },
             {
-              "item_id": 231566,
-              "item_name": "Warlord's Chain Armor",
-              "source_kind": "vendor",
-              "source": "PvP rank 13 · Warlord · Horde",
-              "dps_delta": -1.805520484
+              "item_id": 226886,
+              "item_name": "Beastmaster's Tunic",
+              "source_kind": "quest",
+              "source": "Saving the Best for Last",
+              "dps_delta": -6.780534151,
+              "verified": true
             }
           ],
           "runners_up": [
@@ -13038,45 +13042,46 @@
           "by_kind": {
             "dungeon": {
               "item_id": 11726,
-              "rank": 2,
+              "rank": 3,
               "source": "Blackrock Depths: Gorosh the Dervish",
-              "dps_delta": -8.41
+              "dps_delta": -8.47
             },
             "pvp": {
               "item_id": 220827,
-              "rank": 3,
+              "rank": 4,
               "source": "PvP rank 6 · Stone Guard · Horde",
-              "dps_delta": -8.48
+              "dps_delta": -8.5
             },
             "quest": {
-              "item_id": 11193,
-              "rank": 11,
-              "source": "Broken Alliances",
-              "dps_delta": -11.23
+              "item_id": 226886,
+              "rank": 2,
+              "source": "Saving the Best for Last",
+              "dps_delta": -6.78
             },
             "vendor": {
               "item_id": 220827,
-              "rank": 3,
+              "rank": 4,
               "source": "PvP rank 6 · Stone Guard · Horde",
-              "dps_delta": -8.48
+              "dps_delta": -8.5
             },
             "world": {
               "item_id": 14670,
-              "rank": 8,
+              "rank": 9,
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -10.77
+              "dps_delta": -11.01
             }
           }
         },
         {
           "slot": "wrist",
-          "item_id": 19587,
-          "item_name": "Forest Stalker's Bracers",
-          "source": "Warsong Outriders",
-          "source_kind": "rep",
-          "score": 59.478496048,
+          "item_id": 226885,
+          "item_name": "Beastmaster's Bindings",
+          "source": "An Earnest Proposition",
+          "source_kind": "quest",
           "verified": true,
+          "swap_note": "beat the scored pick Forest Stalker's Bracers (id 19587) in the sim: +1.8 DPS over it",
+          "dps_delta": 1.820520968081098,
           "alternatives": [
             {
               "item_id": 16570,
@@ -13090,14 +13095,15 @@
               "item_name": "Legionnaire's Chain Bracers",
               "source_kind": "pvp",
               "source": "PvP rank 8 · Legionnaire · Horde",
-              "dps_delta": -0.935083634
+              "dps_delta": -0.866184148
             },
             {
-              "item_id": 19582,
-              "item_name": "Windtalker's Wristguards",
+              "item_id": 19587,
+              "item_name": "Forest Stalker's Bracers",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -1.762141316
+              "dps_delta": -1.820520968,
+              "verified": true
             }
           ],
           "runners_up": [
@@ -13112,47 +13118,44 @@
               "source": "PvP rank 8 · Legionnaire · Horde"
             }
           ],
-          "standing": "exalted",
-          "kind_standings": {
-            "rep": "exalted"
-          },
           "by_kind": {
             "crafted": {
               "item_id": 20481,
-              "rank": 10,
+              "rank": 11,
               "source": "Leatherworking",
-              "dps_delta": -3.05
+              "dps_delta": -2.93
             },
             "dungeon": {
               "item_id": 16681,
-              "rank": 4,
+              "rank": 5,
               "source": "Stratholme: Fleshflayer Ghoul",
-              "dps_delta": -1.87
+              "dps_delta": -1.81
             },
             "pvp": {
               "item_id": 16532,
-              "rank": 91,
+              "rank": 92,
               "source": "PvP rank 5 · First Sergeant · Horde",
-              "dps_delta": -7.62
+              "dps_delta": -7.58
             },
-            "quest": {
-              "item_id": 12112,
-              "rank": 8,
-              "source": "Disharmony of Fire",
-              "dps_delta": -2.48
+            "rep": {
+              "item_id": 19587,
+              "rank": 1,
+              "source": "Warsong Outriders",
+              "dps_delta": -1.82,
+              "standing": "exalted"
             },
             "vendor": {
               "item_id": 4794,
-              "rank": 63,
+              "rank": 68,
               "source": "Bernard Brubaker",
-              "dps_delta": -7.01
+              "dps_delta": -7.02
             },
             "world": {
               "item_id": 16710,
-              "rank": 5,
+              "rank": 6,
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -1.87
+              "dps_delta": -1.81
             }
           }
         },
@@ -13163,6 +13166,8 @@
           "source": "Creeg Bothunk",
           "source_kind": "vendor",
           "verified": true,
+          "swap_note": "confirmed by the sim against Raider Gloves (ilvl 55) (id 272100): kept the pick, +1.9 DPS over it",
+          "dps_delta": 1.8900062606488746,
           "alternatives": [
             {
               "item_id": 16571,
@@ -13207,32 +13212,32 @@
               "item_id": 15063,
               "rank": 4,
               "source": "Leatherworking",
-              "dps_delta": -3.75
+              "dps_delta": -3.72
             },
             "dungeon": {
               "item_id": 22410,
               "rank": 3,
               "source": "Stratholme: Baron Rivendare",
-              "dps_delta": -2.19
+              "dps_delta": -2.17
             },
             "pvp": {
               "item_id": 220830,
-              "rank": 11,
+              "rank": 12,
               "source": "PvP rank 5 · First Sergeant · Horde",
-              "dps_delta": -5.14
+              "dps_delta": -5.21
             },
             "quest": {
-              "item_id": 11918,
-              "rank": 8,
-              "source": "Beware of Pterrordax",
-              "dps_delta": -4.84
+              "item_id": 226883,
+              "rank": 6,
+              "source": "Just Compensation",
+              "dps_delta": -4.24
             },
             "world": {
               "item_id": 8305,
               "rank": 5,
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -4.2
+              "dps_delta": -4.14
             }
           }
         },
@@ -13242,7 +13247,7 @@
           "item_name": "Ranger's Belt",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 92.07073185,
+          "score": 93.325707391,
           "verified": true,
           "alternatives": [
             {
@@ -13250,21 +13255,22 @@
               "item_name": "General's Chain Girdle",
               "source_kind": "pvp",
               "source": "PvP rank 12 · General · Horde",
-              "dps_delta": -2.082382162
-            },
-            {
-              "item_id": 22232,
-              "item_name": "Marksman's Girdle",
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Urok Doomhowl",
-              "dps_delta": -3.93266604
+              "dps_delta": -2.075510929
             },
             {
               "item_id": 20150,
               "item_name": "Defiler's Chain Girdle",
               "source_kind": "rep",
               "source": "The Defilers",
-              "dps_delta": -3.983821852
+              "dps_delta": -4.076378472
+            },
+            {
+              "item_id": 22325,
+              "item_name": "Belt of the Trickster",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Mor Grayhoof",
+              "dps_delta": -7.043079739,
+              "verified": true
             }
           ],
           "runners_up": [
@@ -13274,42 +13280,42 @@
               "source": "PvP rank 12 · General · Horde"
             },
             {
-              "item_id": 22232,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Urok Doomhowl"
+              "item_id": 20150,
+              "source_kind": "rep",
+              "source": "The Defilers"
             }
           ],
           "by_kind": {
             "crafted": {
               "item_id": 252588,
-              "rank": 5,
+              "rank": 7,
               "source": "Leatherworking",
-              "dps_delta": -5.4
+              "dps_delta": -5.5
             },
             "dungeon": {
-              "item_id": 22232,
+              "item_id": 22325,
               "rank": 2,
-              "source": "Blackrock Spire: Urok Doomhowl",
-              "dps_delta": -3.93
+              "source": "Blackrock Spire: Mor Grayhoof",
+              "dps_delta": -7.04
             },
             "quest": {
-              "item_id": 17778,
-              "rank": 14,
-              "source": "Vyletongue Corruption",
-              "dps_delta": -6.98
+              "item_id": 226888,
+              "rank": 6,
+              "source": "Just Compensation",
+              "dps_delta": -4.55
             },
             "rep": {
               "item_id": 20150,
               "rank": 3,
               "source": "The Defilers",
-              "dps_delta": -3.98,
+              "dps_delta": -4.08,
               "standing": "honored"
             },
             "world": {
               "item_id": 19088,
-              "rank": 7,
+              "rank": 11,
               "source": "Grunnda Wolfheart",
-              "dps_delta": -5.97
+              "dps_delta": -6.06
             }
           }
         },
@@ -13319,7 +13325,7 @@
           "item_name": "Outrider's Chain Leggings",
           "source": "Warsong Outriders",
           "source_kind": "rep",
-          "score": 140.962524953,
+          "score": 142.369780563,
           "verified": true,
           "alternatives": [
             {
@@ -13334,14 +13340,15 @@
               "item_name": "General's Chain Legplates",
               "source_kind": "vendor",
               "source": "PvP rank 12 · General · Horde",
-              "dps_delta": -0.87043685
+              "dps_delta": -0.809279763
             },
             {
-              "item_id": 227073,
-              "item_name": "Legionnaire's Chain Legguards",
-              "source_kind": "pvp",
-              "source": "PvP rank 8 · Legionnaire · Horde",
-              "dps_delta": -3.109772613
+              "item_id": 22740,
+              "item_name": "Outrider's Leather Pants",
+              "source_kind": "rep",
+              "source": "Warsong Outriders",
+              "dps_delta": -9.419728366,
+              "verified": true
             }
           ],
           "runners_up": [
@@ -13370,50 +13377,45 @@
               "item_id": 15062,
               "rank": 9,
               "source": "Leatherworking",
-              "dps_delta": -9.49
+              "dps_delta": -9.65
             },
             "dungeon": {
-              "item_id": 18736,
+              "item_id": 16678,
               "rank": 4,
-              "source": "Stratholme: Fleshflayer Ghoul",
-              "dps_delta": -7.03
+              "source": "Stratholme: Baron Rivendare",
+              "dps_delta": -7.2
             },
             "pvp": {
               "item_id": 220833,
               "rank": 6,
               "source": "PvP rank 6 · Stone Guard · Horde",
-              "dps_delta": -8.01
+              "dps_delta": -8.03
             },
             "quest": {
               "item_id": 12903,
               "rank": 3,
               "source": "Legplates of the Chromatic Defier",
-              "dps_delta": -5.29
+              "dps_delta": -5.41
             },
             "world": {
               "item_id": 13130,
               "rank": 7,
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -8.43
+              "dps_delta": -8.64
             }
           }
         },
         {
           "slot": "feet",
-          "item_id": 13967,
-          "item_name": "Windreaver Greaves",
-          "source": "Scholomance: Kirtonos the Herald",
+          "item_id": 13402,
+          "item_name": "Timmy's Galoshes",
+          "source": "Stratholme: Timmy the Cruel",
           "source_kind": "dungeon",
           "verified": true,
+          "swap_note": "beat the scored pick Beaststalker's Boots (id 16675) in the sim: +1.2 DPS over it",
+          "dps_delta": 1.2427880474431845,
           "alternatives": [
-            {
-              "item_id": 16675,
-              "item_name": "Beaststalker's Boots",
-              "source_kind": "dungeon",
-              "source": "Stratholme: Nerub'enkan",
-              "dps_delta": 0
-            },
             {
               "item_id": 231564,
               "item_name": "General's Chain Sabatons",
@@ -13427,17 +13429,25 @@
               "source_kind": "vendor",
               "source": "PvP rank 12 · General · Horde",
               "dps_delta": 0
+            },
+            {
+              "item_id": 16675,
+              "item_name": "Beaststalker's Boots",
+              "source_kind": "dungeon",
+              "source": "Stratholme: Nerub'enkan",
+              "dps_delta": -1.242788047,
+              "verified": true
             }
           ],
           "runners_up": [
             {
-              "item_id": 16675,
-              "source_kind": "dungeon",
-              "source": "Stratholme: Nerub'enkan"
-            },
-            {
               "item_id": 231564,
               "source_kind": "pvp",
+              "source": "PvP rank 12 · General · Horde"
+            },
+            {
+              "item_id": 231570,
+              "source_kind": "vendor",
               "source": "PvP rank 12 · General · Horde"
             }
           ],
@@ -13446,32 +13456,32 @@
               "item_id": 275618,
               "rank": 7,
               "source": "Leatherworking",
-              "dps_delta": -0.66
+              "dps_delta": -0.93
             },
             "pvp": {
               "item_id": 220836,
               "rank": 19,
               "source": "PvP rank 5 · First Sergeant · Horde",
-              "dps_delta": -3.06
+              "dps_delta": -3.33
             },
             "quest": {
               "item_id": 15861,
               "rank": 26,
               "source": "The Darkstone Tablet",
-              "dps_delta": -3.53
+              "dps_delta": -3.81
             },
             "rep": {
               "item_id": 20154,
               "rank": 10,
               "source": "The Defilers",
-              "dps_delta": -1.61,
+              "dps_delta": -1.8,
               "standing": "revered"
             },
             "vendor": {
               "item_id": 20154,
               "rank": 10,
               "source": "Rutherford Twing",
-              "dps_delta": -1.61,
+              "dps_delta": -1.8,
               "standing": "revered"
             },
             "world": {
@@ -13479,12 +13489,85 @@
               "rank": 12,
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -1.66
+              "dps_delta": -1.91
             }
           }
         },
         {
           "slot": "finger1",
+          "item_id": 18701,
+          "item_name": "Innervating Band",
+          "source": "Scholomance: Scholomance Handler",
+          "source_kind": "dungeon",
+          "chance": 0.0006,
+          "verified": true,
+          "alternatives": [
+            {
+              "item_id": 13098,
+              "item_name": "Painweaver Band",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: General Drakkisath",
+              "dps_delta": -0.44596306
+            },
+            {
+              "item_id": 9533,
+              "item_name": "Masons Fraternity Ring",
+              "source_kind": "quest",
+              "source": "Divino-matic Rod",
+              "dps_delta": -0.473508239
+            },
+            {
+              "item_id": 11669,
+              "item_name": "Naglering",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Golem Lord Argelmach",
+              "dps_delta": -7.07856353,
+              "verified": true
+            }
+          ],
+          "runners_up": [
+            {
+              "item_id": 13098,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: General Drakkisath"
+            },
+            {
+              "item_id": 9533,
+              "source_kind": "quest",
+              "source": "Divino-matic Rod"
+            }
+          ],
+          "by_kind": {
+            "quest": {
+              "item_id": 9533,
+              "rank": 4,
+              "source": "Divino-matic Rod",
+              "dps_delta": -0.47
+            },
+            "rep": {
+              "item_id": 19325,
+              "rank": 2,
+              "source": "Frostwolf Clan",
+              "dps_delta": -0.15,
+              "standing": "exalted"
+            },
+            "vendor": {
+              "item_id": 19325,
+              "rank": 2,
+              "source": "Gaelden Hammersmith",
+              "dps_delta": -0.15,
+              "standing": "exalted"
+            },
+            "world": {
+              "item_id": 19325,
+              "rank": 2,
+              "source": "Grunnda Wolfheart",
+              "dps_delta": -0.15
+            }
+          }
+        },
+        {
+          "slot": "finger2",
           "item_id": 19325,
           "item_name": "Don Julio's Band",
           "source": "Frostwolf Clan",
@@ -13492,37 +13575,38 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 18701,
-              "item_name": "Innervating Band",
-              "source_kind": "dungeon",
-              "source": "Scholomance: Scholomance Handler",
-              "dps_delta": 0
-            },
-            {
               "item_id": 9533,
               "item_name": "Masons Fraternity Ring",
               "source_kind": "quest",
               "source": "Divino-matic Rod",
-              "dps_delta": -0.234575998
+              "dps_delta": -0.328503681
+            },
+            {
+              "item_id": 272408,
+              "item_name": "Cutthroat's Signet",
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
+              "dps_delta": -0.328503681
             },
             {
               "item_id": 13098,
               "item_name": "Painweaver Band",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: General Drakkisath",
-              "dps_delta": -0.298706091
+              "dps_delta": -6.44910055,
+              "verified": true
             }
           ],
           "runners_up": [
             {
-              "item_id": 18701,
-              "source_kind": "dungeon",
-              "source": "Scholomance: Scholomance Handler"
-            },
-            {
               "item_id": 9533,
               "source_kind": "quest",
               "source": "Divino-matic Rod"
+            },
+            {
+              "item_id": 272408,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             }
           ],
           "kinds": [
@@ -13535,62 +13619,8 @@
             "rep": "exalted",
             "vendor": "exalted"
           },
-          "by_kind": {
-            "dungeon": {
-              "item_id": 18701,
-              "rank": 1,
-              "source": "Scholomance: Scholomance Handler",
-              "dps_delta": 0
-            },
-            "quest": {
-              "item_id": 9533,
-              "rank": 3,
-              "source": "Divino-matic Rod",
-              "dps_delta": -0.23
-            }
-          }
-        },
-        {
-          "slot": "finger2",
-          "item_id": 272408,
-          "item_name": "Cutthroat's Signet",
-          "source": "Pix Xizzix",
-          "source_kind": "vendor",
-          "verified": true,
-          "alternatives": [
-            {
-              "item_id": 9533,
-              "item_name": "Masons Fraternity Ring",
-              "source_kind": "quest",
-              "source": "Divino-matic Rod",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 18701,
-              "item_name": "Innervating Band",
-              "source_kind": "dungeon",
-              "source": "Scholomance: Scholomance Handler",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 13098,
-              "item_name": "Painweaver Band",
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: General Drakkisath",
-              "dps_delta": -0.064130093
-            }
-          ],
-          "runners_up": [
-            {
-              "item_id": 9533,
-              "source_kind": "quest",
-              "source": "Divino-matic Rod"
-            },
-            {
-              "item_id": 18701,
-              "source_kind": "dungeon",
-              "source": "Scholomance: Scholomance Handler"
-            }
+          "not_with": [
+            19325
           ],
           "by_kind": {
             "dungeon": {
@@ -13603,75 +13633,45 @@
               ],
               "next": {
                 "item_id": 13098,
-                "rank": 5,
+                "rank": 3,
                 "source": "Blackrock Spire: General Drakkisath",
-                "dps_delta": -0.06
+                "dps_delta": -6.45
               }
             },
             "quest": {
               "item_id": 9533,
-              "rank": 3,
+              "rank": 4,
               "source": "Divino-matic Rod",
-              "dps_delta": 0,
+              "dps_delta": -0.33,
               "not_with": [
                 9533
               ],
               "next": {
                 "item_id": 13217,
-                "rank": 8,
+                "rank": 9,
                 "source": "Houses of the Holy",
-                "dps_delta": -1.86
+                "dps_delta": -2.11
               }
             },
             "rep": {
-              "item_id": 19325,
-              "rank": 2,
-              "source": "Frostwolf Clan",
-              "dps_delta": 0,
-              "standing": "exalted",
-              "not_with": [
-                19325
-              ],
-              "next": {
-                "item_id": 19510,
-                "rank": 7,
-                "source": "Warsong Outriders",
-                "dps_delta": -1.4,
-                "standing": "honored"
-              }
+              "item_id": 19510,
+              "rank": 8,
+              "source": "Warsong Outriders",
+              "dps_delta": -1.75,
+              "standing": "honored"
             },
             "vendor": {
-              "item_id": 19325,
-              "rank": 2,
-              "source": "Gaelden Hammersmith",
-              "dps_delta": 0,
-              "standing": "exalted",
-              "not_with": [
-                19325
-              ],
-              "next": {
-                "item_id": 19510,
-                "rank": 7,
-                "source": "Kelm Hargunth",
-                "dps_delta": -1.4,
-                "standing": "honored"
-              }
+              "item_id": 272408,
+              "rank": 5,
+              "source": "Pix Xizzix",
+              "dps_delta": -0.33
             },
             "world": {
-              "item_id": 19325,
-              "rank": 2,
-              "source": "Grunnda Wolfheart",
-              "dps_delta": 0,
-              "not_with": [
-                19325
-              ],
-              "next": {
-                "item_id": 2951,
-                "rank": 12,
-                "source_kind": "world_drop",
-                "source": "World drop",
-                "dps_delta": -1.87
-              }
+              "item_id": 2951,
+              "rank": 13,
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -2.22
             }
           }
         },
@@ -13685,17 +13685,10 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 11815,
-              "item_name": "Hand of Justice",
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Emperor Dagran Thaurissan",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 19120,
-              "item_name": "Rune of the Guard Captain",
+              "item_id": 19991,
+              "item_name": "Devilsaur Eye",
               "source_kind": "quest",
-              "source": "Job Opening: Guard Captain of Revantusk Village",
+              "source": "The Green Drake",
               "dps_delta": 0
             },
             {
@@ -13704,18 +13697,26 @@
               "source_kind": "quest",
               "source": "The Green Drake",
               "dps_delta": 0
+            },
+            {
+              "item_id": 11819,
+              "item_name": "Second Wind",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Golem Lord Argelmach",
+              "dps_delta": -3.653495867,
+              "verified": true
             }
           ],
           "runners_up": [
             {
-              "item_id": 11815,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Emperor Dagran Thaurissan"
+              "item_id": 19991,
+              "source_kind": "quest",
+              "source": "The Green Drake"
             },
             {
-              "item_id": 19120,
+              "item_id": 19992,
               "source_kind": "quest",
-              "source": "Job Opening: Guard Captain of Revantusk Village"
+              "source": "The Green Drake"
             }
           ],
           "by_kind": {
@@ -13777,13 +13778,19 @@
         },
         {
           "slot": "trinket2",
-          "item_id": 19991,
-          "item_name": "Devilsaur Eye",
-          "source": "The Green Drake",
+          "item_id": 13965,
+          "item_name": "Blackhand's Breadth",
+          "source": "For The Horde!",
           "source_kind": "quest",
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
+            {
+              "item_id": 19991,
+              "item_name": "Devilsaur Eye",
+              "source_kind": "quest",
+              "source": "The Green Drake",
+              "dps_delta": 0
+            },
             {
               "item_id": 19992,
               "item_name": "Devilsaur Tooth",
@@ -13796,26 +13803,20 @@
               "item_name": "Rune of the Guard Captain",
               "source_kind": "quest",
               "source": "Job Opening: Guard Captain of Revantusk Village",
-              "dps_delta": -0.298706091
-            },
-            {
-              "item_id": 11815,
-              "item_name": "Hand of Justice",
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Emperor Dagran Thaurissan",
-              "dps_delta": -0.597412182
+              "dps_delta": -2.555771873,
+              "verified": true
             }
           ],
           "runners_up": [
             {
-              "item_id": 19992,
+              "item_id": 19991,
               "source_kind": "quest",
               "source": "The Green Drake"
             },
             {
-              "item_id": 19120,
+              "item_id": 19992,
               "source_kind": "quest",
-              "source": "Job Opening: Guard Captain of Revantusk Village"
+              "source": "The Green Drake"
             }
           ],
           "by_kind": {
@@ -13823,7 +13824,7 @@
               "item_id": 11815,
               "rank": 4,
               "source": "Blackrock Depths: Emperor Dagran Thaurissan",
-              "dps_delta": -0.6
+              "dps_delta": 0
             },
             "quest": {
               "item_id": 19992,
@@ -13834,25 +13835,64 @@
                 19992
               ],
               "next": {
-                "item_id": 19120,
-                "rank": 3,
-                "source": "Job Opening: Guard Captain of Revantusk Village",
-                "dps_delta": -0.3,
-                "not_with": [
-                  19120
-                ]
+                "item_id": 19991,
+                "rank": 2,
+                "source": "The Green Drake",
+                "dps_delta": 0
               }
             },
             "vendor": {
               "item_id": 19120,
               "rank": 3,
               "source": "Primal Torntusk",
-              "dps_delta": -0.3,
+              "dps_delta": -2.56,
               "not_with": [
                 19120
               ]
             }
-          }
+          },
+          "ranking": [
+            {
+              "item_id": 19120,
+              "source_kind": "quest",
+              "dps_delta": -2.54
+            },
+            {
+              "item_id": 13213,
+              "source_kind": "dungeon",
+              "dps_delta": -2.95
+            },
+            {
+              "item_id": 249469,
+              "source_kind": "crafted",
+              "dps_delta": -3.66
+            },
+            {
+              "item_id": 19992,
+              "source_kind": "quest",
+              "dps_delta": -4.62
+            },
+            {
+              "item_id": 1713,
+              "source_kind": "world_drop",
+              "dps_delta": -5.6
+            },
+            {
+              "item_id": 19991,
+              "source_kind": "quest",
+              "dps_delta": -5.61
+            },
+            {
+              "item_id": 249470,
+              "source_kind": "crafted",
+              "dps_delta": -5.74
+            },
+            {
+              "item_id": 11815,
+              "source_kind": "dungeon",
+              "dps_delta": -6.19
+            }
+          ]
         },
         {
           "slot": "main_hand",
@@ -13874,14 +13914,15 @@
               "item_name": "High Warlord's War Staff",
               "source_kind": "pvp",
               "source": "PvP rank 14 · High Warlord · Horde",
-              "dps_delta": -2.010800672
+              "dps_delta": -1.598345908
             },
             {
-              "item_id": 18725,
-              "item_name": "Peacemaker",
-              "source_kind": "dungeon",
-              "source": "Stratholme: Magistrate Barthilas",
-              "dps_delta": -2.492744181
+              "item_id": 19099,
+              "item_name": "Glacial Blade",
+              "source_kind": "rep",
+              "source": "Frostwolf Clan",
+              "dps_delta": -11.418427939,
+              "verified": true
             }
           ],
           "runners_up": [
@@ -13902,21 +13943,21 @@
               "item_id": 18725,
               "rank": 2,
               "source": "Stratholme: Magistrate Barthilas",
-              "dps_delta": -2.49,
+              "dps_delta": -2.42,
               "two_hand": true
             },
             "quest": {
               "item_id": 19106,
               "rank": 7,
               "source": "The Legend of Korrak",
-              "dps_delta": -5.73,
+              "dps_delta": -5.76,
               "two_hand": true
             },
             "rep": {
               "item_id": 20220,
               "rank": 3,
               "source": "The Defilers",
-              "dps_delta": -3.46,
+              "dps_delta": -3.13,
               "two_hand": true,
               "standing": "exalted"
             },
@@ -13924,7 +13965,7 @@
               "item_id": 20220,
               "rank": 3,
               "source": "Rutherford Twing",
-              "dps_delta": -3.46,
+              "dps_delta": -3.13,
               "two_hand": true,
               "standing": "exalted"
             },
@@ -13933,7 +13974,7 @@
               "rank": 9,
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -7.6,
+              "dps_delta": -7.65,
               "two_hand": true
             }
           }
@@ -14001,11 +14042,12 @@
               "dps_delta": 0
             },
             {
-              "item_id": 234561,
-              "item_name": "High Warlord's Street Sweeper",
-              "source_kind": "pvp",
-              "source": "PvP rank 14 · High Warlord · Horde",
-              "dps_delta": 0
+              "item_id": 19107,
+              "item_name": "Bloodseeker",
+              "source_kind": "quest",
+              "source": "The Legend of Korrak",
+              "dps_delta": -7.180644416,
+              "verified": true
             }
           ],
           "runners_up": [
@@ -14025,7 +14067,7 @@
               "item_id": 16007,
               "rank": 10,
               "source": "Engineering",
-              "dps_delta": -5.39
+              "dps_delta": -5.45
             },
             "dungeon": {
               "item_id": 18680,
@@ -14037,33 +14079,33 @@
               "item_id": 19107,
               "rank": 2,
               "source": "The Legend of Korrak",
-              "dps_delta": -1.3
+              "dps_delta": -7.18
             },
             "rep": {
               "item_id": 19558,
               "rank": 4,
               "source": "Warsong Outriders",
-              "dps_delta": -2.66,
+              "dps_delta": -2.69,
               "standing": "revered"
             },
             "vendor": {
               "item_id": 19558,
               "rank": 4,
               "source": "Kelm Hargunth",
-              "dps_delta": -2.66,
+              "dps_delta": -2.69,
               "standing": "revered"
             }
           }
         }
       ],
-      "set_dps": 466.24832204621293,
-      "set_dps_error": 0.2862864708798601,
+      "set_dps": 465.7542747085327,
+      "set_dps_error": 0.29418907687114,
       "race_sweep": {
         "guide_race": "troll",
         "best_race": "windshaper-skyborne",
-        "margin": 2.77728418972481,
-        "margin_pct": 0.595666313078878,
-        "error": 0.40658182432705814,
+        "margin": 2.201365317266834,
+        "margin_pct": 0.47264522019565797,
+        "error": 0.42023986206529923,
         "beyond_error": true,
         "score_unit": "dps",
         "iterations": 3000,
@@ -14071,58 +14113,45 @@
         "races": [
           {
             "race": "orc",
-            "score": 468.4497712826417,
-            "error": 0.2985920994810027
+            "score": 467.9013409223004,
+            "error": 0.30149204329176627
           },
           {
             "race": "tauren",
-            "score": 458.74095629013857,
-            "error": 0.29060199058016184
+            "score": 458.4743994165483,
+            "error": 0.29603724974086115
           },
           {
             "race": "troll",
-            "score": 466.24832204621293,
-            "error": 0.2862864708798601
+            "score": 465.7542747085327,
+            "error": 0.29418907687114
           },
           {
             "race": "windshaper-skyborne",
-            "score": 469.02560623593774,
-            "error": 0.28870198555651433
+            "score": 467.95564002579954,
+            "error": 0.3000905342032104
           }
         ]
       },
       "target_level": 63,
       "filtered_set_dps": {
         "all": {
-          "dps": 466.2,
+          "dps": 465.8,
           "error": 0.3,
           "changed_slots": 0
         },
         "dungeon": {
-          "dps": 397.1,
+          "dps": 400.6,
           "error": 0.3,
-          "changed_slots": 13
+          "changed_slots": 12
         },
         "pre_raid": {
-          "dps": 466.2,
+          "dps": 465.8,
           "error": 0.3,
           "changed_slots": 0
         }
       },
-      "kept_alternative": {
-        "kept": "the previous published set",
-        "kept_score": 466.5924796641129,
-        "kept_error": 0.33971240245065326,
-        "new_score": 464.7698402022474,
-        "new_error": 0.3561423470651753,
-        "differing_slots": [
-          "feet",
-          "finger1",
-          "finger2",
-          "trinket2"
-        ]
-      },
-      "no_source_count": 2312,
+      "no_source_count": 2293,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -14146,29 +14175,29 @@
         "shoulder: Darkspear Pauldrons",
         "back: Cape of the Black Baron",
         "chest: Dawn Armor",
-        "wrist: Forest Stalker's Bracers",
+        "wrist: Beastmaster's Bindings",
         "hands: Raider Gloves",
         "waist: Ranger's Belt",
         "legs: Outrider's Chain Leggings",
-        "feet: Windreaver Greaves",
-        "finger1: Don Julio's Band",
-        "finger2: Cutthroat's Signet",
+        "feet: Timmy's Galoshes",
+        "finger1: Innervating Band",
+        "finger2: Don Julio's Band",
         "trinket1: Burst of Knowledge",
-        "trinket2: Devilsaur Eye",
+        "trinket2: Blackhand's Breadth",
         "main_hand: Legionite Glaive",
         "ranged: Eaglehorn Long Bow"
       ],
-      "weights_run_seconds": 4.1681984,
-      "verify_run_seconds": 51.324795683,
+      "weights_run_seconds": 5.614777824,
+      "verify_run_seconds": 66.724275101,
       "coverage": {
         "back": {
           "eligible": 472,
-          "sourced": 331,
+          "sourced": 332,
           "rare_spawn_skipped": 21
         },
         "chest": {
           "eligible": 728,
-          "sourced": 582,
+          "sourced": 583,
           "rare_spawn_skipped": 20
         },
         "feet": {
@@ -14178,42 +14207,42 @@
         },
         "finger1": {
           "eligible": 397,
-          "sourced": 153,
+          "sourced": 156,
           "rare_spawn_skipped": 6
         },
         "finger2": {
           "eligible": 397,
-          "sourced": 153,
+          "sourced": 156,
           "rare_spawn_skipped": 6
         },
         "hands": {
           "eligible": 615,
-          "sourced": 465,
+          "sourced": 467,
           "rare_spawn_skipped": 12
         },
         "head": {
           "eligible": 458,
-          "sourced": 341,
+          "sourced": 342,
           "rare_spawn_skipped": 10
         },
         "legs": {
           "eligible": 611,
-          "sourced": 454,
+          "sourced": 455,
           "rare_spawn_skipped": 11
         },
         "main_hand": {
           "eligible": 1086,
-          "sourced": 673,
+          "sourced": 674,
           "rare_spawn_skipped": 53
         },
         "neck": {
           "eligible": 223,
-          "sourced": 79,
+          "sourced": 83,
           "rare_spawn_skipped": 5
         },
         "off_hand": {
           "eligible": 171,
-          "sourced": 96,
+          "sourced": 98,
           "rare_spawn_skipped": 25
         },
         "ranged": {
@@ -14238,22 +14267,22 @@
         },
         "waist": {
           "eligible": 564,
-          "sourced": 438,
+          "sourced": 440,
           "rare_spawn_skipped": 14
         },
         "wrist": {
           "eligible": 481,
-          "sourced": 359,
+          "sourced": 360,
           "rare_spawn_skipped": 9
         }
       },
-      "reference_dps_per_point": 0.14935304541864286,
+      "reference_dps_per_point": 0.15047925068690124,
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "agility",
-      "haste_scale_factor": 4.204378447849918,
+      "haste_scale_factor": 4.310381814885241,
       "hit_to_cap": {
-        "baseline": 6,
-        "specials": 3
+        "baseline": 4,
+        "specials": 5
       },
       "haste_on_items": false
     },
@@ -14269,34 +14298,34 @@
         {
           "stat": "ranged_attack_power",
           "weight": 1,
-          "error": 0.0009568693758990729,
+          "error": 0.0009587610530171209,
           "insignificant": false,
           "weight_per_percent": 1,
-          "scale_factor": 0.3084252740005307,
-          "dps_per_point": 0.27946080009378416,
-          "scale_error": 0.0002951226994443884
+          "scale_factor": 0.3069770974189004,
+          "dps_per_point": 0.28097230436202036,
+          "scale_error": 0.00029431768517348424
         },
         {
           "stat": "agility",
-          "weight": 3.2422764419697954,
-          "error": 0.022236033662906846,
+          "weight": 3.257572009143737,
+          "error": 0.02325776495996557,
           "insignificant": false,
-          "weight_per_percent": 3.2422764419697954,
+          "weight_per_percent": 3.257572009143737,
           "scale_factor": 1,
-          "dps_per_point": 0.9060891685981067,
-          "scale_error": 0.0068581547751670685
+          "dps_per_point": 0.9152875140343323,
+          "scale_error": 0.0071396011798612385
         },
         {
           "stat": "crit",
-          "weight": 2.5735903476093265,
-          "error": 0.04713167872224575,
+          "weight": 2.6497029529460607,
+          "error": 0.0490356783111044,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 14,
-          "weight_per_percent": 36.03026486653057,
-          "scale_factor": 0.7937603081265276,
-          "dps_per_point": 0.7192176176565425,
-          "scale_error": 0.01453660092401363
+          "weight_per_percent": 37.09584134124485,
+          "scale_factor": 0.8133981215176709,
+          "dps_per_point": 0.7444931445641046,
+          "scale_error": 0.015052830197909756
         },
         {
           "stat": "hit",
@@ -14312,23 +14341,23 @@
         },
         {
           "stat": "melee_haste",
-          "weight": 24.107827164518635,
-          "error": 1.7995679454416067,
+          "weight": 24.301940831620332,
+          "error": 1.8263635929350361,
           "insignificant": false,
-          "weight_per_percent": 24.107827164518635,
-          "scale_factor": 7.435463198774098,
-          "dps_per_point": 6.737192667919042,
-          "scale_error": 0.5550322366553997
+          "weight_per_percent": 24.301940831620332,
+          "scale_factor": 7.4601392581366675,
+          "dps_per_point": 6.828172315929838,
+          "scale_error": 0.5606517945907515
         },
         {
           "stat": "intellect",
-          "weight": 1.212206027899965,
-          "error": 0.006599086523979865,
+          "weight": 1.2059835815186284,
+          "error": 0.006610578919759931,
           "insignificant": false,
-          "weight_per_percent": 1.212206027899965,
-          "scale_factor": 0.37387497630014166,
-          "dps_per_point": 0.3387640664354322,
-          "scale_error": 0.0020353250693116998
+          "weight_per_percent": 1.2059835815186284,
+          "scale_factor": 0.3702093393894384,
+          "dps_per_point": 0.33884798592205145,
+          "scale_error": 0.0020292963290464735
         },
         {
           "stat": "spell_power",
@@ -14349,7 +14378,7 @@
           "source": "Leatherworking",
           "source_kind": "crafted",
           "enchant_id": 1508,
-          "score": 150.181899208,
+          "score": 151.332229631,
           "verified": true,
           "alternatives": [
             {
@@ -14360,18 +14389,18 @@
               "dps_delta": 0
             },
             {
-              "item_id": 231562,
-              "item_name": "Field Marshal's Chain Greathelm",
-              "source_kind": "vendor",
-              "source": "PvP rank 13 · Field Marshal · Alliance",
-              "dps_delta": -2.371633598
+              "item_id": 227066,
+              "item_name": "Lieutenant Commander's Chain Helm",
+              "source_kind": "pvp",
+              "source": "PvP rank 10 · Lieutenant Commander · Alliance",
+              "dps_delta": -2.14955011
             },
             {
-              "item_id": 16677,
-              "item_name": "Beaststalker's Cap",
-              "source_kind": "dungeon",
-              "source": "Scholomance: Darkmaster Gandling",
-              "dps_delta": -23.966351457,
+              "item_id": 226887,
+              "item_name": "Beastmaster's Cap",
+              "source_kind": "quest",
+              "source": "Saving the Best for Last",
+              "dps_delta": -8.287160441,
               "verified": true
             }
           ],
@@ -14382,30 +14411,30 @@
               "source": "PvP rank 13 · Field Marshal · Alliance"
             },
             {
-              "item_id": 231562,
-              "source_kind": "vendor",
-              "source": "PvP rank 13 · Field Marshal · Alliance"
+              "item_id": 227066,
+              "source_kind": "pvp",
+              "source": "PvP rank 10 · Lieutenant Commander · Alliance"
             }
           ],
           "by_kind": {
             "dungeon": {
               "item_id": 16677,
-              "rank": 2,
+              "rank": 3,
               "source": "Scholomance: Darkmaster Gandling",
-              "dps_delta": -23.97
+              "dps_delta": -19.81
             },
             "quest": {
-              "item_id": 11124,
-              "rank": 10,
-              "source": "Jammal'an the Prophet",
-              "dps_delta": -25.91
+              "item_id": 226887,
+              "rank": 2,
+              "source": "Saving the Best for Last",
+              "dps_delta": -8.29
             },
             "world": {
               "item_id": 2245,
-              "rank": 3,
+              "rank": 4,
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -19.51
+              "dps_delta": -19.86
             }
           }
         },
@@ -14416,7 +14445,7 @@
           "source": "In Dreams",
           "source_kind": "quest",
           "enchant_id": 904,
-          "score": 62.030264867,
+          "score": 63.095841341,
           "verified": true,
           "alternatives": [
             {
@@ -14424,22 +14453,22 @@
               "item_name": "Sentinel's Medallion",
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
-              "dps_delta": -3.845150096,
+              "dps_delta": -3.819606008,
               "verified": true
+            },
+            {
+              "item_id": 22340,
+              "item_name": "Pendant of Celerity",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Lord Valthalak",
+              "dps_delta": -3.998871227
             },
             {
               "item_id": 13089,
               "item_name": "Skibi's Pendant",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -5.555868258
-            },
-            {
-              "item_id": 20649,
-              "item_name": "Sunprism Pendant",
-              "source_kind": "quest",
-              "source": "Vyral the Vile",
-              "dps_delta": -6.461957426
+              "dps_delta": -5.829446255
             }
           ],
           "runners_up": [
@@ -14449,38 +14478,38 @@
               "source": "Silverwing Sentinels"
             },
             {
-              "item_id": 13089,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 22340,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Lord Valthalak"
             }
           ],
           "by_kind": {
             "dungeon": {
-              "item_id": 12929,
-              "rank": 6,
-              "source": "Blackrock Spire: Pyroguard Emberseer",
-              "dps_delta": -7.27
+              "item_id": 22340,
+              "rank": 3,
+              "source": "Blackrock Spire: Lord Valthalak",
+              "dps_delta": -4
             },
             "rep": {
               "item_id": 19538,
               "rank": 2,
               "source": "Silverwing Sentinels",
-              "dps_delta": -3.85,
+              "dps_delta": -3.82,
               "standing": "honored"
             },
             "vendor": {
               "item_id": 19538,
               "rank": 2,
               "source": "Illiyana Moonblaze",
-              "dps_delta": -3.85,
+              "dps_delta": -3.82,
               "standing": "honored"
             },
             "world": {
               "item_id": 13089,
-              "rank": 3,
+              "rank": 4,
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -5.56
+              "dps_delta": -5.83
             }
           }
         },
@@ -14490,7 +14519,7 @@
           "item_name": "Theramore Pauldrons",
           "source": "Theramore Expeditionary Force",
           "source_kind": "rep",
-          "score": 123.5717288,
+          "score": 125.050285588,
           "verified": true,
           "ties": [
             {
@@ -14511,14 +14540,14 @@
               "item_name": "Field Marshal's Chain Spaulders",
               "source_kind": "vendor",
               "source": "PvP rank 13 · Field Marshal · Alliance",
-              "dps_delta": -7.587495152
+              "dps_delta": -7.949711679
             },
             {
               "item_id": 231576,
               "item_name": "Field Marshal's Chain Shoulders",
               "source_kind": "vendor",
               "source": "PvP rank 13 · Field Marshal · Alliance",
-              "dps_delta": -7.587495152
+              "dps_delta": -7.949711679
             }
           ],
           "runners_up": [
@@ -14540,27 +14569,27 @@
           "by_kind": {
             "crafted": {
               "item_id": 19050,
-              "rank": 16,
+              "rank": 15,
               "source": "Tailoring",
-              "dps_delta": -20.06
+              "dps_delta": -20.31
             },
             "dungeon": {
               "item_id": 18742,
               "rank": 6,
               "source": "Stratholme: Crimson Sorcerer",
-              "dps_delta": -12.57
+              "dps_delta": -12.97
             },
             "quest": {
               "item_id": 15822,
               "rank": 11,
               "source": "Runecloth",
-              "dps_delta": -18.22
+              "dps_delta": -18.66
             },
             "vendor": {
               "item_id": 20059,
               "rank": 3,
               "source": "Samuel Hawke",
-              "dps_delta": -9.84,
+              "dps_delta": -10.23,
               "standing": "exalted"
             },
             "world": {
@@ -14568,7 +14597,7 @@
               "rank": 7,
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -13.24
+              "dps_delta": -13.64
             }
           }
         },
@@ -14586,7 +14615,7 @@
               "item_name": "Shadow Prowler's Cloak",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: General Drakkisath",
-              "dps_delta": -4.807312411,
+              "dps_delta": -4.879584236,
               "verified": true
             },
             {
@@ -14594,14 +14623,14 @@
               "item_name": "Cloak of the Honor Guard",
               "source_kind": "rep",
               "source": "The League of Arathor",
-              "dps_delta": -5.148440485
+              "dps_delta": -5.219262879
             },
             {
               "item_id": 13122,
               "item_name": "Dark Phantom Cape",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -5.589216002
+              "dps_delta": -5.619446087
             }
           ],
           "runners_up": [
@@ -14621,32 +14650,32 @@
               "item_id": 8195,
               "rank": 12,
               "source": "Leatherworking",
-              "dps_delta": -10.12
+              "dps_delta": -10.2
             },
             "pvp": {
               "item_id": 16337,
               "rank": 11,
               "source": "PvP rank 5 · Sergeant Major · Alliance",
-              "dps_delta": -9.22
+              "dps_delta": -9.32
             },
             "quest": {
               "item_id": 15789,
               "rank": 9,
               "source": "Strange Sources",
-              "dps_delta": -9.21
+              "dps_delta": -9.28
             },
             "rep": {
               "item_id": 20073,
               "rank": 3,
               "source": "The League of Arathor",
-              "dps_delta": -5.15,
+              "dps_delta": -5.22,
               "standing": "exalted"
             },
             "vendor": {
               "item_id": 20073,
               "rank": 3,
               "source": "Samuel Hawke",
-              "dps_delta": -5.15,
+              "dps_delta": -5.22,
               "standing": "exalted"
             },
             "world": {
@@ -14654,7 +14683,7 @@
               "rank": 4,
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -5.59
+              "dps_delta": -5.62
             }
           }
         },
@@ -14665,7 +14694,7 @@
           "source": "Leatherworking",
           "source_kind": "crafted",
           "enchant_id": 1891,
-          "score": 155.994493219,
+          "score": 157.62600568,
           "verified": true,
           "alternatives": [
             {
@@ -14683,11 +14712,11 @@
               "dps_delta": 0
             },
             {
-              "item_id": 11726,
-              "item_name": "Savage Gladiator Chain",
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Gorosh the Dervish",
-              "dps_delta": -27.531057789,
+              "item_id": 226886,
+              "item_name": "Beastmaster's Tunic",
+              "source_kind": "quest",
+              "source": "Saving the Best for Last",
+              "dps_delta": -17.727720613,
               "verified": true
             }
           ],
@@ -14706,34 +14735,34 @@
           "by_kind": {
             "dungeon": {
               "item_id": 11726,
-              "rank": 2,
+              "rank": 3,
               "source": "Blackrock Depths: Gorosh the Dervish",
-              "dps_delta": -27.53
+              "dps_delta": -15.84
             },
             "pvp": {
               "item_id": 220828,
-              "rank": 3,
+              "rank": 4,
               "source": "PvP rank 6 · Knight · Alliance",
-              "dps_delta": -16.55
+              "dps_delta": -16.75
             },
             "quest": {
-              "item_id": 11193,
-              "rank": 10,
-              "source": "Tremors of the Earth",
-              "dps_delta": -22.75
+              "item_id": 226886,
+              "rank": 2,
+              "source": "Saving the Best for Last",
+              "dps_delta": -17.73
             },
             "vendor": {
               "item_id": 220828,
-              "rank": 3,
+              "rank": 4,
               "source": "PvP rank 6 · Knight · Alliance",
-              "dps_delta": -16.55
+              "dps_delta": -16.75
             },
             "world": {
               "item_id": 14670,
-              "rank": 8,
+              "rank": 9,
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -21.85
+              "dps_delta": -22.32
             }
           }
         },
@@ -14744,7 +14773,7 @@
           "source": "Silverwing Sentinels",
           "source_kind": "rep",
           "enchant_id": 1883,
-          "score": 61.603252397,
+          "score": 61.893868174,
           "verified": true,
           "alternatives": [
             {
@@ -14755,18 +14784,18 @@
               "dps_delta": 0
             },
             {
+              "item_id": 226885,
+              "item_name": "Beastmaster's Bindings",
+              "source_kind": "quest",
+              "source": "An Earnest Proposition",
+              "dps_delta": -0.373926641
+            },
+            {
               "item_id": 16402,
               "item_name": "Knight-Captain's Chain Armguards",
               "source_kind": "pvp",
               "source": "PvP rank 8 · Knight-Captain · Alliance",
-              "dps_delta": -1.812178337
-            },
-            {
-              "item_id": 16681,
-              "item_name": "Beaststalker's Bindings",
-              "source_kind": "dungeon",
-              "source": "Stratholme: Fleshflayer Ghoul",
-              "dps_delta": -3.624356674
+              "dps_delta": -1.830575028
             }
           ],
           "runners_up": [
@@ -14776,9 +14805,9 @@
               "source": "PvP rank 12 · Marshal · Alliance"
             },
             {
-              "item_id": 16402,
-              "source_kind": "pvp",
-              "source": "PvP rank 8 · Knight-Captain · Alliance"
+              "item_id": 226885,
+              "source_kind": "quest",
+              "source": "An Earnest Proposition"
             }
           ],
           "kinds": [
@@ -14793,34 +14822,34 @@
           "by_kind": {
             "crafted": {
               "item_id": 20481,
-              "rank": 10,
+              "rank": 11,
               "source": "Leatherworking",
-              "dps_delta": -6.01
+              "dps_delta": -6.1
             },
             "dungeon": {
               "item_id": 16681,
-              "rank": 3,
+              "rank": 4,
               "source": "Stratholme: Fleshflayer Ghoul",
-              "dps_delta": -3.62
+              "dps_delta": -3.66
             },
             "pvp": {
               "item_id": 18448,
-              "rank": 94,
+              "rank": 95,
               "source": "PvP rank 5 · Sergeant Major · Alliance",
-              "dps_delta": -14.84
+              "dps_delta": -15.02
             },
             "quest": {
-              "item_id": 12112,
-              "rank": 8,
-              "source": "Incendius!",
-              "dps_delta": -4.88
+              "item_id": 226885,
+              "rank": 2,
+              "source": "An Earnest Proposition",
+              "dps_delta": -0.37
             },
             "world": {
               "item_id": 16710,
-              "rank": 4,
+              "rank": 5,
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -3.62
+              "dps_delta": -3.66
             }
           }
         },
@@ -14832,8 +14861,8 @@
           "source_kind": "rep",
           "enchant_id": 8206,
           "verified": true,
-          "swap_note": "confirmed by the sim against Theramore Gloves (ilvl 55) (id 271949): kept the pick, +3.8 DPS over it",
-          "dps_delta": 3.7948435468788375,
+          "swap_note": "confirmed by the sim against Theramore Gloves (ilvl 55) (id 271949): kept the pick, +3.9 DPS over it",
+          "dps_delta": 3.8654175735766785,
           "alternatives": [
             {
               "item_id": 231560,
@@ -14854,7 +14883,7 @@
               "item_name": "Gauntlets of Deftness",
               "source_kind": "dungeon",
               "source": "Stratholme: Baron Rivendare",
-              "dps_delta": -4.310039781
+              "dps_delta": -4.373924683
             }
           ],
           "runners_up": [
@@ -14878,38 +14907,38 @@
               "item_id": 15063,
               "rank": 4,
               "source": "Leatherworking",
-              "dps_delta": -6.57
+              "dps_delta": -6.42
             },
             "dungeon": {
               "item_id": 22410,
               "rank": 3,
               "source": "Stratholme: Baron Rivendare",
-              "dps_delta": -4.31
+              "dps_delta": -4.37
             },
             "pvp": {
               "item_id": 220829,
-              "rank": 11,
+              "rank": 12,
               "source": "PvP rank 5 · Sergeant Major · Alliance",
-              "dps_delta": -9.97
+              "dps_delta": -10.07
             },
             "quest": {
-              "item_id": 11918,
-              "rank": 9,
-              "source": "Beware of Pterrordax",
-              "dps_delta": -9.53
+              "item_id": 226883,
+              "rank": 6,
+              "source": "Just Compensation",
+              "dps_delta": -8.51
             },
             "vendor": {
               "item_id": 220829,
-              "rank": 11,
+              "rank": 12,
               "source": "PvP rank 5 · Sergeant Major · Alliance",
-              "dps_delta": -9.97
+              "dps_delta": -10.07
             },
             "world": {
               "item_id": 8305,
               "rank": 5,
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -8.28
+              "dps_delta": -8.41
             }
           }
         },
@@ -14919,7 +14948,7 @@
           "item_name": "Ranger's Belt",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 94.785518998,
+          "score": 95.065498361,
           "verified": true,
           "alternatives": [
             {
@@ -14927,21 +14956,21 @@
               "item_name": "Marshal's Chain Girdle",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Marshal · Alliance",
-              "dps_delta": -4.081478746
-            },
-            {
-              "item_id": 20045,
-              "item_name": "Highlander's Leather Girdle",
-              "source_kind": "rep",
-              "source": "The League of Arathor",
-              "dps_delta": -6.918123126
+              "dps_delta": -4.136333141
             },
             {
               "item_id": 20043,
               "item_name": "Highlander's Chain Girdle",
               "source_kind": "rep",
               "source": "The League of Arathor",
-              "dps_delta": -8.777803608,
+              "dps_delta": -6.734809768
+            },
+            {
+              "item_id": 22325,
+              "item_name": "Belt of the Trickster",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Mor Grayhoof",
+              "dps_delta": -8.134072712,
               "verified": true
             }
           ],
@@ -14952,7 +14981,7 @@
               "source": "PvP rank 12 · Marshal · Alliance"
             },
             {
-              "item_id": 20045,
+              "item_id": 20043,
               "source_kind": "rep",
               "source": "The League of Arathor"
             }
@@ -14960,35 +14989,35 @@
           "by_kind": {
             "crafted": {
               "item_id": 252588,
-              "rank": 5,
+              "rank": 7,
               "source": "Leatherworking",
-              "dps_delta": -10.42
+              "dps_delta": -10.51
             },
             "dungeon": {
-              "item_id": 22232,
-              "rank": 4,
-              "source": "Blackrock Spire: Urok Doomhowl",
-              "dps_delta": -7.46
+              "item_id": 22325,
+              "rank": 2,
+              "source": "Blackrock Spire: Mor Grayhoof",
+              "dps_delta": -8.13
             },
             "quest": {
-              "item_id": 17778,
-              "rank": 16,
-              "source": "Vyletongue Corruption",
-              "dps_delta": -13.47
+              "item_id": 226888,
+              "rank": 6,
+              "source": "Just Compensation",
+              "dps_delta": -8.68
             },
             "rep": {
               "item_id": 20043,
-              "rank": 2,
+              "rank": 3,
               "source": "The League of Arathor",
-              "dps_delta": -8.78,
+              "dps_delta": -6.73,
               "standing": "honored"
             },
             "world": {
               "item_id": 13118,
-              "rank": 21,
+              "rank": 23,
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -13.8
+              "dps_delta": -13.9
             }
           }
         },
@@ -14999,7 +15028,7 @@
           "source": "Illiyana Moonblaze",
           "source_kind": "vendor",
           "enchant_id": 1508,
-          "score": 185.540205202,
+          "score": 188.206703003,
           "verified": true,
           "alternatives": [
             {
@@ -15007,21 +15036,21 @@
               "item_name": "Marshal's Chain Legguards",
               "source_kind": "pvp",
               "source": "PvP rank 12 · Marshal · Alliance",
-              "dps_delta": -6.909967019
+              "dps_delta": -7.272015707
             },
             {
               "item_id": 231558,
               "item_name": "Marshal's Chain Legplates",
               "source_kind": "vendor",
               "source": "PvP rank 12 · Marshal · Alliance",
-              "dps_delta": -12.252894081
+              "dps_delta": -12.716900489
             },
             {
               "item_id": 237818,
               "item_name": "Sentinel's Leather Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -18.732251455,
+              "dps_delta": -18.705154042,
               "verified": true
             }
           ],
@@ -15042,31 +15071,31 @@
               "item_id": 15062,
               "rank": 12,
               "source": "Leatherworking",
-              "dps_delta": -28.93
+              "dps_delta": -29.53
             },
             "dungeon": {
               "item_id": 18736,
               "rank": 6,
               "source": "Stratholme: Fleshflayer Ghoul",
-              "dps_delta": -24.67
+              "dps_delta": -25.42
             },
             "pvp": {
               "item_id": 220832,
               "rank": 8,
               "source": "PvP rank 6 · Knight · Alliance",
-              "dps_delta": -25.71
+              "dps_delta": -26.26
             },
             "quest": {
               "item_id": 12903,
               "rank": 5,
               "source": "Legplates of the Chromatic Defier",
-              "dps_delta": -21.39
+              "dps_delta": -22.14
             },
             "rep": {
               "item_id": 22748,
               "rank": 3,
               "source": "Silverwing Sentinels",
-              "dps_delta": -10.07,
+              "dps_delta": -10.42,
               "standing": "exalted"
             },
             "world": {
@@ -15074,7 +15103,7 @@
               "rank": 9,
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -27.39
+              "dps_delta": -28.17
             }
           }
         },
@@ -15085,7 +15114,7 @@
           "source": "Stratholme: Nerub'enkan",
           "source_kind": "dungeon",
           "enchant_id": 1887,
-          "score": 71.724423365,
+          "score": 72.026962937,
           "verified": true,
           "alternatives": [
             {
@@ -15127,32 +15156,32 @@
               "item_id": 275618,
               "rank": 8,
               "source": "Leatherworking",
-              "dps_delta": -2.18
+              "dps_delta": -2.24
             },
             "pvp": {
               "item_id": 220837,
               "rank": 19,
               "source": "PvP rank 5 · Sergeant Major · Alliance",
-              "dps_delta": -6.45
+              "dps_delta": -6.51
             },
             "quest": {
               "item_id": 15861,
               "rank": 26,
               "source": "Delivery to Ridgewell",
-              "dps_delta": -7.36
+              "dps_delta": -7.42
             },
             "rep": {
               "item_id": 20050,
               "rank": 11,
               "source": "The League of Arathor",
-              "dps_delta": -3.74,
+              "dps_delta": -3.8,
               "standing": "revered"
             },
             "vendor": {
               "item_id": 20050,
               "rank": 11,
               "source": "Samuel Hawke",
-              "dps_delta": -3.74,
+              "dps_delta": -3.8,
               "standing": "revered"
             },
             "world": {
@@ -15160,7 +15189,7 @@
               "rank": 10,
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -3.73
+              "dps_delta": -3.76
             }
           }
         },
@@ -15173,33 +15202,33 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 13098,
-              "item_name": "Painweaver Band",
+              "item_id": 18701,
+              "item_name": "Innervating Band",
               "source_kind": "dungeon",
-              "source": "Blackrock Spire: General Drakkisath",
-              "dps_delta": -0.5589216
+              "source": "Scholomance: Scholomance Handler",
+              "dps_delta": -0.627203574
             },
             {
               "item_id": 9533,
               "item_name": "Masons Fraternity Ring",
               "source_kind": "quest",
               "source": "Divino-matic Rod",
-              "dps_delta": -1.296249488
+              "dps_delta": -1.542491088
             },
             {
               "item_id": 11669,
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -25.769751465,
+              "dps_delta": -25.694637331,
               "verified": true
             }
           ],
           "runners_up": [
             {
-              "item_id": 13098,
+              "item_id": 18701,
               "source_kind": "dungeon",
-              "source": "Blackrock Spire: General Drakkisath"
+              "source": "Scholomance: Scholomance Handler"
             },
             {
               "item_id": 9533,
@@ -15217,61 +15246,60 @@
           },
           "by_kind": {
             "dungeon": {
-              "item_id": 18701,
+              "item_id": 13098,
               "rank": 2,
-              "source": "Scholomance: Scholomance Handler",
-              "dps_delta": -0.39
+              "source": "Blackrock Spire: General Drakkisath",
+              "dps_delta": -0.56
             },
             "quest": {
               "item_id": 9533,
               "rank": 4,
               "source": "Divino-matic Rod",
-              "dps_delta": -1.3
+              "dps_delta": -1.54
             },
             "vendor": {
               "item_id": 272408,
               "rank": 5,
               "source": "Pix Xizzix",
-              "dps_delta": -1.3
+              "dps_delta": -1.54
             }
           }
         },
         {
           "slot": "finger2",
-          "item_id": 18701,
-          "item_name": "Innervating Band",
-          "source": "Scholomance: Scholomance Handler",
+          "item_id": 13098,
+          "item_name": "Painweaver Band",
+          "source": "Blackrock Spire: General Drakkisath",
           "source_kind": "dungeon",
-          "chance": 0.0006,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 13098,
-              "item_name": "Painweaver Band",
+              "item_id": 18701,
+              "item_name": "Innervating Band",
               "source_kind": "dungeon",
-              "source": "Blackrock Spire: General Drakkisath",
-              "dps_delta": -0.168761281
+              "source": "Scholomance: Scholomance Handler",
+              "dps_delta": -0.065258966
             },
             {
               "item_id": 9533,
               "item_name": "Masons Fraternity Ring",
               "source_kind": "quest",
               "source": "Divino-matic Rod",
-              "dps_delta": -0.906089169
+              "dps_delta": -0.98054648
             },
             {
               "item_id": 272408,
               "item_name": "Cutthroat's Signet",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -0.906089169
+              "dps_delta": -0.98054648
             }
           ],
           "runners_up": [
             {
-              "item_id": 13098,
+              "item_id": 18701,
               "source_kind": "dungeon",
-              "source": "Blackrock Spire: General Drakkisath"
+              "source": "Scholomance: Scholomance Handler"
             },
             {
               "item_id": 9533,
@@ -15280,28 +15308,28 @@
             }
           ],
           "not_with": [
-            18701
+            13098
           ],
           "by_kind": {
             "dungeon": {
-              "item_id": 13098,
+              "item_id": 18701,
               "rank": 3,
-              "source": "Blackrock Spire: General Drakkisath",
-              "dps_delta": -0.17
+              "source": "Scholomance: Scholomance Handler",
+              "dps_delta": -0.07
             },
             "quest": {
               "item_id": 9533,
               "rank": 4,
               "source": "Divino-matic Rod",
-              "dps_delta": -0.91,
+              "dps_delta": -0.98,
               "not_with": [
                 9533
               ],
               "next": {
                 "item_id": 13217,
-                "rank": 7,
+                "rank": 8,
                 "source": "Houses of the Holy",
-                "dps_delta": -3.52
+                "dps_delta": -3.37
               }
             },
             "rep": {
@@ -15315,9 +15343,9 @@
               ],
               "next": {
                 "item_id": 21563,
-                "rank": 10,
+                "rank": 11,
                 "source": "Stormpike Guard",
-                "dps_delta": -3.52,
+                "dps_delta": -3.37,
                 "standing": "exalted"
               }
             },
@@ -15325,15 +15353,15 @@
               "item_id": 272408,
               "rank": 5,
               "source": "Pix Xizzix",
-              "dps_delta": -0.91,
+              "dps_delta": -0.98,
               "not_with": [
                 272408
               ],
               "next": {
                 "item_id": 19514,
-                "rank": 12,
+                "rank": 13,
                 "source": "Illiyana Moonblaze",
-                "dps_delta": -3.62,
+                "dps_delta": -3.73,
                 "standing": "honored"
               }
             },
@@ -15347,10 +15375,10 @@
               ],
               "next": {
                 "item_id": 2951,
-                "rank": 13,
+                "rank": 14,
                 "source_kind": "world_drop",
                 "source": "World drop",
-                "dps_delta": -4.53
+                "dps_delta": -4.64
               }
             }
           }
@@ -15362,8 +15390,8 @@
           "source": "General Drakkisath's Demise",
           "source_kind": "quest",
           "verified": true,
-          "swap_note": "confirmed by the sim against Smolderweb's Eye (id 13213): kept the pick, +16.1 DPS over it",
-          "dps_delta": 16.106203314152935,
+          "swap_note": "confirmed by the sim against Smolderweb's Eye (id 13213): kept the pick, +15.9 DPS over it",
+          "dps_delta": 15.852446084597432,
           "alternatives": [
             {
               "item_id": 11815,
@@ -15411,42 +15439,42 @@
             {
               "item_id": 13213,
               "source_kind": "dungeon",
-              "dps_delta": -5
+              "dps_delta": -4.87
             },
             {
               "item_id": 249469,
               "source_kind": "crafted",
-              "dps_delta": -8.49
+              "dps_delta": -8.37
             },
             {
               "item_id": 744,
               "source_kind": "quest",
-              "dps_delta": -8.65
+              "dps_delta": -8.49
             },
             {
               "item_id": 19992,
               "source_kind": "quest",
-              "dps_delta": -9.28
+              "dps_delta": -9.93
             },
             {
               "item_id": 19991,
               "source_kind": "quest",
-              "dps_delta": -11.18
+              "dps_delta": -11.64
             },
             {
               "item_id": 249470,
               "source_kind": "crafted",
-              "dps_delta": -11.25
+              "dps_delta": -11.71
             },
             {
               "item_id": 11815,
               "source_kind": "dungeon",
-              "dps_delta": -12.32
+              "dps_delta": -12.79
             },
             {
-              "item_id": 11819,
-              "source_kind": "dungeon",
-              "dps_delta": -12.69
+              "item_id": 1713,
+              "source_kind": "world_drop",
+              "dps_delta": -13.89
             }
           ]
         },
@@ -15513,42 +15541,42 @@
             {
               "item_id": 249469,
               "source_kind": "crafted",
-              "dps_delta": -3.92
-            },
-            {
-              "item_id": 744,
-              "source_kind": "quest",
-              "dps_delta": -4.17
+              "dps_delta": -4.34
             },
             {
               "item_id": 19992,
               "source_kind": "quest",
-              "dps_delta": -4.97
+              "dps_delta": -4.76
+            },
+            {
+              "item_id": 744,
+              "source_kind": "quest",
+              "dps_delta": -5.28
             },
             {
               "item_id": 19991,
               "source_kind": "quest",
-              "dps_delta": -7.22
+              "dps_delta": -7.33
             },
             {
               "item_id": 249470,
               "source_kind": "crafted",
-              "dps_delta": -7.33
+              "dps_delta": -7.44
             },
             {
               "item_id": 11815,
               "source_kind": "dungeon",
-              "dps_delta": -8.38
+              "dps_delta": -8.5
             },
             {
               "item_id": 1713,
               "source_kind": "world_drop",
-              "dps_delta": -9.51
+              "dps_delta": -9.84
             },
             {
               "item_id": 11819,
               "source_kind": "dungeon",
-              "dps_delta": -9.6
+              "dps_delta": -10.66
             }
           ]
         },
@@ -15572,14 +15600,14 @@
               "item_name": "Grand Marshal's Stave",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Grand Marshal · Alliance",
-              "dps_delta": -1.65864308
+              "dps_delta": -1.177792936
             },
             {
               "item_id": 19100,
               "item_name": "Electrified Dagger",
               "source_kind": "rep",
               "source": "Stormpike Guard",
-              "dps_delta": -17.817304488,
+              "dps_delta": -17.970818127,
               "verified": true
             }
           ],
@@ -15601,21 +15629,21 @@
               "item_id": 18725,
               "rank": 2,
               "source": "Stratholme: Magistrate Barthilas",
-              "dps_delta": -3.87,
+              "dps_delta": -3.66,
               "two_hand": true
             },
             "quest": {
               "item_id": 19106,
               "rank": 7,
               "source": "Korrak the Bloodrager",
-              "dps_delta": -10.56,
+              "dps_delta": -10.6,
               "two_hand": true
             },
             "rep": {
               "item_id": 20069,
               "rank": 3,
               "source": "The League of Arathor",
-              "dps_delta": -4.37,
+              "dps_delta": -3.89,
               "two_hand": true,
               "standing": "exalted"
             },
@@ -15623,7 +15651,7 @@
               "item_id": 20069,
               "rank": 3,
               "source": "Samuel Hawke",
-              "dps_delta": -4.37,
+              "dps_delta": -3.89,
               "two_hand": true,
               "standing": "exalted"
             },
@@ -15632,7 +15660,7 @@
               "rank": 9,
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -14.18,
+              "dps_delta": -14.26,
               "two_hand": true
             }
           }
@@ -15705,7 +15733,7 @@
               "item_name": "Bloodseeker",
               "source_kind": "quest",
               "source": "Korrak the Bloodrager",
-              "dps_delta": -40.895550184,
+              "dps_delta": -40.605643747,
               "verified": true
             }
           ],
@@ -15726,45 +15754,45 @@
               "item_id": 16007,
               "rank": 10,
               "source": "Engineering",
-              "dps_delta": -10.4
+              "dps_delta": -10.5
             },
             "dungeon": {
               "item_id": 18680,
               "rank": 3,
               "source": "Scholomance",
-              "dps_delta": -2.9
+              "dps_delta": -2.91
             },
             "quest": {
               "item_id": 19107,
               "rank": 2,
               "source": "Korrak the Bloodrager",
-              "dps_delta": -40.9
+              "dps_delta": -40.61
             },
             "rep": {
               "item_id": 19562,
               "rank": 4,
               "source": "Silverwing Sentinels",
-              "dps_delta": -5.16,
+              "dps_delta": -5.22,
               "standing": "revered"
             },
             "vendor": {
               "item_id": 19562,
               "rank": 4,
               "source": "Illiyana Moonblaze",
-              "dps_delta": -5.16,
+              "dps_delta": -5.22,
               "standing": "revered"
             }
           }
         }
       ],
-      "set_dps": 1093.178426551375,
-      "set_dps_error": 0.7992369897220954,
+      "set_dps": 1092.994295305329,
+      "set_dps_error": 0.7985108607725057,
       "race_sweep": {
         "guide_race": "night-elf",
         "best_race": "high-order-skyborne",
-        "margin": 3.1582953452550555,
-        "margin_pct": 0.2889094102614573,
-        "error": 1.134061431455178,
+        "margin": 3.395498975510918,
+        "margin_pct": 0.3106602651171553,
+        "error": 1.1324490443716289,
         "beyond_error": true,
         "score_unit": "dps",
         "iterations": 3000,
@@ -15772,45 +15800,45 @@
         "races": [
           {
             "race": "human",
-            "score": 1087.6782037095677,
-            "error": 0.7952365337820126
+            "score": 1087.3294328869902,
+            "error": 0.7989768028834332
           },
           {
             "race": "dwarf",
-            "score": 1083.937464657424,
-            "error": 0.7942234124777537
+            "score": 1083.7945855419994,
+            "error": 0.7957509413229363
           },
           {
             "race": "night-elf",
-            "score": 1093.178426551375,
-            "error": 0.7992369897220954
+            "score": 1092.994295305329,
+            "error": 0.7985108607725057
           },
           {
             "race": "high-order-skyborne",
-            "score": 1096.33672189663,
-            "error": 0.8045592362120583
+            "score": 1096.3897942808399,
+            "error": 0.803007623454826
           }
         ]
       },
       "target_level": 63,
       "filtered_set_dps": {
         "all": {
-          "dps": 1093.2,
+          "dps": 1093,
           "error": 0.8,
           "changed_slots": 0
         },
         "dungeon": {
-          "dps": 924.8,
+          "dps": 926.3,
           "error": 0.8,
           "changed_slots": 13
         },
         "pre_raid": {
-          "dps": 1093.2,
+          "dps": 1093,
           "error": 0.8,
           "changed_slots": 0
         }
       },
-      "no_source_count": 2313,
+      "no_source_count": 2294,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -15840,23 +15868,23 @@
         "legs: Sentinel's Chain Leggings",
         "feet: Beaststalker's Boots",
         "finger1: Don Julio's Band",
-        "finger2: Innervating Band",
+        "finger2: Painweaver Band",
         "trinket1: Blackhand's Breadth",
         "trinket2: Smolderweb's Eye",
         "main_hand: Legionite Glaive",
         "ranged: Eaglehorn Long Bow"
       ],
-      "weights_run_seconds": 2.902923473,
-      "verify_run_seconds": 40.167976534000005,
+      "weights_run_seconds": 3.773266678,
+      "verify_run_seconds": 52.398359305999996,
       "coverage": {
         "back": {
           "eligible": 466,
-          "sourced": 324,
+          "sourced": 325,
           "rare_spawn_skipped": 21
         },
         "chest": {
           "eligible": 732,
-          "sourced": 588,
+          "sourced": 589,
           "rare_spawn_skipped": 20
         },
         "feet": {
@@ -15866,42 +15894,42 @@
         },
         "finger1": {
           "eligible": 394,
-          "sourced": 146,
+          "sourced": 149,
           "rare_spawn_skipped": 6
         },
         "finger2": {
           "eligible": 394,
-          "sourced": 146,
+          "sourced": 149,
           "rare_spawn_skipped": 6
         },
         "hands": {
           "eligible": 614,
-          "sourced": 468,
+          "sourced": 470,
           "rare_spawn_skipped": 12
         },
         "head": {
           "eligible": 458,
-          "sourced": 340,
+          "sourced": 341,
           "rare_spawn_skipped": 10
         },
         "legs": {
           "eligible": 616,
-          "sourced": 460,
+          "sourced": 461,
           "rare_spawn_skipped": 11
         },
         "main_hand": {
           "eligible": 1088,
-          "sourced": 665,
+          "sourced": 666,
           "rare_spawn_skipped": 53
         },
         "neck": {
           "eligible": 219,
-          "sourced": 76,
+          "sourced": 80,
           "rare_spawn_skipped": 5
         },
         "off_hand": {
           "eligible": 174,
-          "sourced": 100,
+          "sourced": 102,
           "rare_spawn_skipped": 25
         },
         "ranged": {
@@ -15926,19 +15954,19 @@
         },
         "waist": {
           "eligible": 560,
-          "sourced": 439,
+          "sourced": 441,
           "rare_spawn_skipped": 14
         },
         "wrist": {
           "eligible": 477,
-          "sourced": 346,
+          "sourced": 347,
           "rare_spawn_skipped": 9
         }
       },
-      "reference_dps_per_point": 0.27946080009378416,
+      "reference_dps_per_point": 0.28097230436202036,
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "agility",
-      "haste_scale_factor": 7.435463198774098,
+      "haste_scale_factor": 7.4601392581366675,
       "hit_to_cap": {
         "baseline": 8,
         "specials": 1
@@ -15957,34 +15985,34 @@
         {
           "stat": "ranged_attack_power",
           "weight": 1,
-          "error": 0.0009568693758990729,
+          "error": 0.0009587610530171209,
           "insignificant": false,
           "weight_per_percent": 1,
-          "scale_factor": 0.3084252740005307,
-          "dps_per_point": 0.27946080009378416,
-          "scale_error": 0.0002951226994443884
+          "scale_factor": 0.3069770974189004,
+          "dps_per_point": 0.28097230436202036,
+          "scale_error": 0.00029431768517348424
         },
         {
           "stat": "agility",
-          "weight": 3.2422764419697954,
-          "error": 0.022236033662906846,
+          "weight": 3.257572009143737,
+          "error": 0.02325776495996557,
           "insignificant": false,
-          "weight_per_percent": 3.2422764419697954,
+          "weight_per_percent": 3.257572009143737,
           "scale_factor": 1,
-          "dps_per_point": 0.9060891685981067,
-          "scale_error": 0.0068581547751670685
+          "dps_per_point": 0.9152875140343323,
+          "scale_error": 0.0071396011798612385
         },
         {
           "stat": "crit",
-          "weight": 2.5735903476093265,
-          "error": 0.04713167872224575,
+          "weight": 2.6497029529460607,
+          "error": 0.0490356783111044,
           "insignificant": false,
           "unit": "rating",
           "rating_factor": 14,
-          "weight_per_percent": 36.03026486653057,
-          "scale_factor": 0.7937603081265276,
-          "dps_per_point": 0.7192176176565425,
-          "scale_error": 0.01453660092401363
+          "weight_per_percent": 37.09584134124485,
+          "scale_factor": 0.8133981215176709,
+          "dps_per_point": 0.7444931445641046,
+          "scale_error": 0.015052830197909756
         },
         {
           "stat": "hit",
@@ -16000,23 +16028,23 @@
         },
         {
           "stat": "melee_haste",
-          "weight": 24.107827164518635,
-          "error": 1.7995679454416067,
+          "weight": 24.301940831620332,
+          "error": 1.8263635929350361,
           "insignificant": false,
-          "weight_per_percent": 24.107827164518635,
-          "scale_factor": 7.435463198774098,
-          "dps_per_point": 6.737192667919042,
-          "scale_error": 0.5550322366553997
+          "weight_per_percent": 24.301940831620332,
+          "scale_factor": 7.4601392581366675,
+          "dps_per_point": 6.828172315929838,
+          "scale_error": 0.5606517945907515
         },
         {
           "stat": "intellect",
-          "weight": 1.212206027899965,
-          "error": 0.006599086523979865,
+          "weight": 1.2059835815186284,
+          "error": 0.006610578919759931,
           "insignificant": false,
-          "weight_per_percent": 1.212206027899965,
-          "scale_factor": 0.37387497630014166,
-          "dps_per_point": 0.3387640664354322,
-          "scale_error": 0.0020353250693116998
+          "weight_per_percent": 1.2059835815186284,
+          "scale_factor": 0.3702093393894384,
+          "dps_per_point": 0.33884798592205145,
+          "scale_error": 0.0020292963290464735
         },
         {
           "stat": "spell_power",
@@ -16037,7 +16065,7 @@
           "source": "Leatherworking",
           "source_kind": "crafted",
           "enchant_id": 1508,
-          "score": 150.181899208,
+          "score": 151.332229631,
           "verified": true,
           "alternatives": [
             {
@@ -16055,11 +16083,11 @@
               "dps_delta": 0
             },
             {
-              "item_id": 16677,
-              "item_name": "Beaststalker's Cap",
-              "source_kind": "dungeon",
-              "source": "Scholomance: Darkmaster Gandling",
-              "dps_delta": -26.308362184,
+              "item_id": 226887,
+              "item_name": "Beastmaster's Cap",
+              "source_kind": "quest",
+              "source": "Saving the Best for Last",
+              "dps_delta": -10.267172849,
               "verified": true
             }
           ],
@@ -16078,22 +16106,22 @@
           "by_kind": {
             "dungeon": {
               "item_id": 16677,
-              "rank": 2,
+              "rank": 3,
               "source": "Scholomance: Darkmaster Gandling",
-              "dps_delta": -26.31
+              "dps_delta": -19.81
             },
             "quest": {
-              "item_id": 11124,
-              "rank": 10,
-              "source": "Jammal'an the Prophet",
-              "dps_delta": -25.91
+              "item_id": 226887,
+              "rank": 2,
+              "source": "Saving the Best for Last",
+              "dps_delta": -10.27
             },
             "world": {
               "item_id": 2245,
-              "rank": 3,
+              "rank": 4,
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -19.51
+              "dps_delta": -19.86
             }
           }
         },
@@ -16104,15 +16132,22 @@
           "source": "In Dreams",
           "source_kind": "quest",
           "enchant_id": 904,
-          "score": 62.030264867,
+          "score": 63.095841341,
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 22340,
+              "item_name": "Pendant of Celerity",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Lord Valthalak",
+              "dps_delta": -3.998871227
+            },
             {
               "item_id": 19534,
               "item_name": "Scout's Medallion",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -4.384995082,
+              "dps_delta": -4.282472646,
               "verified": true
             },
             {
@@ -16120,55 +16155,48 @@
               "item_name": "Skibi's Pendant",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -5.555868258
-            },
-            {
-              "item_id": 20649,
-              "item_name": "Sunprism Pendant",
-              "source_kind": "quest",
-              "source": "Vyral the Vile",
-              "dps_delta": -6.461957426
+              "dps_delta": -5.829446255
             }
           ],
           "runners_up": [
             {
+              "item_id": 22340,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Lord Valthalak"
+            },
+            {
               "item_id": 19534,
               "source_kind": "rep",
               "source": "Warsong Outriders"
-            },
-            {
-              "item_id": 13089,
-              "source_kind": "world_drop",
-              "source": "World drop"
             }
           ],
           "by_kind": {
             "dungeon": {
-              "item_id": 12929,
-              "rank": 6,
-              "source": "Blackrock Spire: Pyroguard Emberseer",
-              "dps_delta": -7.27
+              "item_id": 22340,
+              "rank": 3,
+              "source": "Blackrock Spire: Lord Valthalak",
+              "dps_delta": -4
             },
             "rep": {
               "item_id": 19534,
               "rank": 2,
               "source": "Warsong Outriders",
-              "dps_delta": -4.38,
+              "dps_delta": -4.28,
               "standing": "honored"
             },
             "vendor": {
               "item_id": 19534,
               "rank": 2,
               "source": "Kelm Hargunth",
-              "dps_delta": -4.38,
+              "dps_delta": -4.28,
               "standing": "honored"
             },
             "world": {
               "item_id": 13089,
-              "rank": 3,
+              "rank": 4,
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -5.56
+              "dps_delta": -5.83
             }
           }
         },
@@ -16178,7 +16206,7 @@
           "item_name": "Darkspear Pauldrons",
           "source": "Creeg Bothunk",
           "source_kind": "vendor",
-          "score": 123.5717288,
+          "score": 125.050285588,
           "verified": true,
           "ties": [
             {
@@ -16199,14 +16227,14 @@
               "item_name": "Warlord's Chain Shoulders",
               "source_kind": "pvp",
               "source": "PvP rank 13 · Warlord · Horde",
-              "dps_delta": -7.587495152
+              "dps_delta": -7.949711679
             },
             {
               "item_id": 227069,
               "item_name": "Champion's Chain Shoulders",
               "source_kind": "pvp",
               "source": "PvP rank 10 · Champion · Horde",
-              "dps_delta": -8.154802517
+              "dps_delta": -8.237587626
             }
           ],
           "runners_up": [
@@ -16228,27 +16256,27 @@
           "by_kind": {
             "crafted": {
               "item_id": 19050,
-              "rank": 17,
+              "rank": 16,
               "source": "Tailoring",
-              "dps_delta": -20.06
+              "dps_delta": -20.31
             },
             "dungeon": {
               "item_id": 18742,
               "rank": 6,
               "source": "Stratholme: Crimson Sorcerer",
-              "dps_delta": -12.57
+              "dps_delta": -12.97
             },
             "quest": {
               "item_id": 15822,
               "rank": 11,
               "source": "Runecloth",
-              "dps_delta": -18.22
+              "dps_delta": -18.66
             },
             "rep": {
               "item_id": 20194,
               "rank": 3,
               "source": "The Defilers",
-              "dps_delta": -9.84,
+              "dps_delta": -10.23,
               "standing": "exalted"
             },
             "world": {
@@ -16256,7 +16284,7 @@
               "rank": 7,
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -13.24
+              "dps_delta": -13.64
             }
           }
         },
@@ -16274,7 +16302,7 @@
               "item_name": "Shadow Prowler's Cloak",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: General Drakkisath",
-              "dps_delta": -4.825551758,
+              "dps_delta": -4.848081675,
               "verified": true
             },
             {
@@ -16282,14 +16310,14 @@
               "item_name": "Deathguard's Cloak",
               "source_kind": "rep",
               "source": "The Defilers",
-              "dps_delta": -5.148440485
+              "dps_delta": -5.219262879
             },
             {
               "item_id": 13122,
               "item_name": "Dark Phantom Cape",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -5.589216002
+              "dps_delta": -5.619446087
             }
           ],
           "runners_up": [
@@ -16309,26 +16337,26 @@
               "item_id": 8195,
               "rank": 11,
               "source": "Leatherworking",
-              "dps_delta": -10.12
+              "dps_delta": -10.2
             },
             "quest": {
               "item_id": 15789,
               "rank": 9,
               "source": "Strange Sources",
-              "dps_delta": -9.21
+              "dps_delta": -9.28
             },
             "rep": {
               "item_id": 20068,
               "rank": 3,
               "source": "The Defilers",
-              "dps_delta": -5.15,
+              "dps_delta": -5.22,
               "standing": "exalted"
             },
             "vendor": {
               "item_id": 20068,
               "rank": 3,
               "source": "Rutherford Twing",
-              "dps_delta": -5.15,
+              "dps_delta": -5.22,
               "standing": "exalted"
             },
             "world": {
@@ -16336,7 +16364,7 @@
               "rank": 4,
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -5.59
+              "dps_delta": -5.62
             }
           }
         },
@@ -16347,7 +16375,7 @@
           "source": "Leatherworking",
           "source_kind": "crafted",
           "enchant_id": 1891,
-          "score": 155.994493219,
+          "score": 157.62600568,
           "verified": true,
           "alternatives": [
             {
@@ -16365,11 +16393,11 @@
               "dps_delta": 0
             },
             {
-              "item_id": 11726,
-              "item_name": "Savage Gladiator Chain",
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Gorosh the Dervish",
-              "dps_delta": -25.008210208,
+              "item_id": 226886,
+              "item_name": "Beastmaster's Tunic",
+              "source_kind": "quest",
+              "source": "Saving the Best for Last",
+              "dps_delta": -15.998785351,
               "verified": true
             }
           ],
@@ -16388,34 +16416,34 @@
           "by_kind": {
             "dungeon": {
               "item_id": 11726,
-              "rank": 2,
+              "rank": 3,
               "source": "Blackrock Depths: Gorosh the Dervish",
-              "dps_delta": -25.01
+              "dps_delta": -15.84
             },
             "pvp": {
               "item_id": 220827,
-              "rank": 3,
+              "rank": 4,
               "source": "PvP rank 6 · Stone Guard · Horde",
-              "dps_delta": -16.55
+              "dps_delta": -16.75
             },
             "quest": {
-              "item_id": 11193,
-              "rank": 10,
-              "source": "Broken Alliances",
-              "dps_delta": -22.75
+              "item_id": 226886,
+              "rank": 2,
+              "source": "Saving the Best for Last",
+              "dps_delta": -16
             },
             "vendor": {
               "item_id": 220827,
-              "rank": 3,
+              "rank": 4,
               "source": "PvP rank 6 · Stone Guard · Horde",
-              "dps_delta": -16.55
+              "dps_delta": -16.75
             },
             "world": {
               "item_id": 14670,
-              "rank": 8,
+              "rank": 9,
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -21.85
+              "dps_delta": -22.32
             }
           }
         },
@@ -16426,7 +16454,7 @@
           "source": "Warsong Outriders",
           "source_kind": "rep",
           "enchant_id": 1883,
-          "score": 61.603252397,
+          "score": 61.893868174,
           "verified": true,
           "alternatives": [
             {
@@ -16437,18 +16465,18 @@
               "dps_delta": 0
             },
             {
+              "item_id": 226885,
+              "item_name": "Beastmaster's Bindings",
+              "source_kind": "quest",
+              "source": "An Earnest Proposition",
+              "dps_delta": -0.373926641
+            },
+            {
               "item_id": 16517,
               "item_name": "Legionnaire's Chain Bracers",
               "source_kind": "pvp",
               "source": "PvP rank 8 · Legionnaire · Horde",
-              "dps_delta": -1.812178337
-            },
-            {
-              "item_id": 16681,
-              "item_name": "Beaststalker's Bindings",
-              "source_kind": "dungeon",
-              "source": "Stratholme: Fleshflayer Ghoul",
-              "dps_delta": -3.624356674
+              "dps_delta": -1.830575028
             }
           ],
           "runners_up": [
@@ -16458,9 +16486,9 @@
               "source": "PvP rank 12 · General · Horde"
             },
             {
-              "item_id": 16517,
-              "source_kind": "pvp",
-              "source": "PvP rank 8 · Legionnaire · Horde"
+              "item_id": 226885,
+              "source_kind": "quest",
+              "source": "An Earnest Proposition"
             }
           ],
           "standing": "exalted",
@@ -16470,40 +16498,40 @@
           "by_kind": {
             "crafted": {
               "item_id": 20481,
-              "rank": 10,
+              "rank": 11,
               "source": "Leatherworking",
-              "dps_delta": -6.01
+              "dps_delta": -6.1
             },
             "dungeon": {
               "item_id": 16681,
-              "rank": 3,
+              "rank": 4,
               "source": "Stratholme: Fleshflayer Ghoul",
-              "dps_delta": -3.62
+              "dps_delta": -3.66
             },
             "pvp": {
               "item_id": 16532,
-              "rank": 91,
+              "rank": 92,
               "source": "PvP rank 5 · First Sergeant · Horde",
-              "dps_delta": -14.84
+              "dps_delta": -15.02
             },
             "quest": {
-              "item_id": 12112,
-              "rank": 8,
-              "source": "Disharmony of Fire",
-              "dps_delta": -4.88
+              "item_id": 226885,
+              "rank": 2,
+              "source": "An Earnest Proposition",
+              "dps_delta": -0.37
             },
             "vendor": {
               "item_id": 4794,
-              "rank": 63,
+              "rank": 64,
               "source": "Bernard Brubaker",
-              "dps_delta": -13.59
+              "dps_delta": -13.73
             },
             "world": {
               "item_id": 16710,
-              "rank": 4,
+              "rank": 5,
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -3.62
+              "dps_delta": -3.66
             }
           }
         },
@@ -16515,10 +16543,19 @@
           "source_kind": "vendor",
           "enchant_id": 8206,
           "verified": true,
+          "swap_note": "confirmed by the sim against Raider Gloves (ilvl 55) (id 272100): kept the pick, +3.9 DPS over it",
+          "dps_delta": 3.856677560775097,
           "alternatives": [
             {
               "item_id": 16571,
               "item_name": "General's Chain Gloves",
+              "source_kind": "vendor",
+              "source": "PvP rank 12 · General · Horde",
+              "dps_delta": 0
+            },
+            {
+              "item_id": 231569,
+              "item_name": "General's Chain Grips",
               "source_kind": "vendor",
               "source": "PvP rank 12 · General · Horde",
               "dps_delta": 0
@@ -16529,14 +16566,6 @@
               "source_kind": "vendor",
               "source": "PvP rank 12 · General · Horde",
               "dps_delta": 0
-            },
-            {
-              "item_id": 867,
-              "item_name": "Gloves of Holy Might",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -2.595624054,
-              "verified": true
             }
           ],
           "runners_up": [
@@ -16546,7 +16575,7 @@
               "source": "PvP rank 12 · General · Horde"
             },
             {
-              "item_id": 231575,
+              "item_id": 231569,
               "source_kind": "vendor",
               "source": "PvP rank 12 · General · Horde"
             }
@@ -16560,32 +16589,32 @@
               "item_id": 15063,
               "rank": 4,
               "source": "Leatherworking",
-              "dps_delta": -6.57
+              "dps_delta": -6.42
             },
             "dungeon": {
               "item_id": 22410,
               "rank": 3,
               "source": "Stratholme: Baron Rivendare",
-              "dps_delta": -4.31
+              "dps_delta": -4.37
             },
             "pvp": {
               "item_id": 220830,
-              "rank": 11,
+              "rank": 12,
               "source": "PvP rank 5 · First Sergeant · Horde",
-              "dps_delta": -9.97
+              "dps_delta": -10.07
             },
             "quest": {
-              "item_id": 11918,
-              "rank": 9,
-              "source": "Beware of Pterrordax",
-              "dps_delta": -9.53
+              "item_id": 226883,
+              "rank": 6,
+              "source": "Just Compensation",
+              "dps_delta": -8.51
             },
             "world": {
               "item_id": 8305,
               "rank": 5,
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -8.28
+              "dps_delta": -8.41
             }
           }
         },
@@ -16595,7 +16624,7 @@
           "item_name": "Ranger's Belt",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 94.785518998,
+          "score": 95.065498361,
           "verified": true,
           "alternatives": [
             {
@@ -16603,21 +16632,21 @@
               "item_name": "General's Chain Girdle",
               "source_kind": "pvp",
               "source": "PvP rank 12 · General · Horde",
-              "dps_delta": -4.081478746
-            },
-            {
-              "item_id": 20190,
-              "item_name": "Defiler's Leather Girdle",
-              "source_kind": "rep",
-              "source": "The Defilers",
-              "dps_delta": -6.918123126
+              "dps_delta": -4.136333141
             },
             {
               "item_id": 20150,
               "item_name": "Defiler's Chain Girdle",
               "source_kind": "rep",
               "source": "The Defilers",
-              "dps_delta": -8.794450711,
+              "dps_delta": -6.734809768
+            },
+            {
+              "item_id": 22325,
+              "item_name": "Belt of the Trickster",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Mor Grayhoof",
+              "dps_delta": -8.831253428,
               "verified": true
             }
           ],
@@ -16628,7 +16657,7 @@
               "source": "PvP rank 12 · General · Horde"
             },
             {
-              "item_id": 20190,
+              "item_id": 20150,
               "source_kind": "rep",
               "source": "The Defilers"
             }
@@ -16636,34 +16665,34 @@
           "by_kind": {
             "crafted": {
               "item_id": 252588,
-              "rank": 5,
+              "rank": 7,
               "source": "Leatherworking",
-              "dps_delta": -10.42
+              "dps_delta": -10.51
             },
             "dungeon": {
-              "item_id": 22232,
-              "rank": 4,
-              "source": "Blackrock Spire: Urok Doomhowl",
-              "dps_delta": -7.46
+              "item_id": 22325,
+              "rank": 2,
+              "source": "Blackrock Spire: Mor Grayhoof",
+              "dps_delta": -8.83
             },
             "quest": {
-              "item_id": 17778,
-              "rank": 16,
-              "source": "Vyletongue Corruption",
-              "dps_delta": -13.47
+              "item_id": 226888,
+              "rank": 6,
+              "source": "Just Compensation",
+              "dps_delta": -8.68
             },
             "rep": {
               "item_id": 20150,
-              "rank": 2,
+              "rank": 3,
               "source": "The Defilers",
-              "dps_delta": -8.79,
+              "dps_delta": -6.73,
               "standing": "honored"
             },
             "world": {
               "item_id": 19088,
-              "rank": 11,
+              "rank": 13,
               "source": "Grunnda Wolfheart",
-              "dps_delta": -11.55
+              "dps_delta": -11.66
             }
           }
         },
@@ -16674,7 +16703,7 @@
           "source": "Warsong Outriders",
           "source_kind": "rep",
           "enchant_id": 1508,
-          "score": 149.509940335,
+          "score": 151.110861661,
           "verified": true,
           "alternatives": [
             {
@@ -16689,14 +16718,14 @@
               "item_name": "General's Chain Legplates",
               "source_kind": "vendor",
               "source": "PvP rank 12 · General · Horde",
-              "dps_delta": -2.183847434
+              "dps_delta": -2.293996464
             },
             {
               "item_id": 22740,
               "item_name": "Outrider's Leather Pants",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -15.431795519,
+              "dps_delta": -15.972230709,
               "verified": true
             }
           ],
@@ -16726,32 +16755,32 @@
               "item_id": 15062,
               "rank": 8,
               "source": "Leatherworking",
-              "dps_delta": -18.86
+              "dps_delta": -19.11
             },
             "dungeon": {
               "item_id": 18736,
               "rank": 4,
               "source": "Stratholme: Fleshflayer Ghoul",
-              "dps_delta": -14.6
+              "dps_delta": -15
             },
             "pvp": {
               "item_id": 220833,
               "rank": 6,
               "source": "PvP rank 6 · Stone Guard · Horde",
-              "dps_delta": -15.64
+              "dps_delta": -15.83
             },
             "quest": {
               "item_id": 12903,
               "rank": 3,
               "source": "Legplates of the Chromatic Defier",
-              "dps_delta": -11.32
+              "dps_delta": -11.71
             },
             "world": {
               "item_id": 13130,
               "rank": 7,
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -17.32
+              "dps_delta": -17.75
             }
           }
         },
@@ -16762,7 +16791,7 @@
           "source": "Stratholme: Nerub'enkan",
           "source_kind": "dungeon",
           "enchant_id": 1887,
-          "score": 71.724423365,
+          "score": 72.026962937,
           "verified": true,
           "alternatives": [
             {
@@ -16784,7 +16813,7 @@
               "item_name": "Timmy's Galoshes",
               "source_kind": "dungeon",
               "source": "Stratholme: Timmy the Cruel",
-              "dps_delta": -0.346919041
+              "dps_delta": -0.373926641
             }
           ],
           "runners_up": [
@@ -16804,32 +16833,32 @@
               "item_id": 275618,
               "rank": 8,
               "source": "Leatherworking",
-              "dps_delta": -2.18
+              "dps_delta": -2.24
             },
             "pvp": {
               "item_id": 220836,
               "rank": 19,
               "source": "PvP rank 5 · First Sergeant · Horde",
-              "dps_delta": -6.45
+              "dps_delta": -6.51
             },
             "quest": {
               "item_id": 15861,
               "rank": 26,
               "source": "The Darkstone Tablet",
-              "dps_delta": -7.36
+              "dps_delta": -7.42
             },
             "rep": {
               "item_id": 20154,
               "rank": 11,
               "source": "The Defilers",
-              "dps_delta": -3.74,
+              "dps_delta": -3.8,
               "standing": "revered"
             },
             "vendor": {
               "item_id": 20154,
               "rank": 11,
               "source": "Rutherford Twing",
-              "dps_delta": -3.74,
+              "dps_delta": -3.8,
               "standing": "revered"
             },
             "world": {
@@ -16837,7 +16866,7 @@
               "rank": 10,
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -3.73
+              "dps_delta": -3.76
             }
           }
         },
@@ -16850,33 +16879,33 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 13098,
-              "item_name": "Painweaver Band",
+              "item_id": 18701,
+              "item_name": "Innervating Band",
               "source_kind": "dungeon",
-              "source": "Blackrock Spire: General Drakkisath",
-              "dps_delta": -0.5589216
+              "source": "Scholomance: Scholomance Handler",
+              "dps_delta": -0.627203574
             },
             {
               "item_id": 9533,
               "item_name": "Masons Fraternity Ring",
               "source_kind": "quest",
               "source": "Divino-matic Rod",
-              "dps_delta": -1.296249488
+              "dps_delta": -1.542491088
             },
             {
               "item_id": 11669,
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -23.655170963,
+              "dps_delta": -23.803862481,
               "verified": true
             }
           ],
           "runners_up": [
             {
-              "item_id": 13098,
+              "item_id": 18701,
               "source_kind": "dungeon",
-              "source": "Blackrock Spire: General Drakkisath"
+              "source": "Scholomance: Scholomance Handler"
             },
             {
               "item_id": 9533,
@@ -16896,55 +16925,54 @@
           },
           "by_kind": {
             "dungeon": {
-              "item_id": 18701,
+              "item_id": 13098,
               "rank": 2,
-              "source": "Scholomance: Scholomance Handler",
-              "dps_delta": -0.39
+              "source": "Blackrock Spire: General Drakkisath",
+              "dps_delta": -0.56
             },
             "quest": {
               "item_id": 9533,
               "rank": 4,
               "source": "Divino-matic Rod",
-              "dps_delta": -1.3
+              "dps_delta": -1.54
             }
           }
         },
         {
           "slot": "finger2",
-          "item_id": 18701,
-          "item_name": "Innervating Band",
-          "source": "Scholomance: Scholomance Handler",
+          "item_id": 13098,
+          "item_name": "Painweaver Band",
+          "source": "Blackrock Spire: General Drakkisath",
           "source_kind": "dungeon",
-          "chance": 0.0006,
           "verified": true,
           "alternatives": [
             {
-              "item_id": 13098,
-              "item_name": "Painweaver Band",
+              "item_id": 18701,
+              "item_name": "Innervating Band",
               "source_kind": "dungeon",
-              "source": "Blackrock Spire: General Drakkisath",
-              "dps_delta": -0.168761281
+              "source": "Scholomance: Scholomance Handler",
+              "dps_delta": -0.065258966
             },
             {
               "item_id": 9533,
               "item_name": "Masons Fraternity Ring",
               "source_kind": "quest",
               "source": "Divino-matic Rod",
-              "dps_delta": -0.906089169
+              "dps_delta": -0.98054648
             },
             {
               "item_id": 272408,
               "item_name": "Cutthroat's Signet",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -0.906089169
+              "dps_delta": -0.98054648
             }
           ],
           "runners_up": [
             {
-              "item_id": 13098,
+              "item_id": 18701,
               "source_kind": "dungeon",
-              "source": "Blackrock Spire: General Drakkisath"
+              "source": "Scholomance: Scholomance Handler"
             },
             {
               "item_id": 9533,
@@ -16953,28 +16981,28 @@
             }
           ],
           "not_with": [
-            18701
+            13098
           ],
           "by_kind": {
             "dungeon": {
-              "item_id": 13098,
+              "item_id": 18701,
               "rank": 3,
-              "source": "Blackrock Spire: General Drakkisath",
-              "dps_delta": -0.17
+              "source": "Scholomance: Scholomance Handler",
+              "dps_delta": -0.07
             },
             "quest": {
               "item_id": 9533,
               "rank": 4,
               "source": "Divino-matic Rod",
-              "dps_delta": -0.91,
+              "dps_delta": -0.98,
               "not_with": [
                 9533
               ],
               "next": {
                 "item_id": 13217,
-                "rank": 7,
+                "rank": 8,
                 "source": "Houses of the Holy",
-                "dps_delta": -3.52
+                "dps_delta": -3.37
               }
             },
             "rep": {
@@ -16988,9 +17016,9 @@
               ],
               "next": {
                 "item_id": 21563,
-                "rank": 9,
+                "rank": 10,
                 "source": "Frostwolf Clan",
-                "dps_delta": -3.52,
+                "dps_delta": -3.37,
                 "standing": "exalted"
               }
             },
@@ -17007,7 +17035,7 @@
                 "item_id": 272408,
                 "rank": 5,
                 "source": "Pix Xizzix",
-                "dps_delta": -0.91
+                "dps_delta": -0.98
               }
             },
             "world": {
@@ -17020,10 +17048,10 @@
               ],
               "next": {
                 "item_id": 2951,
-                "rank": 12,
+                "rank": 13,
                 "source_kind": "world_drop",
                 "source": "World drop",
-                "dps_delta": -4.53
+                "dps_delta": -4.64
               }
             }
           }
@@ -17035,8 +17063,8 @@
           "source": "For The Horde!",
           "source_kind": "quest",
           "verified": true,
-          "swap_note": "confirmed by the sim against Rune of the Guard Captain (id 19120): kept the pick, +16.9 DPS over it",
-          "dps_delta": 16.928593783196902,
+          "swap_note": "confirmed by the sim against Rune of the Guard Captain (id 19120): kept the pick, +16.7 DPS over it",
+          "dps_delta": 16.667005339321804,
           "alternatives": [
             {
               "item_id": 11815,
@@ -17090,42 +17118,42 @@
             {
               "item_id": 19120,
               "source_kind": "quest",
-              "dps_delta": -5.96
+              "dps_delta": -5.51
             },
             {
               "item_id": 13213,
               "source_kind": "dungeon",
-              "dps_delta": -6.52
+              "dps_delta": -6.53
             },
             {
               "item_id": 249469,
               "source_kind": "crafted",
-              "dps_delta": -8.27
+              "dps_delta": -8
             },
             {
               "item_id": 19992,
               "source_kind": "quest",
-              "dps_delta": -10.73
+              "dps_delta": -10.07
             },
             {
               "item_id": 249470,
               "source_kind": "crafted",
-              "dps_delta": -12.48
+              "dps_delta": -12
             },
             {
               "item_id": 19991,
               "source_kind": "quest",
-              "dps_delta": -12.56
+              "dps_delta": -12.07
             },
             {
               "item_id": 11815,
               "source_kind": "dungeon",
-              "dps_delta": -13.68
+              "dps_delta": -13.2
             },
             {
               "item_id": 1713,
               "source_kind": "world_drop",
-              "dps_delta": -15.54
+              "dps_delta": -15.23
             }
           ]
         },
@@ -17199,42 +17227,42 @@
             {
               "item_id": 13213,
               "source_kind": "dungeon",
-              "dps_delta": -1.33
+              "dps_delta": -1.6
             },
             {
               "item_id": 249469,
               "source_kind": "crafted",
-              "dps_delta": -2.58
+              "dps_delta": -2.68
             },
             {
               "item_id": 19992,
               "source_kind": "quest",
-              "dps_delta": -5.25
+              "dps_delta": -4.59
             },
             {
               "item_id": 19991,
               "source_kind": "quest",
-              "dps_delta": -6.61
+              "dps_delta": -7.26
             },
             {
               "item_id": 249470,
               "source_kind": "crafted",
-              "dps_delta": -6.76
+              "dps_delta": -7.4
             },
             {
               "item_id": 11815,
               "source_kind": "dungeon",
-              "dps_delta": -7.75
+              "dps_delta": -8.4
             },
             {
               "item_id": 1713,
               "source_kind": "world_drop",
-              "dps_delta": -9.96
+              "dps_delta": -10.71
             },
             {
               "item_id": 13968,
               "source_kind": "quest",
-              "dps_delta": -11.17
+              "dps_delta": -11.84
             }
           ]
         },
@@ -17258,14 +17286,14 @@
               "item_name": "High Warlord's War Staff",
               "source_kind": "pvp",
               "source": "PvP rank 14 · High Warlord · Horde",
-              "dps_delta": -1.65864308
+              "dps_delta": -1.177792936
             },
             {
               "item_id": 19099,
               "item_name": "Glacial Blade",
               "source_kind": "rep",
               "source": "Frostwolf Clan",
-              "dps_delta": -15.025845555,
+              "dps_delta": -15.627696092,
               "verified": true
             }
           ],
@@ -17287,21 +17315,21 @@
               "item_id": 18725,
               "rank": 2,
               "source": "Stratholme: Magistrate Barthilas",
-              "dps_delta": -3.87,
+              "dps_delta": -3.66,
               "two_hand": true
             },
             "quest": {
               "item_id": 19106,
               "rank": 7,
               "source": "The Legend of Korrak",
-              "dps_delta": -10.56,
+              "dps_delta": -10.6,
               "two_hand": true
             },
             "rep": {
               "item_id": 20220,
               "rank": 3,
               "source": "The Defilers",
-              "dps_delta": -4.37,
+              "dps_delta": -3.89,
               "two_hand": true,
               "standing": "exalted"
             },
@@ -17309,7 +17337,7 @@
               "item_id": 20220,
               "rank": 3,
               "source": "Rutherford Twing",
-              "dps_delta": -4.37,
+              "dps_delta": -3.89,
               "two_hand": true,
               "standing": "exalted"
             },
@@ -17318,7 +17346,7 @@
               "rank": 9,
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -14.18,
+              "dps_delta": -14.26,
               "two_hand": true
             }
           }
@@ -17391,7 +17419,7 @@
               "item_name": "Dark Iron Rifle",
               "source_kind": "crafted",
               "source": "Engineering",
-              "dps_delta": -42.469415898,
+              "dps_delta": -42.834995035,
               "verified": true
             }
           ],
@@ -17412,45 +17440,45 @@
               "item_id": 16007,
               "rank": 10,
               "source": "Engineering",
-              "dps_delta": -10.4
+              "dps_delta": -10.5
             },
             "dungeon": {
               "item_id": 18680,
               "rank": 3,
               "source": "Scholomance",
-              "dps_delta": -2.9
+              "dps_delta": -2.91
             },
             "quest": {
               "item_id": 19107,
               "rank": 2,
               "source": "The Legend of Korrak",
-              "dps_delta": -2.52
+              "dps_delta": -2.55
             },
             "rep": {
               "item_id": 19558,
               "rank": 4,
               "source": "Warsong Outriders",
-              "dps_delta": -5.16,
+              "dps_delta": -5.22,
               "standing": "revered"
             },
             "vendor": {
               "item_id": 19558,
               "rank": 4,
               "source": "Kelm Hargunth",
-              "dps_delta": -5.16,
+              "dps_delta": -5.22,
               "standing": "revered"
             }
           }
         }
       ],
-      "set_dps": 1073.5510397311073,
-      "set_dps_error": 0.7849446347289571,
+      "set_dps": 1073.4821395412423,
+      "set_dps_error": 0.7861396483365993,
       "race_sweep": {
         "guide_race": "troll",
         "best_race": "windshaper-skyborne",
-        "margin": 12.791916495745227,
-        "margin_pct": 1.1915517774496518,
-        "error": 1.114032608738492,
+        "margin": 12.882565946263185,
+        "margin_pct": 1.2000726860503343,
+        "error": 1.115911669275831,
         "beyond_error": true,
         "score_unit": "dps",
         "iterations": 3000,
@@ -17458,45 +17486,45 @@
         "races": [
           {
             "race": "orc",
-            "score": 1073.834478516031,
-            "error": 0.7971605781026878
+            "score": 1073.6914073207722,
+            "error": 0.7982024242903295
           },
           {
             "race": "tauren",
-            "score": 1060.421704341506,
-            "error": 0.7818144140600175
+            "score": 1060.383979496396,
+            "error": 0.7833129637179199
           },
           {
             "race": "troll",
-            "score": 1073.5510397311073,
-            "error": 0.7849446347289571
+            "score": 1073.4821395412423,
+            "error": 0.7861396483365993
           },
           {
             "race": "windshaper-skyborne",
-            "score": 1086.3429562268525,
-            "error": 0.7905255048022893
+            "score": 1086.3647054875055,
+            "error": 0.7919869360912335
           }
         ]
       },
       "target_level": 63,
       "filtered_set_dps": {
         "all": {
-          "dps": 1073.6,
+          "dps": 1073.5,
           "error": 0.8,
           "changed_slots": 0
         },
         "dungeon": {
-          "dps": 903.6,
+          "dps": 905.3,
           "error": 0.8,
           "changed_slots": 14
         },
         "pre_raid": {
-          "dps": 1073.6,
+          "dps": 1073.5,
           "error": 0.8,
           "changed_slots": 0
         }
       },
-      "no_source_count": 2312,
+      "no_source_count": 2293,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -17526,23 +17554,23 @@
         "legs: Outrider's Chain Leggings",
         "feet: Beaststalker's Boots",
         "finger1: Don Julio's Band",
-        "finger2: Innervating Band",
+        "finger2: Painweaver Band",
         "trinket1: Blackhand's Breadth",
         "trinket2: Rune of the Guard Captain",
         "main_hand: Legionite Glaive",
         "ranged: Eaglehorn Long Bow"
       ],
-      "weights_run_seconds": 2.902923473,
-      "verify_run_seconds": 40.708856798,
+      "weights_run_seconds": 3.773266678,
+      "verify_run_seconds": 52.651944877,
       "coverage": {
         "back": {
           "eligible": 472,
-          "sourced": 331,
+          "sourced": 332,
           "rare_spawn_skipped": 21
         },
         "chest": {
           "eligible": 728,
-          "sourced": 582,
+          "sourced": 583,
           "rare_spawn_skipped": 20
         },
         "feet": {
@@ -17552,42 +17580,42 @@
         },
         "finger1": {
           "eligible": 397,
-          "sourced": 153,
+          "sourced": 156,
           "rare_spawn_skipped": 6
         },
         "finger2": {
           "eligible": 397,
-          "sourced": 153,
+          "sourced": 156,
           "rare_spawn_skipped": 6
         },
         "hands": {
           "eligible": 615,
-          "sourced": 465,
+          "sourced": 467,
           "rare_spawn_skipped": 12
         },
         "head": {
           "eligible": 458,
-          "sourced": 341,
+          "sourced": 342,
           "rare_spawn_skipped": 10
         },
         "legs": {
           "eligible": 611,
-          "sourced": 454,
+          "sourced": 455,
           "rare_spawn_skipped": 11
         },
         "main_hand": {
           "eligible": 1086,
-          "sourced": 673,
+          "sourced": 674,
           "rare_spawn_skipped": 53
         },
         "neck": {
           "eligible": 223,
-          "sourced": 79,
+          "sourced": 83,
           "rare_spawn_skipped": 5
         },
         "off_hand": {
           "eligible": 171,
-          "sourced": 96,
+          "sourced": 98,
           "rare_spawn_skipped": 25
         },
         "ranged": {
@@ -17612,19 +17640,19 @@
         },
         "waist": {
           "eligible": 564,
-          "sourced": 438,
+          "sourced": 440,
           "rare_spawn_skipped": 14
         },
         "wrist": {
           "eligible": 481,
-          "sourced": 359,
+          "sourced": 360,
           "rare_spawn_skipped": 9
         }
       },
-      "reference_dps_per_point": 0.27946080009378416,
+      "reference_dps_per_point": 0.28097230436202036,
       "score_unit": "reference_stat_points",
       "scale_reference_stat": "agility",
-      "haste_scale_factor": 7.435463198774098,
+      "haste_scale_factor": 7.4601392581366675,
       "hit_to_cap": {
         "baseline": 7.7,
         "specials": 1.2999999999999998
