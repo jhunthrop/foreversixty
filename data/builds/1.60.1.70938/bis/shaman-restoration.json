@@ -2,7 +2,7 @@
   "spec": "shaman-restoration",
   "build": "1.60.1.70938",
   "engine_version": "f9385b498",
-  "generated_at": "2026-11-17T05:48:10Z",
+  "generated_at": "2026-11-17T17:10:23Z",
   "bands": [
     {
       "spec": "shaman-restoration",
@@ -1092,8 +1092,8 @@
         "finger2: Minor Channeling Ring",
         "main_hand: Staff of Westfall"
       ],
-      "weights_run_seconds": 5.539953182,
-      "verify_run_seconds": 32.256764045,
+      "weights_run_seconds": 7.124251813,
+      "verify_run_seconds": 42.218635353,
       "coverage": {
         "back": {
           "eligible": 104,
@@ -2312,8 +2312,8 @@
         "finger2: Furlfeather Ring",
         "main_hand: Taskmaster Axe"
       ],
-      "weights_run_seconds": 5.539953182,
-      "verify_run_seconds": 34.630345435,
+      "weights_run_seconds": 7.124251813,
+      "verify_run_seconds": 45.231187428,
       "coverage": {
         "back": {
           "eligible": 105,
@@ -3666,8 +3666,8 @@
         "main_hand: Death Speaker Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 5.947040045,
-      "verify_run_seconds": 34.649140225,
+      "weights_run_seconds": 7.514831003,
+      "verify_run_seconds": 45.051880290999996,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -5023,8 +5023,8 @@
         "main_hand: Death Speaker Scepter",
         "off_hand: Orb of Souls"
       ],
-      "weights_run_seconds": 5.947040045,
-      "verify_run_seconds": 35.944775778,
+      "weights_run_seconds": 7.514831003,
+      "verify_run_seconds": 46.83744746,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -6465,8 +6465,8 @@
         "main_hand: Hand of Righteousness",
         "off_hand: Orb of Lorica"
       ],
-      "weights_run_seconds": 11.626506512,
-      "verify_run_seconds": 126.64727489699999,
+      "weights_run_seconds": 15.191312638,
+      "verify_run_seconds": 164.552210328,
       "coverage": {
         "back": {
           "eligible": 257,
@@ -7902,8 +7902,8 @@
         "main_hand: Hand of Righteousness",
         "off_hand: Prophetic Cane"
       ],
-      "weights_run_seconds": 11.626506512,
-      "verify_run_seconds": 129.108064318,
+      "weights_run_seconds": 15.191312638,
+      "verify_run_seconds": 167.18902427,
       "coverage": {
         "back": {
           "eligible": 259,
@@ -9503,8 +9503,8 @@
         "trinket2: Ankh of Life",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 12.682292098,
-      "verify_run_seconds": 169.664695374,
+      "weights_run_seconds": 16.195626699,
+      "verify_run_seconds": 221.36877713200002,
       "coverage": {
         "back": {
           "eligible": 330,
@@ -11103,8 +11103,8 @@
         "trinket2: Ankh of Life",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 12.682292098,
-      "verify_run_seconds": 171.853957663,
+      "weights_run_seconds": 16.195626699,
+      "verify_run_seconds": 226.085957535,
       "coverage": {
         "back": {
           "eligible": 335,
@@ -12826,8 +12826,8 @@
         "trinket2: Burst of Knowledge",
         "ranged: Tidal Totem"
       ],
-      "weights_run_seconds": 14.824641193,
-      "verify_run_seconds": 386.701338057,
+      "weights_run_seconds": 19.631142527,
+      "verify_run_seconds": 501.9199881,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -14559,8 +14559,8 @@
         "trinket2: Burst of Knowledge",
         "ranged: Tidal Totem"
       ],
-      "weights_run_seconds": 14.824641193,
-      "verify_run_seconds": 401.332338087,
+      "weights_run_seconds": 19.631142527,
+      "verify_run_seconds": 522.511353173,
       "coverage": {
         "back": {
           "eligible": 473,
@@ -16306,8 +16306,8 @@
         "trinket2: Serenity Field",
         "ranged: Tidal Totem"
       ],
-      "weights_run_seconds": 9.384347098,
-      "verify_run_seconds": 311.493091515,
+      "weights_run_seconds": 12.260778582,
+      "verify_run_seconds": 406.808585392,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -18055,8 +18055,8 @@
         "trinket2: Serenity Field",
         "ranged: Tidal Totem"
       ],
-      "weights_run_seconds": 9.384347098,
-      "verify_run_seconds": 317.98606355600003,
+      "weights_run_seconds": 12.260778582,
+      "verify_run_seconds": 416.857944481,
       "coverage": {
         "back": {
           "eligible": 473,
