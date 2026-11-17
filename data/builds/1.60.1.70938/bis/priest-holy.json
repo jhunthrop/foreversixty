@@ -2,7 +2,7 @@
   "spec": "priest-holy",
   "build": "1.60.1.70938",
   "engine_version": "f9385b498",
-  "generated_at": "2026-11-17T06:38:14Z",
+  "generated_at": "2026-11-17T17:54:36Z",
   "bands": [
     {
       "spec": "priest-holy",
@@ -1139,8 +1139,8 @@
         "main_hand: Staff of Westfall",
         "ranged: Sable Wand"
       ],
-      "weights_run_seconds": 18.81195773,
-      "verify_run_seconds": 107.22279834300001,
+      "weights_run_seconds": 20.015833119,
+      "verify_run_seconds": 113.140400259,
       "coverage": {
         "back": {
           "eligible": 104,
@@ -2385,8 +2385,8 @@
         "main_hand: Living Root",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 18.81195773,
-      "verify_run_seconds": 100.467748375,
+      "weights_run_seconds": 20.015833119,
+      "verify_run_seconds": 104.42637714,
       "coverage": {
         "back": {
           "eligible": 105,
@@ -3795,8 +3795,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Thunderwood"
       ],
-      "weights_run_seconds": 18.42421,
-      "verify_run_seconds": 118.480727262,
+      "weights_run_seconds": 19.223253009,
+      "verify_run_seconds": 125.473866745,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -5179,8 +5179,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Wand of Mana Concentration"
       ],
-      "weights_run_seconds": 18.42421,
-      "verify_run_seconds": 114.317703548,
+      "weights_run_seconds": 19.223253009,
+      "verify_run_seconds": 121.002837857,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -6648,8 +6648,8 @@
         "off_hand: Orb of Lorica",
         "ranged: Captain Rackmore's Tiller"
       ],
-      "weights_run_seconds": 83.508035904,
-      "verify_run_seconds": 193.625185979,
+      "weights_run_seconds": 87.288227944,
+      "verify_run_seconds": 196.453256058,
       "coverage": {
         "back": {
           "eligible": 257,
@@ -8095,8 +8095,8 @@
         "off_hand: Beacon of Hope",
         "ranged: Captain Rackmore's Tiller"
       ],
-      "weights_run_seconds": 83.508035904,
-      "verify_run_seconds": 187.114304739,
+      "weights_run_seconds": 87.288227944,
+      "verify_run_seconds": 190.31869109099998,
       "coverage": {
         "back": {
           "eligible": 259,
@@ -9720,8 +9720,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Cairnstone Sliver"
       ],
-      "weights_run_seconds": 32.027616271,
-      "verify_run_seconds": 281.526181337,
+      "weights_run_seconds": 33.854368532,
+      "verify_run_seconds": 300.089306018,
       "coverage": {
         "back": {
           "eligible": 330,
@@ -11361,8 +11361,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Charged Lightning Rod"
       ],
-      "weights_run_seconds": 32.027616271,
-      "verify_run_seconds": 255.311426325,
+      "weights_run_seconds": 33.854368532,
+      "verify_run_seconds": 272.20805283000004,
       "coverage": {
         "back": {
           "eligible": 335,
@@ -13107,8 +13107,8 @@
         "main_hand: Redemption",
         "ranged: Wand of Eternal Light"
       ],
-      "weights_run_seconds": 29.843231746,
-      "verify_run_seconds": 733.950058701,
+      "weights_run_seconds": 31.494576915,
+      "verify_run_seconds": 784.2256642140001,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -14832,8 +14832,8 @@
         "main_hand: Redemption",
         "ranged: Wand of Eternal Light"
       ],
-      "weights_run_seconds": 29.843231746,
-      "verify_run_seconds": 726.713039458,
+      "weights_run_seconds": 31.494576915,
+      "verify_run_seconds": 777.9765073130001,
       "coverage": {
         "back": {
           "eligible": 472,
@@ -16592,8 +16592,8 @@
         "trinket2: Dormant Heart of the Mountain",
         "ranged: Wand of Eternal Light"
       ],
-      "weights_run_seconds": 18.332319034,
-      "verify_run_seconds": 376.22643378299995,
+      "weights_run_seconds": 19.127637924,
+      "verify_run_seconds": 380.853159511,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -18321,8 +18321,8 @@
         "trinket2: Dormant Heart of the Mountain",
         "ranged: Wand of Eternal Light"
       ],
-      "weights_run_seconds": 18.332319034,
-      "verify_run_seconds": 375.87407409400004,
+      "weights_run_seconds": 19.127637924,
+      "verify_run_seconds": 380.881069259,
       "coverage": {
         "back": {
           "eligible": 472,
