@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat. An item's crit rating
 
 ### Band 20 (dwarf, 0000000000000000-000000000000000000-2530000010000000)
 
-Set DPS (verified): 73.1. Weights run: 7.1s. Verify run: 41.9s. 286 eligible items had no known source.
+Set DPS (verified): 73.1. Weights run: 5.5s. Verify run: 32.3s. 286 eligible items had no known source.
 
 Race sweep: dwarf 73.1 ± 0.0 (heal_score); the guide race dwarf is best.
 
@@ -40,7 +40,7 @@ No-known-source sample (15 of 286, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (dwarf, 0000000000000000-000000000000000000-5530001010411000)
 
-Set DPS (verified): 133.8. Weights run: 7.7s. Verify run: 45.1s. 475 eligible items had no known source.
+Set DPS (verified): 133.8. Weights run: 5.9s. Verify run: 34.6s. 475 eligible items had no known source.
 
 Race sweep: dwarf 133.9 ± 0.0 (heal_score); the guide race dwarf is best.
 
@@ -72,7 +72,7 @@ No-known-source sample (15 of 475, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (dwarf, 0000000000000000-000000000000000000-5530001011513051)
 
-Set DPS (verified): 207.7. Weights run: 14.8s. Verify run: 164.9s. 804 eligible items had no known source.
+Set DPS (verified): 207.7. Weights run: 11.6s. Verify run: 126.6s. 804 eligible items had no known source.
 
 Race sweep: dwarf 207.8 ± 0.1 (heal_score); the guide race dwarf is best.
 
@@ -104,7 +104,7 @@ No-known-source sample (15 of 804, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (dwarf, 0000000000000000-055000000000000000-5530001011513051)
 
-Set DPS (verified): 280.3. Weights run: 16.6s. Verify run: 220.4s. 1053 eligible items had no known source.
+Set DPS (verified): 280.3. Weights run: 12.7s. Verify run: 169.7s. 1053 eligible items had no known source.
 
 Race sweep: dwarf 280.4 ± 0.1 (heal_score); the guide race dwarf is best.
 
@@ -136,7 +136,7 @@ No-known-source sample (15 of 1053, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60 (dwarf, 0000000000000000-055000000000000000-5530003315513151)
 
-Set DPS (verified): 374.1. Weights run: 19.2s. Verify run: 500.0s. 2377 eligible items had no known source.
+Set DPS (verified): 374.1. Weights run: 14.8s. Verify run: 386.7s. 2360 eligible items had no known source.
 
 Race sweep: dwarf 374.0 ± 0.2 (heal_score); the guide race dwarf is best.
 
@@ -164,11 +164,11 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 **New at 60:** head: Living Crown; neck: Jeweled Amulet of Cainwyn; shoulder: Theramore Shoulderguards; back: Drape of Recovery; chest: Mooncloth Vest; wrist: Loomguard Armbraces; hands: Theramore Handwraps; waist: Wisdom of the Timbermaw; legs: Legplates of the Chromatic Defier; feet: Mooncloth Boots; finger1: Band of Mending; finger2: Fordring's Seal; trinket1: Ankh of Life; trinket2: Burst of Knowledge; ranged: Tidal Totem
 
-No-known-source sample (15 of 2377, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings; 4196 Feathered Mantle; 4642 Star of Xil'yeh
+No-known-source sample (15 of 2360, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings; 4196 Feathered Mantle; 4642 Star of Xil'yeh
 
 ### Band 60, raid preset (dwarf, 0000000000000000-055000000000000000-5530003315513151)
 
-Set DPS (verified): 895.5. Weights run: 11.9s. Verify run: 401.2s. 2377 eligible items had no known source.
+Set DPS (verified): 895.5. Weights run: 9.4s. Verify run: 311.5s. 2360 eligible items had no known source.
 
 Race sweep: dwarf 896.0 ± 0.6 (heal_score); the guide race dwarf is best.
 
@@ -196,13 +196,13 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 **New at 60:** head: Living Crown; neck: Jeweled Amulet of Cainwyn; shoulder: Theramore Shoulderguards; back: Drape of Recovery; chest: Robes of the Exalted; wrist: Loomguard Armbraces; hands: Theramore Handwraps; waist: Sash of Mercy; legs: Legplates of the Chromatic Defier; feet: Mooncloth Boots; finger1: Fordring's Seal; finger2: Band of Mending; trinket2: Serenity Field; ranged: Tidal Totem
 
-No-known-source sample (15 of 2377, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings; 4196 Feathered Mantle; 4642 Star of Xil'yeh
+No-known-source sample (15 of 2360, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings; 4196 Feathered Mantle; 4642 Star of Xil'yeh
 
 ## Horde
 
 ### Band 20 (orc, 0000000000000000-000000000000000000-2530000010000000)
 
-Set DPS (verified): 72.9. Weights run: 7.1s. Verify run: 44.6s. 275 eligible items had no known source.
+Set DPS (verified): 72.9. Weights run: 5.5s. Verify run: 34.6s. 275 eligible items had no known source.
 
 Race sweep: orc 72.9 ± 0.0, windshaper-skyborne 72.8 ± 0.0, troll 72.8 ± 0.0, tauren 72.8 ± 0.0 (heal_score); the guide race orc is best.
 
@@ -234,7 +234,7 @@ No-known-source sample (15 of 275, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (orc, 0000000000000000-000000000000000000-5530001010411000)
 
-Set DPS (verified): 134.5. Weights run: 7.7s. Verify run: 46.8s. 469 eligible items had no known source.
+Set DPS (verified): 134.5. Weights run: 5.9s. Verify run: 35.9s. 469 eligible items had no known source.
 
 Race sweep: orc 134.5 ± 0.0, windshaper-skyborne 134.4 ± 0.0, troll 133.4 ± 0.0, tauren 133.3 ± 0.0 (heal_score); the guide race orc is best.
 
@@ -266,7 +266,7 @@ No-known-source sample (15 of 469, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (orc, 0000000000000000-000000000000000000-5530001011513051)
 
-Set DPS (verified): 208.2. Weights run: 14.8s. Verify run: 168.1s. 787 eligible items had no known source.
+Set DPS (verified): 208.2. Weights run: 11.6s. Verify run: 129.1s. 787 eligible items had no known source.
 
 Race sweep: orc 208.3 ± 0.1, windshaper-skyborne 208.1 ± 0.1, troll 205.9 ± 0.1, tauren 205.9 ± 0.1 (heal_score); the guide race orc is best.
 
@@ -298,7 +298,7 @@ No-known-source sample (15 of 787, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (orc, 0000000000000000-055000000000000000-5530001011513051)
 
-Set DPS (verified): 282.2. Weights run: 16.6s. Verify run: 225.0s. 1021 eligible items had no known source.
+Set DPS (verified): 282.2. Weights run: 12.7s. Verify run: 171.9s. 1021 eligible items had no known source.
 
 Race sweep: orc 282.1 ± 0.1, windshaper-skyborne 282.0 ± 0.1, troll 279.6 ± 0.1, tauren 279.5 ± 0.1 (heal_score); the guide race orc is best.
 
@@ -330,7 +330,7 @@ No-known-source sample (15 of 1021, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60 (orc, 0000000000000000-055000000000000000-5530003315513151)
 
-Set DPS (verified): 376.1. Weights run: 19.2s. Verify run: 510.5s. 2334 eligible items had no known source.
+Set DPS (verified): 376.1. Weights run: 14.8s. Verify run: 401.3s. 2312 eligible items had no known source.
 
 Race sweep: orc 376.0 ± 0.2, windshaper-skyborne 375.9 ± 0.2, troll 374.0 ± 0.2, tauren 372.8 ± 0.2 (heal_score); the guide race orc is best.
 
@@ -358,11 +358,11 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 **New at 60:** head: Living Crown; neck: Jeweled Amulet of Cainwyn; shoulder: Darkspear Shoulderguards; back: Drape of Recovery; chest: Mooncloth Vest; wrist: Loomguard Armbraces; hands: Raider Handwraps; waist: Wisdom of the Timbermaw; legs: Legplates of the Chromatic Defier; feet: Mooncloth Boots; finger1: Band of Mending; finger2: Fordring's Seal; trinket1: Ankh of Life; trinket2: Burst of Knowledge; ranged: Tidal Totem
 
-No-known-source sample (15 of 2334, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings; 4196 Feathered Mantle
+No-known-source sample (15 of 2312, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings; 4196 Feathered Mantle
 
 ### Band 60, raid preset (orc, 0000000000000000-055000000000000000-5530003315513151)
 
-Set DPS (verified): 900.3. Weights run: 11.9s. Verify run: 402.6s. 2334 eligible items had no known source.
+Set DPS (verified): 900.3. Weights run: 9.4s. Verify run: 318.0s. 2312 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 904.8 ± 0.6, orc 900.4 ± 0.6, troll 900.0 ± 0.6, tauren 893.8 ± 0.5 (heal_score); windshaper-skyborne beats the guide race orc by 4.4 (0.48%) ± 0.8, beyond error.
 
@@ -370,7 +370,7 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 | Slot | Item | Source | Score (healing_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Living Crown (252561) | Leatherworking [crafted] | 105.5 healing_power points (25.90 DPS) | yes | Warlord's Mail Skullcap (231669, -7.39 DPS) [vendor]; Champion's Mail Skullcap (227168, -9.79 DPS) [vendor]; Mooncloth Circlet (14140, -26.01 DPS, sim-verified) [crafted] |
+| head | Living Crown (252561) | Leatherworking [crafted] | 105.5 healing_power points (25.90 DPS) | yes | Warlord's Mail Skullcap (231669, -7.39 DPS) [vendor]; Champion's Mail Skullcap (227168, -9.79 DPS) [vendor]; Coif of The Five Thunders (227002, -23.67 DPS, sim-verified) [quest] |
 | neck | Jeweled Amulet of Cainwyn (1443) | World drop [world_drop] | 47.8 healing_power points (11.73 DPS) | yes | Tooth of Gnarr (13141, -2.96 DPS) [dungeon]; Lady Maye's Pendant (14558, -3.08 DPS) [world_drop]; Animated Chain Necklace (18723, -4.24 DPS, sim-verified) [dungeon] |
 | shoulder | Darkspear Shoulderguards (272958) | Creeg Bothunk [vendor] | 50.4 healing_power points (12.38 DPS) | yes | Champion's Mail Epaulets (227166, +0.00 DPS) [vendor]; Warlord's Mail Epaulets (231665, +0.00 DPS) [vendor]; Mantle of Lost Hope (22234, -1.77 DPS, sim-verified) [dungeon] |
 | back | Drape of Recovery (272413) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Shroud of the Exile (15421, -2.55 DPS) [quest]; Gracious Cape (18743, -2.60 DPS) [dungeon]; Battle Healer's Cloak (19526, -4.32 DPS, sim-verified) [rep] |
@@ -390,5 +390,5 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 **New at 60:** head: Living Crown; neck: Jeweled Amulet of Cainwyn; shoulder: Darkspear Shoulderguards; back: Drape of Recovery; chest: Robes of the Exalted; wrist: Loomguard Armbraces; hands: Raider Handwraps; waist: Sash of Mercy; legs: Legplates of the Chromatic Defier; feet: Mooncloth Boots; finger1: Fordring's Seal; finger2: Band of Mending; trinket2: Serenity Field; ranged: Tidal Totem
 
-No-known-source sample (15 of 2334, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings; 4196 Feathered Mantle
+No-known-source sample (15 of 2312, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings; 4196 Feathered Mantle
 
