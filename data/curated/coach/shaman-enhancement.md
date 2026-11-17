@@ -21,13 +21,14 @@ This is the best Enhancement Shaman on Forever. Enhancement is the shaman's mele
 
 **The priority, in words.** Your buttons, in the order you press them. Where a button has a reason or a condition, it follows the name.
 
-- Windfury Weapon on your weapon from thirty, before the pull and whenever it falls off. Before thirty, and in a raid where a Windfury Totem reaches you, use Rockbiter Weapon.
+- Windfury Weapon on your weapon from thirty, before the pull and whenever it falls off, in a raid too: since the 10 November hotfix it works beside another shaman's Windfury Totem. Before thirty, Flametongue Weapon from ten, Rockbiter Weapon before that.
 - Windfury Totem from thirty-two in your Air slot when no other shaman has it down near the melee.
 - Strength of Earth Totem whenever it is down. It is Strength for every melee player near you, and in Forever the totem reaches the whole raid within thirty yards.
 - Mana Spring Totem from twenty-six in your Water slot when your party has no other shaman.
 - Totemic Call from twenty-two when the boss moves away from your totems: follow it, and it brings them to you.
 - Rage of the Farseer from forty, with your trinkets and any damage racial, on the pull and again on cooldown.
 - Stormstrike on cooldown from twenty-five. It makes your next Lightning Bolt, Chain Lightning or Earth Shock on the target hit twenty percent harder.
+- Flame Shock right after Stormstrike when it is not on the target and your mana is above about a third. Its burn ticks through two shock cooldowns, so one Flame Shock between your Earth Shocks does more than another Earth Shock.
 - Lightning Bolt at five Maelstrom Weapon stacks once you have all five points: it is instant and free then.
 - Searing Totem when it is down, unless the boss is about to die.
 - Fire Nova on a Clearcasting proc, with the raid build. It is free then, and in melee your Searing Totem stands within its ten yards of the boss.
