@@ -10,11 +10,11 @@ Lane brief: `design/reviews/sim-accuracy/brief.md`. Site from origin/main eced5d
 |---|---|---|---|---|
 | Warcraft Logs | no Forever partition found (every subdomain 403 to scripts; no zone page indexed) | none | none | no data |
 | foreverlogs.gg `/api/statistics?phase=2` | measured parses | Zul'Farrak median above Marksmanship and Retribution (n 7 to 13 a spec); Maraudon second behind Demonology (n up to 8); one Enhancement tops the site's single-kill list in a mid-level dungeon | no cat parses at those levels | small leveling-dungeon groups; no rogue, warrior or cat to compare; every level 60 zone (BRD, LBRS, UBRS, Scholomance, Stratholme, Dire Maul) has zero parses |
-| our reports (Cloud SQL, read only) | measured | not read: the owner's gcloud login has expired ("Reauthentication failed"); the proxy is up but the secret cannot be read | - | blocked |
+| our reports (Cloud SQL and the logs bucket, read only, after the login was renewed) | measured, advanced logging | none at 55 to 60: all 11 reports (10 complete, 1 live, 20 Oct to 16 Nov, about 1,380 fights) read with `tiers-enh/own60.py`; level is each player's own advanced-log level; the highest player in any fight is 51, and only 10 damage-dealer rows in 3 reports sit at 40 or above (one rogue at 47, two warriors at 44 and 51, a Retribution paladin at 45, a Fury warrior at 51, a priest and a druid at 41 to 42, no shaman, hunter or cat) | - | no data at 55 to 60; nothing to rank |
 | brokenmeta.gg tier list | another sim, level 60, 180 s, level 63 boss, best datamined gear from dungeons, raids and crafting, client 70753 | 10th, two-hander and Windfury Weapon, its notes still quote Stormstrike's pre-hotfix 150% | 11th | agrees on Enhancement; its Feral predates 70755 |
 | kami-labs Forever Enhancement page | theory | the 10 Nov hotfix roughly halves Stormstrike; no measured DPS anywhere | - | argues against top 3 |
 
-The player's feel matches leveling dungeons: Enhancement leads small Zul'Farrak and Maraudon groups, where there is trash to cleave, no raid buffs and no rogues, warriors or cats logged. That is not the raid 60 single-target table /tiers ranks. Both level 60 sims that exist put Enhancement 10th; BrokenMeta's would be lower still on the 8 s, 100% Stormstrike our engine carries.
+The player's feel matches leveling dungeons: Enhancement leads small Zul'Farrak and Maraudon groups, where there is trash to cleave, no raid buffs and no rogues, warriors or cats logged. That is not the raid 60 single-target table /tiers ranks. Our own uploads have no player above 51. Both level 60 sims that exist put Enhancement 10th; BrokenMeta's would be lower still on the 8 s, 100% Stormstrike our engine carries.
 
 ## Enhancement's raid card
 
@@ -37,7 +37,7 @@ Every DPS spec's raid entry carries the same 14 buffs and 8 debuffs, the 180 s f
 
 - **Held (text, needs the box for the coach tests):** `data/curated/coach/shaman-enhancement.md`, the log coach's persona, still said Rockbiter Weapon under a raid Windfury Totem and lacked the Flame Shock line the card casts since 13 Nov. Committed on branch `lane/tiers-enh-coach` (pushed, not on main); land it once `go test ./internal/coach/` passes on the box.
 - **Open O1:** the box is unreachable; the raid 60 breakdowns for Enhancement, Feral, Fury and Combat (`tiers-enh/breakdown.sh`) did not run.
-- **Open O2:** read our own level 50+ uploads once the gcloud login is renewed.
+- **Closed O2:** our own uploads read once the login was renewed: no player at 55 to 60 (highest 51).
 - **Open O3:** Shifting Power casts and the cat's mana in a level 60 log.
 - **Open O4 (13 Nov O1):** Windfury Totem rank 2's hit 35% above an extra swing.
 - **Open O5:** damage specs carry no expertise weight (`specs.go` WeightStats); measure whether any pre-raid item with expertise would change a melee pick.
