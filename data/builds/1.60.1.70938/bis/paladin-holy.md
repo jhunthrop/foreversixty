@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat. An item's crit rating
 
 ### Band 20 (human, 50320001000000000-00000000000000000-00000000000000000)
 
-Set DPS (verified): 48.6. Weights run: 5.8s. Verify run: 41.0s. 312 eligible items had no known source.
+Set DPS (verified): 48.6. Weights run: 5.9s. Verify run: 41.3s. 312 eligible items had no known source.
 
 Race sweep: human 48.6 ± 0.0, dwarf 46.8 ± 0.0 (heal_score); the guide race human is best.
 
@@ -40,7 +40,7 @@ No-known-source sample (15 of 312, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (human, 50320015000100000-40000000000000000-00000000000000000)
 
-Set DPS (verified): 106.6. Weights run: 6.5s. Verify run: 45.6s. 537 eligible items had no known source.
+Set DPS (verified): 106.6. Weights run: 6.6s. Verify run: 45.6s. 537 eligible items had no known source.
 
 Race sweep: human 106.6 ± 0.0, dwarf 103.9 ± 0.0 (heal_score); the guide race human is best.
 
@@ -72,7 +72,7 @@ No-known-source sample (15 of 537, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 40 (human, 50320115000100000-50000000000000000-05030000000000000)
 
-Set DPS (verified): 193.8. Weights run: 5.1s. Verify run: 31.9s. 808 eligible items had no known source.
+Set DPS (verified): 193.8. Weights run: 5.2s. Verify run: 31.4s. 808 eligible items had no known source.
 
 Race sweep: human 193.8 ± 0.0, dwarf 191.1 ± 0.1 (heal_score); the guide race human is best.
 
@@ -104,7 +104,7 @@ No-known-source sample (15 of 808, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (human, 50320215012101230-50000000000000000-05030000000000000)
 
-Set DPS (verified): 205.9. Weights run: 12.1s. Verify run: 171.0s. 1050 eligible items had no known source.
+Set DPS (verified): 205.9. Weights run: 12.2s. Verify run: 172.1s. 1050 eligible items had no known source.
 
 Race sweep: human 205.7 ± 0.2, dwarf 199.9 ± 0.2 (heal_score); the guide race human is best.
 
@@ -136,7 +136,7 @@ No-known-source sample (15 of 1050, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60 (human, 50320215012101251-50322000000000000-05030000000000000)
 
-Set DPS (verified): 276.0. Weights run: 13.4s. Verify run: 672.2s. 2437 eligible items had no known source.
+Set DPS (verified): 276.0. Weights run: 13.4s. Verify run: 689.1s. 2415 eligible items had no known source.
 
 Race sweep: human 275.8 ± 0.3, dwarf 267.9 ± 0.3 (heal_score); the guide race human is best.
 
@@ -159,16 +159,16 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | trinket1 | Burst of Knowledge (11832) | Blackrock Depths: Ambassador Flamelash [dungeon] | sim-verified (+10.8 DPS vs the runner-up, not corroborated against the finished set) | yes | Enriched Seal (271903, -3.94 DPS) [rep]; Serenity Field (272439, -5.56 DPS) [vendor]; Weakness Analyzer (272438, -6.27 DPS) [vendor] |
 | trinket2 | Shard of the Splithooves (10659) | Heroes of Old [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Enriched Seal (271903, -1.33 DPS, sim-verified) [rep]; Serenity Field (272439, -2.94 DPS) [vendor]; Weakness Analyzer (272438, -3.64 DPS) [vendor] |
 | main_hand | The Hammer of Grace (11923) | Blackrock Depths: Chest of The Seven [dungeon] | sim-verified (+1.2 DPS vs the runner-up, not corroborated against the finished set) | yes | Grand Marshal's Warhammer (23454, +0.00 DPS) [vendor]; Hammer of the Grand Crusader (18717, -1.23 DPS, sim-verified) [dungeon]; Hand of Edward the Odd (2243, -1.62 DPS) [world_drop] |
-| off_hand | Lei of the Lifegiver (19312) | Stormpike Guard [rep] | 64.9 healing_power points (15.28 DPS) | yes | Grand Marshal's Tome of Restoration (234590, -0.38 DPS) [pvp]; Grand Marshal's Barricade (235473, -1.68 DPS) [vendor]; Gizlock's Hypertech Buckler (17718, -3.73 DPS) [dungeon] |
+| off_hand | Lei of the Lifegiver (19312) | Stormpike Guard [rep] | 64.9 healing_power points (15.28 DPS) | yes | Grand Marshal's Tome of Restoration (234590, -0.38 DPS) [pvp]; Grand Marshal's Barricade (235473, -1.68 DPS) [vendor]; Tome of Divine Right (22319, -2.28 DPS) [dungeon] |
 | ranged | - | - |  |  |  |
 
 **New at 60:** head: Living Crown; neck: Jeweled Amulet of Cainwyn; shoulder: Devout Mantle; back: Drape of Recovery; chest: Devout Robe; wrist: Devout Bracers; hands: Devout Gloves; waist: Devout Belt; legs: Martyr's Legplates; feet: Devout Sandals; finger1: Rosewine Circle; finger2: Band of Mending; trinket1: Burst of Knowledge; trinket2: Shard of the Splithooves; main_hand: The Hammer of Grace; off_hand: Lei of the Lifegiver
 
-No-known-source sample (15 of 2437, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3579 Ornate Copper Shoulders; 4081 Blackforge Leggings; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4797 Fiery Cloak
+No-known-source sample (15 of 2415, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3579 Ornate Copper Shoulders; 4081 Blackforge Leggings; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4797 Fiery Cloak
 
 ### Band 60, raid preset (human, 50320215012101251-50322000000000000-05030000000000000)
 
-Set DPS (verified): 721.0. Weights run: 7.6s. Verify run: 366.0s. 2437 eligible items had no known source.
+Set DPS (verified): 721.0. Weights run: 7.7s. Verify run: 375.7s. 2415 eligible items had no known source.
 
 Race sweep: human 722.1 ± 0.7, dwarf 706.3 ± 0.7 (heal_score); the guide race human is best.
 
@@ -187,7 +187,7 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | legs | Martyr's Legplates (250600) | Blacksmithing [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Marshal's Lamellar Legguards (231639, -1.48 DPS) [vendor]; Sentinel's Silk Leggings (237815, -5.54 DPS, sim-verified) [vendor]; Knight-Captain's Lamellar Legguards (227150, -6.76 DPS) [vendor] |
 | feet | Devout Sandals (16691) | Stratholme: Maleki the Pallid [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Knight-Lieutenant's Lamellar Greaves (227153, +0.00 DPS) [vendor]; Marshal's Lamellar Greaves (231646, +0.00 DPS) [vendor]; Mooncloth Boots (15802, -23.51 DPS, sim-verified) [crafted] |
 | finger1 | Fordring's Seal (16058) | In Dreams [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Rosewine Circle (13178, -2.22 DPS) [dungeon]; Blessed Band of Light (272407, -4.74 DPS) [vendor]; Naglering (11669, -19.04 DPS, sim-verified) [dungeon] |
-| finger2 | Band of Mending (22334) | Stratholme: Balnazzar [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Rosewine Circle (13178, -2.63 DPS, sim-verified) [dungeon]; Blessed Band of Light (272407, -3.83 DPS) [vendor]; Channeler's Ring (272406, -4.99 DPS) [vendor] |
+| finger2 | Band of Mending (22334) | Stratholme: Balnazzar [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Rosewine Circle (13178, -2.63 DPS, sim-verified) [dungeon]; Blessed Band of Light (272407, -3.83 DPS) [vendor]; Amalgam's Band (22326, -3.88 DPS) [dungeon] |
 | trinket1 | Burst of Knowledge (11832) | Blackrock Depths: Ambassador Flamelash [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Serenity Field (272439, -0.24 DPS) [vendor]; Eye of the Beast (13968, -1.37 DPS, sim-verified) [quest]; Weakness Analyzer (272438, -1.54 DPS) [vendor] |
 | trinket2 | Dormant Heart of the Mountain (249473) | Enchanting [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Uther's Strength (11302, +0.00 DPS) [world_drop]; Weakness Analyzer (272438, +0.00 DPS) [vendor]; Serenity Field (272439, -5.15 DPS, sim-verified) [vendor] |
 | main_hand | Hammer of the Grand Crusader (18717) | Stratholme: Balnazzar [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Grand Marshal's Warhammer (23454, -22.49 DPS) [vendor]; Hand of Edward the Odd (2243, -47.05 DPS, sim-verified) [world_drop]; Grand Marshal's Demolisher (234568, -50.60 DPS) [pvp] |
@@ -196,13 +196,13 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 **New at 60:** head: Living Crown; neck: Jeweled Amulet of Cainwyn; shoulder: Devout Mantle; back: Drape of Recovery; chest: Devout Robe; wrist: Devout Bracers; hands: Theramore Handwraps; waist: Devout Belt; legs: Martyr's Legplates; feet: Devout Sandals; finger1: Fordring's Seal; finger2: Band of Mending; trinket1: Burst of Knowledge; trinket2: Dormant Heart of the Mountain; main_hand: Hammer of the Grand Crusader
 
-No-known-source sample (15 of 2437, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3579 Ornate Copper Shoulders; 4081 Blackforge Leggings; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4797 Fiery Cloak
+No-known-source sample (15 of 2415, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3579 Ornate Copper Shoulders; 4081 Blackforge Leggings; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4797 Fiery Cloak
 
 ## Horde
 
 ### Band 20 (undead, 50320001000000000-00000000000000000-00000000000000000)
 
-Set DPS (verified): 47.9. Weights run: 5.8s. Verify run: 37.7s. 299 eligible items had no known source.
+Set DPS (verified): 47.9. Weights run: 5.9s. Verify run: 38.2s. 299 eligible items had no known source.
 
 Race sweep: undead 47.9 ± 0.0 (heal_score); the guide race undead is best.
 
@@ -234,7 +234,7 @@ No-known-source sample (15 of 299, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (undead, 50320015000100000-40000000000000000-00000000000000000)
 
-Set DPS (verified): 104.7. Weights run: 6.5s. Verify run: 46.0s. 524 eligible items had no known source.
+Set DPS (verified): 104.7. Weights run: 6.6s. Verify run: 46.1s. 524 eligible items had no known source.
 
 Race sweep: undead 104.7 ± 0.0 (heal_score); the guide race undead is best.
 
@@ -266,7 +266,7 @@ No-known-source sample (15 of 524, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 40 (undead, 50320115000100000-50000000000000000-05030000000000000)
 
-Set DPS (verified): 192.4. Weights run: 5.1s. Verify run: 31.9s. 792 eligible items had no known source.
+Set DPS (verified): 192.4. Weights run: 5.2s. Verify run: 31.8s. 792 eligible items had no known source.
 
 Race sweep: undead 192.4 ± 0.0 (heal_score); the guide race undead is best.
 
@@ -298,7 +298,7 @@ No-known-source sample (15 of 792, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (undead, 50320215012101230-50000000000000000-05030000000000000)
 
-Set DPS (verified): 199.5. Weights run: 12.1s. Verify run: 167.1s. 1050 eligible items had no known source.
+Set DPS (verified): 199.5. Weights run: 12.2s. Verify run: 168.9s. 1050 eligible items had no known source.
 
 Race sweep: undead 199.2 ± 0.2 (heal_score); the guide race undead is best.
 
@@ -330,7 +330,7 @@ No-known-source sample (15 of 1050, see the JSON for more): 913 Huge Ogre Sword;
 
 ### Band 60 (undead, 50320215012101251-50322000000000000-05030000000000000)
 
-Set DPS (verified): 267.9. Weights run: 13.4s. Verify run: 633.0s. 2462 eligible items had no known source.
+Set DPS (verified): 267.9. Weights run: 13.4s. Verify run: 634.1s. 2445 eligible items had no known source.
 
 Race sweep: undead 267.9 ± 0.3 (heal_score); the guide race undead is best.
 
@@ -358,11 +358,11 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 **New at 60:** head: Living Crown; neck: Jeweled Amulet of Cainwyn; shoulder: Devout Mantle; back: Gracious Cape; chest: Devout Robe; wrist: Devout Bracers; hands: Devout Gloves; waist: Devout Belt; legs: Martyr's Legplates; feet: Devout Sandals; finger1: Rosewine Circle; finger2: Band of Mending; trinket1: Burst of Knowledge; trinket2: Shard of the Splithooves; main_hand: Hammer of the Grand Crusader
 
-No-known-source sample (15 of 2462, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3579 Ornate Copper Shoulders; 4081 Blackforge Leggings; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh
+No-known-source sample (15 of 2445, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3579 Ornate Copper Shoulders; 4081 Blackforge Leggings; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh
 
 ### Band 60, raid preset (undead, 50320215012101251-50322000000000000-05030000000000000)
 
-Set DPS (verified): 705.2. Weights run: 7.6s. Verify run: 357.1s. 2462 eligible items had no known source.
+Set DPS (verified): 705.2. Weights run: 7.7s. Verify run: 359.9s. 2445 eligible items had no known source.
 
 Race sweep: undead 705.9 ± 0.7 (heal_score); the guide race undead is best.
 
@@ -380,8 +380,8 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | waist | Devout Belt (16696) | Blackrock Spire: Blackhand Summoner [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Sash of Mercy (14553, +0.00 DPS) [world_drop]; Belt of the Ordained (18702, +0.00 DPS) [dungeon]; Wisdom of the Timbermaw (19047, +0.00 DPS) [crafted] |
 | legs | Martyr's Legplates (250600) | Blacksmithing [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Ironfeather Leggings (252486, -8.32 DPS) [crafted]; Legplates of the Chromatic Defier (12945, -11.21 DPS) [quest]; Outrider's Mail Leggings (22676, -15.40 DPS) [rep] |
 | feet | Devout Sandals (16691) | Stratholme: Maleki the Pallid [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Mooncloth Boots (15802, +0.00 DPS) [crafted]; Faith Healer's Boots (22247, +0.00 DPS) [dungeon]; Firemoss Boots (22275, +0.00 DPS) [dungeon] |
-| finger1 | Fordring's Seal (16058) | In Dreams [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Band of Mending (22334, -0.91 DPS) [dungeon]; Blessed Band of Light (272407, -4.74 DPS) [vendor]; Channeler's Ring (272406, -5.90 DPS) [vendor] |
-| finger2 | Rosewine Circle (13178) | Blackrock Spire: Urok Doomhowl [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Band of Mending (22334, +0.00 DPS) [dungeon]; Blessed Band of Light (272407, -2.52 DPS) [vendor]; Channeler's Ring (272406, -3.68 DPS) [vendor] |
+| finger1 | Fordring's Seal (16058) | In Dreams [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Band of Mending (22334, -0.91 DPS) [dungeon]; Blessed Band of Light (272407, -4.74 DPS) [vendor]; Amalgam's Band (22326, -4.80 DPS) [dungeon] |
+| finger2 | Rosewine Circle (13178) | Blackrock Spire: Urok Doomhowl [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Band of Mending (22334, +0.00 DPS) [dungeon]; Blessed Band of Light (272407, -2.52 DPS) [vendor]; Amalgam's Band (22326, -2.58 DPS) [dungeon] |
 | trinket1 | Dormant Heart of the Mountain (249473) | Enchanting [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Uther's Strength (11302, +0.00 DPS) [world_drop]; Weakness Analyzer (272438, +0.00 DPS) [vendor]; Serenity Field (272439, +0.00 DPS) [vendor] |
 | trinket2 | Burst of Knowledge (11832) | Blackrock Depths: Ambassador Flamelash [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Serenity Field (272439, -0.24 DPS) [vendor]; Uther's Strength (11302, -1.54 DPS) [world_drop]; Weakness Analyzer (272438, -1.54 DPS) [vendor] |
 | main_hand | Hammer of the Grand Crusader (18717) | Stratholme: Balnazzar [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | High Warlord's Battle Mace (23464, -22.49 DPS) [vendor]; High Warlord's Destroyer (234546, -50.60 DPS) [pvp]; Taskmaster Axe (5194, -56.29 DPS) [dungeon] |
@@ -390,5 +390,5 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 **New at 60:** head: Living Crown; neck: Jeweled Amulet of Cainwyn; shoulder: Devout Mantle; back: Drape of Recovery; chest: Devout Robe; wrist: Devout Bracers; hands: Raider Handwraps; waist: Devout Belt; legs: Martyr's Legplates; feet: Devout Sandals; finger1: Fordring's Seal; finger2: Rosewine Circle; trinket1: Dormant Heart of the Mountain; trinket2: Burst of Knowledge; main_hand: Hammer of the Grand Crusader
 
-No-known-source sample (15 of 2462, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3579 Ornate Copper Shoulders; 4081 Blackforge Leggings; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh
+No-known-source sample (15 of 2445, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2314 Toughened Leather Armor; 2543 Militia Pants; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3579 Ornate Copper Shoulders; 4081 Blackforge Leggings; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh
 
