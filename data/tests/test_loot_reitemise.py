@@ -325,3 +325,18 @@ def test_load_renamed_pairs_needs_a_source(tmp_path):
 def test_the_curated_renamed_pairs_load():
     pairs = load_renamed_pairs(Path(__file__).resolve().parents[1] / "curated")
     assert pairs[RENAMED_NEW_ID] == RENAMED_CLASSIC_ID
+
+
+def test_apply_reitemisation_copies_a_renamed_pair_onto_an_already_sourced_new_id():
+    # Darkmantle Grips also sits on the gated exchange vendor; the curated
+    # pair still puts it on the classic piece's quest.
+    document = LootFile(
+        sources=[
+            LootSource(id="quest", kind="quest", name="Quest rewards", items=[RENAMED_CLASSIC_ID]),
+            LootSource(id="vendor:230319", kind="vendor", name="Deliana", items=[RENAMED_NEW_ID]),
+        ],
+    )
+    renamed = {RENAMED_NEW_ID: RENAMED_CLASSIC_ID}
+    updated, filled = apply_reitemisation(document, RENAMED_ROWS, renamed)
+    assert filled == 1
+    assert RENAMED_NEW_ID in updated.sources[0].items

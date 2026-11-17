@@ -251,17 +251,13 @@
     },
     {
       "key": "tier-0-5",
-      "label": "Tier 0.5: the dungeon set 2 quests, vendors and summoned bosses",
+      "label": "Tier 0.5: the dungeon set 2 quests and summoned bosses",
       "original_patch": "1.10",
       "phase": "launch",
       "date": "2026-11-04",
       "confidence": "inferred",
       "why": "owner ruling 2026-11-16: listed ahead of players reaching it. Blizzard's Legacy System post lists 'Complete the Lord Valthalak dungeon set questline' among the launch challenges, and the 1.60.1.70938 client carries it as achievement 62054. Forever reworked the 226xxx Dungeon Set 2 bonuses (sets 1667 to 1681, now 2 to 6 pieces) and left the Classic sets 511 to 519 untouched, so the 226xxx pieces are the ones ranked (curated/renamed-reitemisations.json pairs the renamed ones).",
       "npcs": [
-        {"id": 230317, "name": "Mokvar"},
-        {"id": 230319, "name": "Deliana"},
-        {"id": 230565, "name": "Ironforge Guard"},
-        {"id": 230566, "name": "Kor'kron Elite"},
         {"id": 16042, "name": "Lord Valthalak"},
         {"id": 16080, "name": "Mor Grayhoof"},
         {"id": 16097, "name": "Isalien"},
@@ -337,6 +333,21 @@
         {"id": 9012, "name": "Saving the Best for Last"},
         {"id": 9013, "name": "Saving the Best for Last"},
         {"id": 9014, "name": "Saving the Best for Last"}
+      ]
+    },
+    {
+      "key": "tier-0-5-exchange-vendors",
+      "label": "Tier 0.5: the Season of Discovery copies of Mokvar and Deliana and their guards",
+      "original_patch": "Season of Discovery",
+      "phase": "later",
+      "date": "unannounced",
+      "confidence": "uncertain",
+      "why": "Wowhead Forever lists 88 Season of Discovery dungeon set 2 variants on these copies with no cost, every spec's version of every piece. Forever's own Tier 0.5 is the quest chain, which the tier-0-5 gate opens; nothing shows these exchange vendors in Forever.",
+      "npcs": [
+        {"id": 230317, "name": "Mokvar"},
+        {"id": 230319, "name": "Deliana"},
+        {"id": 230565, "name": "Ironforge Guard"},
+        {"id": 230566, "name": "Kor'kron Elite"}
       ]
     },
     {

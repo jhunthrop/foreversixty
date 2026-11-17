@@ -216,10 +216,17 @@ def apply_reitemisation(
     from pipeline.loot.sources import source_item_ids  # local: avoid a circular import
 
     already_named = {item_id for source in document.sources for item_id in source_item_ids(source)}
+    curated = _checked_renamed_pairs(item_rows, renamed or {})
+    # A curated pair is a stated fact, so it copies even when the new id
+    # already has a source of its own (Darkmantle Grips 226828 is also on
+    # the gated Season of Discovery exchange vendors); a name-and-slot pair
+    # only fills an item nothing else sources.
     pairs = {
         new_id: classic_id
-        for new_id, classic_id in reitemised_pairs(item_rows, renamed).items()
+        for new_id, classic_id in reitemised_pairs(item_rows).items()
         if new_id not in already_named and classic_id in already_named
+    } | {
+        new_id: classic_id for new_id, classic_id in curated.items() if classic_id in already_named
     }
     if not pairs:
         return document, 0
