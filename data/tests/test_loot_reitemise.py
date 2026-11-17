@@ -308,7 +308,6 @@ def test_apply_reitemisation_sources_a_renamed_piece_from_its_classic_quest():
 
 
 def test_load_renamed_pairs_reads_the_curated_file(tmp_path):
-    (tmp_path / "loot").mkdir()
     (tmp_path / RENAMED_PAIRS_FILE).write_text(json.dumps({
         "sources": [{"label": "x", "url": "https://example.com", "kind": "datamined"}],
         "pairs": [{"new_id": RENAMED_NEW_ID, "classic_id": RENAMED_CLASSIC_ID}],
@@ -318,7 +317,6 @@ def test_load_renamed_pairs_reads_the_curated_file(tmp_path):
 
 
 def test_load_renamed_pairs_needs_a_source(tmp_path):
-    (tmp_path / "loot").mkdir()
     (tmp_path / RENAMED_PAIRS_FILE).write_text(json.dumps({"sources": [], "pairs": []}))
     with pytest.raises(ValueError, match="source"):
         load_renamed_pairs(tmp_path)

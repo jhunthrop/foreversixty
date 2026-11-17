@@ -256,7 +256,7 @@
       "phase": "launch",
       "date": "2026-11-04",
       "confidence": "inferred",
-      "why": "owner ruling 2026-11-16: listed ahead of players reaching it. Blizzard's Legacy System post lists 'Complete the Lord Valthalak dungeon set questline' among the launch challenges, and the 1.60.1.70938 client carries it as achievement 62054. Forever reworked the 226xxx Dungeon Set 2 bonuses (sets 1667 to 1681, now 2 to 6 pieces) and left the Classic sets 511 to 519 untouched, so the 226xxx pieces are the ones ranked (curated/loot/renamed-reitemisations.json pairs the renamed ones).",
+      "why": "owner ruling 2026-11-16: listed ahead of players reaching it. Blizzard's Legacy System post lists 'Complete the Lord Valthalak dungeon set questline' among the launch challenges, and the 1.60.1.70938 client carries it as achievement 62054. Forever reworked the 226xxx Dungeon Set 2 bonuses (sets 1667 to 1681, now 2 to 6 pieces) and left the Classic sets 511 to 519 untouched, so the 226xxx pieces are the ones ranked (curated/renamed-reitemisations.json pairs the renamed ones).",
       "npcs": [
         {"id": 230317, "name": "Mokvar"},
         {"id": 230319, "name": "Deliana"},

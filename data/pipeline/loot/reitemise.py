@@ -57,7 +57,8 @@ NEW_ITEM_ID_FLOOR = 200000
 
 #: The curated re-itemisations whose Forever name differs from the
 #: Classic one (`load_renamed_pairs`), relative to the curated directory.
-RENAMED_PAIRS_FILE = Path("loot") / "renamed-reitemisations.json"
+#: Not under curated/loot/, where every file is read as a loot overlay.
+RENAMED_PAIRS_FILE = Path("renamed-reitemisations.json")
 
 #: How far a new item's `item_level` may drift from the classic item it
 #: would inherit sources from before the two are treated as unrelated
