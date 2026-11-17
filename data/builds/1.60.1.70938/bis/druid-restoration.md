@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat. An item's crit rating
 
 ### Band 20 (night-elf, 0000000000000000-00000000000000000000-2503000100000000)
 
-Set DPS (verified): 78.0. Weights run: 10.1s. Verify run: 78.0s. 251 eligible items had no known source.
+Set DPS (verified): 78.0. Weights run: 7.9s. Verify run: 60.7s. 251 eligible items had no known source.
 
 Race sweep: high-order-skyborne 78.4 ± 0.0, night-elf 78.0 ± 0.0 (heal_score); high-order-skyborne beats the guide race night-elf by 0.3 (0.43%) ± 0.0, beyond error.
 
@@ -40,7 +40,7 @@ No-known-source sample (15 of 251, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (night-elf, 0100000000000000-00000000000000000000-3503004103100000)
 
-Set DPS (verified): 130.0. Weights run: 14.3s. Verify run: 143.6s. 424 eligible items had no known source.
+Set DPS (verified): 130.0. Weights run: 11.3s. Verify run: 113.5s. 424 eligible items had no known source.
 
 Race sweep: high-order-skyborne 132.9 ± 0.1, night-elf 129.9 ± 0.1 (heal_score); high-order-skyborne beats the guide race night-elf by 3.0 (2.27%) ± 0.1, beyond error.
 
@@ -72,7 +72,7 @@ No-known-source sample (15 of 424, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (night-elf, 0500200000000000-00000000000000000000-3503005103103000)
 
-Set DPS (verified): 241.9. Weights run: 14.0s. Verify run: 123.0s. 607 eligible items had no known source.
+Set DPS (verified): 241.9. Weights run: 11.0s. Verify run: 97.5s. 607 eligible items had no known source.
 
 Race sweep: high-order-skyborne 246.7 ± 0.1, night-elf 241.7 ± 0.2 (heal_score); high-order-skyborne beats the guide race night-elf by 5.0 (2.08%) ± 0.2, beyond error.
 
@@ -104,7 +104,7 @@ No-known-source sample (15 of 607, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (night-elf, 0530200100000000-00000000000000000000-5503005113103210)
 
-Set DPS (verified): 378.6. Weights run: 11.7s. Verify run: 112.3s. 817 eligible items had no known source.
+Set DPS (verified): 378.6. Weights run: 9.2s. Verify run: 89.1s. 816 eligible items had no known source.
 
 Race sweep: high-order-skyborne 384.8 ± 0.2, night-elf 378.4 ± 0.2 (heal_score); high-order-skyborne beats the guide race night-elf by 6.4 (1.69%) ± 0.3, beyond error.
 
@@ -132,11 +132,11 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 **New at 50:** head: Engineer's Guild Headpiece; neck: Lei of Lilies; shoulder: Ironfeather Shoulders; back: Featherskin Cape; chest: Embrace of the Wind Serpent; wrist: Mender's Leather Bracers; hands: Gloves of the Atal'ai Prophet; waist: Earthenweave Cord; legs: Rainstrider Leggings; feet: Sandals of the Insurgent; finger1: Eye of Adaegus; finger2: Choking Band; trinket2: Evonice's Landin' Pilla; main_hand: Glowing Brightwood Staff
 
-No-known-source sample (15 of 817, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher; 4988 Burning Obsidian Band
+No-known-source sample (15 of 816, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher; 4988 Burning Obsidian Band
 
 ### Band 60 (night-elf, 0530200100000000-00000000000000000000-5553005153113210)
 
-Set DPS (verified): 497.8. Weights run: 12.6s. Verify run: 444.8s. 1988 eligible items had no known source.
+Set DPS (verified): 497.8. Weights run: 10.0s. Verify run: 366.4s. 1968 eligible items had no known source.
 
 Race sweep: high-order-skyborne 504.1 ± 0.3, night-elf 498.0 ± 0.3 (heal_score); high-order-skyborne beats the guide race night-elf by 6.1 (1.22%) ± 0.4, beyond error.
 
@@ -164,11 +164,11 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 **New at 60:** head: Devout Crown; neck: Jeweled Amulet of Cainwyn; shoulder: Devout Mantle; wrist: Devout Bracers; hands: Devout Gloves; waist: Caretaker's Cord; legs: Devout Skirt; feet: Devout Sandals; finger1: The Postmaster's Seal; finger2: Band of the Hierophant; main_hand: Staff of Metanoia; ranged: Idol of Synthesis
 
-No-known-source sample (15 of 1988, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher; 4988 Burning Obsidian Band
+No-known-source sample (15 of 1968, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher; 4988 Burning Obsidian Band
 
 ### Band 60, raid preset (night-elf, 0530200100000000-00000000000000000000-5553005153113210)
 
-Set DPS (verified): 1025.6. Weights run: 11.8s. Verify run: 392.1s. 1988 eligible items had no known source.
+Set DPS (verified): 1025.6. Weights run: 9.3s. Verify run: 325.6s. 1968 eligible items had no known source.
 
 Race sweep: high-order-skyborne 1033.2 ± 0.4, night-elf 1025.3 ± 0.5 (heal_score); high-order-skyborne beats the guide race night-elf by 7.9 (0.77%) ± 0.6, beyond error.
 
@@ -179,7 +179,7 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 | Slot | Item | Source | Score (healing_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
 | head | Living Crown (252561) | Leatherworking [crafted] | 107.7 healing_power points (61.73 DPS) | yes | Mooncloth Circlet (14140, -16.33 DPS, sim-verified) [crafted]; Field Marshal's Dragonhide Headdress (231701, -16.77 DPS) [vendor]; Lieutenant Commander's Dragonhide Headdress (227199, -17.64 DPS) [vendor] |
-| neck | Jeweled Amulet of Cainwyn (1443) | World drop [world_drop] | 47.0 healing_power points (26.97 DPS) | yes | Animated Chain Necklace (18723, -5.15 DPS, sim-verified) [dungeon]; Heart of the Fiend (13960, -6.29 DPS) [dungeon]; Dragon's Eye (10829, -7.41 DPS) [dungeon] |
+| neck | Jeweled Amulet of Cainwyn (1443) | World drop [world_drop] | 47.0 healing_power points (26.97 DPS) | yes | Animated Chain Necklace (18723, -5.15 DPS, sim-verified) [dungeon]; Heart of the Fiend (13960, -6.29 DPS) [dungeon]; Amulet of the Redeemed (22327, -7.15 DPS) [dungeon] |
 | shoulder | Mooncloth Shoulders (14139) | Tailoring [crafted] | 52.5 healing_power points (30.09 DPS) | yes | Lieutenant Commander's Dragonhide Pauldrons (227201, +0.00 DPS) [vendor]; Field Marshal's Dragonhide Pauldrons (231705, +0.00 DPS) [vendor]; Living Shoulders (15061, -0.97 DPS, sim-verified) [crafted] |
 | back | Drape of Recovery (272413) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Caretaker's Cape (19530, -0.74 DPS) [rep]; Shroud of the Exile (15421, -4.81 DPS) [quest] |
 | chest | Embrace of the Wind Serpent (12462) | Avatar of Hakkar [world] | 83.5 healing_power points (47.90 DPS) | yes | Field Marshal's Dragonhide Tunic (231702, -1.84 DPS) [vendor]; Robes of the Exalted (13346, -2.60 DPS, sim-verified) [dungeon]; Forest's Embrace (22272, -5.43 DPS) [quest] |
@@ -198,13 +198,13 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 **New at 60:** head: Living Crown; neck: Jeweled Amulet of Cainwyn; shoulder: Mooncloth Shoulders; back: Drape of Recovery; wrist: Bleak Howler Armguards; hands: Hands of the Exalted Herald; waist: Sash of Mercy; legs: Devout Skirt; feet: Mooncloth Boots; finger1: Band of Mending; finger2: Blessed Band of Light; trinket1: Dormant Heart of the Mountain; trinket2: Burst of Knowledge; ranged: Idol of Synthesis
 
-No-known-source sample (15 of 1988, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher; 4988 Burning Obsidian Band
+No-known-source sample (15 of 1968, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher; 4988 Burning Obsidian Band
 
 ## Horde
 
 ### Band 20 (tauren, 0000000000000000-00000000000000000000-2503000100000000)
 
-Set DPS (verified): 77.2. Weights run: 10.1s. Verify run: 80.6s. 247 eligible items had no known source.
+Set DPS (verified): 77.2. Weights run: 7.9s. Verify run: 62.6s. 247 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 77.4 ± 0.0, tauren 77.2 ± 0.0 (heal_score); windshaper-skyborne beats the guide race tauren by 0.2 (0.27%) ± 0.0, beyond error.
 
@@ -236,7 +236,7 @@ No-known-source sample (15 of 247, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (tauren, 0100000000000000-00000000000000000000-3503004103100000)
 
-Set DPS (verified): 128.8. Weights run: 14.3s. Verify run: 143.9s. 425 eligible items had no known source.
+Set DPS (verified): 128.8. Weights run: 11.3s. Verify run: 113.3s. 425 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 129.4 ± 0.1, tauren 128.8 ± 0.1 (heal_score); windshaper-skyborne beats the guide race tauren by 0.6 (0.47%) ± 0.1, beyond error.
 
@@ -268,7 +268,7 @@ No-known-source sample (15 of 425, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (tauren, 0500200000000000-00000000000000000000-3503005103103000)
 
-Set DPS (verified): 241.3. Weights run: 14.0s. Verify run: 128.3s. 606 eligible items had no known source.
+Set DPS (verified): 241.3. Weights run: 11.0s. Verify run: 103.2s. 606 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 241.8 ± 0.1, tauren 240.9 ± 0.2 (heal_score); windshaper-skyborne beats the guide race tauren by 0.8 (0.35%) ± 0.2, beyond error.
 
@@ -300,7 +300,7 @@ No-known-source sample (15 of 606, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (tauren, 0530200100000000-00000000000000000000-5503005113103210)
 
-Set DPS (verified): 376.0. Weights run: 11.7s. Verify run: 112.6s. 816 eligible items had no known source.
+Set DPS (verified): 376.0. Weights run: 9.2s. Verify run: 87.3s. 815 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 376.9 ± 0.2, tauren 376.0 ± 0.2 (heal_score); windshaper-skyborne beats the guide race tauren by 0.9 (0.24%) ± 0.3, beyond error.
 
@@ -328,11 +328,11 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 **New at 50:** head: Engineer's Guild Headpiece; neck: Lei of Lilies; shoulder: Living Shoulders; back: Featherskin Cape; chest: Embrace of the Wind Serpent; wrist: Mender's Leather Bracers; hands: Gloves of the Atal'ai Prophet; waist: Earthenweave Cord; legs: Rainstrider Leggings; feet: Sandals of the Insurgent; finger1: Eye of Adaegus; finger2: Brainlash; trinket2: Evonice's Landin' Pilla; main_hand: Glowing Brightwood Staff
 
-No-known-source sample (15 of 816, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 4990 Scorched Bands; 5000 Coral Band
+No-known-source sample (15 of 815, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 4990 Scorched Bands; 5000 Coral Band
 
 ### Band 60 (tauren, 0530200100000000-00000000000000000000-5553005153113210)
 
-Set DPS (verified): 495.3. Weights run: 12.6s. Verify run: 446.5s. 1992 eligible items had no known source.
+Set DPS (verified): 495.3. Weights run: 10.0s. Verify run: 365.7s. 1972 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 496.5 ± 0.3, tauren 495.7 ± 0.3 (heal_score); windshaper-skyborne beats the guide race tauren by 0.8 (0.16%) ± 0.5, beyond error.
 
@@ -360,11 +360,11 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 **New at 60:** head: Devout Crown; neck: Jeweled Amulet of Cainwyn; shoulder: Devout Mantle; wrist: Devout Bracers; hands: Devout Gloves; waist: Caretaker's Cord; legs: Devout Skirt; feet: Devout Sandals; finger1: The Postmaster's Seal; finger2: Band of the Hierophant; main_hand: Staff of Metanoia; ranged: Idol of Synthesis
 
-No-known-source sample (15 of 1992, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 4990 Scorched Bands; 5000 Coral Band
+No-known-source sample (15 of 1972, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 4990 Scorched Bands; 5000 Coral Band
 
 ### Band 60, raid preset (tauren, 0530200100000000-00000000000000000000-5553005153113210)
 
-Set DPS (verified): 1021.4. Weights run: 11.8s. Verify run: 391.8s. 1992 eligible items had no known source.
+Set DPS (verified): 1021.4. Weights run: 9.3s. Verify run: 328.2s. 1972 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 1023.0 ± 0.4, tauren 1021.8 ± 0.6 (heal_score); windshaper-skyborne beats the guide race tauren by 1.2 (0.12%) ± 0.7, beyond error.
 
@@ -394,5 +394,5 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 **New at 60:** head: Living Crown; neck: Jeweled Amulet of Cainwyn; shoulder: Mooncloth Shoulders; back: Battle Healer's Cloak; wrist: Bleak Howler Armguards; hands: Hands of the Exalted Herald; waist: Sash of Mercy; legs: Devout Skirt; feet: Mooncloth Boots; finger1: Band of Mending; finger2: Blessed Band of Light; trinket1: Burst of Knowledge; trinket2: Dormant Heart of the Mountain; ranged: Idol of Synthesis
 
-No-known-source sample (15 of 1992, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 4990 Scorched Bands; 5000 Coral Band
+No-known-source sample (15 of 1972, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 4990 Scorched Bands; 5000 Coral Band
 

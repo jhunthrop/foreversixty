@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat. An item's crit rating
 
 ### Band 20 (night-elf, 0000000000000000-51100301000000000000-0000000000000000)
 
-Set DPS (verified): 22.9. Weights run: 5.6s. Verify run: 6.5s. 251 eligible items had no known source.
+Set DPS (verified): 22.9. Weights run: 4.5s. Verify run: 5.2s. 251 eligible items had no known source.
 
 Race sweep: night-elf 93.0 ± 0.2, high-order-skyborne 92.5 ± 0.2 (threat_per_second); the guide race night-elf is best.
 
@@ -40,7 +40,7 @@ No-known-source sample (15 of 251, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (night-elf, 0000000000000000-51100332020102100000-0000000000000000)
 
-Set DPS (verified): 66.8. Weights run: 4.9s. Verify run: 9.5s. 424 eligible items had no known source.
+Set DPS (verified): 66.8. Weights run: 4.1s. Verify run: 7.3s. 424 eligible items had no known source.
 
 Race sweep: night-elf 252.4 ± 0.5, high-order-skyborne 249.7 ± 0.4 (threat_per_second); the guide race night-elf is best.
 
@@ -72,7 +72,7 @@ No-known-source sample (15 of 424, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (night-elf, 0000000000000000-51200332023102123010-0000000000000000)
 
-Set DPS (verified): 96.9. Weights run: 5.2s. Verify run: 6.4s. 607 eligible items had no known source.
+Set DPS (verified): 96.9. Weights run: 4.1s. Verify run: 5.3s. 607 eligible items had no known source.
 
 Race sweep: night-elf 368.5 ± 0.8, high-order-skyborne 358.2 ± 0.8 (threat_per_second); the guide race night-elf is best.
 
@@ -104,7 +104,7 @@ No-known-source sample (15 of 607, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (night-elf, 0000000000000000-51200332023102125510-0300000000000000)
 
-Set DPS (verified): 152.7. Weights run: 5.1s. Verify run: 8.9s. 817 eligible items had no known source.
+Set DPS (verified): 152.7. Weights run: 4.1s. Verify run: 7.4s. 816 eligible items had no known source.
 
 Race sweep: night-elf 595.3 ± 1.1, high-order-skyborne 585.1 ± 1.1 (threat_per_second); the guide race night-elf is best.
 
@@ -132,11 +132,11 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 
 **New at 50:** head: Embrace of the Lycan; neck: Lifeblood Amulet; back: Graverot Cape; chest: Knight's Leather Armor; wrist: Arena Bracers; hands: Warden's Leather Gauntlets; waist: Warden's Leather Waistguard; legs: Knight's Leather Pants; feet: Sergeant Major's Leather Boots; finger1: Ring of Saviors; finger2: Theramore Signet; trinket1: Enriched Seal; trinket2: Talisman of Arathor; main_hand: Warden Staff
 
-No-known-source sample (15 of 817, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher; 4988 Burning Obsidian Band
+No-known-source sample (15 of 816, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher; 4988 Burning Obsidian Band
 
 ### Band 60 (night-elf, 0000000000000000-51230332023102125510-0550000000000000)
 
-Set DPS (verified): 237.7. Weights run: 10.6s. Verify run: 52.2s. 1988 eligible items had no known source.
+Set DPS (verified): 237.7. Weights run: 7.9s. Verify run: 47.6s. 1968 eligible items had no known source.
 
 Race sweep: high-order-skyborne 963.8 ± 0.9, night-elf 956.4 ± 0.9 (threat_per_second); high-order-skyborne beats the guide race night-elf by 7.4 (0.78%) ± 1.3, beyond error.
 
@@ -154,8 +154,8 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 | waist | Hivethrasher's Girdle (275614) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Nagmara's Whipping Belt (11866, +0.00 DPS) [quest]; Vosh'gajin's Strand (13962, +0.00 DPS) [quest]; Shifter's Belt (272396, +0.00 DPS) [vendor] |
 | legs | Sentinel's Leather Pants (237818) | Illiyana Moonblaze [vendor] | 89.7 stamina points (13531.22 DPS) | yes | Marshal's Dragonhide Leggings (231691, -232.09 DPS) [vendor]; Marshal's Dragonhide Legguards (231703, -1398.17 DPS) [pvp]; Marshal's Dragonhide Pants (231697, -2165.86 DPS) [vendor] |
 | feet | Ash Covered Boots (18716) | Stratholme: Archivist Galford [dungeon] | 52.0 stamina points (7850.63 DPS) | yes | Marshal's Dragonhide Treads (231692, +0.00 DPS) [vendor]; Marshal's Dragonhide Boots (231698, +0.00 DPS) [pvp]; Marshal's Dragonhide Greaves (231704, +0.00 DPS) [vendor] |
-| finger1 | Naglering (11669) | Blackrock Depths: Golem Lord Argelmach [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Myrmidon's Signet (2246, +0.00 DPS) [world_drop]; Innervating Band (18701, +0.00 DPS) [dungeon]; Ring of Awareness (272409, +0.00 DPS) [vendor] |
-| finger2 | Band of Flesh (13373) | Stratholme: Ramstein the Gorger [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Myrmidon's Signet (2246, +0.00 DPS) [world_drop]; Ring of Awareness (272409, +0.00 DPS) [vendor]; Innervating Band (18701, -79.17 DPS) [dungeon] |
+| finger1 | Naglering (11669) | Blackrock Depths: Golem Lord Argelmach [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Myrmidon's Signet (2246, +0.00 DPS) [world_drop]; Band of the Steadfast Hero (22331, +0.00 DPS) [dungeon]; Ring of Awareness (272409, +0.00 DPS) [vendor] |
+| finger2 | Band of Flesh (13373) | Stratholme: Ramstein the Gorger [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Myrmidon's Signet (2246, +0.00 DPS) [world_drop]; Band of the Steadfast Hero (22331, +0.00 DPS) [dungeon]; Ring of Awareness (272409, +0.00 DPS) [vendor] |
 | trinket1 | Stormpike Insignia Rank 6 (17904) | The Eye of Command [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Defender's Grip Stabilizer (272440, +0.00 DPS) [vendor]; The Lion Horn of Stormwind (14557, -784.56 DPS) [world_drop]; Enriched Seal (271903, -1108.88 DPS) [rep] |
 | trinket2 | Talisman of Arathor (20071) | The League of Arathor [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | The Lion Horn of Stormwind (14557, +0.00 DPS) [world_drop]; Defender's Grip Stabilizer (272440, +0.00 DPS) [vendor]; Enriched Seal (271903, -301.82 DPS) [rep] |
 | main_hand | The Unstoppable Force (19323) | Stormpike Guard [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Grand Marshal's Battle Hammer (234567, +0.00 DPS) [pvp]; Grand Marshal's Demolisher (234568, +0.00 DPS) [pvp]; Grand Marshal's Stave (234571, +0.00 DPS) [pvp] |
@@ -164,11 +164,11 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 
 **New at 60:** head: Warbear Helm; neck: Master Sergeant's Insignia; shoulder: Highlander's Leather Shoulders; back: Stoneshield Cloak; chest: Warbear Harness; wrist: Magistrate's Cuffs; hands: Theramore Gloves; waist: Hivethrasher's Girdle; legs: Sentinel's Leather Pants; feet: Ash Covered Boots; finger1: Naglering; finger2: Band of Flesh; trinket1: Stormpike Insignia Rank 6; trinket2: Talisman of Arathor; main_hand: The Unstoppable Force; ranged: Idol of Brutality
 
-No-known-source sample (15 of 1988, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher; 4988 Burning Obsidian Band
+No-known-source sample (15 of 1968, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher; 4988 Burning Obsidian Band
 
 ### Band 60, raid preset (night-elf, 0000000000000000-51230332023102125510-0550000000000000)
 
-Set DPS (verified): 496.9. Weights run: 11.0s. Verify run: 56.6s. 1988 eligible items had no known source.
+Set DPS (verified): 496.9. Weights run: 8.7s. Verify run: 46.6s. 1968 eligible items had no known source.
 
 Race sweep: high-order-skyborne 1866.8 ± 1.9, night-elf 1864.3 ± 1.9 (threat_per_second); high-order-skyborne beats the guide race night-elf by 2.5 (0.13%) ± 2.7, inside error.
 
@@ -186,8 +186,8 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 | waist | Shifter's Belt (272396) | Pix Xizzix [vendor] | 48.3 stamina points (6256.58 DPS) | yes | Nagmara's Whipping Belt (11866, -316.04 DPS) [quest]; Hivethrasher's Girdle (275614, -437.45 DPS) [crafted]; Frostbite Girdle (14502, -453.63 DPS) [dungeon] |
 | legs | Sentinel's Leather Pants (237818) | Illiyana Moonblaze [vendor] | 100.0 stamina points (12966.49 DPS) | yes | Marshal's Dragonhide Leggings (231691, -134.73 DPS) [vendor]; Marshal's Dragonhide Legguards (231703, -1048.93 DPS) [pvp]; Marshal's Dragonhide Pants (231697, -1778.72 DPS) [vendor] |
 | feet | Ash Covered Boots (18716) | Stratholme: Archivist Galford [dungeon] | 56.7 stamina points (7351.19 DPS) | yes | Marshal's Dragonhide Treads (231692, +0.00 DPS) [vendor]; Marshal's Dragonhide Boots (231698, +0.00 DPS) [pvp]; Marshal's Dragonhide Greaves (231704, +0.00 DPS) [vendor] |
-| finger1 | Naglering (11669) | Blackrock Depths: Golem Lord Argelmach [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Myrmidon's Signet (2246, +0.00 DPS) [world_drop]; Cutthroat's Signet (272408, +0.00 DPS) [vendor]; Ring of Awareness (272409, +0.00 DPS) [vendor] |
-| finger2 | Band of Flesh (13373) | Stratholme: Ramstein the Gorger [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Myrmidon's Signet (2246, +0.00 DPS) [world_drop]; Ring of Awareness (272409, +0.00 DPS) [vendor]; Cutthroat's Signet (272408, -41.40 DPS) [vendor] |
+| finger1 | Naglering (11669) | Blackrock Depths: Golem Lord Argelmach [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Myrmidon's Signet (2246, +0.00 DPS) [world_drop]; Band of the Steadfast Hero (22331, +0.00 DPS) [dungeon]; Ring of Awareness (272409, +0.00 DPS) [vendor] |
+| finger2 | Band of Flesh (13373) | Stratholme: Ramstein the Gorger [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Myrmidon's Signet (2246, +0.00 DPS) [world_drop]; Band of the Steadfast Hero (22331, +0.00 DPS) [dungeon]; Ring of Awareness (272409, +0.00 DPS) [vendor] |
 | trinket1 | Talisman of Arathor (20071) | The League of Arathor [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Defender's Grip Stabilizer (272440, +0.00 DPS) [vendor]; The Lion Horn of Stormwind (14557, -187.94 DPS) [world_drop]; Enriched Seal (271903, -259.26 DPS) [rep] |
 | trinket2 | Stormpike Insignia Rank 6 (17904) | The Eye of Command [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Defender's Grip Stabilizer (272440, +0.00 DPS) [vendor]; The Lion Horn of Stormwind (14557, -481.51 DPS) [world_drop]; Enriched Seal (271903, -552.83 DPS) [rep] |
 | main_hand | Headmaster's Charge (13937) | Scholomance: Darkmaster Gandling [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Grand Marshal's Battle Hammer (234567, +0.00 DPS) [pvp]; Grand Marshal's Demolisher (234568, +0.00 DPS) [pvp]; Grand Marshal's Stave (234571, +0.00 DPS) [pvp] |
@@ -196,13 +196,13 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 
 **New at 60:** head: Warbear Helm; neck: Medallion of Grand Marshal Morris; shoulder: Highlander's Leather Shoulders; back: Stoneshield Cloak; chest: Warbear Harness; wrist: Magistrate's Cuffs; hands: Theramore Gloves; waist: Shifter's Belt; legs: Sentinel's Leather Pants; feet: Ash Covered Boots; finger1: Naglering; finger2: Band of Flesh; trinket1: Talisman of Arathor; trinket2: Stormpike Insignia Rank 6; main_hand: Headmaster's Charge; ranged: Idol of Brutality
 
-No-known-source sample (15 of 1988, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher; 4988 Burning Obsidian Band
+No-known-source sample (15 of 1968, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4964 Goblin Smasher; 4988 Burning Obsidian Band
 
 ## Horde
 
 ### Band 20 (tauren, 0000000000000000-51100301000000000000-0000000000000000)
 
-Set DPS (verified): 23.0. Weights run: 5.6s. Verify run: 6.5s. 247 eligible items had no known source.
+Set DPS (verified): 23.0. Weights run: 4.5s. Verify run: 5.1s. 247 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 93.5 ± 0.2, tauren 93.5 ± 0.2 (threat_per_second); windshaper-skyborne beats the guide race tauren by 0.0 (0.03%) ± 0.3, inside error.
 
@@ -234,7 +234,7 @@ No-known-source sample (15 of 247, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (tauren, 0000000000000000-51100332020102100000-0000000000000000)
 
-Set DPS (verified): 65.3. Weights run: 4.9s. Verify run: 8.5s. 425 eligible items had no known source.
+Set DPS (verified): 65.3. Weights run: 4.1s. Verify run: 6.9s. 425 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 248.4 ± 0.4, tauren 245.9 ± 0.5 (threat_per_second); windshaper-skyborne beats the guide race tauren by 2.5 (1.01%) ± 0.6, beyond error.
 
@@ -266,7 +266,7 @@ No-known-source sample (15 of 425, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (tauren, 0000000000000000-51200332023102123010-0000000000000000)
 
-Set DPS (verified): 93.3. Weights run: 5.2s. Verify run: 6.1s. 606 eligible items had no known source.
+Set DPS (verified): 93.3. Weights run: 4.1s. Verify run: 5.1s. 606 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 353.9 ± 0.8, tauren 353.8 ± 0.8 (threat_per_second); windshaper-skyborne beats the guide race tauren by 0.1 (0.03%) ± 1.1, inside error.
 
@@ -298,7 +298,7 @@ No-known-source sample (15 of 606, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (tauren, 0000000000000000-51200332023102125510-0300000000000000)
 
-Set DPS (verified): 148.7. Weights run: 5.1s. Verify run: 13.0s. 816 eligible items had no known source.
+Set DPS (verified): 148.7. Weights run: 4.1s. Verify run: 10.9s. 815 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 585.1 ± 1.1, tauren 578.3 ± 1.1 (threat_per_second); windshaper-skyborne beats the guide race tauren by 6.8 (1.18%) ± 1.5, beyond error.
 
@@ -326,43 +326,45 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 
 **New at 50:** head: Embrace of the Lycan; neck: Lifeblood Amulet; back: Graverot Cape; chest: Stone Guard's Leather Armor; wrist: Arena Bracers; hands: Warden's Leather Gauntlets; waist: Warden's Leather Waistguard; legs: Stone Guard's Leather Pants; feet: First Sergeant's Leather Boots; finger1: Ring of Saviors; finger2: Insurgent's Band; trinket1: Darkspear Voodoo Seal; trinket2: Defiler's Talisman; main_hand: Warden Staff
 
-No-known-source sample (15 of 816, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 4990 Scorched Bands; 5000 Coral Band
+No-known-source sample (15 of 815, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 4990 Scorched Bands; 5000 Coral Band
 
 ### Band 60 (tauren, 0000000000000000-51230332023102125510-0550000000000000)
 
-Set DPS (verified): 229.7. Weights run: 10.6s. Verify run: 54.1s. 1992 eligible items had no known source.
+Set DPS (verified): 229.7. Weights run: 7.9s. Verify run: 46.8s. 1972 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 921.8 ± 0.9, tauren 917.4 ± 0.9 (threat_per_second); windshaper-skyborne beats the guide race tauren by 4.5 (0.49%) ± 1.2, beyond error.
 
-Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.046, armor=0.181 ± 0.006, defense=0.874 ± 0.158 per rating point (1 rating = 1%, 0.874 per %), dodge=0.400 ± 0.043 per rating point (12 rating = 1%, 4.795 per %), strength=0.096 ± 0.000, agility=0.374 ± 0.026, attack_power=0.048 ± 0.000, feral_attack_power=0.048 ± 0.000, hit=0.196 ± 0.034 per rating point (10 rating = 1%, 1.964 per %), crit=0.068 ± 0.012 per rating point (14 rating = 1%, 0.950 per %), expertise=5.316 ± 0.384
+1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
+
+Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): stamina=1.000 ± 0.000, armor=0.153 ± 0.000, defense=1.519 ± 0.192 per rating point (1 rating = 1%, 1.519 per %), dodge=0.723 ± 0.043 per rating point (12 rating = 1%, 8.674 per %), strength=0.117 ± 0.000, agility=0.598 ± 0.027, attack_power=0.058 ± 0.000, feral_attack_power=0.058 ± 0.000, hit=0.150 ± 0.032 per rating point (10 rating = 1%, 1.503 per %), crit=0.137 ± 0.015 per rating point (14 rating = 1%, 1.913 per %), expertise=4.683 ± 0.293
 
 | Slot | Item | Source | Score (stamina points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Warbear Helm (252485) | Leatherworking [crafted] | 67.5 stamina points (5017.23 DPS) | yes | Warlord's Dragonhide Headdress (231675, +0.00 DPS) [vendor]; Warlord's Dragonhide Helm (231678, +0.00 DPS) [vendor]; Warlord's Dragonhide Headguard (231687, +0.00 DPS) [vendor] |
-| neck | Senior Sergeant's Insignia (16335) | PvP rank 4 · Senior Sergeant · Horde [vendor] | 17.0 stamina points (1263.31 DPS) | yes | Frostwolf Legionnaire's Pendant (19095, -84.47 DPS) [rep]; Medallion of Grand Marshal Morris (13091, -93.76 DPS) [world_drop]; Scout's Medallion (19534, -103.35 DPS) [rep] |
-| shoulder | Defiler's Leather Shoulders (20194) | The Defilers [rep] | 52.0 stamina points (3864.12 DPS) | yes | Warlord's Dragonhide Pauldrons (231672, +0.00 DPS) [vendor]; Warlord's Dragonhide Spaulders (231681, +0.00 DPS) [vendor]; Warlord's Dragonhide Shoulders (231684, +0.00 DPS) [vendor] |
-| back | Stoneshield Cloak (12551) | Blackrock Depths [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | The Emperor's New Cape (11930, +0.00 DPS) [dungeon]; Bloodmoon Cloak (12967, +0.00 DPS) [dungeon]; Sergeant's Cloak (18461, +0.00 DPS) [vendor] |
-| chest | Warbear Harness (15064) | Leatherworking [crafted] | 63.4 stamina points (4713.43 DPS) | yes | Warlord's Dragonhide Tunic (231674, +0.00 DPS) [vendor]; Warlord's Dragonhide Armor (231679, +0.00 DPS) [vendor]; Warlord's Dragonhide Chestpiece (231686, +0.00 DPS) [vendor] |
-| wrist | Magistrate's Cuffs (18726) | Stratholme: Magistrate Barthilas [dungeon] | 34.3 stamina points (2552.60 DPS) | yes | Malefic Bracers (18700, -97.10 DPS) [dungeon]; Forest Stalker's Bracers (19587, -193.21 DPS) [rep]; Yeti Hide Bracers (19113, -202.77 DPS) [world] |
-| hands | Raider Gloves (272099) | Creeg Bothunk [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | General's Dragonhide Gauntlets (231676, +0.00 DPS) [vendor]; General's Dragonhide Gloves (231677, +0.00 DPS) [pvp]; General's Dragonhide Grips (231688, +0.00 DPS) [vendor] |
-| waist | Hivethrasher's Girdle (275614) | Leatherworking [crafted] | 40.5 stamina points (3007.86 DPS) | yes | Shifter's Belt (272396, -22.72 DPS) [vendor]; Nagmara's Whipping Belt (11866, -127.14 DPS) [quest]; Frostbite Girdle (14502, -134.82 DPS) [dungeon] |
-| legs | Outrider's Leather Pants (22740) | Warsong Outriders [rep] | 69.8 stamina points (5185.58 DPS) | yes | General's Dragonhide Legguards (231673, +0.00 DPS) [vendor]; General's Dragonhide Pants (231680, +0.00 DPS) [vendor]; General's Dragonhide Leggings (231685, +0.00 DPS) [pvp] |
-| feet | Ash Covered Boots (18716) | Stratholme: Archivist Galford [dungeon] | 46.7 stamina points (3467.97 DPS) | yes | General's Dragonhide Greaves (231671, +0.00 DPS) [vendor]; General's Dragonhide Boots (231682, +0.00 DPS) [pvp]; General's Dragonhide Treads (231683, +0.00 DPS) [vendor] |
-| finger1 | Naglering (11669) | Blackrock Depths: Golem Lord Argelmach [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Myrmidon's Signet (2246, +0.00 DPS) [world_drop]; Insurgent's Band (272064, +0.00 DPS) [vendor]; Ring of Awareness (272409, +0.00 DPS) [vendor] |
-| finger2 | Band of Flesh (13373) | Stratholme: Ramstein the Gorger [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Myrmidon's Signet (2246, +0.00 DPS) [world_drop]; Ring of Awareness (272409, +0.00 DPS) [vendor]; Insurgent's Band (272064, -65.55 DPS) [vendor] |
-| trinket1 | Defender's Grip Stabilizer (272440) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Relentless Raider's Seal (272060, -101.05 DPS) [vendor]; Darkspear Voodoo Seal (272061, -101.05 DPS) [vendor]; Frostwolf Insignia Rank 6 (17909, -131.58 DPS) [quest] |
-| trinket2 | Defiler's Talisman (20072) | The Defilers [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Relentless Raider's Seal (272060, -148.63 DPS) [vendor]; Darkspear Voodoo Seal (272061, -148.63 DPS) [vendor]; Frostwolf Insignia Rank 6 (17909, -179.16 DPS) [quest] |
+| head | Warbear Helm (252485) | Leatherworking [crafted] | 66.7 stamina points (10063.73 DPS) | yes | Warlord's Dragonhide Headdress (231675, +0.00 DPS) [vendor]; Warlord's Dragonhide Helm (231678, +0.00 DPS) [vendor]; Warlord's Dragonhide Headguard (231687, +0.00 DPS) [vendor] |
+| neck | Senior Sergeant's Insignia (16335) | PvP rank 4 · Senior Sergeant · Horde [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Verek's Collar (11755, +0.00 DPS) [dungeon]; Medallion of Grand Marshal Morris (13091, +0.00 DPS) [world_drop]; Talisman of Evasion (13177, +0.00 DPS) [dungeon] |
+| shoulder | Defiler's Leather Shoulders (20194) | The Defilers [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Warlord's Dragonhide Pauldrons (231672, +0.00 DPS) [vendor]; Warlord's Dragonhide Spaulders (231681, +0.00 DPS) [vendor]; Warlord's Dragonhide Shoulders (231684, +0.00 DPS) [vendor] |
+| back | Stoneshield Cloak (12551) | Blackrock Depths [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | The Emperor's New Cape (11930, +0.00 DPS) [dungeon]; Bloodmoon Cloak (12967, +0.00 DPS) [dungeon]; Shadow Prowler's Cloak (22269, +0.00 DPS) [dungeon] |
+| chest | Warbear Harness (15064) | Leatherworking [crafted] | 63.2 stamina points (9533.99 DPS) | yes | Warlord's Dragonhide Tunic (231674, +0.00 DPS) [vendor]; Warlord's Dragonhide Armor (231679, +0.00 DPS) [vendor]; Warlord's Dragonhide Chestpiece (231686, +0.00 DPS) [vendor] |
+| wrist | Magistrate's Cuffs (18726) | Stratholme: Magistrate Barthilas [dungeon] | 36.8 stamina points (5549.93 DPS) | yes | Forest Stalker's Bracers (19587, -451.97 DPS) [rep]; Malefic Bracers (18700, -476.46 DPS) [dungeon]; Yeti Hide Bracers (19113, -817.35 DPS) [world] |
+| hands | Raider Gloves (272099) | Creeg Bothunk [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | General's Dragonhide Grips (231688, +0.00 DPS) [vendor]; General's Dragonhide Gauntlets (231676, -137.13 DPS) [vendor]; General's Dragonhide Gloves (231677, -137.13 DPS) [pvp] |
+| waist | Hivethrasher's Girdle (275614) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Nagmara's Whipping Belt (11866, +0.00 DPS) [quest]; Vosh'gajin's Strand (13962, +0.00 DPS) [quest]; Shifter's Belt (272396, +0.00 DPS) [vendor] |
+| legs | Outrider's Leather Pants (22740) | Warsong Outriders [rep] | 72.1 stamina points (10876.71 DPS) | yes | General's Dragonhide Legguards (231673, +0.00 DPS) [vendor]; General's Dragonhide Pants (231680, +0.00 DPS) [vendor]; General's Dragonhide Leggings (231685, +0.00 DPS) [pvp] |
+| feet | Ash Covered Boots (18716) | Stratholme: Archivist Galford [dungeon] | 52.0 stamina points (7850.63 DPS) | yes | General's Dragonhide Greaves (231671, +0.00 DPS) [vendor]; General's Dragonhide Boots (231682, +0.00 DPS) [pvp]; General's Dragonhide Treads (231683, +0.00 DPS) [vendor] |
+| finger1 | Naglering (11669) | Blackrock Depths: Golem Lord Argelmach [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Myrmidon's Signet (2246, +0.00 DPS) [world_drop]; Band of the Steadfast Hero (22331, +0.00 DPS) [dungeon]; Ring of Awareness (272409, +0.00 DPS) [vendor] |
+| finger2 | Band of Flesh (13373) | Stratholme: Ramstein the Gorger [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Myrmidon's Signet (2246, +0.00 DPS) [world_drop]; Band of the Steadfast Hero (22331, +0.00 DPS) [dungeon]; Ring of Awareness (272409, +0.00 DPS) [vendor] |
+| trinket1 | Defender's Grip Stabilizer (272440) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Frostwolf Insignia Rank 6 (17909, -361.33 DPS) [quest]; The Lion Horn of Stormwind (14557, -1145.89 DPS) [world_drop]; Darkspear Voodoo Seal (272061, -1470.21 DPS) [vendor] |
+| trinket2 | Defiler's Talisman (20072) | The Defilers [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | The Lion Horn of Stormwind (14557, +0.00 DPS) [world_drop]; Frostwolf Insignia Rank 6 (17909, +0.00 DPS) [quest]; Darkspear Voodoo Seal (272061, -301.82 DPS) [vendor] |
 | main_hand | The Unstoppable Force (19323) | Frostwolf Clan [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | High Warlord's Pulverizer (234545, +0.00 DPS) [pvp]; High Warlord's Destroyer (234546, +0.00 DPS) [pvp]; High Warlord's War Staff (234549, +0.00 DPS) [pvp] |
 | off_hand | - | - |  |  |  |
 | ranged | - | - |  |  |  |
 
 **New at 60:** head: Warbear Helm; neck: Senior Sergeant's Insignia; shoulder: Defiler's Leather Shoulders; back: Stoneshield Cloak; chest: Warbear Harness; wrist: Magistrate's Cuffs; hands: Raider Gloves; waist: Hivethrasher's Girdle; legs: Outrider's Leather Pants; feet: Ash Covered Boots; finger1: Naglering; finger2: Band of Flesh; trinket1: Defender's Grip Stabilizer; trinket2: Defiler's Talisman; main_hand: The Unstoppable Force
 
-No-known-source sample (15 of 1992, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 4990 Scorched Bands; 5000 Coral Band
+No-known-source sample (15 of 1972, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 4990 Scorched Bands; 5000 Coral Band
 
 ### Band 60, raid preset (tauren, 0000000000000000-51230332023102125510-0550000000000000)
 
-Set DPS (verified): 552.5. Weights run: 11.0s. Verify run: 59.3s. 1992 eligible items had no known source.
+Set DPS (verified): 552.5. Weights run: 8.7s. Verify run: 47.9s. 1972 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 2089.1 ± 2.2, tauren 2071.2 ± 2.2 (threat_per_second); windshaper-skyborne beats the guide race tauren by 17.8 (0.86%) ± 3.2, beyond error.
 
@@ -380,8 +382,8 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 | waist | Shifter's Belt (272396) | Pix Xizzix [vendor] | 48.3 stamina points (6256.58 DPS) | yes | Nagmara's Whipping Belt (11866, -316.04 DPS) [quest]; Hivethrasher's Girdle (275614, -437.45 DPS) [crafted]; Frostbite Girdle (14502, -453.63 DPS) [dungeon] |
 | legs | Outrider's Leather Pants (22740) | Warsong Outriders [rep] | 81.2 stamina points (10526.64 DPS) | yes | General's Dragonhide Legguards (231673, +0.00 DPS) [vendor]; General's Dragonhide Pants (231680, +0.00 DPS) [vendor]; General's Dragonhide Leggings (231685, +0.00 DPS) [pvp] |
 | feet | Ash Covered Boots (18716) | Stratholme: Archivist Galford [dungeon] | 56.7 stamina points (7351.19 DPS) | yes | General's Dragonhide Greaves (231671, +0.00 DPS) [vendor]; General's Dragonhide Boots (231682, +0.00 DPS) [pvp]; General's Dragonhide Treads (231683, +0.00 DPS) [vendor] |
-| finger1 | Naglering (11669) | Blackrock Depths: Golem Lord Argelmach [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Myrmidon's Signet (2246, +0.00 DPS) [world_drop]; Band of Flesh (13373, +0.00 DPS) [dungeon]; Cutthroat's Signet (272408, +0.00 DPS) [vendor] |
-| finger2 | Ring of Awareness (272409) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Myrmidon's Signet (2246, -81.37 DPS) [world_drop]; Band of Flesh (13373, -570.38 DPS) [dungeon]; Cutthroat's Signet (272408, -611.78 DPS) [vendor] |
+| finger1 | Naglering (11669) | Blackrock Depths: Golem Lord Argelmach [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Myrmidon's Signet (2246, +0.00 DPS) [world_drop]; Band of Flesh (13373, +0.00 DPS) [dungeon]; Band of the Steadfast Hero (22331, +0.00 DPS) [dungeon] |
+| finger2 | Ring of Awareness (272409) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Myrmidon's Signet (2246, -81.37 DPS) [world_drop]; Band of the Steadfast Hero (22331, -96.41 DPS) [dungeon]; Band of Flesh (13373, -570.38 DPS) [dungeon] |
 | trinket1 | Defender's Grip Stabilizer (272440) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Defiler's Talisman (20072, -666.83 DPS) [rep]; The Lion Horn of Stormwind (14557, -854.77 DPS) [world_drop] |
 | trinket2 | Frostwolf Insignia Rank 6 (17909) | The Eye of Command [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Defiler's Talisman (20072, -293.57 DPS) [rep]; The Lion Horn of Stormwind (14557, -481.51 DPS) [world_drop] |
 | main_hand | The Unstoppable Force (19323) | Frostwolf Clan [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | High Warlord's Pulverizer (234545, +0.00 DPS) [pvp]; High Warlord's Destroyer (234546, +0.00 DPS) [pvp]; High Warlord's War Staff (234549, +0.00 DPS) [pvp] |
@@ -390,5 +392,5 @@ Stat weights (normalized to stamina = 1.0, error under 25% of the weight to publ
 
 **New at 60:** head: Warbear Helm; neck: Talisman of Evasion; shoulder: Defiler's Leather Shoulders; back: Stoneshield Cloak; chest: Warbear Harness; wrist: Forest Stalker's Bracers; hands: Raider Gloves; waist: Shifter's Belt; legs: Outrider's Leather Pants; feet: Ash Covered Boots; finger1: Naglering; finger2: Ring of Awareness; trinket1: Defender's Grip Stabilizer; trinket2: Frostwolf Insignia Rank 6; main_hand: The Unstoppable Force; ranged: Idol of Brutality
 
-No-known-source sample (15 of 1992, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 4990 Scorched Bands; 5000 Coral Band
+No-known-source sample (15 of 1972, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 4990 Scorched Bands; 5000 Coral Band
 
