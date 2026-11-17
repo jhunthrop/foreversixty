@@ -103645,14 +103645,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 13404,
+                  "source_kind": "dungeon",
+                  "source": "Stratholme: The Unforgiven"
+                },
+                {
                   "item_id": 227055,
                   "source_kind": "pvp",
                   "source": "PvP rank 10 · Lieutenant Commander · Alliance"
-                },
-                {
-                  "item_id": 231545,
-                  "source_kind": "pvp",
-                  "source": "PvP rank 13 · Field Marshal · Alliance"
                 }
               ]
             },
@@ -103663,14 +103663,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 17044,
+                  "item_id": 22150,
                   "source_kind": "quest",
-                  "source": "Aurius' Reckoning"
+                  "source": "Falrin's Vendetta"
                 },
                 {
-                  "item_id": 11933,
+                  "item_id": 22340,
                   "source_kind": "dungeon",
-                  "source": "Blackrock Depths: Emperor Dagran Thaurissan"
+                  "source": "Blackrock Spire: Lord Valthalak"
                 }
               ]
             },
@@ -103681,9 +103681,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 20059,
-                  "source_kind": "rep",
-                  "source": "The League of Arathor"
+                  "item_id": 12927,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: Pyroguard Emberseer"
                 },
                 {
                   "item_id": 227054,
@@ -103699,14 +103699,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 20073,
-                  "source_kind": "rep",
-                  "source": "The League of Arathor"
-                },
-                {
                   "item_id": 13340,
                   "source_kind": "dungeon",
                   "source": "Stratholme: Baron Rivendare"
+                },
+                {
+                  "item_id": 20073,
+                  "source_kind": "rep",
+                  "source": "The League of Arathor"
                 }
               ]
             },
@@ -103717,14 +103717,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 226825,
+                  "source_kind": "quest",
+                  "source": "Saving the Best for Last"
+                },
+                {
                   "item_id": 231543,
                   "source_kind": "pvp",
                   "source": "PvP rank 13 · Field Marshal · Alliance"
-                },
-                {
-                  "item_id": 252484,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
                 }
               ]
             },
@@ -103735,14 +103735,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 12966,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: The Beast"
+                },
+                {
                   "item_id": 16460,
                   "source_kind": "pvp",
                   "source": "PvP rank 12 · Marshal · Alliance"
-                },
-                {
-                  "item_id": 13120,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
                 }
               ]
             },
@@ -103753,9 +103753,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 16396,
-                  "source_kind": "pvp",
-                  "source": "PvP rank 7 · Knight-Lieutenant · Alliance"
+                  "item_id": 15063,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
                 },
                 {
                   "item_id": 231544,
@@ -103771,14 +103771,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 20045,
+                  "source_kind": "rep",
+                  "source": "The League of Arathor"
+                },
+                {
                   "item_id": 16458,
                   "source_kind": "pvp",
                   "source": "PvP rank 12 · Marshal · Alliance"
-                },
-                {
-                  "item_id": 19044,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
                 }
               ]
             },
@@ -103866,9 +103866,9 @@
                   "source": "Blackrock Spire: Mother Smolderweb"
                 },
                 {
-                  "item_id": 22321,
+                  "item_id": 13382,
                   "source_kind": "dungeon",
-                  "source": "Blackrock Spire: Overlord Wyrmthalak"
+                  "source": "Stratholme: Cannon Master Willey"
                 }
               ]
             },
@@ -103884,9 +103884,9 @@
                   "source": "Blackrock Spire: Mother Smolderweb"
                 },
                 {
-                  "item_id": 249469,
-                  "source_kind": "crafted",
-                  "source": "Enchanting"
+                  "item_id": 13382,
+                  "source_kind": "dungeon",
+                  "source": "Stratholme: Cannon Master Willey"
                 }
               ]
             },
@@ -103913,13 +103913,7 @@
               "source_kind": "world_drop",
               "source": "World drop",
               "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 19100,
-                  "source_kind": "rep",
-                  "source": "Stormpike Guard"
-                }
-              ]
+              "alternatives": []
             },
             "ranged": {
               "item_id": 12653,
@@ -103933,9 +103927,9 @@
                   "source": "World drop"
                 },
                 {
-                  "item_id": 19107,
-                  "source_kind": "quest",
-                  "source": "Korrak the Bloodrager"
+                  "item_id": 12651,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: Shadow Hunter Vosh'gajin"
                 }
               ]
             }
@@ -103948,14 +103942,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 226829,
+                  "source_kind": "quest",
+                  "source": "Saving the Best for Last"
+                },
+                {
                   "item_id": 227057,
                   "source_kind": "pvp",
                   "source": "PvP rank 10 · Champion · Horde"
-                },
-                {
-                  "item_id": 231553,
-                  "source_kind": "pvp",
-                  "source": "PvP rank 13 · Warlord · Horde"
                 }
               ]
             },
@@ -103966,14 +103960,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 11933,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Depths: Emperor Dagran Thaurissan"
+                  "item_id": 22150,
+                  "source_kind": "quest",
+                  "source": "Falrin's Vendetta"
                 },
                 {
-                  "item_id": 17044,
-                  "source_kind": "quest",
-                  "source": "Aurius' Reckoning"
+                  "item_id": 22340,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: Lord Valthalak"
                 }
               ]
             },
@@ -104002,14 +103996,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 13340,
+                  "source_kind": "dungeon",
+                  "source": "Stratholme: Baron Rivendare"
+                },
+                {
                   "item_id": 20068,
                   "source_kind": "rep",
                   "source": "The Defilers"
-                },
-                {
-                  "item_id": 11626,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Depths: High Interrogator Gerstahn "
                 }
               ]
             },
@@ -104025,7 +104019,7 @@
                   "source": "PvP rank 13 · Warlord · Horde"
                 },
                 {
-                  "item_id": 252484,
+                  "item_id": 252483,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
                 }
@@ -104056,14 +104050,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 16499,
+                  "source_kind": "pvp",
+                  "source": "PvP rank 7 · Blood Guard · Horde"
+                },
+                {
                   "item_id": 231555,
                   "source_kind": "pvp",
                   "source": "PvP rank 12 · General · Horde"
-                },
-                {
-                  "item_id": 272099,
-                  "source_kind": "vendor",
-                  "source": "Creeg Bothunk"
                 }
               ]
             },
@@ -104074,14 +104068,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 20190,
+                  "source_kind": "rep",
+                  "source": "The Defilers"
+                },
+                {
                   "item_id": 16557,
                   "source_kind": "pvp",
                   "source": "PvP rank 12 · General · Horde"
-                },
-                {
-                  "item_id": 19044,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
                 }
               ]
             },
@@ -104092,14 +104086,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 15062,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
+                },
+                {
                   "item_id": 227059,
                   "source_kind": "pvp",
                   "source": "PvP rank 8 · Legionnaire · Horde"
-                },
-                {
-                  "item_id": 231554,
-                  "source_kind": "pvp",
-                  "source": "PvP rank 12 · General · Horde"
                 }
               ]
             },
@@ -104164,14 +104158,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 13965,
-                  "source_kind": "quest",
-                  "source": "For The Horde!"
-                },
-                {
                   "item_id": 13213,
                   "source_kind": "dungeon",
                   "source": "Blackrock Spire: Mother Smolderweb"
+                },
+                {
+                  "item_id": 249469,
+                  "source_kind": "crafted",
+                  "source": "Enchanting"
                 }
               ]
             },
@@ -104216,13 +104210,7 @@
               "source_kind": "world_drop",
               "source": "World drop",
               "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 19099,
-                  "source_kind": "rep",
-                  "source": "Frostwolf Clan"
-                }
-              ]
+              "alternatives": []
             },
             "ranged": {
               "item_id": 12653,
@@ -104283,10 +104271,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 1.466,
-          "crit": 1.259,
-          "hit": 1.411,
-          "melee_haste": 10.942
+          "agility": 1.783,
+          "crit": 2.0,
+          "hit": 3.996,
+          "melee_haste": 33.441
         },
         "hit_to_cap": {
           "alliance": {
@@ -106782,9 +106770,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 19984,
+              "item_id": 226829,
               "source_kind": "quest",
-              "source": "The Azure Key",
+              "source": "Saving the Best for Last",
               "chance": null,
               "alternatives": [
                 {
@@ -106806,14 +106794,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 11933,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Depths: Emperor Dagran Thaurissan"
+                  "item_id": 22150,
+                  "source_kind": "quest",
+                  "source": "Falrin's Vendetta"
                 },
                 {
-                  "item_id": 17044,
-                  "source_kind": "quest",
-                  "source": "Aurius' Reckoning"
+                  "item_id": 22340,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: Lord Valthalak"
                 }
               ]
             },
@@ -106829,27 +106817,27 @@
                   "source": "PvP rank 10 · Lieutenant Commander · Alliance"
                 },
                 {
-                  "item_id": 271955,
-                  "source_kind": "rep",
-                  "source": "Theramore Expeditionary Force"
+                  "item_id": 231547,
+                  "source_kind": "pvp",
+                  "source": "PvP rank 13 · Field Marshal · Alliance"
                 }
               ]
             },
             "back": {
-              "item_id": 13340,
-              "source_kind": "dungeon",
-              "source": "Stratholme: Baron Rivendare",
+              "item_id": 272414,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
               "chance": null,
               "alternatives": [
+                {
+                  "item_id": 13340,
+                  "source_kind": "dungeon",
+                  "source": "Stratholme: Baron Rivendare"
+                },
                 {
                   "item_id": 20073,
                   "source_kind": "rep",
                   "source": "The League of Arathor"
-                },
-                {
-                  "item_id": 272414,
-                  "source_kind": "vendor",
-                  "source": "Pix Xizzix"
                 }
               ]
             },
@@ -106860,14 +106848,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 226825,
+                  "source_kind": "quest",
+                  "source": "Saving the Best for Last"
+                },
+                {
                   "item_id": 231543,
                   "source_kind": "pvp",
                   "source": "PvP rank 13 · Field Marshal · Alliance"
-                },
-                {
-                  "item_id": 252484,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
                 }
               ]
             },
@@ -106883,9 +106871,9 @@
                   "source": "PvP rank 12 · Marshal · Alliance"
                 },
                 {
-                  "item_id": 13120,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 12966,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: The Beast"
                 }
               ]
             },
@@ -106896,9 +106884,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 16396,
-                  "source_kind": "pvp",
-                  "source": "PvP rank 7 · Knight-Lieutenant · Alliance"
+                  "item_id": 15063,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
                 },
                 {
                   "item_id": 231544,
@@ -106914,14 +106902,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 20045,
+                  "source_kind": "rep",
+                  "source": "The League of Arathor"
+                },
+                {
                   "item_id": 16458,
                   "source_kind": "pvp",
                   "source": "PvP rank 12 · Marshal · Alliance"
-                },
-                {
-                  "item_id": 19044,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
                 }
               ]
             },
@@ -106944,10 +106932,10 @@
               ]
             },
             "feet": {
-              "item_id": 13210,
+              "item_id": 16711,
               "source_kind": "dungeon",
-              "source": "Blackrock Spire: Halycon",
-              "chance": 0.14,
+              "source": "Scholomance: Rattlegore",
+              "chance": 0.16,
               "alternatives": [
                 {
                   "item_id": 12553,
@@ -106955,9 +106943,9 @@
                   "source": "Blackrock Depths: Princess Moira Bronzebeard "
                 },
                 {
-                  "item_id": 16711,
-                  "source_kind": "dungeon",
-                  "source": "Scholomance: Rattlegore"
+                  "item_id": 231546,
+                  "source_kind": "pvp",
+                  "source": "PvP rank 12 · Marshal · Alliance"
                 }
               ]
             },
@@ -106973,9 +106961,9 @@
                   "source": "Maraudon: Princess Theradras"
                 },
                 {
-                  "item_id": 19514,
-                  "source_kind": "rep",
-                  "source": "Silverwing Sentinels"
+                  "item_id": 13098,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: General Drakkisath"
                 }
               ]
             },
@@ -106991,9 +106979,9 @@
                   "source": "Maraudon: Princess Theradras"
                 },
                 {
-                  "item_id": 19514,
-                  "source_kind": "rep",
-                  "source": "Silverwing Sentinels"
+                  "item_id": 13098,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: General Drakkisath"
                 }
               ]
             },
@@ -107009,16 +106997,16 @@
                   "source": "Blackrock Spire: Mother Smolderweb"
                 },
                 {
-                  "item_id": 249469,
-                  "source_kind": "crafted",
-                  "source": "Enchanting"
+                  "item_id": 13382,
+                  "source_kind": "dungeon",
+                  "source": "Stratholme: Cannon Master Willey"
                 }
               ]
             },
             "trinket2": {
-              "item_id": 13965,
-              "source_kind": "quest",
-              "source": "General Drakkisath's Demise",
+              "item_id": 249470,
+              "source_kind": "crafted",
+              "source": "Enchanting",
               "chance": null,
               "alternatives": [
                 {
@@ -107027,9 +107015,9 @@
                   "source": "Blackrock Spire: Mother Smolderweb"
                 },
                 {
-                  "item_id": 249469,
-                  "source_kind": "crafted",
-                  "source": "Enchanting"
+                  "item_id": 13965,
+                  "source_kind": "quest",
+                  "source": "General Drakkisath's Demise"
                 }
               ]
             },
@@ -107058,36 +107046,36 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 19100,
-                  "source_kind": "rep",
-                  "source": "Stormpike Guard"
+                  "item_id": 12783,
+                  "source_kind": "crafted",
+                  "source": "Blacksmithing"
                 }
               ]
             },
             "ranged": {
-              "item_id": 12653,
+              "item_id": 12651,
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Shadow Hunter Vosh'gajin",
               "chance": 0.08,
               "alternatives": [
                 {
-                  "item_id": 19107,
-                  "source_kind": "quest",
-                  "source": "Korrak the Bloodrager"
+                  "item_id": 2100,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 },
                 {
-                  "item_id": 22318,
+                  "item_id": 12653,
                   "source_kind": "dungeon",
-                  "source": "Blackrock Depths: Arena Spoils"
+                  "source": "Blackrock Spire: Shadow Hunter Vosh'gajin"
                 }
               ]
             }
           },
           "horde": {
             "head": {
-              "item_id": 19984,
+              "item_id": 226829,
               "source_kind": "quest",
-              "source": "The Azure Key",
+              "source": "Saving the Best for Last",
               "chance": null,
               "alternatives": [
                 {
@@ -107109,14 +107097,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 11933,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Depths: Emperor Dagran Thaurissan"
+                  "item_id": 22150,
+                  "source_kind": "quest",
+                  "source": "Falrin's Vendetta"
                 },
                 {
-                  "item_id": 17044,
-                  "source_kind": "quest",
-                  "source": "Aurius' Reckoning"
+                  "item_id": 22340,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: Lord Valthalak"
                 }
               ]
             },
@@ -107199,14 +107187,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 14640,
+                  "source_kind": "dungeon",
+                  "source": "Scholomance"
+                },
+                {
                   "item_id": 16499,
                   "source_kind": "pvp",
                   "source": "PvP rank 7 · Blood Guard · Horde"
-                },
-                {
-                  "item_id": 231555,
-                  "source_kind": "pvp",
-                  "source": "PvP rank 12 · General · Horde"
                 }
               ]
             },
@@ -107301,38 +107289,38 @@
               ]
             },
             "trinket1": {
+              "item_id": 13213,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Mother Smolderweb",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 11815,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths: Emperor Dagran Thaurissan"
+                },
+                {
+                  "item_id": 249469,
+                  "source_kind": "crafted",
+                  "source": "Enchanting"
+                }
+              ]
+            },
+            "trinket2": {
               "item_id": 19120,
               "source_kind": "quest",
               "source": "Job Opening: Guard Captain of Revantusk Village",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 13213,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: Mother Smolderweb"
+                  "item_id": 249470,
+                  "source_kind": "crafted",
+                  "source": "Enchanting"
                 },
                 {
                   "item_id": 11815,
                   "source_kind": "dungeon",
                   "source": "Blackrock Depths: Emperor Dagran Thaurissan"
-                }
-              ]
-            },
-            "trinket2": {
-              "item_id": 13965,
-              "source_kind": "quest",
-              "source": "For The Horde!",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 11815,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Depths: Emperor Dagran Thaurissan"
-                },
-                {
-                  "item_id": 13213,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: Mother Smolderweb"
                 }
               ]
             },
@@ -107389,23 +107377,25 @@
         },
         "new_at_band": {
           "alliance": [
+            226829,
             15411,
             15058,
-            13340,
+            272414,
             15056,
             19587,
             272395,
             15057,
-            13210,
+            16711,
             19325,
             272408,
             11815,
-            13965,
+            249470,
             12590,
             14555,
-            12653
+            12651
           ],
           "horde": [
+            226829,
             15411,
             15058,
             13340,
@@ -107416,7 +107406,8 @@
             13210,
             19325,
             272408,
-            13965,
+            13213,
+            19120,
             12590,
             14555,
             12653
@@ -107425,19 +107416,19 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 1.47,
-          "crit": 1.071,
-          "hit": 1.251,
-          "melee_haste": 10.55
+          "agility": 1.95,
+          "crit": 2.117,
+          "hit": 2.852,
+          "melee_haste": 13.704
         },
         "hit_to_cap": {
           "alliance": {
             "hit": [
-              2.0,
+              0.0,
               9.0
             ],
             "white": [
-              21.0,
+              18.8,
               28.0
             ],
             "spell": null,
@@ -107445,11 +107436,11 @@
           },
           "horde": {
             "hit": [
-              1.3,
+              0.3,
               9.0
             ],
             "white": [
-              20.3,
+              19.3,
               28.0
             ],
             "spell": null,
@@ -109933,14 +109924,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 226829,
+                  "source_kind": "quest",
+                  "source": "Saving the Best for Last"
+                },
+                {
                   "item_id": 227055,
                   "source_kind": "pvp",
                   "source": "PvP rank 10 · Lieutenant Commander · Alliance"
-                },
-                {
-                  "item_id": 231545,
-                  "source_kind": "pvp",
-                  "source": "PvP rank 13 · Field Marshal · Alliance"
                 }
               ]
             },
@@ -109951,14 +109942,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 22150,
+                  "source_kind": "quest",
+                  "source": "Falrin's Vendetta"
+                },
+                {
                   "item_id": 11933,
                   "source_kind": "dungeon",
                   "source": "Blackrock Depths: Emperor Dagran Thaurissan"
-                },
-                {
-                  "item_id": 17044,
-                  "source_kind": "quest",
-                  "source": "Aurius' Reckoning"
                 }
               ]
             },
@@ -110224,9 +110215,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 19984,
+              "item_id": 226829,
               "source_kind": "quest",
-              "source": "The Azure Key",
+              "source": "Saving the Best for Last",
               "chance": null,
               "alternatives": [
                 {
@@ -110242,9 +110233,9 @@
               ]
             },
             "neck": {
-              "item_id": 15411,
+              "item_id": 22150,
               "source_kind": "quest",
-              "source": "In Dreams",
+              "source": "Falrin's Vendetta",
               "chance": null,
               "alternatives": [
                 {
@@ -110253,9 +110244,9 @@
                   "source": "Blackrock Depths: Emperor Dagran Thaurissan"
                 },
                 {
-                  "item_id": 17044,
-                  "source_kind": "quest",
-                  "source": "Aurius' Reckoning"
+                  "item_id": 22340,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: Lord Valthalak"
                 }
               ]
             },
@@ -110271,9 +110262,9 @@
                   "source": "The Defilers"
                 },
                 {
-                  "item_id": 20194,
-                  "source_kind": "rep",
-                  "source": "The Defilers"
+                  "item_id": 272105,
+                  "source_kind": "vendor",
+                  "source": "Creeg Bothunk"
                 }
               ]
             },
@@ -110307,7 +110298,7 @@
                   "source": "PvP rank 13 · Warlord · Horde"
                 },
                 {
-                  "item_id": 252483,
+                  "item_id": 252484,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
                 }
@@ -110332,9 +110323,9 @@
               ]
             },
             "hands": {
-              "item_id": 272099,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk",
+              "item_id": 867,
+              "source_kind": "world_drop",
+              "source": "World drop",
               "chance": null,
               "alternatives": [
                 {
@@ -110356,14 +110347,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 20190,
-                  "source_kind": "rep",
-                  "source": "The Defilers"
-                },
-                {
                   "item_id": 16557,
                   "source_kind": "pvp",
                   "source": "PvP rank 12 · General · Horde"
+                },
+                {
+                  "item_id": 19044,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
                 }
               ]
             },
@@ -110374,14 +110365,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 15062,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
-                },
-                {
                   "item_id": 227059,
                   "source_kind": "pvp",
                   "source": "PvP rank 8 · Legionnaire · Horde"
+                },
+                {
+                  "item_id": 231554,
+                  "source_kind": "pvp",
+                  "source": "PvP rank 12 · General · Horde"
                 }
               ]
             },
@@ -110446,14 +110437,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 11815,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Depths: Emperor Dagran Thaurissan"
-                },
-                {
                   "item_id": 13213,
                   "source_kind": "dungeon",
                   "source": "Blackrock Spire: Mother Smolderweb"
+                },
+                {
+                  "item_id": 249469,
+                  "source_kind": "crafted",
+                  "source": "Enchanting"
                 }
               ]
             },
@@ -110498,7 +110489,13 @@
               "source_kind": "world_drop",
               "source": "World drop",
               "chance": null,
-              "alternatives": []
+              "alternatives": [
+                {
+                  "item_id": 19099,
+                  "source_kind": "rep",
+                  "source": "Frostwolf Clan"
+                }
+              ]
             },
             "ranged": {
               "item_id": 12653,
@@ -110540,12 +110537,12 @@
             12653
           ],
           "horde": [
-            15411,
+            226829,
+            22150,
             15058,
             13340,
             15056,
             19587,
-            272099,
             272395,
             15057,
             13210,
@@ -110561,10 +110558,10 @@
         "weights": {
           "attack_power": 1.0,
           "strength": 1.0,
-          "agility": 1.496,
-          "crit": 1.122,
-          "hit": 0.913,
-          "melee_haste": 6.635
+          "agility": 1.494,
+          "crit": 1.099,
+          "hit": 0.917,
+          "melee_haste": 6.143
         },
         "hit_to_cap": {
           "alliance": {
@@ -110581,11 +110578,11 @@
           },
           "horde": {
             "hit": [
-              1.3,
+              0.3,
               9.0
             ],
             "white": [
-              20.3,
+              19.3,
               28.0
             ],
             "spell": null,
@@ -148794,9 +148791,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 231545,
-                  "source_kind": "pvp",
-                  "source": "PvP rank 13 · Field Marshal · Alliance"
+                  "item_id": 226829,
+                  "source_kind": "quest",
+                  "source": "Saving the Best for Last"
                 },
                 {
                   "item_id": 227055,
@@ -148812,14 +148809,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 22403,
+                  "item_id": 22340,
                   "source_kind": "dungeon",
-                  "source": "Stratholme: Cannon Master Willey"
+                  "source": "Blackrock Spire: Lord Valthalak"
                 },
                 {
-                  "item_id": 13089,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 22150,
+                  "source_kind": "quest",
+                  "source": "Falrin's Vendetta"
                 }
               ]
             },
@@ -148830,9 +148827,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 12927,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: Pyroguard Emberseer"
+                  "item_id": 20059,
+                  "source_kind": "rep",
+                  "source": "The League of Arathor"
                 },
                 {
                   "item_id": 227054,
@@ -148853,9 +148850,9 @@
                   "source": "Stratholme: Baron Rivendare"
                 },
                 {
-                  "item_id": 3475,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 20073,
+                  "source_kind": "rep",
+                  "source": "The League of Arathor"
                 }
               ]
             },
@@ -148866,14 +148863,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 227058,
-                  "source_kind": "pvp",
-                  "source": "PvP rank 8 · Knight-Captain · Alliance"
-                },
-                {
                   "item_id": 231543,
                   "source_kind": "pvp",
                   "source": "PvP rank 13 · Field Marshal · Alliance"
+                },
+                {
+                  "item_id": 252483,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
                 }
               ]
             },
@@ -148902,14 +148899,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 867,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
-                {
                   "item_id": 231544,
                   "source_kind": "pvp",
                   "source": "PvP rank 12 · Marshal · Alliance"
+                },
+                {
+                  "item_id": 226828,
+                  "source_kind": "quest",
+                  "source": "Just Compensation"
                 }
               ]
             },
@@ -148920,14 +148917,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 20045,
+                  "source_kind": "rep",
+                  "source": "The League of Arathor"
+                },
+                {
                   "item_id": 16458,
                   "source_kind": "pvp",
                   "source": "PvP rank 12 · Marshal · Alliance"
-                },
-                {
-                  "item_id": 19044,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
                 }
               ]
             },
@@ -148938,14 +148935,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 23299,
-                  "source_kind": "vendor",
-                  "source": "PvP rank 8 · Knight-Captain · Alliance"
-                },
-                {
                   "item_id": 231548,
                   "source_kind": "pvp",
                   "source": "PvP rank 12 · Marshal · Alliance"
+                },
+                {
+                  "item_id": 237818,
+                  "source_kind": "vendor",
+                  "source": "Illiyana Moonblaze"
                 }
               ]
             },
@@ -148979,9 +148976,9 @@
                   "source": "Maraudon: Princess Theradras"
                 },
                 {
-                  "item_id": 272406,
-                  "source_kind": "vendor",
-                  "source": "Pix Xizzix"
+                  "item_id": 13098,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: General Drakkisath"
                 }
               ]
             },
@@ -148997,9 +148994,9 @@
                   "source": "Maraudon: Princess Theradras"
                 },
                 {
-                  "item_id": 272406,
-                  "source_kind": "vendor",
-                  "source": "Pix Xizzix"
+                  "item_id": 13098,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: General Drakkisath"
                 }
               ]
             },
@@ -149062,13 +149059,7 @@
               "source_kind": "world_drop",
               "source": "World drop",
               "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 12783,
-                  "source_kind": "crafted",
-                  "source": "Blacksmithing"
-                }
-              ]
+              "alternatives": []
             },
             "ranged": {
               "item_id": 2100,
@@ -149077,34 +149068,34 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 12651,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: Shadow Hunter Vosh'gajin"
+                  "item_id": 19107,
+                  "source_kind": "quest",
+                  "source": "Korrak the Bloodrager"
                 },
                 {
-                  "item_id": 18680,
+                  "item_id": 12653,
                   "source_kind": "dungeon",
-                  "source": "Scholomance"
+                  "source": "Blackrock Spire: Shadow Hunter Vosh'gajin"
                 }
               ]
             }
           },
           "horde": {
             "head": {
-              "item_id": 12587,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Warchief Rend Blackhand",
+              "item_id": 226829,
+              "source_kind": "quest",
+              "source": "Saving the Best for Last",
               "chance": null,
               "alternatives": [
-                {
-                  "item_id": 13404,
-                  "source_kind": "dungeon",
-                  "source": "Stratholme: The Unforgiven"
-                },
                 {
                   "item_id": 227057,
                   "source_kind": "pvp",
                   "source": "PvP rank 10 · Champion · Horde"
+                },
+                {
+                  "item_id": 231553,
+                  "source_kind": "pvp",
+                  "source": "PvP rank 13 · Warlord · Horde"
                 }
               ]
             },
@@ -149115,14 +149106,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 12103,
+                  "item_id": 22340,
                   "source_kind": "dungeon",
-                  "source": "Stratholme: Balnazzar"
+                  "source": "Blackrock Spire: Lord Valthalak"
                 },
                 {
-                  "item_id": 22403,
-                  "source_kind": "dungeon",
-                  "source": "Stratholme: Cannon Master Willey"
+                  "item_id": 22150,
+                  "source_kind": "quest",
+                  "source": "Falrin's Vendetta"
                 }
               ]
             },
@@ -149133,9 +149124,9 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 12927,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: Pyroguard Emberseer"
+                  "item_id": 20194,
+                  "source_kind": "rep",
+                  "source": "The Defilers"
                 },
                 {
                   "item_id": 227056,
@@ -149151,14 +149142,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 13340,
-                  "source_kind": "dungeon",
-                  "source": "Stratholme: Baron Rivendare"
+                  "item_id": 20068,
+                  "source_kind": "rep",
+                  "source": "The Defilers"
                 },
                 {
-                  "item_id": 3475,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 11626,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths: High Interrogator Gerstahn "
                 }
               ]
             },
@@ -149169,14 +149160,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 227060,
-                  "source_kind": "pvp",
-                  "source": "PvP rank 8 · Legionnaire · Horde"
-                },
-                {
                   "item_id": 231549,
                   "source_kind": "pvp",
                   "source": "PvP rank 13 · Warlord · Horde"
+                },
+                {
+                  "item_id": 252484,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
                 }
               ]
             },
@@ -149187,14 +149178,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 12966,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: The Beast"
-                },
-                {
                   "item_id": 16559,
                   "source_kind": "pvp",
                   "source": "PvP rank 12 · General · Horde"
+                },
+                {
+                  "item_id": 13120,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -149210,9 +149201,9 @@
                   "source": "PvP rank 12 · General · Horde"
                 },
                 {
-                  "item_id": 15063,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
+                  "item_id": 226828,
+                  "source_kind": "quest",
+                  "source": "Just Compensation"
                 }
               ]
             },
@@ -149223,14 +149214,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 20190,
-                  "source_kind": "rep",
-                  "source": "The Defilers"
-                },
-                {
                   "item_id": 16557,
                   "source_kind": "pvp",
                   "source": "PvP rank 12 · General · Horde"
+                },
+                {
+                  "item_id": 19044,
+                  "source_kind": "crafted",
+                  "source": "Leatherworking"
                 }
               ]
             },
@@ -149241,32 +149232,32 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 18736,
-                  "source_kind": "dungeon",
-                  "source": "Stratholme: Fleshflayer Ghoul"
-                },
-                {
                   "item_id": 227059,
                   "source_kind": "pvp",
                   "source": "PvP rank 8 · Legionnaire · Horde"
+                },
+                {
+                  "item_id": 231554,
+                  "source_kind": "pvp",
+                  "source": "PvP rank 12 · General · Horde"
                 }
               ]
             },
             "feet": {
-              "item_id": 16711,
+              "item_id": 12553,
               "source_kind": "dungeon",
-              "source": "Scholomance: Rattlegore",
-              "chance": 0.16,
+              "source": "Blackrock Depths: Princess Moira Bronzebeard ",
+              "chance": null,
               "alternatives": [
                 {
-                  "item_id": 22231,
+                  "item_id": 16711,
                   "source_kind": "dungeon",
-                  "source": "Blackrock Spire: War Master Voone"
+                  "source": "Scholomance: Rattlegore"
                 },
                 {
-                  "item_id": 12553,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Depths: Princess Moira Bronzebeard "
+                  "item_id": 231552,
+                  "source_kind": "pvp",
+                  "source": "PvP rank 12 · General · Horde"
                 }
               ]
             },
@@ -149282,9 +149273,9 @@
                   "source": "Maraudon: Princess Theradras"
                 },
                 {
-                  "item_id": 272406,
-                  "source_kind": "vendor",
-                  "source": "Pix Xizzix"
+                  "item_id": 13098,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: General Drakkisath"
                 }
               ]
             },
@@ -149300,45 +149291,45 @@
                   "source": "Maraudon: Princess Theradras"
                 },
                 {
-                  "item_id": 272406,
-                  "source_kind": "vendor",
-                  "source": "Pix Xizzix"
+                  "item_id": 13098,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: General Drakkisath"
                 }
               ]
             },
             "trinket1": {
-              "item_id": 11815,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Emperor Dagran Thaurissan",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 13213,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: Mother Smolderweb"
-                },
-                {
-                  "item_id": 19120,
-                  "source_kind": "quest",
-                  "source": "Job Opening: Guard Captain of Revantusk Village"
-                }
-              ]
-            },
-            "trinket2": {
               "item_id": 13965,
               "source_kind": "quest",
               "source": "For The Horde!",
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 11815,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Depths: Emperor Dagran Thaurissan"
+                },
+                {
+                  "item_id": 13213,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: Mother Smolderweb"
+                }
+              ]
+            },
+            "trinket2": {
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village",
+              "chance": null,
+              "alternatives": [
+                {
                   "item_id": 13213,
                   "source_kind": "dungeon",
                   "source": "Blackrock Spire: Mother Smolderweb"
                 },
                 {
-                  "item_id": 19120,
-                  "source_kind": "quest",
-                  "source": "Job Opening: Guard Captain of Revantusk Village"
+                  "item_id": 249469,
+                  "source_kind": "crafted",
+                  "source": "Enchanting"
                 }
               ]
             },
@@ -149365,23 +149356,29 @@
               "source_kind": "world_drop",
               "source": "World drop",
               "chance": null,
-              "alternatives": []
-            },
-            "ranged": {
-              "item_id": 12651,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Shadow Hunter Vosh'gajin",
-              "chance": 0.08,
               "alternatives": [
                 {
-                  "item_id": 2100,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 19099,
+                  "source_kind": "rep",
+                  "source": "Frostwolf Clan"
+                }
+              ]
+            },
+            "ranged": {
+              "item_id": 2100,
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 19107,
+                  "source_kind": "quest",
+                  "source": "The Legend of Korrak"
                 },
                 {
-                  "item_id": 18680,
+                  "item_id": 12653,
                   "source_kind": "dungeon",
-                  "source": "Scholomance"
+                  "source": "Blackrock Spire: Shadow Hunter Vosh'gajin"
                 }
               ]
             }
@@ -149408,7 +149405,7 @@
             2100
           ],
           "horde": [
-            12587,
+            226829,
             15411,
             15058,
             272414,
@@ -149417,23 +149414,23 @@
             272099,
             272395,
             15057,
-            16711,
+            12553,
             19325,
             272408,
-            11815,
             13965,
+            19120,
             12590,
             14555,
-            12651
+            2100
           ]
         },
         "weights": {
           "attack_power": 1.0,
           "strength": 1.1,
-          "agility": 2.248,
-          "crit": 2.435,
-          "hit": 5.346,
-          "melee_haste": 41.514
+          "agility": 1.913,
+          "crit": 1.698,
+          "hit": 1.639,
+          "melee_haste": 13.131
         },
         "hit_to_cap": {
           "alliance": {
@@ -149450,11 +149447,11 @@
           },
           "horde": {
             "hit": [
-              0.0,
+              0.3,
               9.0
             ],
             "white": [
-              18.3,
+              19.3,
               28.0
             ],
             "spell": null,
@@ -149469,9 +149466,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 12587,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Warchief Rend Blackhand",
+              "item_id": 226829,
+              "source_kind": "quest",
+              "source": "Saving the Best for Last",
               "chance": null,
               "alternatives": [
                 {
@@ -149493,14 +149490,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 13089,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 22340,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: Lord Valthalak"
                 },
                 {
-                  "item_id": 19538,
-                  "source_kind": "rep",
-                  "source": "Silverwing Sentinels"
+                  "item_id": 22150,
+                  "source_kind": "quest",
+                  "source": "Falrin's Vendetta"
                 }
               ]
             },
@@ -149523,15 +149520,15 @@
               ]
             },
             "back": {
-              "item_id": 13340,
-              "source_kind": "dungeon",
-              "source": "Stratholme: Baron Rivendare",
+              "item_id": 272414,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 272414,
-                  "source_kind": "vendor",
-                  "source": "Pix Xizzix"
+                  "item_id": 13340,
+                  "source_kind": "dungeon",
+                  "source": "Stratholme: Baron Rivendare"
                 },
                 {
                   "item_id": 20073,
@@ -149547,14 +149544,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 226825,
+                  "source_kind": "quest",
+                  "source": "Saving the Best for Last"
+                },
+                {
                   "item_id": 231543,
                   "source_kind": "pvp",
                   "source": "PvP rank 13 · Field Marshal · Alliance"
-                },
-                {
-                  "item_id": 252484,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
                 }
               ]
             },
@@ -149601,14 +149598,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 20045,
-                  "source_kind": "rep",
-                  "source": "The League of Arathor"
-                },
-                {
                   "item_id": 16458,
                   "source_kind": "pvp",
                   "source": "PvP rank 12 · Marshal · Alliance"
+                },
+                {
+                  "item_id": 20045,
+                  "source_kind": "rep",
+                  "source": "The League of Arathor"
                 }
               ]
             },
@@ -149631,15 +149628,15 @@
               ]
             },
             "feet": {
-              "item_id": 16711,
+              "item_id": 12553,
               "source_kind": "dungeon",
-              "source": "Scholomance: Rattlegore",
-              "chance": 0.16,
+              "source": "Blackrock Depths: Princess Moira Bronzebeard ",
+              "chance": null,
               "alternatives": [
                 {
-                  "item_id": 12553,
+                  "item_id": 16711,
                   "source_kind": "dungeon",
-                  "source": "Blackrock Depths: Princess Moira Bronzebeard "
+                  "source": "Scholomance: Rattlegore"
                 },
                 {
                   "item_id": 231546,
@@ -149772,20 +149769,20 @@
           },
           "horde": {
             "head": {
-              "item_id": 13404,
-              "source_kind": "dungeon",
-              "source": "Stratholme: The Unforgiven",
+              "item_id": 226829,
+              "source_kind": "quest",
+              "source": "Saving the Best for Last",
               "chance": null,
               "alternatives": [
+                {
+                  "item_id": 13404,
+                  "source_kind": "dungeon",
+                  "source": "Stratholme: The Unforgiven"
+                },
                 {
                   "item_id": 227057,
                   "source_kind": "pvp",
                   "source": "PvP rank 10 · Champion · Horde"
-                },
-                {
-                  "item_id": 231553,
-                  "source_kind": "pvp",
-                  "source": "PvP rank 13 · Warlord · Horde"
                 }
               ]
             },
@@ -149796,14 +149793,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 12103,
+                  "item_id": 22340,
                   "source_kind": "dungeon",
-                  "source": "Stratholme: Balnazzar"
+                  "source": "Blackrock Spire: Lord Valthalak"
                 },
                 {
-                  "item_id": 13089,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 22150,
+                  "source_kind": "quest",
+                  "source": "Falrin's Vendetta"
                 }
               ]
             },
@@ -149850,14 +149847,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 226825,
+                  "source_kind": "quest",
+                  "source": "Saving the Best for Last"
+                },
+                {
                   "item_id": 231549,
                   "source_kind": "pvp",
                   "source": "PvP rank 13 · Warlord · Horde"
-                },
-                {
-                  "item_id": 252484,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
                 }
               ]
             },
@@ -150055,15 +150052,15 @@
               ]
             },
             "ranged": {
-              "item_id": 2100,
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "chance": null,
+              "item_id": 12651,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Shadow Hunter Vosh'gajin",
+              "chance": 0.08,
               "alternatives": [
                 {
-                  "item_id": 12651,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: Shadow Hunter Vosh'gajin"
+                  "item_id": 2100,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 },
                 {
                   "item_id": 18680,
@@ -150076,16 +150073,16 @@
         },
         "new_at_band": {
           "alliance": [
-            12587,
+            226829,
             15411,
             15058,
-            13340,
+            272414,
             15056,
             19587,
             271948,
             272395,
             15057,
-            16711,
+            12553,
             19325,
             272408,
             11815,
@@ -150095,7 +150092,7 @@
             12651
           ],
           "horde": [
-            13404,
+            226829,
             15411,
             15058,
             272414,
@@ -150111,7 +150108,7 @@
             13965,
             12590,
             14555,
-            2100
+            12651
           ]
         },
         "weights": {
@@ -150125,11 +150122,11 @@
         "hit_to_cap": {
           "alliance": {
             "hit": [
-              0.3,
+              0.1,
               9.0
             ],
             "white": [
-              19.3,
+              19.1,
               28.0
             ],
             "spell": null,
@@ -150141,7 +150138,7 @@
               9.0
             ],
             "white": [
-              17.7,
+              18.8,
               28.0
             ],
             "spell": null,
@@ -150180,14 +150177,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 13089,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 22340,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: Lord Valthalak"
                 },
                 {
-                  "item_id": 19538,
-                  "source_kind": "rep",
-                  "source": "Silverwing Sentinels"
+                  "item_id": 22150,
+                  "source_kind": "quest",
+                  "source": "Falrin's Vendetta"
                 }
               ]
             },
@@ -150234,14 +150231,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 226825,
+                  "source_kind": "quest",
+                  "source": "Saving the Best for Last"
+                },
+                {
                   "item_id": 231543,
                   "source_kind": "pvp",
                   "source": "PvP rank 13 · Field Marshal · Alliance"
-                },
-                {
-                  "item_id": 252484,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
                 }
               ]
             },
@@ -150401,9 +150398,9 @@
                   "source": "Blackrock Spire: Mother Smolderweb"
                 },
                 {
-                  "item_id": 249469,
-                  "source_kind": "crafted",
-                  "source": "Enchanting"
+                  "item_id": 13382,
+                  "source_kind": "dungeon",
+                  "source": "Stratholme: Cannon Master Willey"
                 }
               ]
             },
@@ -150430,13 +150427,7 @@
               "source_kind": "world_drop",
               "source": "World drop",
               "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 12783,
-                  "source_kind": "crafted",
-                  "source": "Blacksmithing"
-                }
-              ]
+              "alternatives": []
             },
             "ranged": {
               "item_id": 2100,
@@ -150459,20 +150450,20 @@
           },
           "horde": {
             "head": {
-              "item_id": 12587,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Warchief Rend Blackhand",
+              "item_id": 226829,
+              "source_kind": "quest",
+              "source": "Saving the Best for Last",
               "chance": null,
               "alternatives": [
-                {
-                  "item_id": 13404,
-                  "source_kind": "dungeon",
-                  "source": "Stratholme: The Unforgiven"
-                },
                 {
                   "item_id": 227057,
                   "source_kind": "pvp",
                   "source": "PvP rank 10 · Champion · Horde"
+                },
+                {
+                  "item_id": 231553,
+                  "source_kind": "pvp",
+                  "source": "PvP rank 13 · Warlord · Horde"
                 }
               ]
             },
@@ -150483,14 +150474,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 12103,
+                  "item_id": 22340,
                   "source_kind": "dungeon",
-                  "source": "Stratholme: Balnazzar"
+                  "source": "Blackrock Spire: Lord Valthalak"
                 },
                 {
-                  "item_id": 13089,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 22150,
+                  "source_kind": "quest",
+                  "source": "Falrin's Vendetta"
                 }
               ]
             },
@@ -150537,14 +150528,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 226825,
+                  "source_kind": "quest",
+                  "source": "Saving the Best for Last"
+                },
+                {
                   "item_id": 231549,
                   "source_kind": "pvp",
                   "source": "PvP rank 13 · Warlord · Horde"
-                },
-                {
-                  "item_id": 252484,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
                 }
               ]
             },
@@ -150591,14 +150582,14 @@
               "chance": null,
               "alternatives": [
                 {
+                  "item_id": 20190,
+                  "source_kind": "rep",
+                  "source": "The Defilers"
+                },
+                {
                   "item_id": 16557,
                   "source_kind": "pvp",
                   "source": "PvP rank 12 · General · Horde"
-                },
-                {
-                  "item_id": 19044,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
                 }
               ]
             },
@@ -150627,14 +150618,14 @@
               "chance": 0.16,
               "alternatives": [
                 {
-                  "item_id": 12553,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Depths: Princess Moira Bronzebeard "
-                },
-                {
                   "item_id": 231552,
                   "source_kind": "pvp",
                   "source": "PvP rank 12 · General · Horde"
+                },
+                {
+                  "item_id": 17728,
+                  "source_kind": "dungeon",
+                  "source": "Maraudon: Rotgrip"
                 }
               ]
             },
@@ -150675,24 +150666,6 @@
               ]
             },
             "trinket1": {
-              "item_id": 19120,
-              "source_kind": "quest",
-              "source": "Job Opening: Guard Captain of Revantusk Village",
-              "chance": null,
-              "alternatives": [
-                {
-                  "item_id": 13213,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: Mother Smolderweb"
-                },
-                {
-                  "item_id": 249469,
-                  "source_kind": "crafted",
-                  "source": "Enchanting"
-                }
-              ]
-            },
-            "trinket2": {
               "item_id": 13965,
               "source_kind": "quest",
               "source": "For The Horde!",
@@ -150704,9 +150677,27 @@
                   "source": "Blackrock Spire: Mother Smolderweb"
                 },
                 {
-                  "item_id": 13382,
+                  "item_id": 19120,
+                  "source_kind": "quest",
+                  "source": "Job Opening: Guard Captain of Revantusk Village"
+                }
+              ]
+            },
+            "trinket2": {
+              "item_id": 11815,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Emperor Dagran Thaurissan",
+              "chance": null,
+              "alternatives": [
+                {
+                  "item_id": 13213,
                   "source_kind": "dungeon",
-                  "source": "Stratholme: Cannon Master Willey"
+                  "source": "Blackrock Spire: Mother Smolderweb"
+                },
+                {
+                  "item_id": 19120,
+                  "source_kind": "quest",
+                  "source": "Job Opening: Guard Captain of Revantusk Village"
                 }
               ]
             },
@@ -150742,15 +150733,15 @@
               ]
             },
             "ranged": {
-              "item_id": 2100,
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "chance": null,
+              "item_id": 12651,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Shadow Hunter Vosh'gajin",
+              "chance": 0.08,
               "alternatives": [
                 {
-                  "item_id": 12651,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: Shadow Hunter Vosh'gajin"
+                  "item_id": 2100,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 },
                 {
                   "item_id": 18680,
@@ -150782,7 +150773,7 @@
             2100
           ],
           "horde": [
-            12587,
+            226829,
             15411,
             15058,
             272414,
@@ -150794,11 +150785,11 @@
             16711,
             19325,
             272408,
-            19120,
             13965,
+            11815,
             12590,
             14555,
-            2100
+            12651
           ]
         },
         "weights": {
@@ -150828,7 +150819,7 @@
               9.0
             ],
             "white": [
-              18.5,
+              18.8,
               28.0
             ],
             "spell": null,
@@ -174994,7 +174985,6 @@
     "16695": "Devout Mantle",
     "16696": "Devout Belt",
     "16697": "Devout Bracers",
-    "16705": "Dreadmist Wraps",
     "16710": "Shadowcraft Bracers",
     "16711": "Shadowcraft Boots",
     "16712": "Shadowcraft Gloves",
@@ -175034,7 +175024,6 @@
     "17007": "Stonerender Gauntlets",
     "17039": "Skullbreaker",
     "17043": "Zealot's Robe",
-    "17044": "Will of the Martyr",
     "17045": "Blood of the Martyr",
     "17508": "Forcestone Buckler",
     "17562": "Knight-Lieutenant's Dreadweave Boots",
@@ -175589,6 +175578,11 @@
     "223076": "Sergeant Major's Mail Gauntlets",
     "223077": "Sergeant Major's Mail Sabatons",
     "223078": "Knight's Mail Armor",
+    "226825": "Darkmantle Tunic",
+    "226828": "Darkmantle Grips",
+    "226829": "Darkmantle Cap",
+    "226830": "Darkmantle Bracers",
+    "226832": "Darkmantle Belt",
     "226860": "Crown of Heroism",
     "226861": "Gauntlets of Heroism",
     "226862": "Breastplate of Heroism",
@@ -175621,9 +175615,7 @@
     "227055": "Lieutenant Commander's Leather Helm",
     "227056": "Champion's Leather Shoulders",
     "227057": "Champion's Leather Helm",
-    "227058": "Knight-Captain's Leather Chestpiece",
     "227059": "Legionnaire's Leather Legguards",
-    "227060": "Legionnaire's Leather Chestpiece",
     "227066": "Lieutenant Commander's Chain Helm",
     "227073": "Legionnaire's Chain Legguards",
     "227090": "Champion's Dreadweave Cowl",

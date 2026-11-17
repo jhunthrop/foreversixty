@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat. An item's crit rating
 
 ### Band 20 (night-elf, 00000000000000000-0000000000000000000-035200001000000000)
 
-Set DPS (verified): 45.7. Weights run: 5.6s. Verify run: 15.0s. 275 eligible items had no known source.
+Set DPS (verified): 45.7. Weights run: 5.6s. Verify run: 14.6s. 275 eligible items had no known source.
 
 Race sweep: night-elf 45.7 ± 0.0, human 45.0 ± 0.0, high-order-skyborne 45.0 ± 0.0, gnome 44.8 ± 0.0, dwarf 44.3 ± 0.0 (dps); the guide race night-elf is best.
 
@@ -40,7 +40,7 @@ No-known-source sample (15 of 275, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (night-elf, 00000000000000000-0000000000000000000-035220031301000100)
 
-Set DPS (verified): 90.4. Weights run: 6.3s. Verify run: 13.1s. 460 eligible items had no known source.
+Set DPS (verified): 90.4. Weights run: 6.3s. Verify run: 13.2s. 460 eligible items had no known source.
 
 Race sweep: night-elf 90.4 ± 0.1, human 89.6 ± 0.1, high-order-skyborne 89.2 ± 0.1, gnome 88.8 ± 0.1, dwarf 88.2 ± 0.1 (dps); the guide race night-elf is best.
 
@@ -72,7 +72,7 @@ No-known-source sample (15 of 460, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (night-elf, 00000000000000000-0000000000000000000-035230031321001151)
 
-Set DPS (verified): 154.9. Weights run: 6.5s. Verify run: 20.1s. 662 eligible items had no known source.
+Set DPS (verified): 154.9. Weights run: 6.4s. Verify run: 20.2s. 662 eligible items had no known source.
 
 Race sweep: night-elf 154.9 ± 0.1, human 153.7 ± 0.1, high-order-skyborne 153.5 ± 0.1, gnome 153.1 ± 0.1, dwarf 151.8 ± 0.1 (dps); the guide race night-elf is best.
 
@@ -104,7 +104,7 @@ No-known-source sample (15 of 662, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (night-elf, 00530200000000000-0000000000000000000-035230031321001151)
 
-Set DPS (verified): 237.0. Weights run: 6.7s. Verify run: 19.9s. 851 eligible items had no known source.
+Set DPS (verified): 237.0. Weights run: 6.7s. Verify run: 19.2s. 850 eligible items had no known source.
 
 Race sweep: night-elf 237.0 ± 0.2, dwarf 235.8 ± 0.2, human 235.7 ± 0.2, high-order-skyborne 235.7 ± 0.2, gnome 234.6 ± 0.2 (dps); the guide race night-elf is best.
 
@@ -132,77 +132,79 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 50:** head: Ebon Mask; neck: Skibi's Pendant; shoulder: Skulker's Leather Shoulder; back: Blackveil Cape; chest: Knight's Leather Armor; wrist: Deepfury Bracers; waist: Girdle of Beastial Fury; legs: Knight's Leather Pants; feet: Skulker's Leather Boots; finger1: Blackstone Ring; finger2: Protector's Band; trinket1: Molten Heart of the Mountain; trinket2: Frozen Heart of the Mountain; main_hand: Shadowblade; off_hand: Julie's Dagger; ranged: Precisely Calibrated Boomstick
 
-No-known-source sample (15 of 851, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4763 Blackwood Recurve Bow; 4797 Fiery Cloak; 4798 Heavy Runed Cloak
+No-known-source sample (15 of 850, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4763 Blackwood Recurve Bow; 4797 Fiery Cloak; 4798 Heavy Runed Cloak
 
 ### Band 60 (night-elf, 00530201100000000-3200030000000000000-035230031321001151)
 
-Set DPS (verified): 407.4. Weights run: 6.9s. Verify run: 62.1s. 1922 eligible items had no known source.
+Set DPS (verified): 407.4. Weights run: 6.8s. Verify run: 64.2s. 1904 eligible items had no known source.
 
 Race sweep: night-elf 407.4 ± 0.3, human 406.3 ± 0.3, high-order-skyborne 406.1 ± 0.3, dwarf 406.0 ± 0.3, gnome 404.3 ± 0.4 (dps); the guide race night-elf is best.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.496 ± 0.008, crit=1.122 ± 0.015 per rating point (14 rating = 1%, 15.714 per %), hit=0.913 ± 0.037 per rating point (10 rating = 1%, 9.131 per %), melee_haste=6.635 ± 1.303
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.494 ± 0.008, crit=1.099 ± 0.014 per rating point (14 rating = 1%, 15.385 per %), hit=0.917 ± 0.036 per rating point (10 rating = 1%, 9.174 per %), melee_haste=6.143 ± 1.285
 
 | Slot | Item | Source | Score (attack_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Ebon Mask (19984) | The Azure Key [quest] | 51.7 attack_power points (10.45 DPS) | yes | Lieutenant Commander's Leather Helm (227055, +0.00 DPS) [pvp]; Field Marshal's Leather Mask (231545, +0.00 DPS) [pvp]; Eye of Rend (12587, -1.73 DPS) [dungeon] |
-| neck | Mark of Fordring (15411) | In Dreams [quest] | 41.7 attack_power points (8.43 DPS) | yes | Imperial Jewel (11933, -1.96 DPS) [dungeon]; Will of the Martyr (17044, -2.37 DPS) [quest]; Skibi's Pendant (13089, -3.49 DPS) [world_drop] |
+| head | Ebon Mask (19984) | The Azure Key [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Darkmantle Cap (226829, +0.00 DPS) [quest]; Lieutenant Commander's Leather Helm (227055, +0.00 DPS) [pvp]; Field Marshal's Leather Mask (231545, +0.00 DPS) [pvp] |
+| neck | Mark of Fordring (15411) | In Dreams [quest] | 41.4 attack_power points (8.37 DPS) | yes | Beads of Ogre Might (22150, -1.66 DPS) [quest]; Imperial Jewel (11933, -1.90 DPS) [dungeon]; Pendant of Celerity (22340, -1.98 DPS) [dungeon] |
 | shoulder | Stormshroud Shoulders (15058) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Highlander's Leather Shoulders (20059, +0.00 DPS) [rep]; Highlander's Lizardhide Shoulders (20060, +0.00 DPS) [rep]; Theramore Pauldrons (271955, +0.00 DPS) [rep] |
-| back | Cape of the Black Baron (13340) | Stratholme: Baron Rivendare [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Cloak of the Honor Guard (20073, -0.19 DPS) [rep]; Howler's Furs (272414, -1.07 DPS) [vendor]; Blackveil Cape (11626, -3.13 DPS) [dungeon] |
+| back | Cape of the Black Baron (13340) | Stratholme: Baron Rivendare [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Cloak of the Honor Guard (20073, -0.19 DPS) [rep]; Howler's Furs (272414, -1.06 DPS) [vendor]; Blackveil Cape (11626, -3.13 DPS) [dungeon] |
 | chest | Stormshroud Armor (15056) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Field Marshal's Leather Chestpiece (231543, +0.00 DPS) [pvp]; Dawn Armor (252483, +0.00 DPS) [crafted]; Timbermaw Tunic (252484, +0.00 DPS) [crafted] |
 | wrist | Forest Stalker's Bracers (19587) | Silverwing Sentinels [rep] | 39.4 attack_power points (7.97 DPS) | yes | Marshal's Leather Armsplints (16460, -0.20 DPS) [pvp]; Deepfury Bracers (13120, -2.62 DPS) [world_drop]; Wristguards of Renown (22204, -3.12 DPS) [dungeon] |
-| hands | Theramore Gloves (271948) | Theramore Expeditionary Force [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Knight-Lieutenant's Leather Gauntlets (16396, -0.90 DPS) [pvp]; Marshal's Leather Handgrips (231544, -1.16 DPS) [pvp]; Cadaverous Gloves (14640, -1.49 DPS) [dungeon] |
-| waist | Assassin's Waistguard (272395) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Highlander's Leather Girdle (20045, +0.00 DPS) [rep]; Marshal's Leather Cinch (16458, -0.25 DPS) [pvp]; Might of the Timbermaw (19044, -1.56 DPS) [crafted] |
+| hands | Theramore Gloves (271948) | Theramore Expeditionary Force [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Knight-Lieutenant's Leather Gauntlets (16396, -0.89 DPS) [pvp]; Marshal's Leather Handgrips (231544, -1.23 DPS) [pvp]; Cadaverous Gloves (14640, -1.49 DPS) [dungeon] |
+| waist | Assassin's Waistguard (272395) | Pix Xizzix [vendor] | 49.7 attack_power points (10.06 DPS) | yes | Highlander's Leather Girdle (20045, -0.07 DPS) [rep]; Marshal's Leather Cinch (16458, -0.27 DPS) [pvp]; Might of the Timbermaw (19044, -1.58 DPS) [crafted] |
 | legs | Stormshroud Pants (15057) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Devilsaur Leggings (15062, +0.00 DPS) [crafted]; Marshal's Leather Leggings (231548, +0.00 DPS) [pvp]; Sentinel's Leather Pants (237818, +0.00 DPS) [vendor] |
-| feet | Pads of the Dread Wolf (13210) | Blackrock Spire: Halycon [dungeon] | 40.0 attack_power points (8.08 DPS) | yes | Swiftwalker Boots (12553, -0.72 DPS) [dungeon]; Shadowcraft Boots (16711, -1.18 DPS) [dungeon]; Highlander's Leather Boots (20052, -1.22 DPS) [rep] |
-| finger1 | Don Julio's Band (19325) | Stormpike Guard [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Blackstone Ring (17713, -1.96 DPS) [dungeon]; Protector's Band (19514, -2.10 DPS) [rep]; Painweaver Band (13098, -2.25 DPS) [dungeon] |
-| finger2 | Cutthroat's Signet (272408) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Blackstone Ring (17713, -0.19 DPS) [dungeon]; Protector's Band (19514, -0.33 DPS) [rep]; Painweaver Band (13098, -0.48 DPS) [dungeon] |
+| feet | Pads of the Dread Wolf (13210) | Blackrock Spire: Halycon [dungeon] | 40.0 attack_power points (8.09 DPS) | yes | Swiftwalker Boots (12553, -0.73 DPS) [dungeon]; Shadowcraft Boots (16711, -1.19 DPS) [dungeon]; Highlander's Leather Boots (20052, -1.23 DPS) [rep] |
+| finger1 | Don Julio's Band (19325) | Stormpike Guard [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Blackstone Ring (17713, -1.90 DPS) [dungeon]; Protector's Band (19514, -2.05 DPS) [rep]; Painweaver Band (13098, -2.26 DPS) [dungeon] |
+| finger2 | Cutthroat's Signet (272408) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Blackstone Ring (17713, -0.19 DPS) [dungeon]; Protector's Band (19514, -0.34 DPS) [rep]; Painweaver Band (13098, -0.55 DPS) [dungeon] |
 | trinket1 | Blackhand's Breadth (13965) | General Drakkisath's Demise [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Hand of Justice (11815, +0.00 DPS) [dungeon]; Smolderweb's Eye (13213, +0.00 DPS) [dungeon]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted] |
 | trinket2 | Molten Heart of the Mountain (249470) | Enchanting [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Hand of Justice (11815, +0.00 DPS) [dungeon]; Smolderweb's Eye (13213, +0.00 DPS) [dungeon]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted] |
-| main_hand | Felstriker (12590) | Blackrock Spire: Warchief Rend Blackhand [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Grand Marshal's Dirk (234582, +0.00 DPS) [pvp]; Grand Marshal's Shiv (235479, +0.00 DPS) [vendor]; Electrified Dagger (19100, -5.71 DPS) [rep] |
-| off_hand | Alcor's Sunrazor (14555) | World drop [world_drop] | 635.4 attack_power points (128.40 DPS) | yes | - |
-| ranged | Riphook (12653) | Blackrock Spire: Shadow Hunter Vosh'gajin [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Bloodseeker (19107, -0.71 DPS) [quest]; Precisely Calibrated Boomstick (2100, -0.74 DPS) [world_drop]; Malgen's Long Bow (22318, -0.81 DPS) [dungeon] |
+| main_hand | Felstriker (12590) | Blackrock Spire: Warchief Rend Blackhand [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Grand Marshal's Dirk (234582, +0.00 DPS) [pvp]; Grand Marshal's Shiv (235479, +0.00 DPS) [vendor]; Electrified Dagger (19100, -5.72 DPS) [rep] |
+| off_hand | Alcor's Sunrazor (14555) | World drop [world_drop] | 635.4 attack_power points (128.52 DPS) | yes | - |
+| ranged | Riphook (12653) | Blackrock Spire: Shadow Hunter Vosh'gajin [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Bloodseeker (19107, -0.72 DPS) [quest]; Precisely Calibrated Boomstick (2100, -0.78 DPS) [world_drop]; Malgen's Long Bow (22318, -0.81 DPS) [dungeon] |
 
 **New at 60:** neck: Mark of Fordring; shoulder: Stormshroud Shoulders; back: Cape of the Black Baron; chest: Stormshroud Armor; wrist: Forest Stalker's Bracers; hands: Theramore Gloves; waist: Assassin's Waistguard; legs: Stormshroud Pants; feet: Pads of the Dread Wolf; finger1: Don Julio's Band; finger2: Cutthroat's Signet; trinket1: Blackhand's Breadth; trinket2: Molten Heart of the Mountain; main_hand: Felstriker; off_hand: Alcor's Sunrazor; ranged: Riphook
 
-No-known-source sample (15 of 1922, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4763 Blackwood Recurve Bow; 4797 Fiery Cloak; 4798 Heavy Runed Cloak
+No-known-source sample (15 of 1904, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4763 Blackwood Recurve Bow; 4797 Fiery Cloak; 4798 Heavy Runed Cloak
 
 ### Band 60, raid preset (night-elf, 00530201100000000-3200030000000000000-035230031321001151)
 
-Set DPS (verified): 926.0. Weights run: 7.3s. Verify run: 76.4s. 1922 eligible items had no known source.
+Set DPS (verified): 926.0. Weights run: 7.3s. Verify run: 82.6s. 1904 eligible items had no known source.
 
 Race sweep: high-order-skyborne 927.3 ± 0.7, night-elf 926.0 ± 0.7, gnome 925.7 ± 0.7, human 925.2 ± 0.7, dwarf 922.7 ± 0.7 (dps); high-order-skyborne beats the guide race night-elf by 1.3 (0.14%) ± 1.0, beyond error.
+
+1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.100 ± 0.001, agility=2.392 ± 0.019, crit=2.513 ± 0.031 per rating point (14 rating = 1%, 35.180 per %), hit=3.556 ± 0.201 per rating point (10 rating = 1%, 35.562 per %), melee_haste=15.221 ± 2.760
 
 | Slot | Item | Source | Score (attack_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Mask of the Unforgiven (13404) | Stratholme: The Unforgiven [dungeon] | 106.3 attack_power points (25.12 DPS) | yes | Lieutenant Commander's Leather Helm (227055, +0.00 DPS) [pvp]; Field Marshal's Leather Mask (231545, +0.00 DPS) [pvp]; Eye of Rend (12587, -4.55 DPS) [dungeon] |
-| neck | Mark of Fordring (15411) | In Dreams [quest] | 61.2 attack_power points (14.46 DPS) | yes | Skibi's Pendant (13089, -5.81 DPS) [world_drop]; Sentinel's Medallion (19538, -5.98 DPS) [rep]; Star of Mystaria (12103, -13.09 DPS, sim-verified) [dungeon] |
-| shoulder | Stormshroud Shoulders (15058) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Lieutenant Commander's Leather Shoulders (227054, +0.00 DPS) [pvp]; Field Marshal's Leather Epaulets (231547, +0.00 DPS) [pvp]; Theramore Pauldrons (271955, -54.51 DPS, sim-verified) [rep] |
-| back | Cape of the Black Baron (13340) | Stratholme: Baron Rivendare [dungeon] | sim-verified (+1.3 DPS vs the runner-up, not corroborated against the finished set) | yes | Howler's Furs (272414, -1.29 DPS, sim-verified) [vendor]; Cloak of the Honor Guard (20073, -2.34 DPS) [rep]; Blackveil Cape (11626, -3.73 DPS) [dungeon] |
-| chest | Stormshroud Armor (15056) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Field Marshal's Leather Chestpiece (231543, +0.00 DPS) [pvp]; Timbermaw Tunic (252484, +0.00 DPS) [crafted]; Dawn Armor (252483, -47.83 DPS, sim-verified) [crafted] |
+| head | Mask of the Unforgiven (13404) | Stratholme: The Unforgiven [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Lieutenant Commander's Leather Helm (227055, +0.00 DPS) [pvp]; Field Marshal's Leather Mask (231545, +0.00 DPS) [pvp]; Darkmantle Cap (226829, -2.67 DPS) [quest] |
+| neck | Mark of Fordring (15411) | In Dreams [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Pendant of Celerity (22340, +0.00 DPS) [dungeon]; Beads of Ogre Might (22150, -0.38 DPS) [quest]; Star of Mystaria (12103, -3.53 DPS) [dungeon] |
+| shoulder | Stormshroud Shoulders (15058) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Lieutenant Commander's Leather Shoulders (227054, +0.00 DPS) [pvp]; Field Marshal's Leather Epaulets (231547, +0.00 DPS) [pvp]; Theramore Pauldrons (271955, +0.00 DPS) [rep] |
+| back | Cape of the Black Baron (13340) | Stratholme: Baron Rivendare [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Howler's Furs (272414, +0.00 DPS) [vendor]; Cloak of the Honor Guard (20073, -2.34 DPS) [rep]; Blackveil Cape (11626, -3.73 DPS) [dungeon] |
+| chest | Stormshroud Armor (15056) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Darkmantle Tunic (226825, +0.00 DPS) [quest]; Field Marshal's Leather Chestpiece (231543, +0.00 DPS) [pvp]; Dawn Armor (252483, +0.00 DPS) [crafted] |
 | wrist | Forest Stalker's Bracers (19587) | Silverwing Sentinels [rep] | 57.6 attack_power points (13.60 DPS) | yes | Marshal's Leather Armsplints (16460, -0.26 DPS) [pvp]; Blackmist Armguards (12966, -3.90 DPS) [dungeon]; Deepfury Bracers (13120, -4.08 DPS) [world_drop] |
-| hands | Theramore Gloves (271948) | Theramore Expeditionary Force [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Marshal's Leather Handgrips (231544, +0.00 DPS) [pvp]; Devilsaur Gauntlets (15063, -3.19 DPS) [crafted]; Timbermaw Brawlers (19049, -4.75 DPS) [crafted] |
-| waist | Assassin's Waistguard (272395) | Pix Xizzix [vendor] | 121.4 attack_power points (28.68 DPS) | yes | Highlander's Leather Girdle (20045, -7.02 DPS, sim-verified) [rep]; Marshal's Leather Cinch (16458, -13.44 DPS) [pvp]; Might of the Timbermaw (19044, -15.31 DPS) [crafted] |
-| legs | Stormshroud Pants (15057) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Plaguehound Leggings (18736, +0.00 DPS) [dungeon]; Marshal's Leather Leggings (231548, +0.00 DPS) [pvp]; Sentinel's Leather Pants (237818, -54.51 DPS, sim-verified) [vendor] |
+| hands | Theramore Gloves (271948) | Theramore Expeditionary Force [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Marshal's Leather Handgrips (231544, +0.00 DPS) [pvp]; Devilsaur Gauntlets (15063, -3.19 DPS) [crafted]; Darkmantle Grips (226828, -3.35 DPS) [quest] |
+| waist | Assassin's Waistguard (272395) | Pix Xizzix [vendor] | 121.4 attack_power points (28.68 DPS) | yes | Highlander's Leather Girdle (20045, -12.33 DPS) [rep]; Marshal's Leather Cinch (16458, -13.44 DPS) [pvp]; Might of the Timbermaw (19044, -15.31 DPS) [crafted] |
+| legs | Stormshroud Pants (15057) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Plaguehound Leggings (18736, +0.00 DPS) [dungeon]; Marshal's Leather Leggings (231548, +0.00 DPS) [pvp]; Sentinel's Leather Pants (237818, +0.00 DPS) [vendor] |
 | feet | Shadowcraft Boots (16711) | Scholomance: Rattlegore [dungeon] | 60.9 attack_power points (14.39 DPS) | yes | Swiftwalker Boots (12553, -1.22 DPS) [dungeon]; Marshal's Leather Footguards (231546, -1.96 DPS) [pvp]; Albino Crocscale Boots (17728, -3.09 DPS) [dungeon] |
-| finger1 | Don Julio's Band (19325) | Stormpike Guard [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Blackstone Ring (17713, -6.90 DPS) [dungeon]; Painweaver Band (13098, -8.88 DPS) [dungeon]; Naglering (11669, -16.54 DPS, sim-verified) [dungeon] |
+| finger1 | Don Julio's Band (19325) | Stormpike Guard [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Blackstone Ring (17713, -6.90 DPS) [dungeon]; Painweaver Band (13098, -8.88 DPS) [dungeon]; Magni's Will (12548, -9.89 DPS) [quest] |
 | finger2 | Cutthroat's Signet (272408) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Blackstone Ring (17713, -3.19 DPS) [dungeon]; Painweaver Band (13098, -5.17 DPS) [dungeon]; Magni's Will (12548, -6.19 DPS) [quest] |
 | trinket1 | Hand of Justice (11815) | Blackrock Depths: Emperor Dagran Thaurissan [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Smolderweb's Eye (13213, +0.00 DPS) [dungeon]; Cannonball Runner (13382, +0.00 DPS) [dungeon]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted] |
-| trinket2 | Blackhand's Breadth (13965) | General Drakkisath's Demise [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Smolderweb's Eye (13213, +0.00 DPS) [dungeon]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted]; Molten Heart of the Mountain (249470, +0.00 DPS) [crafted] |
-| main_hand | Felstriker (12590) | Blackrock Spire: Warchief Rend Blackhand [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Grand Marshal's Dirk (234582, +0.00 DPS) [pvp]; Grand Marshal's Shiv (235479, +0.00 DPS) [vendor]; Shadowblade (2163, -41.31 DPS, sim-verified) [world_drop] |
-| off_hand | Alcor's Sunrazor (14555) | World drop [world_drop] | 635.4 attack_power points (150.16 DPS) | yes | Heartseeker (12783, -8.55 DPS, sim-verified) [crafted] |
-| ranged | Precisely Calibrated Boomstick (2100) | World drop [world_drop] | sim-verified (+1.6 DPS vs the runner-up, not corroborated against the finished set) | yes | Blackcrow (12651, -1.62 DPS, sim-verified) [dungeon]; Ancient Bone Bow (18680, -1.90 DPS) [dungeon]; Bloodseeker (19107, -2.08 DPS) [quest] |
+| trinket2 | Blackhand's Breadth (13965) | General Drakkisath's Demise [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Smolderweb's Eye (13213, +0.00 DPS) [dungeon]; Cannonball Runner (13382, +0.00 DPS) [dungeon]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted] |
+| main_hand | Felstriker (12590) | Blackrock Spire: Warchief Rend Blackhand [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Grand Marshal's Dirk (234582, +0.00 DPS) [pvp]; Grand Marshal's Shiv (235479, +0.00 DPS) [vendor]; Heartseeker (12783, -3.56 DPS) [crafted] |
+| off_hand | Alcor's Sunrazor (14555) | World drop [world_drop] | 635.4 attack_power points (150.16 DPS) | yes | - |
+| ranged | Precisely Calibrated Boomstick (2100) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Blackcrow (12651, +0.00 DPS) [dungeon]; Ancient Bone Bow (18680, -1.90 DPS) [dungeon]; Bloodseeker (19107, -2.08 DPS) [quest] |
 
 **New at 60:** head: Mask of the Unforgiven; neck: Mark of Fordring; shoulder: Stormshroud Shoulders; back: Cape of the Black Baron; chest: Stormshroud Armor; wrist: Forest Stalker's Bracers; hands: Theramore Gloves; waist: Assassin's Waistguard; legs: Stormshroud Pants; feet: Shadowcraft Boots; finger1: Don Julio's Band; finger2: Cutthroat's Signet; trinket1: Hand of Justice; trinket2: Blackhand's Breadth; main_hand: Felstriker; off_hand: Alcor's Sunrazor
 
-No-known-source sample (15 of 1922, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4763 Blackwood Recurve Bow; 4797 Fiery Cloak; 4798 Heavy Runed Cloak
+No-known-source sample (15 of 1904, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4763 Blackwood Recurve Bow; 4797 Fiery Cloak; 4798 Heavy Runed Cloak
 
 ## Horde
 
 ### Band 20 (undead, 00000000000000000-0000000000000000000-035200001000000000)
 
-Set DPS (verified): 46.6. Weights run: 5.6s. Verify run: 14.6s. 273 eligible items had no known source.
+Set DPS (verified): 46.6. Weights run: 5.6s. Verify run: 14.3s. 273 eligible items had no known source.
 
 Race sweep: undead 46.6 ± 0.0, troll 45.8 ± 0.0, windshaper-skyborne 45.8 ± 0.0, orc 45.5 ± 0.0 (dps); the guide race undead is best.
 
@@ -234,7 +236,7 @@ No-known-source sample (15 of 273, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (undead, 00000000000000000-0000000000000000000-035220031301000100)
 
-Set DPS (verified): 90.6. Weights run: 6.3s. Verify run: 13.3s. 460 eligible items had no known source.
+Set DPS (verified): 90.6. Weights run: 6.3s. Verify run: 13.1s. 460 eligible items had no known source.
 
 Race sweep: undead 90.6 ± 0.1, troll 90.0 ± 0.1, windshaper-skyborne 89.9 ± 0.1, orc 89.4 ± 0.1 (dps); the guide race undead is best.
 
@@ -266,7 +268,7 @@ No-known-source sample (15 of 460, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (undead, 00000000000000000-0000000000000000000-035230031321001151)
 
-Set DPS (verified): 154.8. Weights run: 6.5s. Verify run: 22.1s. 660 eligible items had no known source.
+Set DPS (verified): 154.8. Weights run: 6.4s. Verify run: 22.3s. 660 eligible items had no known source.
 
 Race sweep: undead 154.8 ± 0.1, windshaper-skyborne 153.0 ± 0.1, troll 153.0 ± 0.1, orc 152.7 ± 0.1 (dps); the guide race undead is best.
 
@@ -298,7 +300,7 @@ No-known-source sample (15 of 660, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (undead, 00530200000000000-0000000000000000000-035230031321001151)
 
-Set DPS (verified): 240.0. Weights run: 6.7s. Verify run: 16.9s. 849 eligible items had no known source.
+Set DPS (verified): 240.0. Weights run: 6.7s. Verify run: 16.2s. 848 eligible items had no known source.
 
 Race sweep: undead 240.0 ± 0.2, windshaper-skyborne 237.2 ± 0.2, troll 236.9 ± 0.2, orc 236.3 ± 0.2 (dps); the guide race undead is best.
 
@@ -326,69 +328,71 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 50:** head: Ebon Mask; neck: Skibi's Pendant; shoulder: Skulker's Leather Shoulder; back: Blackveil Cape; chest: Stone Guard's Leather Armor; wrist: Deepfury Bracers; waist: Girdle of Beastial Fury; legs: Stone Guard's Leather Pants; feet: Skulker's Leather Boots; finger1: Blackstone Ring; finger2: Legionnaire's Band; trinket1: Molten Heart of the Mountain; trinket2: Rune of the Guard Captain; main_hand: Shadowblade; off_hand: Julie's Dagger; ranged: Precisely Calibrated Boomstick
 
-No-known-source sample (15 of 849, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band
+No-known-source sample (15 of 848, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band
 
 ### Band 60 (undead, 00530201100000000-3200030000000000000-035230031321001151)
 
-Set DPS (verified): 410.3. Weights run: 6.9s. Verify run: 74.0s. 1925 eligible items had no known source.
+Set DPS (verified): 412.2. Weights run: 6.8s. Verify run: 75.9s. 1907 eligible items had no known source.
 
-Race sweep: undead 410.3 ± 0.3, windshaper-skyborne 407.3 ± 0.3, troll 406.6 ± 0.3, orc 406.5 ± 0.4 (dps); the guide race undead is best.
+Race sweep: undead 412.2 ± 0.3, windshaper-skyborne 408.4 ± 0.3, troll 407.2 ± 0.3, orc 406.6 ± 0.3 (dps); the guide race undead is best.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.496 ± 0.008, crit=1.122 ± 0.015 per rating point (14 rating = 1%, 15.714 per %), hit=0.913 ± 0.037 per rating point (10 rating = 1%, 9.131 per %), melee_haste=6.635 ± 1.303
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.000 ± 0.001, agility=1.494 ± 0.008, crit=1.099 ± 0.014 per rating point (14 rating = 1%, 15.385 per %), hit=0.917 ± 0.036 per rating point (10 rating = 1%, 9.174 per %), melee_haste=6.143 ± 1.285
 
 | Slot | Item | Source | Score (attack_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Ebon Mask (19984) | The Azure Key [quest] | 51.7 attack_power points (10.45 DPS) | yes | Champion's Leather Helm (227057, +0.00 DPS) [pvp]; Warlord's Leather Helm (231553, +0.00 DPS) [pvp]; Eye of Rend (12587, -1.73 DPS) [dungeon] |
-| neck | Mark of Fordring (15411) | In Dreams [quest] | 41.7 attack_power points (8.43 DPS) | yes | Imperial Jewel (11933, -1.96 DPS) [dungeon]; Will of the Martyr (17044, -2.37 DPS) [quest]; Skibi's Pendant (13089, -3.49 DPS) [world_drop] |
-| shoulder | Stormshroud Shoulders (15058) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Defiler's Lizardhide Shoulders (20175, +0.00 DPS) [rep]; Defiler's Leather Shoulders (20194, +0.00 DPS) [rep]; Darkspear Pauldrons (272105, +0.00 DPS) [vendor] |
-| back | Cape of the Black Baron (13340) | Stratholme: Baron Rivendare [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Deathguard's Cloak (20068, -0.19 DPS) [rep]; Howler's Furs (272414, -1.07 DPS) [vendor]; Blackveil Cape (11626, -3.13 DPS) [dungeon] |
-| chest | Stormshroud Armor (15056) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Warlord's Leather Breastplate (231549, +0.00 DPS) [pvp]; Dawn Armor (252483, +0.00 DPS) [crafted]; Timbermaw Tunic (252484, +0.00 DPS) [crafted] |
+| head | Darkmantle Cap (226829) | Saving the Best for Last [quest] | 52.7 attack_power points (10.67 DPS) | yes | Champion's Leather Helm (227057, +0.00 DPS) [pvp]; Warlord's Leather Helm (231553, +0.00 DPS) [pvp]; Ebon Mask (19984, -0.27 DPS) [quest] |
+| neck | Beads of Ogre Might (22150) | Falrin's Vendetta [quest] | sim-verified (+0.8 DPS vs the runner-up, not corroborated against the finished set) | yes | Imperial Jewel (11933, -0.24 DPS) [dungeon]; Pendant of Celerity (22340, -0.32 DPS) [dungeon]; Mark of Fordring (15411, -0.80 DPS, sim-verified) [quest] |
+| shoulder | Stormshroud Shoulders (15058) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Defiler's Lizardhide Shoulders (20175, +0.00 DPS) [rep]; Darkspear Pauldrons (272105, +0.00 DPS) [vendor]; Defiler's Leather Shoulders (20194, -20.43 DPS, sim-verified) [rep] |
+| back | Cape of the Black Baron (13340) | Stratholme: Baron Rivendare [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Deathguard's Cloak (20068, -0.19 DPS) [rep]; Howler's Furs (272414, -1.06 DPS) [vendor]; Blackveil Cape (11626, -3.13 DPS) [dungeon] |
+| chest | Stormshroud Armor (15056) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Warlord's Leather Breastplate (231549, +0.00 DPS) [pvp]; Timbermaw Tunic (252484, +0.00 DPS) [crafted]; Dawn Armor (252483, -18.04 DPS, sim-verified) [crafted] |
 | wrist | Forest Stalker's Bracers (19587) | Warsong Outriders [rep] | 39.4 attack_power points (7.97 DPS) | yes | General's Leather Armsplints (16559, -0.20 DPS) [pvp]; Deepfury Bracers (13120, -2.62 DPS) [world_drop]; Wristguards of Renown (22204, -3.12 DPS) [dungeon] |
-| hands | Raider Gloves (272099) | Creeg Bothunk [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Blood Guard's Leather Vices (16499, -0.90 DPS) [pvp]; General's Leather Mitts (231555, -1.16 DPS) [pvp]; Cadaverous Gloves (14640, -1.49 DPS) [dungeon] |
-| waist | Assassin's Waistguard (272395) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Defiler's Leather Girdle (20190, +0.00 DPS) [rep]; General's Leather Girdle (16557, -0.25 DPS) [pvp]; Might of the Timbermaw (19044, -1.56 DPS) [crafted] |
-| legs | Stormshroud Pants (15057) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Devilsaur Leggings (15062, +0.00 DPS) [crafted]; Legionnaire's Leather Legguards (227059, +0.00 DPS) [pvp]; General's Leather Legguards (231554, +0.00 DPS) [pvp] |
-| feet | Pads of the Dread Wolf (13210) | Blackrock Spire: Halycon [dungeon] | 40.0 attack_power points (8.08 DPS) | yes | Swiftwalker Boots (12553, -0.72 DPS) [dungeon]; Shadowcraft Boots (16711, -1.18 DPS) [dungeon]; Defiler's Leather Boots (20186, -1.22 DPS) [rep] |
-| finger1 | Don Julio's Band (19325) | Frostwolf Clan [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Blackstone Ring (17713, -1.96 DPS) [dungeon]; Legionnaire's Band (19510, -2.10 DPS) [rep]; Painweaver Band (13098, -2.25 DPS) [dungeon] |
-| finger2 | Cutthroat's Signet (272408) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Blackstone Ring (17713, -0.19 DPS) [dungeon]; Legionnaire's Band (19510, -0.33 DPS) [rep]; Painweaver Band (13098, -0.48 DPS) [dungeon] |
-| trinket1 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-verified (410.3 DPS) | yes | Hand of Justice (11815, -1.70 DPS) [dungeon]; Smolderweb's Eye (13213, -2.28 DPS) [dungeon]; Frozen Heart of the Mountain (249469, -2.46 DPS) [crafted] |
-| trinket2 | Blackhand's Breadth (13965) | For The Horde! [quest] | sim-verified (410.3 DPS) | yes | Hand of Justice (11815, +0.00 DPS) [dungeon]; Smolderweb's Eye (13213, +0.00 DPS) [dungeon]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted] |
-| main_hand | Felstriker (12590) | Blackrock Spire: Warchief Rend Blackhand [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | High Warlord's Razor (234556, +0.00 DPS) [pvp]; High Warlord's Shiv (235478, +0.00 DPS) [vendor]; Glacial Blade (19099, -5.71 DPS) [rep] |
-| off_hand | Alcor's Sunrazor (14555) | World drop [world_drop] | 635.4 attack_power points (128.40 DPS) | yes | - |
-| ranged | Riphook (12653) | Blackrock Spire: Shadow Hunter Vosh'gajin [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Bloodseeker (19107, -0.71 DPS) [quest]; Precisely Calibrated Boomstick (2100, -0.74 DPS) [world_drop]; Malgen's Long Bow (22318, -0.81 DPS) [dungeon] |
+| hands | Gloves of Holy Might (867) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Blood Guard's Leather Vices (16499, +0.00 DPS) [pvp]; General's Leather Mitts (231555, +0.00 DPS) [pvp]; Raider Gloves (272099, +0.00 DPS) [vendor] |
+| waist | Assassin's Waistguard (272395) | Pix Xizzix [vendor] | 49.7 attack_power points (10.06 DPS) | yes | General's Leather Girdle (16557, -0.27 DPS) [pvp]; Might of the Timbermaw (19044, -1.58 DPS) [crafted]; Defiler's Leather Girdle (20190, -6.46 DPS, sim-verified) [rep] |
+| legs | Stormshroud Pants (15057) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Legionnaire's Leather Legguards (227059, +0.00 DPS) [pvp]; General's Leather Legguards (231554, +0.00 DPS) [pvp]; Devilsaur Leggings (15062, -22.46 DPS, sim-verified) [crafted] |
+| feet | Pads of the Dread Wolf (13210) | Blackrock Spire: Halycon [dungeon] | 40.0 attack_power points (8.09 DPS) | yes | Swiftwalker Boots (12553, -0.73 DPS) [dungeon]; Shadowcraft Boots (16711, -1.19 DPS) [dungeon]; Defiler's Leather Boots (20186, -1.23 DPS) [rep] |
+| finger1 | Don Julio's Band (19325) | Frostwolf Clan [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Blackstone Ring (17713, -1.90 DPS) [dungeon]; Legionnaire's Band (19510, -2.05 DPS) [rep]; Naglering (11669, -12.14 DPS, sim-verified) [dungeon] |
+| finger2 | Cutthroat's Signet (272408) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Blackstone Ring (17713, -0.19 DPS) [dungeon]; Legionnaire's Band (19510, -0.34 DPS) [rep]; Painweaver Band (13098, -0.55 DPS) [dungeon] |
+| trinket1 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Smolderweb's Eye (13213, -2.28 DPS) [dungeon]; Frozen Heart of the Mountain (249469, -2.46 DPS) [crafted]; Hand of Justice (11815, -2.98 DPS, sim-verified) [dungeon] |
+| trinket2 | Blackhand's Breadth (13965) | For The Horde! [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Hand of Justice (11815, +0.00 DPS) [dungeon]; Smolderweb's Eye (13213, +0.00 DPS) [dungeon]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted] |
+| main_hand | Felstriker (12590) | Blackrock Spire: Warchief Rend Blackhand [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | High Warlord's Razor (234556, +0.00 DPS) [pvp]; High Warlord's Shiv (235478, +0.00 DPS) [vendor]; Glacial Blade (19099, -17.21 DPS, sim-verified) [rep] |
+| off_hand | Alcor's Sunrazor (14555) | World drop [world_drop] | 635.4 attack_power points (128.52 DPS) | yes | Glacial Blade (19099, -9.40 DPS, sim-verified) [rep] |
+| ranged | Riphook (12653) | Blackrock Spire: Shadow Hunter Vosh'gajin [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Bloodseeker (19107, -0.72 DPS) [quest]; Precisely Calibrated Boomstick (2100, -0.78 DPS) [world_drop]; Malgen's Long Bow (22318, -0.81 DPS) [dungeon] |
 
-**New at 60:** neck: Mark of Fordring; shoulder: Stormshroud Shoulders; back: Cape of the Black Baron; chest: Stormshroud Armor; wrist: Forest Stalker's Bracers; hands: Raider Gloves; waist: Assassin's Waistguard; legs: Stormshroud Pants; feet: Pads of the Dread Wolf; finger1: Don Julio's Band; finger2: Cutthroat's Signet; trinket1: Rune of the Guard Captain; trinket2: Blackhand's Breadth; main_hand: Felstriker; off_hand: Alcor's Sunrazor; ranged: Riphook
+**New at 60:** head: Darkmantle Cap; neck: Beads of Ogre Might; shoulder: Stormshroud Shoulders; back: Cape of the Black Baron; chest: Stormshroud Armor; wrist: Forest Stalker's Bracers; waist: Assassin's Waistguard; legs: Stormshroud Pants; feet: Pads of the Dread Wolf; finger1: Don Julio's Band; finger2: Cutthroat's Signet; trinket1: Rune of the Guard Captain; trinket2: Blackhand's Breadth; main_hand: Felstriker; off_hand: Alcor's Sunrazor; ranged: Riphook
 
-No-known-source sample (15 of 1925, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band
+No-known-source sample (15 of 1907, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band
 
 ### Band 60, raid preset (undead, 00530201100000000-3200030000000000000-035230031321001151)
 
-Set DPS (verified): 928.9. Weights run: 7.3s. Verify run: 83.2s. 1925 eligible items had no known source.
+Set DPS (verified): 931.8. Weights run: 7.3s. Verify run: 80.5s. 1907 eligible items had no known source.
 
-Race sweep: undead 928.9 ± 0.7, orc 927.7 ± 0.7, windshaper-skyborne 927.5 ± 0.7, troll 925.0 ± 0.7 (dps); the guide race undead is best.
+Race sweep: undead 931.8 ± 0.7, windshaper-skyborne 929.5 ± 0.7, orc 929.3 ± 0.7, troll 926.4 ± 0.7 (dps); the guide race undead is best.
+
+1 slot(s) kept a confirmed-stats item over one whose stats the client has not confirmed (within the sim error).
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, strength=1.100 ± 0.001, agility=2.392 ± 0.019, crit=2.513 ± 0.031 per rating point (14 rating = 1%, 35.180 per %), hit=3.556 ± 0.201 per rating point (10 rating = 1%, 35.562 per %), melee_haste=15.221 ± 2.760
 
 | Slot | Item | Source | Score (attack_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Eye of Rend (12587) | Blackrock Spire: Warchief Rend Blackhand [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Mask of the Unforgiven (13404, +0.00 DPS) [dungeon]; Champion's Leather Helm (227057, +0.00 DPS) [pvp]; Warlord's Leather Helm (231553, +0.00 DPS) [pvp] |
-| neck | Mark of Fordring (15411) | In Dreams [quest] | 61.2 attack_power points (14.46 DPS) | yes | Star of Mystaria (12103, -4.50 DPS, sim-verified) [dungeon]; Skibi's Pendant (13089, -5.81 DPS) [world_drop]; Scout's Medallion (19534, -5.98 DPS) [rep] |
-| shoulder | Stormshroud Shoulders (15058) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Champion's Leather Shoulders (227056, +0.00 DPS) [pvp]; Warlord's Leather Spaulders (231551, +0.00 DPS) [pvp]; Darkspear Pauldrons (272105, -51.71 DPS, sim-verified) [vendor] |
-| back | Howler's Furs (272414) | Pix Xizzix [vendor] | sim-verified (+1.6 DPS vs the runner-up, not corroborated against the finished set) | yes | Cape of the Black Baron (13340, -1.58 DPS, sim-verified) [dungeon]; Deathguard's Cloak (20068, -4.16 DPS) [rep]; Blackveil Cape (11626, -5.55 DPS) [dungeon] |
-| chest | Stormshroud Armor (15056) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Warlord's Leather Breastplate (231549, +0.00 DPS) [pvp]; Timbermaw Tunic (252484, +0.00 DPS) [crafted]; Dawn Armor (252483, -43.55 DPS, sim-verified) [crafted] |
+| head | Darkmantle Cap (226829) | Saving the Best for Last [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Champion's Leather Helm (227057, +0.00 DPS) [pvp]; Warlord's Leather Helm (231553, +0.00 DPS) [pvp]; Mask of the Unforgiven (13404, -9.69 DPS, sim-verified) [dungeon] |
+| neck | Mark of Fordring (15411) | In Dreams [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Pendant of Celerity (22340, +0.00 DPS) [dungeon]; Beads of Ogre Might (22150, -0.38 DPS) [quest]; Star of Mystaria (12103, -3.53 DPS) [dungeon] |
+| shoulder | Stormshroud Shoulders (15058) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Champion's Leather Shoulders (227056, +0.00 DPS) [pvp]; Warlord's Leather Spaulders (231551, +0.00 DPS) [pvp]; Darkspear Pauldrons (272105, -49.17 DPS, sim-verified) [vendor] |
+| back | Howler's Furs (272414) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Cape of the Black Baron (13340, -1.81 DPS) [dungeon]; Deathguard's Cloak (20068, -4.16 DPS) [rep]; Blackveil Cape (11626, -5.55 DPS) [dungeon] |
+| chest | Stormshroud Armor (15056) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Darkmantle Tunic (226825, +0.00 DPS) [quest]; Warlord's Leather Breastplate (231549, +0.00 DPS) [pvp]; Dawn Armor (252483, -46.80 DPS, sim-verified) [crafted] |
 | wrist | Forest Stalker's Bracers (19587) | Warsong Outriders [rep] | 57.6 attack_power points (13.60 DPS) | yes | General's Leather Armsplints (16559, -0.26 DPS) [pvp]; Blackmist Armguards (12966, -3.90 DPS) [dungeon]; Deepfury Bracers (13120, -4.08 DPS) [world_drop] |
-| hands | Raider Gloves (272099) | Creeg Bothunk [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | General's Leather Mitts (231555, +0.00 DPS) [pvp]; Devilsaur Gauntlets (15063, -3.19 DPS) [crafted]; Gloves of Holy Might (867, -5.38 DPS, sim-verified) [world_drop] |
-| waist | Assassin's Waistguard (272395) | Pix Xizzix [vendor] | 121.4 attack_power points (28.68 DPS) | yes | General's Leather Girdle (16557, -13.44 DPS) [pvp]; Might of the Timbermaw (19044, -15.31 DPS) [crafted]; Defiler's Leather Girdle (20190, -16.91 DPS, sim-verified) [rep] |
-| legs | Stormshroud Pants (15057) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Plaguehound Leggings (18736, +0.00 DPS) [dungeon]; General's Leather Legguards (231554, +0.00 DPS) [pvp]; Outrider's Leather Pants (22740, -54.85 DPS, sim-verified) [rep] |
-| feet | Shadowcraft Boots (16711) | Scholomance: Rattlegore [dungeon] | 60.9 attack_power points (14.39 DPS) | yes | Swiftwalker Boots (12553, -1.22 DPS) [dungeon]; General's Leather Treads (231552, -1.96 DPS) [pvp]; Albino Crocscale Boots (17728, -3.09 DPS) [dungeon] |
-| finger1 | Don Julio's Band (19325) | Frostwolf Clan [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Blackstone Ring (17713, -6.90 DPS) [dungeon]; Painweaver Band (13098, -8.88 DPS) [dungeon]; Naglering (11669, -17.79 DPS, sim-verified) [dungeon] |
+| hands | Raider Gloves (272099) | Creeg Bothunk [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | General's Leather Mitts (231555, +0.00 DPS) [pvp]; Devilsaur Gauntlets (15063, -3.19 DPS) [crafted]; Gloves of Holy Might (867, -3.66 DPS, sim-verified) [world_drop] |
+| waist | Assassin's Waistguard (272395) | Pix Xizzix [vendor] | 121.4 attack_power points (28.68 DPS) | yes | Defiler's Leather Girdle (20190, -6.48 DPS, sim-verified) [rep]; General's Leather Girdle (16557, -13.44 DPS) [pvp]; Might of the Timbermaw (19044, -15.31 DPS) [crafted] |
+| legs | Stormshroud Pants (15057) | Leatherworking [crafted] | sim-decided (no score - a real sim tournament chose this pick) | yes | Plaguehound Leggings (18736, +0.00 DPS) [dungeon]; General's Leather Legguards (231554, +0.00 DPS) [pvp]; Outrider's Leather Pants (22740, -53.87 DPS, sim-verified) [rep] |
+| feet | Shadowcraft Boots (16711) | Scholomance: Rattlegore [dungeon] | 60.9 attack_power points (14.39 DPS) | yes | General's Leather Treads (231552, -1.96 DPS) [pvp]; Albino Crocscale Boots (17728, -3.09 DPS) [dungeon]; Swiftwalker Boots (12553, -3.35 DPS, sim-verified) [dungeon] |
+| finger1 | Don Julio's Band (19325) | Frostwolf Clan [rep] | sim-decided (no score - a real sim tournament chose this pick) | yes | Blackstone Ring (17713, -6.90 DPS) [dungeon]; Painweaver Band (13098, -8.88 DPS) [dungeon]; Naglering (11669, -18.42 DPS, sim-verified) [dungeon] |
 | finger2 | Cutthroat's Signet (272408) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Blackstone Ring (17713, -3.19 DPS) [dungeon]; Painweaver Band (13098, -5.17 DPS) [dungeon]; Legionnaire's Band (19510, -6.98 DPS) [rep] |
-| trinket1 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-verified (+2.5 DPS vs the runner-up, not corroborated against the finished set) | yes | Smolderweb's Eye (13213, -0.79 DPS) [dungeon]; Frozen Heart of the Mountain (249469, -1.63 DPS) [crafted]; Hand of Justice (11815, -2.53 DPS, sim-verified) [dungeon] |
-| trinket2 | Blackhand's Breadth (13965) | For The Horde! [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Smolderweb's Eye (13213, +0.00 DPS) [dungeon]; Cannonball Runner (13382, +0.00 DPS) [dungeon]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted] |
-| main_hand | Felstriker (12590) | Blackrock Spire: Warchief Rend Blackhand [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | High Warlord's Razor (234556, +0.00 DPS) [pvp]; High Warlord's Shiv (235478, +0.00 DPS) [vendor]; Glacial Blade (19099, -39.29 DPS, sim-verified) [rep] |
-| off_hand | Alcor's Sunrazor (14555) | World drop [world_drop] | 635.4 attack_power points (150.16 DPS) | yes | Heartseeker (12783, -13.04 DPS, sim-verified) [crafted] |
-| ranged | Precisely Calibrated Boomstick (2100) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Blackcrow (12651, +0.00 DPS) [dungeon]; Ancient Bone Bow (18680, -1.90 DPS) [dungeon]; Bloodseeker (19107, -2.08 DPS) [quest] |
+| trinket1 | Blackhand's Breadth (13965) | For The Horde! [quest] | sim-verified (+10.1 DPS vs the runner-up, not corroborated against the finished set) | yes | Smolderweb's Eye (13213, +0.00 DPS) [dungeon]; Rune of the Guard Captain (19120, +0.00 DPS) [quest]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted] |
+| trinket2 | Hand of Justice (11815) | Blackrock Depths: Emperor Dagran Thaurissan [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Smolderweb's Eye (13213, +0.00 DPS) [dungeon]; Rune of the Guard Captain (19120, +0.00 DPS) [quest]; Molten Heart of the Mountain (249470, -3.36 DPS, sim-verified) [crafted] |
+| main_hand | Felstriker (12590) | Blackrock Spire: Warchief Rend Blackhand [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | High Warlord's Razor (234556, +0.00 DPS) [pvp]; High Warlord's Shiv (235478, +0.00 DPS) [vendor]; Glacial Blade (19099, -40.39 DPS, sim-verified) [rep] |
+| off_hand | Alcor's Sunrazor (14555) | World drop [world_drop] | 635.4 attack_power points (150.16 DPS) | yes | Heartseeker (12783, -12.30 DPS, sim-verified) [crafted] |
+| ranged | Blackcrow (12651) | Blackrock Spire: Shadow Hunter Vosh'gajin [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Precisely Calibrated Boomstick (2100, -1.15 DPS) [world_drop]; Ancient Bone Bow (18680, -3.04 DPS) [dungeon]; Bloodseeker (19107, -3.22 DPS) [quest] |
 
-**New at 60:** head: Eye of Rend; neck: Mark of Fordring; shoulder: Stormshroud Shoulders; back: Howler's Furs; chest: Stormshroud Armor; wrist: Forest Stalker's Bracers; hands: Raider Gloves; waist: Assassin's Waistguard; legs: Stormshroud Pants; feet: Shadowcraft Boots; finger1: Don Julio's Band; finger2: Cutthroat's Signet; trinket1: Rune of the Guard Captain; trinket2: Blackhand's Breadth; main_hand: Felstriker; off_hand: Alcor's Sunrazor
+**New at 60:** head: Darkmantle Cap; neck: Mark of Fordring; shoulder: Stormshroud Shoulders; back: Howler's Furs; chest: Stormshroud Armor; wrist: Forest Stalker's Bracers; hands: Raider Gloves; waist: Assassin's Waistguard; legs: Stormshroud Pants; feet: Shadowcraft Boots; finger1: Don Julio's Band; finger2: Cutthroat's Signet; trinket1: Blackhand's Breadth; trinket2: Hand of Justice; main_hand: Felstriker; off_hand: Alcor's Sunrazor; ranged: Blackcrow
 
-No-known-source sample (15 of 1925, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band
+No-known-source sample (15 of 1907, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 4110 Master Hunter's Bow; 4111 Master Hunter's Rifle; 4116 Olmann Sewar; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4763 Blackwood Recurve Bow; 4988 Burning Obsidian Band
 
