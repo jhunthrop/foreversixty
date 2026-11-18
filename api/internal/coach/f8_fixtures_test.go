@@ -11,7 +11,7 @@ import (
 const (
 	adherenceCasts      = 100
 	adherenceRotationID = 23894 // Bloodthirst rank 4, listed by the Fury rotation
-	adherenceHamstring  = 7373
+	adherenceSlam       = 11605 // Slam rank 5: Arms lists it, neither Fury nor Protection
 	adherenceRend       = 11574
 	adherenceCleave     = 20569 // Cleave rank 5: neither the Fury nor the Protection rotation lists it
 	adherenceFirstShare = 0.5   // of the off-rotation casts: the first spell, then
@@ -24,7 +24,7 @@ type offSpell struct {
 }
 
 var offSpells = []offSpell{
-	{adherenceHamstring, "Hamstring"},
+	{adherenceSlam, "Slam"},
 	{adherenceRend, "Rend"},
 	{adherenceCleave, "Cleave"},
 }

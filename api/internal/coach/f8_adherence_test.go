@@ -13,7 +13,7 @@ func TestAdherence(t *testing.T) {
 		none       bool
 	}{
 		{name: "dps 70% vs median 90%", in: furyAdherence(t, 0.70, poolAdherence(0.90, 25)),
-			wantSev: SeverityMinor, wantSpells: []string{"Hamstring", "Rend", "Cleave"}},
+			wantSev: SeverityMinor, wantSpells: []string{"Slam", "Rend", "Cleave"}},
 		{name: "dps 60% vs 90% is major", in: furyAdherence(t, 0.60, poolAdherence(0.90, 25)), wantSev: SeverityMajor},
 		{name: "no pool: under 85% of the written rotation", in: furyAdherence(t, 0.80, noPool(3)), wantSev: SeverityMinor},
 		{name: "no pool, 88%: nothing", in: furyAdherence(t, 0.88, noPool(3)), none: true},
@@ -46,7 +46,7 @@ func TestAdherenceTextAndAnchors(t *testing.T) {
 	if f.Title != "70% of casts on the rotation" {
 		t.Errorf("title %q", f.Title)
 	}
-	if f.Detail != "Most-cast spells outside the written rotation: Hamstring (15), Rend (9) and Cleave (6)." {
+	if f.Detail != "Most-cast spells outside the written rotation: Slam (15), Rend (9) and Cleave (6)." {
 		t.Errorf("detail %q", f.Detail)
 	}
 	if f.Basis.Kind != BasisTopLogs || f.Basis.Label != "Top 25 Fury Warriors on Onyxia (40): 90% on the rotation. You: 70%." {
@@ -93,7 +93,7 @@ func TestAdherenceNoRotationClaimsNothing(t *testing.T) {
 func TestAdherenceTooFewCasts(t *testing.T) {
 	in := furyAdherence(t, 0.50, poolAdherence(0.90, 25))
 	in.Fight = withoutCasts(in.Fight, in.Row.GUID)
-	in.Fight = withCasts(in.Fight, in.Row.GUID, adherenceHamstring, "Hamstring", repeat(0, 9)...)
+	in.Fight = withCasts(in.Fight, in.Row.GUID, adherenceSlam, "Slam", repeat(0, 9)...)
 	if o := adherence(in, CountedTime(in)); o.Finding != nil || len(o.Strengths) != 0 {
 		t.Fatalf("got %+v", o)
 	}

@@ -26,7 +26,7 @@ const (
 	spellHeroicStrike8  = 11567
 	spellHeroicStrike4  = 1608
 	spellExecute1       = 5308
-	spellHamstring3     = 7373
+	spellSlam5          = 11605
 	spellSunderArmor5   = 11597
 	spellShootBow       = 2480  // a ranged white hit: excluded
 	spellMightyRagePot  = 17528 // the consumables catalogue's combat potion: excluded
@@ -122,8 +122,8 @@ func TestAdherenceIsOneWhenEveryCastIsInTheRotation(t *testing.T) {
 	casts := castRows("",
 		[2]int64{spellBloodthirst4, 6}, [2]int64{spellWhirlwind1680, 4}, [2]int64{spellHeroicStrike8, 2},
 		[2]int64{spellShootBow, 3}, [2]int64{spellMightyRagePot, 1})
-	// The warrior's pet (a guardian, say) casts Hamstring: not the player's own cast.
-	casts = append(casts, summary.CastRow{GUID: "Pet-1", OwnerGUID: "Player-" + name, SpellID: spellHamstring3,
+	// The warrior's pet (a guardian, say) casts Slam: not the player's own cast.
+	casts = append(casts, summary.CastRow{GUID: "Pet-1", OwnerGUID: "Player-" + name, SpellID: spellSlam5,
 		Started: 5, Succeeded: 5})
 	got := rateForAdherence(t, "full", name, "Warrior", "Fury", casts)
 	wantAdherence(t, "every cast listed", got, 1.0)
@@ -133,7 +133,7 @@ func TestAdherenceIsHalfWhenHalfTheCastsAreInTheRotation(t *testing.T) {
 	const name = "Adhhalf"
 	seedLevel(t, name, 60)
 	got := rateForAdherence(t, "half", name, "Warrior", "Fury", castRows("",
-		[2]int64{spellBloodthirst4, 6}, [2]int64{spellHamstring3, 3}, [2]int64{spellSunderArmor5, 3}))
+		[2]int64{spellBloodthirst4, 6}, [2]int64{spellSlam5, 3}, [2]int64{spellSunderArmor5, 3}))
 	wantAdherence(t, "half listed", got, 0.5)
 }
 
@@ -198,7 +198,7 @@ func TestAdherenceIsRoundedToTwoDecimals(t *testing.T) {
 	const name = "Adhround"
 	seedLevel(t, name, 60)
 	got := rateForAdherence(t, "round", name, "Warrior", "Fury", castRows("",
-		[2]int64{spellBloodthirst4, 7}, [2]int64{spellHamstring3, 4}))
+		[2]int64{spellBloodthirst4, 7}, [2]int64{spellSlam5, 4}))
 	wantAdherence(t, "7 of 11", got, 0.64)
 }
 
@@ -234,8 +234,8 @@ func TestAdherenceIsPresentAtExactlyTenCasts(t *testing.T) {
 func TestAdherenceIsZeroWhenNoCastIsInTheRotation(t *testing.T) {
 	const name = "Adhzero"
 	seedLevel(t, name, 60)
-	wantAdherence(t, "ten Hamstring", rateForAdherence(t, "zero", name, "Warrior", "Fury",
-		castRows("", [2]int64{spellHamstring3, 10})), 0)
+	wantAdherence(t, "ten Slams", rateForAdherence(t, "zero", name, "Warrior", "Fury",
+		castRows("", [2]int64{spellSlam5, 10})), 0)
 }
 
 // A failed level lookup never fails the rating: the cards are stored, and adherence is absent
@@ -370,12 +370,12 @@ func TestOffRotationTopThree(t *testing.T) {
 	const spellRend7, spellCleave5 = 11574, 20569 // Fury lists neither (it does list Overpower)
 	casts := castRows(guid,
 		[2]int64{spellBloodthirst4, 20}, [2]int64{spellMightyRagePot, 9},
-		[2]int64{spellHamstring3, 5}, [2]int64{spellCleave5, 4}, [2]int64{spellRend7, 4},
+		[2]int64{spellSlam5, 5}, [2]int64{spellCleave5, 4}, [2]int64{spellRend7, 4},
 		[2]int64{spellSunderArmor5, 2})
 	casts = append(casts, castRows("Player-Else", [2]int64{spellSunderArmor5, 30})...)
 	fight := summary.Summary{Casts: casts}
 	got := OffRotation(fight, summary.RosterRow{GUID: guid}, rot, 3)
-	want := []int64{spellHamstring3, spellRend7, spellCleave5}
+	want := []int64{spellSlam5, spellRend7, spellCleave5}
 	if len(got) != len(want) {
 		t.Fatalf("OffRotation = %+v, want spells %v", got, want)
 	}

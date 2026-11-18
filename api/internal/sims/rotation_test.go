@@ -40,7 +40,7 @@ func TestRotationListsEveryRankOfAListedAbility(t *testing.T) {
 			t.Errorf("band 60 does not list spell %d", id)
 		}
 	}
-	for _, id := range []int64{7373, 11597, 2480, 17528} {
+	for _, id := range []int64{11605, 11597, 2480, 17528} {
 		if at60.Lists(id) {
 			t.Errorf("band 60 lists spell %d", id)
 		}
