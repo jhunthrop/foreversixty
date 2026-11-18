@@ -393,9 +393,10 @@ describe('/guides/mage/frost (the class-guide blocks)', () => {
     expect(bis).toMatch(
       /href="\/bis\/mage\/frost\/60"[^>]*data-testid="guide-bis-full-list"[^>]*>Full list and alternatives/,
     );
-    // Every band's own BiS page and the role's tier list (SEO lane 2026-11-08).
+    // Every band's own BiS page and the role's tier list (SEO lane 2026-11-08). The spec page
+    // opens at 60 since 2026-11-17, so 20 to 29 is a folded band with its own hash too.
     for (const href of [
-      '/bis/mage/frost',
+      '/bis/mage/frost#levels-20-29',
       '/bis/mage/frost#levels-30-39',
       '/bis/mage/frost#levels-40-49',
       '/bis/mage/frost#levels-50-59',
