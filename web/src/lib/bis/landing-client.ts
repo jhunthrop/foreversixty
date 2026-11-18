@@ -10,7 +10,7 @@ import { markSpecRows } from '../guides/guide-answer-mount';
 import { afterLoad, hasSessionHint } from '../page-load';
 import { CONTROL_BAR_EVENT, checkRadio, type ControlBarChange } from '../ui/control-bar';
 import { bandLabel, parseBandParam } from './landing-bands';
-import { specLinkHref } from './landing-links';
+import { landingSpecHref } from './landing-links';
 import {
   landingPageView,
   type BandChoice,
@@ -71,7 +71,7 @@ function renderSpecLinks(view: LandingPageView): void {
     const [classSlug = '', specSlug = ''] = (link.dataset.testid ?? '')
       .slice(SPEC_ROW_PREFIX.length)
       .split('/');
-    link.href = specLinkHref({ classSlug, specSlug, band: view.selectedBand, faction: view.faction });
+    link.href = landingSpecHref({ classSlug, specSlug, band: view.selectedBand, faction: view.faction });
   }
 }
 

@@ -10,7 +10,7 @@ import { homeHeroCardsCopy } from '../home-panel-copy';
 import { SLOTS, type Slot } from '../planner/types';
 import { wearsListedBest } from './best-in-slot';
 import { bandEntryFor, fetchBisFile } from './hover';
-import { DEFAULT_LANDING_BAND, FIRST_BAND_LEVEL, characterBand } from './landing-bands';
+import { FIRST_BAND_LEVEL, bandForCharacter } from './landing-bands';
 import { classFor, specKeyFor, type LandingConfig } from './landing-config';
 import { landingCopy } from './landing-copy';
 import { levelingSpecKey } from '../leveling/leveling-plan';
@@ -109,7 +109,7 @@ async function bandEntryOf(
 ): Promise<BisBand | undefined> {
   const file = await (options.fetchFile ?? fetchBisFile)(options.build, specKey);
   if (file === null) return undefined;
-  const band = characterBand(character.level) ?? DEFAULT_LANDING_BAND;
+  const band = bandForCharacter(character.level);
   return bandEntryFor(file, band, character.faction ?? DEFAULT_LOOKUP_FACTION);
 }
 
@@ -167,7 +167,7 @@ export function landingAction(character: MeCharacter, config: LandingConfig): He
   if (cls === undefined || spec === undefined) {
     return { label: landingCopy.fallbackAction, href: landingCopy.fallbackHref };
   }
-  const band = characterBand(character.level) ?? DEFAULT_LANDING_BAND;
+  const band = bandForCharacter(character.level);
   return {
     label: landingCopy.leadButton(spec.name, band),
     href: specLinkHref({

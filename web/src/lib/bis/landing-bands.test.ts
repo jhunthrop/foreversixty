@@ -18,8 +18,8 @@ describe('the strip’s bands', () => {
     expect(LANDING_BANDS.map(bandLabel)).toEqual(['20 to 29', '30 to 39', '40 to 49', '50 to 59', '60']);
   });
 
-  it('default to the first band, where launch players are', () => {
-    expect(DEFAULT_LANDING_BAND).toBe(20);
+  it('default to level 60 with no character (owner 2026-11-17)', () => {
+    expect(DEFAULT_LANDING_BAND).toBe(60);
   });
 });
 
@@ -36,10 +36,11 @@ describe('parseBandParam', () => {
 });
 
 describe('selectedLandingBand', () => {
-  it('prefers the viewer’s own choice, then the character’s band, then 20 to 29', () => {
+  it('prefers the viewer’s own choice, then the character’s band, then 60 (20 to 29 under 20)', () => {
     expect(selectedLandingBand(50, 40)).toBe(50);
     expect(selectedLandingBand(null, 40)).toBe(40);
-    expect(selectedLandingBand(null, undefined)).toBe(20);
+    expect(selectedLandingBand(null, undefined)).toBe(60);
+    expect(selectedLandingBand(null, undefined, null, true)).toBe(20);
   });
 
   it('the character beats a stored pick; the stored pick beats the default', () => {

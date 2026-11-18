@@ -146,7 +146,7 @@ describe('bisPageHref', () => {
   it('links to the band’s own page, Horde in the query', () => {
     expect(bisPageHref('hunter-marksmanship', 'alliance', 30)).toBe('/bis/hunter/marksmanship#levels-30-39');
     expect(bisPageHref('hunter-marksmanship', 'horde', 60)).toBe('/bis/hunter/marksmanship/60?faction=horde');
-    expect(bisPageHref('hunter-marksmanship', 'alliance', 20)).toBe('/bis/hunter/marksmanship');
+    expect(bisPageHref('hunter-marksmanship', 'alliance', 20)).toBe('/bis/hunter/marksmanship#levels-20-29');
   });
 
   it('falls back to the index for a spec key the generated list does not carry', () => {

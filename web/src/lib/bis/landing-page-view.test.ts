@@ -4,9 +4,9 @@ import { landingPageView } from './landing-page-view';
 const NONE = { url: null, stored: null };
 
 describe('landingPageView', () => {
-  it('signed out: 20 to 29, no own range, no faction, nothing is Yours', () => {
+  it('signed out: 60, no own range, no faction, nothing is Yours', () => {
     expect(landingPageView(NONE, null)).toEqual({
-      selectedBand: 20,
+      selectedBand: 60,
       youBand: undefined,
       faction: undefined,
       yoursSpecKey: undefined,

@@ -1,8 +1,8 @@
 // web/src/pages/bis/_spec-fold.test.ts
 // Underscore-prefixed so Astro skips it; vitest still collects it.
 //
-// The SEO fold (2026-11-15): the mid-level BiS bands (lib/bis/band-path.ts isFoldedBand) have no
-// page of their own. Their picks are in the spec page's server HTML (components/bis/BisLeveling.astro),
+// The SEO fold (2026-11-15): the leveling BiS bands (lib/bis/band-path.ts isFoldedBand) have no
+// page of their own; the spec page opens on level 60 (owner 2026-11-17). Their picks are in the spec page's server HTML (components/bis/BisLeveling.astro),
 // no band page is generated for them (so the sitemap, which lists built pages, never names them),
 // and level 60 keeps its own page.
 import type { experimental_AstroContainer as AstroContainer } from 'astro/container';
@@ -36,9 +36,15 @@ describe.each(SPECS)('/bis/%s/%s', (classSlug, specSlug) => {
   const entry = specEntry(classSlug, specSlug);
   const panels = loadFoldedPanels(activeBuild.build, classSlug, entry.spec);
 
-  it('folds the 30-39, 40-49 and 50-59 bands, both factions', () => {
-    expect([...new Set(panels.map((panel) => panel.band))]).toEqual([30, 40, 50]);
+  it('folds the 20-29 to 50-59 bands, both factions', () => {
+    expect([...new Set(panels.map((panel) => panel.band))]).toEqual([20, 30, 40, 50]);
     expect(new Set(panels.map((panel) => panel.faction))).toEqual(new Set(['alliance', 'horde']));
+  });
+
+  it('opens on level 60 with no band in the path, so the selected character can still move it', async () => {
+    const html = await container.renderToString(SpecPage, { props: { spec: entry } });
+    expect(html).toContain('data-bis-band="60"');
+    expect(html).not.toContain('data-bis-path-band');
   });
 
   it('server-renders every folded pick in the Leveling section', async () => {
@@ -46,7 +52,7 @@ describe.each(SPECS)('/bis/%s/%s', (classSlug, specSlug) => {
     const start = html.indexOf('data-testid="bis-leveling"');
     expect(start).toBeGreaterThan(-1);
     const section = html.slice(start);
-    expect(section).toContain('Leveling 30 to 59');
+    expect(section).toContain('Leveling 20 to 59');
     for (const panel of panels) {
       expect(section).toMatch(new RegExp(`data-band="${panel.band}"[^>]*data-faction="${panel.faction}"`));
       for (const row of listedBisRows(panel)) {

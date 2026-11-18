@@ -50,7 +50,14 @@
   import type { BisPresetId, Faction, SourceFilterKind } from '../../lib/bis/types';
   import { controlSummary, type ControlGroup, type ControlOption } from '../../lib/ui/primitives';
   import { bisContext, presetLabel } from '../../lib/bis/page-context';
-  import { bandHash, bandSlug, bisBandHref, bisBandPath, isFoldedBand } from '../../lib/bis/band-path';
+  import {
+    bandHash,
+    bandSlug,
+    bisBandHref,
+    bisBandPath,
+    bisSpecPath,
+    isFoldedBand,
+  } from '../../lib/bis/band-path';
   import { bisSeoCopy } from '../../lib/bis/seo-copy';
   import {
     PRE_RAID_KINDS,
@@ -66,6 +73,7 @@
     classSlug,
     specSlug,
     pathBand,
+    bandInPath = false,
     pathPreRaid = false,
     preRaid,
     crestColor,
@@ -78,6 +86,9 @@
     specSlug: string;
     /** The band this page's URL names (lib/bis/band-path.ts); the server renders it. */
     pathBand: number;
+    /** The path names the band (/60, /60/pre-raid); false on /bis/<class>/<spec>, which opens on
+     *  level 60 and then follows the selected character. */
+    bandInPath?: boolean;
     /** The URL is the band's pre-raid list, /bis/<class>/<spec>/60/pre-raid (lib/bis/pre-raid.ts). */
     pathPreRaid?: boolean;
     /** The level 60 list holds no raid drop: its h1 says Pre-Raid (lib/bis/seo-copy.ts). */
@@ -96,12 +107,17 @@
   let data = $state.raw(inline);
   const context = $derived(bisContext(data, raceOptions, pathBand, pathPreRaid));
   const firstBand = (): number => data.bands[0] ?? pathBand;
-  /** A state's page (lib/bis/band-path.ts): /60 at level 60, else the spec's path; /pre-raid under
-   *  60 for the pre-raid list. */
-  const stateHref = (next: Pick<BisPageState, 'band' | 'sources'>): string =>
-    `${bisBandPath(classSlug, specSlug, next.band, firstBand())}${isPreRaidView(next.band, next.sources) ? `/${PRE_RAID_SLUG}` : ''}`;
+  /** A state's page (lib/bis/band-path.ts): the spec's path below 60 and, on the spec page, at 60
+   *  too (its own band); /60 on a band page; /60/pre-raid for the pre-raid list. */
+  const stateHref = (next: Pick<BisPageState, 'band' | 'sources'>): string => {
+    if (isPreRaidView(next.band, next.sources))
+      return `${bisBandPath(classSlug, specSlug, next.band, firstBand())}/${PRE_RAID_SLUG}`;
+    return bandInPath
+      ? bisBandPath(classSlug, specSlug, next.band, firstBand())
+      : bisSpecPath(classSlug, specSlug);
+  };
   /** A folded band's hash (`#levels-40-49`), the part of the URL after the query. */
-  const stateHash = (band: number): string => (isFoldedBand(band, firstBand()) ? bandHash(band) : '');
+  const stateHash = (band: number): string => (isFoldedBand(band) ? bandHash(band) : '');
   /** Settles once the full data is in (at once when the page inlined all of it). */
   let ready: Promise<void> = Promise.resolve();
 
@@ -131,8 +147,11 @@
     return { band: state.band, faction: state.faction, preset: state.preset };
   }
 
+  // Read the band before the optional call: `compare?.show(shownBand())` skips the read while the
+  // session is still loading, and the effect then tracks nothing and never runs again.
   $effect(() => {
-    compare?.show(shownBand());
+    const shown = shownBand();
+    compare?.show(shown);
   });
 
   const model = $derived(data.models[bandModelKey(state.faction, state.band, state.preset)]!);
@@ -346,7 +365,7 @@
   data-bis-faction={state.faction}
   data-bis-band={state.band}
   data-bis-preset={state.preset}
-  data-bis-path-band={pathBand !== data.bands[0] ? pathBand : undefined}
+  data-bis-path-band={bandInPath ? pathBand : undefined}
   data-testid="bis-page"
 >
   <Page layout="ledger" testid="bis-ledger">

@@ -34,7 +34,7 @@ export interface LandingPageView {
 export function landingPageView(choice: BandChoice, character: LandingCharacter | null): LandingPageView {
   const youBand = character === null ? undefined : characterBand(character.level);
   return {
-    selectedBand: selectedLandingBand(choice.url, youBand, choice.stored),
+    selectedBand: selectedLandingBand(choice.url, youBand, choice.stored, character !== null),
     youBand,
     faction: character?.faction,
     yoursSpecKey: character?.specKey,

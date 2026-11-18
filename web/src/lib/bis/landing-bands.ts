@@ -5,8 +5,8 @@
 import { BAND_STEP, MAX_BAND, MIN_BAND, bandForLevel } from './hover';
 import type { BisSlot } from './types';
 
-/** Signed out, or with no character: launch players are leveling, so the first band. */
-export const DEFAULT_LANDING_BAND = MIN_BAND;
+/** Signed out, or with no character: level 60 (owner 2026-11-17). */
+export const DEFAULT_LANDING_BAND = MAX_BAND;
 
 export const LANDING_BANDS: readonly number[] = Array.from(
   { length: (MAX_BAND - MIN_BAND) / BAND_STEP + 1 },
@@ -47,17 +47,30 @@ export function parseBandParam(raw: string | null | undefined): number | null {
   return LANDING_BANDS.includes(band) ? band : null;
 }
 
+/** The fallback band: the first band for a character under 20, else (no character) level 60. */
+function fallbackBand(hasCharacter: boolean): number {
+  return hasCharacter ? FIRST_BAND_LEVEL : DEFAULT_LANDING_BAND;
+}
+
+/** A character's band: its own, or the first band under 20 (or of unknown level). */
+export function bandForCharacter(level: number | undefined): number {
+  return characterBand(level) ?? fallbackBand(true);
+}
+
 /**
  * The selected band (owner 2026-11-07: the default follows the character): the address bar's
  * `?band=` wins, then the character's own band, then the viewer's last pick (storage, signed out
- * or with a character under 20), then the first band. The character's band is undefined under 20.
+ * or with a character under 20), then the first band with a character under 20, else level 60
+ * (owner 2026-11-17: open at 60 when no character is set). The character's band is undefined
+ * under 20.
  */
 export function selectedLandingBand(
   urlBand: number | null,
   characterBand: number | undefined,
   storedBand: number | null = null,
+  hasCharacter = false,
 ): number {
-  return urlBand ?? characterBand ?? storedBand ?? DEFAULT_LANDING_BAND;
+  return urlBand ?? characterBand ?? storedBand ?? fallbackBand(hasCharacter);
 }
 
 /** The two source kinds most picks come from, most common first (ties keep first-seen order). */

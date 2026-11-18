@@ -31,7 +31,7 @@ test('choosing Bare swaps the numbers and writes ?preset=bare without a reload',
   });
   await chooseControl(page, 'preset', 'bare');
   await expect(page).toHaveURL(/[?&]preset=bare/);
-  await expect(page).toHaveURL(/\/60\?/);
+  await expect(page).toHaveURL(/\/bis\/warrior\/protection\?/);
   await expect(option(page, 'bare')).toHaveAttribute('aria-checked', 'true');
   await expect(answer(page)).toContainText(BARE_FIGURE);
   expect(await page.evaluate(() => (window as unknown as { __marker?: boolean }).__marker)).toBe(true);
@@ -82,7 +82,7 @@ test('a band without the key shows no hit-to-cap line and keeps the weights in p
 });
 
 test('below level 60 there is no Profile control: bare only', async ({ page }) => {
-  await open(page, '/bis/hunter/marksmanship');
+  await open(page, '/bis/hunter/marksmanship#levels-20-29');
   await expect(page.locator('[data-testid^="bis-band-alliance-"]')).toBeVisible();
   await expect(page.locator('[data-testid^="control-preset-"]')).toHaveCount(0);
 });

@@ -105,10 +105,10 @@ test.describe('signed out, desktop', () => {
     await expect(answer(page)).toBeHidden();
   });
 
-  test('the bar defaults to 20 to 29 and every spec row opens at 20 to 29 with no faction', async ({
+  test('the bar defaults to 60 and every spec row opens the spec page (level 60) with no faction', async ({
     page,
   }) => {
-    await expect(band(page, 20)).toHaveAttribute('aria-checked', 'true');
+    await expect(band(page, 60)).toHaveAttribute('aria-checked', 'true');
     const rows = page.locator('a[data-testid^="bis-spec-row-"]');
     await expect(rows).toHaveCount(readSpecCatalog().length);
     for (const row of await rows.all()) {

@@ -10,6 +10,7 @@ import {
   bisBandPath,
   bisSpecPath,
   isFoldedBand,
+  specPageBand,
 } from './band-path';
 
 describe('band paths', () => {
@@ -29,13 +30,18 @@ describe('band paths', () => {
     expect(bisBandPath('warrior', 'fury', 60, 20)).toBe('/bis/warrior/fury/60');
   });
 
-  it('folds only the bands between the first and 60', () => {
-    expect([20, 30, 40, 50, 60].filter((band) => isFoldedBand(band, 20))).toEqual([30, 40, 50]);
-    expect([40, 50, 60].filter((band) => isFoldedBand(band, 40))).toEqual([50]);
+  it('folds every band below 60 (the spec page opens on 60)', () => {
+    expect([20, 30, 40, 50, 60].filter((band) => isFoldedBand(band))).toEqual([20, 30, 40, 50]);
+  });
+
+  it('opens the spec page on 60, else on a short spec’s first band', () => {
+    expect(specPageBand([20, 30, 40, 50, 60])).toBe(60);
+    expect(specPageBand([20, 30])).toBe(20);
+    expect(specPageBand([])).toBeUndefined();
   });
 
   it('links a folded band by its hash after the query, the rest by path', () => {
-    expect(bisBandHref('warrior', 'fury', 20, 20)).toBe('/bis/warrior/fury');
+    expect(bisBandHref('warrior', 'fury', 20, 20)).toBe('/bis/warrior/fury#levels-20-29');
     expect(bisBandHref('warrior', 'fury', 40, 20)).toBe('/bis/warrior/fury#levels-40-49');
     expect(bisBandHref('warrior', 'fury', 40, 20, '?faction=horde')).toBe(
       '/bis/warrior/fury?faction=horde#levels-40-49',

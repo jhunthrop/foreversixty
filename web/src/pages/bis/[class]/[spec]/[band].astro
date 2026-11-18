@@ -2,7 +2,7 @@
 // web/src/pages/bis/[class]/[spec]/[band].astro
 // A page per BiS level band that has one of its own besides the spec page: level 60
 // (/bis/warrior/fury/60, lib/bis/band-path.ts), its own title, description, canonical and h1, its
-// list server-rendered. The first band and the folded mid-level bands live on /bis/<class>/<spec>
+// list server-rendered. The leveling bands below 60 live on /bis/<class>/<spec>
 // and get no second URL here; their old band URLs 301 there (public/_redirects).
 import BisSpecRoute from '../../../../components/bis/BisSpecRoute.astro';
 import { bandSlug, isFoldedBand } from '../../../../lib/bis/band-path';
@@ -15,7 +15,7 @@ export async function getStaticPaths() {
     const first = bands[0];
     if (first === undefined) return [];
     return bands
-      .filter((band) => band !== first && !isFoldedBand(band, first))
+      .filter((band) => band !== first && !isFoldedBand(band))
       .map((band) => ({
         params: { class: spec.class_slug, spec: spec.spec_slug, band: bandSlug(band) },
         props: { spec, band },

@@ -68,7 +68,7 @@ describe('bisHref', () => {
     expect(bisHref('Priest', 'Holy', 60, 'Night Elf')).toBe('/bis/priest/holy/60');
     expect(bisHref('Warrior', 'Fury', 37, 'Orc')).toBe('/bis/warrior/fury?faction=horde#levels-30-39');
     // Below 20 the earliest band; an unknown race keeps the band, with the default panel.
-    expect(bisHref('Priest', 'Holy', 12, null)).toBe('/bis/priest/holy');
+    expect(bisHref('Priest', 'Holy', 12, null)).toBe('/bis/priest/holy#levels-20-29');
   });
 });
 

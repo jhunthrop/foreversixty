@@ -21,7 +21,7 @@ import { landingCopy } from '../../lib/bis/landing-copy';
 import { loadLandingData } from '../../lib/bis/landing-build';
 import { DEFAULT_LANDING_BAND, LANDING_BANDS, bandLabel } from '../../lib/bis/landing-bands';
 import { BAND_PARAM, SPEC_ROW_PREFIX } from '../../lib/bis/landing-client';
-import { specLinkHref } from '../../lib/bis/landing-links';
+import { landingSpecHref } from '../../lib/bis/landing-links';
 import UpdatedStamp from '../../components/UpdatedStamp.astro';
 import { REGION } from '../../lib/ui/regions';
 import { searchCopy } from '../../lib/search-copy';
@@ -39,7 +39,7 @@ const groups: ControlGroup[] = [
   },
 ];
 const pickerGroups = pickerClasses({
-  specHref: (classSlug, specSlug) => specLinkHref({ classSlug, specSlug, band: DEFAULT_LANDING_BAND }),
+  specHref: (classSlug, specSlug) => landingSpecHref({ classSlug, specSlug, band: DEFAULT_LANDING_BAND }),
   specIcon: (spec) => catalogueIconUrl(activeBuild.build, spec.icon),
 });
 ---

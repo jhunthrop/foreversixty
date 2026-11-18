@@ -181,7 +181,7 @@ describe('landingAction', () => {
   it('under 20 opens the first band', () => {
     expect(landingAction(character({ level: 12 }), CONFIG)).toEqual({
       label: 'Fury gear for 20 to 29',
-      href: '/bis/warrior/fury',
+      href: '/bis/warrior/fury#levels-20-29',
     });
   });
 

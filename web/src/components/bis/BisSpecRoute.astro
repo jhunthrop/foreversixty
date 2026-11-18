@@ -1,8 +1,8 @@
 ---
 // web/src/components/bis/BisSpecRoute.astro
 // The Best in slot page (web layout spec 2026-11-05 §5, mock web-bis rev 3) for one spec at one
-// band: /bis/<class>/<spec> is its first band with the mid-level bands folded in under the doll
-// (components/bis/BisLeveling.astro), /bis/<class>/<spec>/60 level 60 (lib/bis/band-path.ts),
+// band: /bis/<class>/<spec> opens on level 60 (owner 2026-11-17) with the leveling bands folded
+// in under the doll (components/bis/BisLeveling.astro), /bis/<class>/<spec>/60 level 60 (lib/bis/band-path.ts),
 // each its own server-rendered URL with its own title, description, canonical, h1 and
 // breadcrumb, so a crawler reads every band's list without running the page.
 // One island (components/bis/BisSpecPage.svelte, the paperdoll page) server-rendered at the page's band, so first
@@ -21,7 +21,7 @@ import classes from '../../data/classes.json';
 import activeBuild from '../../data/active-build.json';
 import { bisCopy } from '../../lib/bis/copy';
 import { bisSeoCopy } from '../../lib/bis/seo-copy';
-import { bisBandPath, bisSpecPath } from '../../lib/bis/band-path';
+import { bisBandPath, bisSpecPath, specPageBand } from '../../lib/bis/band-path';
 import { PRE_RAID_SLUG } from '../../lib/bis/pre-raid';
 import { readSpecCatalog } from '../../lib/bis/load';
 import { loadFoldedPanels } from '../../lib/bis/leveling-fold';
@@ -43,7 +43,7 @@ import type { ControlOption } from '../../lib/ui/primitives';
 
 interface Props {
   spec: SpecCatalogEntry;
-  /** The band this URL names; the spec's first band when absent (/bis/<class>/<spec>). */
+  /** The band this URL names; absent on /bis/<class>/<spec>, which opens on specPageBand. */
   band?: number;
   /** The band's pre-raid list, /bis/<class>/<spec>/60/pre-raid (lib/bis/pre-raid.ts). */
   preRaidPage?: boolean;
@@ -58,11 +58,11 @@ const build = activeBuild.build;
 
 const server = bisServerPage(specEntry.spec, classSlug) ?? undefined;
 const firstBand = server?.data.bands[0];
-const band = pathBand ?? firstBand;
+const band = pathBand ?? (server === undefined ? undefined : specPageBand(server.data.bands));
 const subject = { fullName: specEntry.full_name, preRaid: bisPreRaid(specEntry.spec) };
 const isBandPage = pathBand !== undefined && pathBand !== firstBand;
 const bandPath =
-  band === undefined || firstBand === undefined
+  !isBandPage || band === undefined || firstBand === undefined
     ? specPath
     : bisBandPath(classSlug, specEntry.spec_slug, band, firstBand);
 const path = preRaidPage ? `${bandPath}/${PRE_RAID_SLUG}` : bandPath;
@@ -165,6 +165,7 @@ const raceOptions: Record<Faction, { value: string; label: string }[]> = {
           classSlug={classSlug}
           specSlug={specEntry.spec_slug}
           pathBand={band}
+          bandInPath={pathBand !== undefined}
           pathPreRaid={preRaidPage}
           preRaid={subject.preRaid}
           crestColor={classColorVar(className)}
