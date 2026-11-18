@@ -25,6 +25,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strings"
 	"time"
 
 	"github.com/jhunthrop/foreversixty/sim/leveling"
@@ -127,18 +128,26 @@ func wornSetPieces(picks map[string]slotPick, setID int) int {
 	return n
 }
 
-// setFillSlot is one slot a set trial would change and what it costs in score.
+// setFillSlot is one slot a set trial would change and what it costs in
+// score. breaksBonus marks a slot whose pick is a piece of another set
+// whose active bonus wearing this piece would lose.
 type setFillSlot struct {
-	slot string
-	item scored
-	loss float64
+	slot        string
+	item        scored
+	loss        float64
+	breaksBonus bool
 }
 
 // setFillSlots lists the slots where wearing the set's piece replaces a
-// pick that is not already a piece of that set, cheapest score loss first
-// (slot order breaks ties). A slot with no pick is left alone, and so is a
-// piece the pair-mate slot already wears.
-func setFillSlots(picks map[string]slotPick, pieces map[string]scored, setID int) []setFillSlot {
+// pick that is not already a piece of that set: first every slot that
+// keeps the other worn sets' active bonuses, then those that break one,
+// each cheapest score loss first (slot order breaks ties). score() cannot
+// see a bonus, so a piece of another set often looks the cheapest slot to
+// give up while its bonus is worth more than the stat gap: Combat rogue
+// band 60's Darkmantle four took the Stormshroud chest, legs and shoulders
+// first and lost the Stormshroud energy proc. A slot with no pick is left
+// alone, and so is a piece the pair-mate slot already wears.
+func setFillSlots(picks map[string]slotPick, pieces map[string]scored, setID int, catalog setCatalog) []setFillSlot {
 	var out []setFillSlot
 	for _, slot := range slotOrder {
 		piece, ok := pieces[slot]
@@ -152,10 +161,28 @@ func setFillSlots(picks map[string]slotPick, pieces map[string]scored, setID int
 		if mate, paired := pairSlot[slot]; paired && picks[mate].Item != nil && picks[mate].Item.ID == piece.ID {
 			continue
 		}
-		out = append(out, setFillSlot{slot: slot, item: piece, loss: roundScore(current.Score - piece.Score)})
+		out = append(out, setFillSlot{
+			slot: slot, item: piece, loss: roundScore(current.Score - piece.Score),
+			breaksBonus: breaksActiveBonus(picks, current, catalog),
+		})
 	}
-	sort.SliceStable(out, func(i, j int) bool { return out[i].loss < out[j].loss })
+	sort.SliceStable(out, func(i, j int) bool {
+		if out[i].breaksBonus != out[j].breaksBonus {
+			return !out[i].breaksBonus
+		}
+		return out[i].loss < out[j].loss
+	})
 	return out
+}
+
+// breaksActiveBonus is whether taking current off loses a bonus of its set:
+// the picks wear exactly a bonus threshold of that set.
+func breaksActiveBonus(picks map[string]slotPick, current *scored, catalog setCatalog) bool {
+	if current.SetID == nil {
+		return false
+	}
+	_, active := catalog[*current.SetID].bonusAt(wornSetPieces(picks, *current.SetID))
+	return active
 }
 
 // setTrial is the candidate gear for one threshold of one set.
@@ -272,12 +299,13 @@ func (c *setCompletion) trySet(setID int) {
 	info := c.catalog[setID]
 	pieces := bestSetPiecePerSlot(c.bySlot, c.spec.Spec, setID)
 	for _, threshold := range setThresholds(info, wornSetPieces(c.picks, setID)) {
-		fill := setFillSlots(c.picks, pieces, setID)
+		fill := setFillSlots(c.picks, pieces, setID, c.catalog)
 		need := threshold - wornSetPieces(c.picks, setID)
 		if need <= 0 || need > len(fill) {
 			continue
 		}
-		won, trial, reading, err := c.runBestTrial(setTrialsFor(c.picks, fill, need))
+		label := fmt.Sprintf("set %d (%s) %d-piece", setID, info.Name, threshold)
+		won, trial, reading, err := c.runBestTrial(label, setTrialsFor(c.picks, fill, need))
 		if err != nil {
 			c.notes = append(c.notes, fmt.Sprintf("set %d (%s) %d-piece trial: verify failed: %v", setID, info.Name, threshold, err))
 			continue
@@ -325,14 +353,16 @@ func setTrialsFor(picks map[string]slotPick, fill []setFillSlot, need int) []set
 }
 
 // runBestTrial screens every trial and confirms the one that screens
-// highest, when any passes the screen.
-func (c *setCompletion) runBestTrial(trials []setTrial) (bool, setTrial, setReading, error) {
+// highest, when any passes the screen. Every screen and the confirm are
+// noted under label, so a set the band does not wear says why in the log.
+func (c *setCompletion) runBestTrial(label string, trials []setTrial) (bool, setTrial, setReading, error) {
 	best, bestDPS := -1, 0.0
 	for i, trial := range trials {
 		ok, dps, err := c.screens(trial)
 		if err != nil {
 			return false, setTrial{}, setReading{}, err
 		}
+		c.notes = append(c.notes, fmt.Sprintf("%s screen [%s]: %.1f vs %.1f", label, trial.describe(), dps, c.screenBase.dps))
 		if ok && (best < 0 || dps > bestDPS) {
 			best, bestDPS = i, dps
 		}
@@ -341,7 +371,20 @@ func (c *setCompletion) runBestTrial(trials []setTrial) (bool, setTrial, setRead
 		return false, setTrial{}, setReading{}, nil
 	}
 	won, reading, err := c.confirms(trials[best])
+	if err == nil && !won {
+		c.notes = append(c.notes, fmt.Sprintf("%s confirm [%s]: %.1f +/- %.1f vs %.1f +/- %.1f - kept the picks",
+			label, trials[best].describe(), reading.dps, reading.stdErr, c.confirmBase.dps, c.confirmBase.stdErr))
+	}
 	return won, trials[best], reading, err
+}
+
+// describe names the pieces a trial wears in its changed slots.
+func (t setTrial) describe() string {
+	parts := make([]string, 0, len(t.changed))
+	for _, slot := range t.changed {
+		parts = append(parts, fmt.Sprintf("%s %d", slot, t.picks[slot].Item.ID))
+	}
+	return strings.Join(parts, ", ")
 }
 
 // adopt makes trial the working picks and tags its changed slots with the

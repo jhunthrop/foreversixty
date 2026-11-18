@@ -324,7 +324,7 @@ func TestSetFillSlotsSortOnTheRoundedLoss(t *testing.T) {
 	headNow, neckNow := item(1, 0.2, nil), item(2, 0.3, nil)
 	picks := map[string]slotPick{"head": {Item: &headNow}, "neck": {Item: &neckNow}}
 	pieces := map[string]scored{"head": item(11, 0, &setID), "neck": item(12, 0.1, &setID)}
-	got := setFillSlots(picks, pieces, setID)
+	got := setFillSlots(picks, pieces, setID, nil)
 	if len(got) != 2 || got[0].slot != "head" || got[1].slot != "neck" {
 		t.Fatalf("setFillSlots = %+v, want head then neck: equal rounded losses keep slot order", got)
 	}
@@ -397,5 +397,65 @@ func TestTrySetCompletionConfirmsTheBestScreenThatLeadsAtAll(t *testing.T) {
 	out, _ := trySetCompletion(fake, specInfo{}, "dwarf", "hunter", 60, "", picks, bySlot, testCatalog())
 	if out["head"].Item.ID != 11 || out["chest"].Item.ID != 21 {
 		t.Fatalf("head %d chest %d, want the set pair confirmed and adopted", out["head"].Item.ID, out["chest"].Item.ID)
+	}
+}
+
+// A set trial must not fill its threshold by breaking another set's active
+// bonus while slots that break nothing can fill it. Combat rogue band 60
+// wears Stormshroud Armor's three (chest, legs, shoulder: the energy proc)
+// beside a Darkmantle Cap. Once Dire Maul opens, the Darkmantle chest, legs
+// and shoulders outscore the Stormshroud pieces on stats alone, so the
+// cheapest-by-score four took exactly those three slots and every close
+// alternative kept at least two of them: Darkmantle four on hands, wrist
+// and waist, which keeps both energy procs, was never screened.
+func TestTrySetCompletionKeepsAnotherSetsActiveBonus(t *testing.T) {
+	const storm, dark = 142, 1676
+	pick := func(id int, set *int, score float64) slotPick {
+		return slotPick{Item: &scored{candidate: candidate{ID: id, SetID: set}, Score: score}}
+	}
+	picks := map[string]slotPick{
+		"head":     pick(1, intPtr(dark), 10),
+		"chest":    pick(2, intPtr(storm), 5),
+		"legs":     pick(3, intPtr(storm), 5),
+		"shoulder": pick(4, intPtr(storm), 5),
+		"hands":    pick(5, nil, 10),
+		"wrist":    pick(6, nil, 10),
+		"waist":    pick(7, nil, 10),
+	}
+	bySlot := map[string][]scored{
+		"chest":    {withScore(setItem(12, "Dark Chest", dark, "chest"), 8)},
+		"legs":     {withScore(setItem(13, "Dark Legs", dark, "legs"), 7)},
+		"shoulder": {withScore(setItem(14, "Dark Shoulder", dark, "shoulder"), 6)},
+		"hands":    {withScore(setItem(15, "Dark Hands", dark, "hands"), 9)},
+		"wrist":    {withScore(setItem(16, "Dark Wrist", dark, "wrist"), 9)},
+		"waist":    {withScore(setItem(17, "Dark Waist", dark, "waist"), 9)},
+	}
+	catalog := setCatalog{
+		storm: {Name: "Stormshroud Armor", Bonuses: []setBonusTier{{Pieces: 2, Description: "nature proc"}, {Pieces: 3, Description: "energy proc"}}},
+		dark: {Name: "Darkmantle Armor", Bonuses: []setBonusTier{
+			{Pieces: 2, Description: "resist"}, {Pieces: 3, Description: "hp5"}, {Pieces: 4, Description: "energy proc"},
+			{Pieces: 5, Description: "snare"}, {Pieces: 6, Description: "ap"},
+		}},
+	}
+	bothProcs := func(req api.SimRequest) (float64, error) {
+		worn := map[int]bool{}
+		for _, g := range req.Character.Gear {
+			worn[g.ItemID] = true
+		}
+		if worn[2] && worn[3] && worn[4] && worn[15] && worn[16] && worn[17] {
+			return 110, nil
+		}
+		return 100, nil
+	}
+	out, notes := trySetCompletion(&fakeEngine{DPSFunc: bothProcs}, specInfo{}, "undead", "rogue", 60, "", picks, bySlot, catalog)
+	got := map[string]int{}
+	for _, slot := range []string{"chest", "legs", "shoulder", "hands", "wrist", "waist"} {
+		got[slot] = out[slot].Item.ID
+	}
+	want := map[string]int{"chest": 2, "legs": 3, "shoulder": 4, "hands": 15, "wrist": 16, "waist": 17}
+	for slot, id := range want {
+		if got[slot] != id {
+			t.Fatalf("picks = %v, want %v: Darkmantle four on hands, wrist and waist beside Stormshroud's three (notes %v)", got, want, notes)
+		}
 	}
 }
