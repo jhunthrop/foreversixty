@@ -13,6 +13,11 @@ touched. No order of wago's listing is assumed (it lists by ingestion time,
 and one ingestion holds thousands of rows of many pushes in no stable order),
 so a late copy of an old push is found the same way as a new push.
 
+Nothing is crawled at all when wago's per-term totals are the ones the
+committed `hotfix-push.json` was layered at (`read_push`). The values the enUS
+entries lack (issue #27) are looked up one record at a time from the statuses
+(`lookup_values`), never crawled across every locale's copies.
+
 A build with no saved file (a new client build), or a run with `--full` or
 HOTFIX_PUSH_FULL=1, crawls everything and saves the file. A saved file that
 does not cover every table asked for is not trusted: the run logs FULL CRAWL
@@ -43,15 +48,16 @@ import httpx
 from pipeline.hotfix_push import (
     ENUS_ONLY,
     EVERY_LOCALE,
+    STATUS_VALID,
     NodeTotals,
     PushCollector,
     PushEntry,
-    PushFetcher,
+    _ask,
     _build_number,
     crawl_terms,
     newest_per_record,
-    open_client,
 )
+from pipeline.wago_http import open_client
 
 logger = logging.getLogger(__name__)
 
@@ -261,11 +267,9 @@ def fetch_values(
     client: httpx.Client | None = None,
 ) -> dict[str, list[PushEntry]]:
     """The build's pushed entries that carry values, in every locale, one per
-    record, crawled over the ones saved at `store`.
-
-    Since 70938 (2026-11-13) wago.tools lists a push's values only on some
-    locales' copies: every enUS entry of 70938's push carries `data: None`, so
-    the enUS crawl layered nothing for any table (issue #27)."""
+    record, crawled over the ones saved at `store`: the item tables'
+    (`pipeline.item_push`), which have no enUS status crawl to look values up
+    from (`lookup_values` is the spell side's read)."""
     return fetch_saved(
         build,
         tables,
@@ -279,15 +283,136 @@ def fetch_values(
     )
 
 
-def values_fetcher(store_of: Callable[[str], Path], full: bool = False) -> PushFetcher:
-    """A `layer_hotfix_push` values fetcher over the store at `store_of(build)`."""
-    return lambda build, tables: fetch_values(build, tables, store_of(build), full=full)
+def lookup_search(number: int, table: str, record_id: int, push_id: int) -> str:
+    """The search for one push of one record's entries that carry values:
+    "<push> <record> <build> <table> [" reads as one substring of wago's
+    "<locale> <push> <record> <build> <table> <values>", so it lists that push
+    of that record in every locale that carries values, and nothing else."""
+    return f"{push_id} {record_id} {number} {table.lower()} ["
 
 
-def saved_fetcher(store_of: Callable[[str], Path], full: bool = False) -> PushFetcher:
-    """A `layer_hotfix_push` fetcher over the saved push at `store_of(build)`,
-    kept in HOTFIX_PUSH_CACHE too when that is set."""
-    cache_dir = cache_dir_from_env()
-    return lambda build, tables: fetch_saved(
-        build, tables, store_of(build), full=full, cache_dir=cache_dir
+def _wanted_pushes(statuses: list[PushEntry]) -> dict[int, list[int]]:
+    """Per record, the pushes whose values are wanted, newest first: from the
+    newest enUS entry down, each valid entry without values, stopping at the
+    first entry that decides the record by itself (a removal, an invalidation,
+    or a valid entry with its values)."""
+    by_record: dict[int, list[PushEntry]] = {}
+    for e in statuses:
+        by_record.setdefault(e.record_id, []).append(e)
+    wanted: dict[int, list[int]] = {}
+    for record_id, entries in by_record.items():
+        pushes: list[int] = []
+        for e in sorted(entries, key=lambda e: (e.push_id, e.entry_id), reverse=True):
+            if e.status != STATUS_VALID or e.data:
+                break
+            if e.push_id not in pushes:
+                pushes.append(e.push_id)
+        if pushes:
+            wanted[record_id] = pushes
+    return wanted
+
+
+def _value_entries(
+    answer_entries: Iterable[Mapping[str, Any]],
+    number: int,
+    table: str,
+    record_id: int,
+    push_id: int,
+) -> list[PushEntry]:
+    collector = PushCollector(number, (table,), EVERY_LOCALE)
+    collector.add(
+        e
+        for e in answer_entries
+        if int(e["record_id"]) == record_id and int(e["push_id"]) == push_id and e.get("data")
     )
+    return collector.by_table()[table]
+
+
+def lookup_values(
+    build: str,
+    tables: tuple[str, ...],
+    store: Path,
+    statuses: Mapping[str, list[PushEntry]],
+    full: bool = False,
+    client: httpx.Client | None = None,
+) -> dict[str, list[PushEntry]]:
+    """The values of every record whose newest enUS entries carry none, one
+    entry per record, looked up over the ones saved at `store` and saved back.
+
+    Since 70938 (2026-11-13) wago.tools lists a push's values only on some
+    locales' copies: every enUS entry of 70938's push carries `data: None`
+    (issue #27). The enUS statuses already name each such record and push, so
+    each is one search (`lookup_search`) instead of a crawl of every locale's
+    copies of every table, which cost 40,788 requests on the 2026-11-17 run.
+    A push already saved with values is not asked for again; one with none is
+    asked again on the next run (its copies may not be ingested yet)."""
+    number = _build_number(build)
+    saved = None if full else read_store(store)
+    if saved is not None and saved["build"] != build:
+        raise SystemExit(f"{store} is the push of {saved['build']}, not {build}")
+    held = saved["entries"] if saved is not None else {}
+    own = client is None
+    client = client or open_client()
+    asked = missing = 0
+    pushed: dict[str, list[PushEntry]] = {}
+    try:
+        for table in tables:
+            have = {(e.record_id, e.push_id) for e in held.get(table, [])}
+            found = list(held.get(table, []))
+            for record_id, pushes in sorted(_wanted_pushes(statuses.get(table, [])).items()):
+                for push_id in pushes:
+                    if (record_id, push_id) in have:
+                        break
+                    asked += 1
+                    answer = _ask(client, lookup_search(number, table, record_id, push_id))
+                    values = _value_entries(answer.entries, number, table, record_id, push_id)
+                    if values:
+                        found.extend(values)
+                        break
+                else:
+                    missing += 1
+            pushed[table] = deciding_entries(found)
+    finally:
+        if own:
+            client.close()
+    write_store(store, build, tables, {}, pushed)
+    logger.info(
+        "hotfix push %s: %d value lookups, %d records with no values listed yet",
+        build,
+        asked,
+        missing,
+    )
+    return pushed
+
+
+def read_saved_push(push_dir: Path, tables: tuple[str, ...]) -> dict[str, list[PushEntry]] | None:
+    """The push saved under `push_dir` (the statuses in `STORE` and the values in
+    `VALUES_STORE`, both committed) for `tables`, or None when either is missing."""
+    statuses, values = read_store(push_dir / STORE), read_store(push_dir / VALUES_STORE)
+    if statuses is None or values is None:
+        return None
+    return {t: [*statuses["entries"].get(t, []), *values["entries"].get(t, [])] for t in tables}
+
+
+def read_push(
+    build: str,
+    tables: tuple[str, ...],
+    push_dir: Path,
+    full: bool,
+    live_totals: Mapping[str, int],
+    committed: Mapping[str, Any],
+) -> dict[str, list[PushEntry]]:
+    """The build's push for `layer_hotfix_push`. When wago's totals are the ones
+    the committed record was layered at, nothing new was pushed: the saved push
+    is layered as it is, with no crawl. Otherwise the statuses are crawled where
+    they moved (`fetch_saved`) and the missing values looked up (`lookup_values`)."""
+    unchanged = dict(committed.get("search_totals", {})) == dict(live_totals)
+    saved = read_saved_push(push_dir, tables)
+    if unchanged and saved is not None and not full_requested(full):
+        logger.info("hotfix push %s: unchanged since the committed layer; no crawl", build)
+        return saved
+    statuses = fetch_saved(
+        build, tables, push_dir / STORE, full=full, cache_dir=cache_dir_from_env()
+    )
+    values = lookup_values(build, tables, push_dir / VALUES_STORE, statuses, full=full)
+    return {t: [*statuses.get(t, []), *values.get(t, [])] for t in tables}

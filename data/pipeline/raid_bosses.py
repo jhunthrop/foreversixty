@@ -260,15 +260,14 @@ def fetch_missing_tables(build: str, raw: Path, client: object | None = None) ->
     "Table not found" and gets an empty table). Lets tools/activate-build.sh make
     raid-bosses.json itself when data.yml's fetch did not (the refresh hold keeps data.yml
     off). Answers the tables it fetched."""
-    import httpx
-
     from pipeline import wago
+    from pipeline.wago_http import open_client
 
     missing = [t for t in TABLES if not (raw / f"{t}.csv").exists()]
     if not missing:
         return []
     own = client is None
-    http = client or httpx.Client(base_url=wago.BASE_URL, headers={"User-Agent": wago.USER_AGENT})
+    http = client or open_client()
     try:
         for table in missing:
             wago.download_table(table, build, raw, http)  # type: ignore[arg-type]

@@ -41,7 +41,7 @@ from typing import Any
 
 import httpx
 
-from pipeline.wago import BASE_URL, USER_AGENT
+from pipeline.wago_http import USER_AGENT, open_client
 
 CONFIG_PATH = Path(__file__).resolve().parents[1] / "curated" / "client.json"
 ACTIVE_BUILD_PATH = (
@@ -313,9 +313,7 @@ def _newest_first(builds: Iterable[Build]) -> tuple[Build, ...]:
 
 def fetch_builds(client: httpx.Client | None = None) -> dict[str, Any]:
     own = client is None
-    client = client or httpx.Client(
-        base_url=BASE_URL, headers={"User-Agent": USER_AGENT}, timeout=60
-    )
+    client = client or open_client()
     try:
         r = client.get("/api/builds")
         r.raise_for_status()

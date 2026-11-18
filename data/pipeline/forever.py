@@ -21,7 +21,7 @@ import httpx
 
 from pipeline.icons import CACHE_DIR, PLACEHOLDER_ICON, class_icon_names, download_icons, icon_names
 from pipeline.normalize.forever_talents import normalize_forever_talents
-from pipeline.wago import BASE_URL, USER_AGENT
+from pipeline.wago_http import open_client
 
 log = logging.getLogger("pipeline.forever")
 
@@ -249,7 +249,7 @@ def fetch_missing_icons(
 
     own = client is None
     if client is None:
-        client = httpx.Client(base_url=BASE_URL, headers={"User-Agent": USER_AGENT})
+        client = open_client()
     try:
         names = icon_names(_manifest(fallback_build, client))
         wanted = {file_id: name for file_id, name in names.items() if name in missing}

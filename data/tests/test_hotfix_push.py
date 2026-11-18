@@ -154,9 +154,15 @@ def test_every_fetched_table_but_the_item_hotfix_pair_is_layered():
             "TraitDefinitionEffectPoints", "SpellClassOptions"} <= set(PUSH_TABLES)  # fmt: skip
 
 
-def test_one_search_covers_every_table_whose_name_contains_it():
+def test_one_search_covers_every_table_whose_name_starts_with_it():
     terms = search_terms(("Spell", "SpellEffect", "SkillLine", "SkillLineAbility", "CurvePoint"))
     assert terms == ("CurvePoint", "SkillLine", "Spell")
+
+
+def test_a_table_whose_name_only_contains_another_gets_its_own_search():
+    """"<build> itemeffect" is never a substring of "<build> itemxitemeffect", so
+    ItemXItemEffect's enUS statuses were never read under the ItemEffect search."""
+    assert search_terms(("ItemEffect", "ItemXItemEffect")) == ("ItemEffect", "ItemXItemEffect")
 
 
 # --- fetching the push from wago.tools --------------------------------------
@@ -268,7 +274,7 @@ def test_fetch_push_keeps_entries_that_land_while_the_record_is_split():
     assert got == sorted(e["id"] for e in entries + late)
 
 
-def test_fetch_push_splits_one_push_of_one_record_by_locale():
+def test_fetch_push_reads_one_wide_push_of_one_record_in_the_kept_locale():
     """Record 451 at 1.60.1.70790: two pushes, each carrying the row in every
     locale, 30 entries a push that no push-id digit can split. Once the push id is
     whole, the search splits by locale; every entry comes back once and the
@@ -283,10 +289,14 @@ def test_fetch_push_splits_one_push_of_one_record_by_locale():
                 entries.append(entry)
     entries += [wago_entry(500 + n, 4000 + n, "Spell", build=70790) for n in range(30)]
     tables = ("Spell", "SpellName", "SpellChainEffects")
-    pushed = fetch_push("1.60.1.70790", tables, FakeWago(entries).client())
+    wago = FakeWago(entries)
+    pushed = fetch_push("1.60.1.70790", tables, wago.client())
     got = sorted(e.entry_id for t in pushed.values() for e in t)
     want = sorted(e["id"] for e in entries if e["locale"] == "enUS")
     assert got == want
+    # the enUS crawl reads the enUS copy of each wide push, never the other locales
+    by_locale = [s for s in wago.searches if s.split()[0].isalpha()]
+    assert sorted(by_locale) == ["enus 112720 451 70790 spell", "enus 112870 451 70790 spell"]
 
 
 def test_fetch_push_fails_loudly_on_an_http_error():

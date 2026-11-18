@@ -59,7 +59,8 @@ import httpx
 from pipeline.casc import fetch_casc_file
 from pipeline.icons import CACHE_DIR, _atomic_write
 from pipeline.manifest import refresh_manifest
-from pipeline.wago import BASE_URL, USER_AGENT, download_table
+from pipeline.wago import download_table
+from pipeline.wago_http import open_client
 
 logger = logging.getLogger(__name__)
 
@@ -186,7 +187,7 @@ def write_game_tables(
     out.mkdir(parents=True, exist_ok=True)
     own = client is None
     if client is None:
-        client = httpx.Client(base_url=BASE_URL, headers={"User-Agent": USER_AGENT})
+        client = open_client()
     try:
         for name, file_id in sorted(GAME_TABLE_IDS.items()):
             data = fetch_casc_file(

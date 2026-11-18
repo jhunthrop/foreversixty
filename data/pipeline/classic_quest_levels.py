@@ -51,7 +51,7 @@ import re
 import httpx
 from pydantic import BaseModel
 
-from pipeline.wago import USER_AGENT
+from pipeline.wago_http import USER_AGENT
 
 #: Pinned per the controller's own instruction: a raw.githubusercontent.com
 #: URL naming an exact commit, never a moving branch ref, so a rerun of

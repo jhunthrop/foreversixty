@@ -96,7 +96,7 @@ from pathlib import Path
 import httpx
 from pydantic import BaseModel
 
-from pipeline.wago import USER_AGENT
+from pipeline.wago_http import USER_AGENT
 
 logger = logging.getLogger(__name__)
 

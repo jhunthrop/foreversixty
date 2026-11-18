@@ -31,6 +31,7 @@ from pipeline.hotfix_push_store import (
     fetch_saved,
     full_requested,
     read_store,
+    write_store,
 )
 
 BUILD = "1.60.1.70790"
@@ -295,46 +296,126 @@ def test_the_cache_dir_comes_from_the_env(monkeypatch, tmp_path):
     assert cache_dir_from_env() == tmp_path
 
 
-def test_the_layer_reads_the_push_over_the_saved_file_by_default(tmp_path, monkeypatch):
+def layer_dir(tmp_path: Path) -> Path:
     raw = tmp_path / BUILD / "raw"
     raw.mkdir(parents=True)
     (raw / "SpellEffect.csv").write_text("ID,V\n1000,3\n")
+    return raw
+
+
+def test_the_layer_reads_the_push_over_the_saved_files_by_default(tmp_path, monkeypatch):
+    layer_dir(tmp_path)
     asked: list[tuple] = []
 
-    def fake(build, tables, store, full=False, cache_dir=None, **crawl):
-        asked.append((build, tables, store.name, full, cache_dir, crawl.get("terms")))
+    def statuses(build, tables, store, full=False, cache_dir=None, **crawl):
+        asked.append(("statuses", build, tables, store.name, full, cache_dir))
         return {"SpellEffect": []}
 
-    monkeypatch.setattr("pipeline.hotfix_push_store.fetch_saved", fake)
+    def values(build, tables, store, statuses, full=False, client=None):
+        asked.append(("values", build, tables, store.name, full))
+        return {"SpellEffect": []}
+
+    monkeypatch.setattr("pipeline.hotfix_push_store.fetch_saved", statuses)
+    monkeypatch.setattr("pipeline.hotfix_push_store.lookup_values", values)
     monkeypatch.setenv("HOTFIX_PUSH_CACHE", str(tmp_path / "cache"))
     layer_hotfix_push(
         BUILD, root=tmp_path, tables=("SpellEffect",), totals=lambda b, t: {}, full=True
     )
-    cache = tmp_path / "cache"
-    assert sorted(asked, key=str) == sorted(
-        [
-            (BUILD, ("SpellEffect",), STORE, True, cache, None),
-            (BUILD, ("SpellEffect",), VALUES_STORE, True, cache, ("SpellEffect [",)),
-        ],
-        key=str,
+    assert asked == [
+        ("statuses", BUILD, ("SpellEffect",), STORE, True, tmp_path / "cache"),
+        ("values", BUILD, ("SpellEffect",), VALUES_STORE, True),
+    ]
+
+
+def test_an_unchanged_push_is_layered_from_the_saved_files_with_no_request(
+    tmp_path, monkeypatch
+):
+    """wago's totals are the committed record's: nothing new was pushed, so the
+    saved statuses and values are layered as they are."""
+    raw = layer_dir(tmp_path)
+    push_dir = raw / "wago-push"
+    status = PushEntry(2, 114008, 1000, STATUS_VALID, None)
+    value = PushEntry(1, 114008, 1000, STATUS_VALID, [1000, "5"], "deDE")
+    write_store(push_dir / STORE, BUILD, ("SpellEffect",), {}, {"SpellEffect": [status]})
+    write_store(push_dir / VALUES_STORE, BUILD, ("SpellEffect",), {}, {"SpellEffect": [value]})
+    (tmp_path / BUILD / "hotfix-push.json").write_text(
+        json.dumps({"search_totals": {"SpellEffect": 22}})
     )
 
+    def no_crawl(*args, **kwargs):
+        raise AssertionError("an unchanged push is not crawled")
 
-def test_the_layer_takes_the_values_another_locale_carries(tmp_path, monkeypatch):
-    """1.60.1.70938: every enUS entry of the push carries `data: None`, so a
-    layer of the enUS crawl alone changed no row of any table (issue #27)."""
-    raw = tmp_path / BUILD / "raw"
-    raw.mkdir(parents=True)
-    (raw / "SpellEffect.csv").write_text("ID,V\n1000,3\n")
-
-    def fake(build, tables, store, full=False, cache_dir=None, **crawl):
-        if crawl.get("terms") is None:
-            return {"SpellEffect": [PushEntry(2, 114008, 1000, STATUS_VALID, None)]}
-        return {"SpellEffect": [PushEntry(1, 114008, 1000, STATUS_VALID, [1000, "5"], "deDE")]}
-
-    monkeypatch.setattr("pipeline.hotfix_push_store.fetch_saved", fake)
-    record = layer_hotfix_push(
-        BUILD, root=tmp_path, tables=("SpellEffect",), totals=lambda b, t: {}
+    monkeypatch.setattr("pipeline.hotfix_push_store.fetch_saved", no_crawl)
+    monkeypatch.setattr("pipeline.hotfix_push_store.lookup_values", no_crawl)
+    layer_hotfix_push(
+        BUILD, root=tmp_path, tables=("SpellEffect",), totals=lambda b, t: {"SpellEffect": 22}
     )
     assert (raw / "SpellEffect.csv").read_text() == "ID,V\n1000,5\n"
-    assert record["tables"]["SpellEffect"]["changed"] == 1
+
+
+def test_offline_layers_the_committed_saved_files(tmp_path):
+    raw = layer_dir(tmp_path)
+    push_dir = raw / "wago-push"
+    write_store(push_dir / STORE, BUILD, ("SpellEffect",), {}, {
+        "SpellEffect": [PushEntry(2, 114008, 1000, STATUS_REMOVED, None)]})  # fmt: skip
+    write_store(push_dir / VALUES_STORE, BUILD, ("SpellEffect",), {}, {"SpellEffect": []})
+    (tmp_path / BUILD / "hotfix-push.json").write_text(
+        json.dumps({"search_totals": {"SpellEffect": 9}})
+    )
+    record = layer_hotfix_push(BUILD, root=tmp_path, tables=("SpellEffect",), offline=True)
+    assert (raw / "SpellEffect.csv").read_text() == "ID,V\n"
+    assert record["search_totals"] == {"SpellEffect": 9}
+
+
+# --- the value lookups (issue #27) -------------------------------------------
+
+
+def value_wago() -> Wago:
+    """Record 1000's push 114008 has values only on its deDE copy; record 1001's
+    newest push 114009 has none anywhere yet, its older push 114001 has frFR
+    values; record 1002 was removed."""
+    return Wago([
+        wago_entry(1, 1000, push_id=114008, value="5", locale="deDE"),
+        wago_entry(2, 1001, push_id=114001, value="4", locale="frFR"),
+        wago_entry(3, 10000, push_id=114008, value="9", locale="deDE"),
+    ])  # fmt: skip
+
+
+VALUE_STATUSES = {
+    "SpellEffect": [
+        PushEntry(10, 114008, 1000, STATUS_VALID, None),
+        PushEntry(11, 114001, 1001, STATUS_VALID, None),
+        PushEntry(12, 114009, 1001, STATUS_VALID, None),
+        PushEntry(13, 114002, 1002, STATUS_REMOVED, None),
+    ]
+}
+
+
+def test_values_are_looked_up_per_record_from_the_statuses(tmp_path):
+    from pipeline.hotfix_push_store import lookup_values
+
+    wago = value_wago()
+    store = tmp_path / VALUES_STORE
+    pushed = lookup_values(BUILD, ("SpellEffect",), store, VALUE_STATUSES, client=wago.client())
+    got = {(e.record_id, e.push_id, e.locale, tuple(e.data)) for e in pushed["SpellEffect"]}
+    assert got == {(1000, 114008, "deDE", (1000, "5")), (1001, 114001, "frFR", (1001, "4"))}
+    assert wago.searches == [
+        "114008 1000 70790 spelleffect [",
+        "114009 1001 70790 spelleffect [",
+        "114001 1001 70790 spelleffect [",
+    ]
+    shipped = [{"ID": "1000", "V": "3"}, {"ID": "1001", "V": "3"}, {"ID": "1002", "V": "3"}]
+    entries = [*VALUE_STATUSES["SpellEffect"], *pushed["SpellEffect"]]
+    rows, _ = layer_rows(shipped, ["ID", "V"], entries, "SpellEffect")
+    assert rows == [{"ID": "1000", "V": "5"}, {"ID": "1001", "V": "4"}]
+
+
+def test_a_push_saved_with_values_is_not_looked_up_again(tmp_path):
+    from pipeline.hotfix_push_store import lookup_values
+
+    store = tmp_path / VALUES_STORE
+    lookup_values(BUILD, ("SpellEffect",), store, VALUE_STATUSES, client=value_wago().client())
+    again = value_wago()
+    lookup_values(BUILD, ("SpellEffect",), store, VALUE_STATUSES, client=again.client())
+    # 1001's newest push still lists no values, so only it is asked again
+    assert again.searches == ["114009 1001 70790 spelleffect ["]

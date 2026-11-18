@@ -10,7 +10,7 @@ the push: its enUS copies of the record carry no values, its deDE and frFR
 copies carry ItemDelay 3600.
 
 This module reads that page's entries that carry values, in every locale
-(`pipeline.hotfix_push_store.fetch_values`, the spell side's second read), and
+(`pipeline.hotfix_push_store.fetch_values`), and
 saves them in
 `raw/wago-push/items.json` (committed with the build, crawled again only
 where wago's totals moved: `pipeline.hotfix_push_store`). `layer_item_push`

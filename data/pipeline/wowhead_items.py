@@ -56,7 +56,7 @@ from pipeline.normalize.gear import (
     weapon_type_for,
 )
 from pipeline.proficiency import ARMOR, can_equip
-from pipeline.wago import USER_AGENT
+from pipeline.wago_http import USER_AGENT
 
 logger = logging.getLogger(__name__)
 

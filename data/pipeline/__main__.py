@@ -25,6 +25,13 @@ def build_parser() -> argparse.ArgumentParser:
     f.add_argument("--product", required=True, help="wago.tools product key, e.g. wow_classic_era")
     f.add_argument("--build", help="build string like 1.15.7.61582; default: latest for product")
     f.add_argument("--full", action="store_true", help=_FULL_HELP)
+    f.add_argument(
+        "--offline-push",
+        action="store_true",
+        help="layer the hotfix push committed under raw/wago-push/ instead of reading "
+        "wago.tools' hotfix pages (the nightly ranking and the engine follow: data.yml "
+        "owns the push read)",
+    )
 
     lhp = sub.add_parser(
         "layer-hotfix-push",
@@ -512,10 +519,14 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "fetch":
         from pipeline import hotfix_push, item_push, wago, wago_hotfixes
         from pipeline.hotfix_push_store import full_requested
+        from pipeline.wago_http import log_requests
 
         build_dir = wago.fetch_build(args.product, args.build)
         build = build_dir.name if build_dir is not None else args.build
-        _log_layer(hotfix_push.layer_hotfix_push(build, full=full_requested(args.full)))
+        log_requests("fetch: tables")
+        full = full_requested(args.full)
+        _log_layer(hotfix_push.layer_hotfix_push(build, offline=args.offline_push, full=full))
+        log_requests("fetch: tables and push")
         # The item pair's pushes too (sim-accuracy round 11): without them a
         # local fetch + normalize drops 165 hotfix-only items and puts 404 on
         # wowhead or classic-db stats. Logged, like the layer: stdout's last
@@ -524,7 +535,10 @@ def main(argv: list[str] | None = None) -> int:
             logging.getLogger("pipeline.wago_hotfixes").info(
                 "fetch-wago-hotfixes %s: %d rows", table, count
             )
-        _log_item_push(item_push.fetch_item_push(build, full=full_requested(args.full)))
+        log_requests("fetch: tables, push and item hotfix exports")
+        if not args.offline_push:
+            _log_item_push(item_push.fetch_item_push(build, full=full))
+        log_requests("fetch")
     elif args.command == "fetch-item-push":
         from pipeline import item_push
         from pipeline.hotfix_push_store import full_requested

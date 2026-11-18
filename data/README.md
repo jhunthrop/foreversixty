@@ -72,6 +72,16 @@ builds/<build>/raw/*.csv        downloaded DB2 exports (gitignored). `fetch` the
                                 simconst, trainables, levels, simdb, gen_set_rows and
                                 the engine fork's relicmods/periodiccrit/eureka -- sees
                                 the server's rows (pipeline/hotfix_push.py)
+                                Every wago.tools request goes through
+                                pipeline/wago_http.py: one at a time, a second
+                                apart (WAGO_MIN_INTERVAL), within a per-run budget
+                                (WAGO_REQUEST_BUDGET), and a 403 stops the run.
+                                With WAGO_TABLE_CACHE set, table exports are kept
+                                there (pipeline/wago_tables.py): a build's shipped
+                                tables are downloaded once, hotfixed ones are
+                                revalidated after their max-age. `fetch
+                                --offline-push` layers the committed push instead
+                                of reading wago's hotfix pages
 builds/<build>/raw/shipped/*.csv  each layered table as fetched
 builds/<build>/raw/wago-push/   the cached push per table and LAYERED.json (what
                                 changed per table); `layer-hotfix-push --build <b>

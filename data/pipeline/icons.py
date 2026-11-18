@@ -24,7 +24,7 @@ from pathlib import Path
 import httpx
 from PIL import Image
 
-from pipeline.wago import BASE_URL, USER_AGENT
+from pipeline.wago_http import USER_AGENT, open_client
 
 logger = logging.getLogger(__name__)
 
@@ -212,7 +212,7 @@ def download_icons(
 
     own = client is None
     if client is None:
-        client = httpx.Client(base_url=BASE_URL, headers={"User-Agent": USER_AGENT})
+        client = open_client()
     out_dir.mkdir(parents=True, exist_ok=True)
     cache_dir.mkdir(parents=True, exist_ok=True)
     _warn_about_name_collisions(wanted)

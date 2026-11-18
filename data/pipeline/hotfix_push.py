@@ -12,8 +12,9 @@ entry per (push, record) with the record's status and, for a valid record, its
 values in the table's column order. `layer_rows` is the one layering rule:
 
 * the push is read twice: enUS entries of every status (removals and
-  invalidations carry no values) and every locale's entries that carry
-  values (`pipeline.hotfix_push_store.fetch_values`);
+  invalidations carry no values), then, for each record whose enUS entries
+  carry no values, that push's copies in the locales that do
+  (`pipeline.hotfix_push_store.lookup_values`);
 * per record id, the newest push wins (push id, then wago's entry id); a
   valid entry wago kept no values for (the enUS copies of push 16778086 at
   70938, whose deDE and frFR copies carry them) never outranks an older one
@@ -58,7 +59,6 @@ import re
 import shutil
 import time
 from collections.abc import Callable, Iterable, Mapping
-from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
@@ -66,8 +66,9 @@ from typing import Any
 import httpx
 
 from pipeline.csvio import read_csv
-from pipeline.wago import BASE_URL, TABLES, USER_AGENT
+from pipeline.wago import TABLES
 from pipeline.wago_hotfixes import TABLES as ITEM_HOTFIX_TABLES
+from pipeline.wago_http import open_client
 
 logger = logging.getLogger(__name__)
 
@@ -95,8 +96,6 @@ _TIMEOUT_SECONDS = 60
 #: wago.tools' fixed page size.
 _PAGE_SIZE = 25
 _DIGITS = "0123456789"
-#: Searches in flight at once.
-_WORKERS = 6
 #: Tries per search: wago.tools drops connections under load (data runs
 #: 41867694425 and 41869498423, launch day: "Server disconnected without
 #: sending a response"), and one dropped search used to lose the whole push.
@@ -227,10 +226,14 @@ def layer_rows(
 
 
 def search_terms(tables: Iterable[str]) -> tuple[str, ...]:
-    """The fewest wago searches covering `tables`: its search is a substring
-    match on the table name, so "Spell" also returns SpellEffect's entries."""
+    """The fewest wago searches covering `tables`. A search reads "<build> <term>"
+    as one substring, so a term covers the tables whose name STARTS with it:
+    "Spell" also returns SpellEffect's entries, but "ItemEffect" never returned
+    ItemXItemEffect's (its enUS statuses went unread until 2026-11-17)."""
     names = sorted(set(tables))
-    return tuple(t for t in names if not any(o != t and o.lower() in t.lower() for o in names))
+    return tuple(
+        t for t in names if not any(o != t and t.lower().startswith(o.lower()) for o in names)
+    )
 
 
 def _build_number(build: str) -> int:
@@ -282,6 +285,12 @@ def _ask(client: httpx.Client, search: str, sleep: Callable[[float], None] = tim
     return _Answer(tuple(payload["data"]), int(payload["total"]))
 
 
+def _ask_all(client: httpx.Client, searches: Iterable[str]) -> list[_Answer]:
+    """One search after another: wago.tools is read one request at a time
+    (`pipeline.wago_http`), so there is nothing to gain from threads."""
+    return [_ask(client, search) for search in searches]
+
+
 def _complete(answer: _Answer, search: str) -> tuple[dict[str, Any], ...]:
     if len(answer.entries) != answer.total:
         raise SystemExit(
@@ -301,7 +310,11 @@ def _split_search(suffix: str, number: int, term: str) -> str:
 
 
 def _enumerate(
-    client: httpx.Client, number: int, term: str, known: NodeTotals | None = None
+    client: httpx.Client,
+    number: int,
+    term: str,
+    known: NodeTotals | None = None,
+    locales: frozenset[str] | None = None,
 ) -> tuple[list[dict[str, Any]], dict[str, tuple[int, int]]]:
     """Every entry whose search text holds "<record id> <build> <term>", and
     the totals of every split search read.
@@ -318,35 +331,36 @@ def _enumerate(
     `known` is a saved run's split totals. Wago never takes an entry back, so
     a split search whose total is the saved one holds the saved entries and is
     not split again, and a record whose exact count is the saved one is not
-    read again (`pipeline.hotfix_push_store` keeps those entries)."""
+    read again (`pipeline.hotfix_push_store` keeps those entries). `locales` is
+    what the caller keeps (`PushCollector.locales`): it decides how one push of
+    one record wider than a page is read (`_one_push`)."""
     known = known or {}
     found: list[dict[str, Any]] = []
     observed: dict[str, tuple[int, int]] = {}
     frontier: list[tuple[str, str]] = [("", "")]  # (suffix, its parent's suffix)
     parent_totals: dict[str, int] = {}
-    with ThreadPoolExecutor(max_workers=_WORKERS) as pool:
-        while frontier:
-            searches = [_split_search(suffix, number, term) for suffix, _ in frontier]
-            answers = list(pool.map(lambda q: _ask(client, q), searches))
-            covered: dict[str, int] = {}
-            next_frontier: list[tuple[str, str]] = []
-            next_totals: dict[str, int] = {}
-            for (suffix, parent), search, answer in zip(frontier, searches, answers, strict=True):
-                covered[parent] = covered.get(parent, 0) + answer.total
-                if answer.total <= _PAGE_SIZE:
-                    found.extend(_complete(answer, search))
-                elif known.get(search, (None,))[0] == answer.total:
-                    continue
-                else:
-                    next_totals[suffix] = answer.total
-                    next_frontier.extend((f"{d}{suffix}", suffix) for d in _DIGITS)
-            for parent, total in parent_totals.items():
-                search = _split_search(parent, number, term)
-                missing = total - covered.get(parent, 0)
-                observed[search] = (total, missing)
-                if missing > 0 and not _exact_unchanged(client, search, total, missing, known):
-                    found.extend(_exact_ids(client, pool, number, term, parent, missing))
-            frontier, parent_totals = next_frontier, next_totals
+    while frontier:
+        searches = [_split_search(suffix, number, term) for suffix, _ in frontier]
+        answers = _ask_all(client, searches)
+        covered: dict[str, int] = {}
+        next_frontier: list[tuple[str, str]] = []
+        next_totals: dict[str, int] = {}
+        for (suffix, parent), search, answer in zip(frontier, searches, answers, strict=True):
+            covered[parent] = covered.get(parent, 0) + answer.total
+            if answer.total <= _PAGE_SIZE:
+                found.extend(_complete(answer, search))
+            elif known.get(search, (None,))[0] == answer.total:
+                continue
+            else:
+                next_totals[suffix] = answer.total
+                next_frontier.extend((f"{d}{suffix}", suffix) for d in _DIGITS)
+        for parent, total in parent_totals.items():
+            search = _split_search(parent, number, term)
+            missing = total - covered.get(parent, 0)
+            observed[search] = (total, missing)
+            if missing > 0 and not _exact_unchanged(client, search, total, missing, known):
+                found.extend(_exact_ids(client, number, term, parent, missing, locales))
+        frontier, parent_totals = next_frontier, next_totals
     return found, observed
 
 
@@ -362,68 +376,69 @@ def _exact_unchanged(
 
 def _exact_ids(
     client: httpx.Client,
-    pool: ThreadPoolExecutor,
     number: int,
     term: str,
     suffix: str,
     missing: int,
+    locales: frozenset[str] | None = None,
 ) -> list[dict[str, Any]]:
     """The `missing` entries whose record id is exactly `suffix`, found by the
     push id's last digits: "<push suffix> <suffix> <build> <term>". A push-id
     suffix whose search still holds more than a page (one record pushed many
     times: record 451 at 70790, 40 entries on push ids ending in 0) splits again
-    by one more push-id digit, so every search that is read fits one page."""
+    by one more push-id digit, so every search that is read fits one page.
+    One push wider than a page is read as `_one_push` says, and counts whole."""
     found: list[dict[str, Any]] = []
+    counted = 0
     frontier = list(_DIGITS)
     while frontier:
         searches = [f"{push} {suffix} {number} {term}" for push in frontier]
-        answers = pool.map(lambda q: _ask(client, q), searches)
+        answers = _ask_all(client, searches)
         next_frontier: list[str] = []
         for push, search, answer in zip(frontier, searches, answers, strict=True):
             if answer.total <= _PAGE_SIZE:
-                found.extend(e for e in _complete(answer, search) if str(e["record_id"]) == suffix)
+                exact = [e for e in _complete(answer, search) if str(e["record_id"]) == suffix]
+                found.extend(exact)
+                counted += len(exact)
             elif all(str(e["push_id"]) == push for e in answer.entries):
-                found.extend(_by_locale(client, pool, number, term, suffix, push, answer.total))
+                found.extend(_one_push(client, number, term, suffix, push, answer, locales))
+                counted += answer.total
             else:
                 next_frontier.extend(f"{d}{push}" for d in _DIGITS)
         frontier = next_frontier
     # wago keeps ingesting a live push while the crawl runs (record 9823 at 70790
     # gained copies between its parent's count and this search), so entries past
     # the count are later copies; only a shortfall means rows were never seen.
-    if len(found) < missing:
+    if counted < missing:
         raise SystemExit(
             f"wago.tools search for record {suffix} ({number} {term}): "
-            f"{len(found)} of {missing} entries"
+            f"{counted} of {missing} entries"
         )
     return found
 
 
-#: The client locales wago lists a push under, as its search text spells them.
-_LOCALES = ("enus", "dede", "eses", "esmx", "frfr", "itit", "kokr", "ptbr", "ruru", "zhcn", "zhtw")
-
-
-def _by_locale(
+def _one_push(
     client: httpx.Client,
-    pool: ThreadPoolExecutor,
     number: int,
     term: str,
     suffix: str,
     push: str,
-    total: int,
+    answer: _Answer,
+    locales: frozenset[str] | None,
 ) -> list[dict[str, Any]]:
-    """Every entry of one whole push of record `suffix`, when that push alone
-    is wider than a page (one row pushed in every locale: record 451 at 70790):
-    the search splits by the locale the search text opens with, and the
-    locales must add up to the push's total."""
-    searches = [f"{locale} {push} {suffix} {number} {term}" for locale in _LOCALES]
+    """The entries of one whole push of record `suffix` that the caller keeps,
+    when that push alone is wider than a page (one row pushed in every locale:
+    record 451 at 70790). Only the locales kept are read: a single-locale
+    collector (enUS, the status crawl) reads that locale's own search, one
+    request in place of eleven; a collector of every locale (the value
+    crawl, which keeps one deciding entry per record and whose copies of one
+    push carry the same values) keeps the page already read."""
+    if locales is None:
+        return [e for e in answer.entries if str(e["record_id"]) == suffix]
     found: list[dict[str, Any]] = []
-    for search, answer in zip(searches, pool.map(lambda q: _ask(client, q), searches), strict=True):
-        found.extend(_complete(answer, search))
-    if len(found) != total:
-        raise SystemExit(
-            f"wago.tools search for push {push} of record {suffix} ({number} {term}): "
-            f"{len(found)} of {total} entries across the locales"
-        )
+    for locale in sorted(locales):
+        search = f"{locale.lower()} {push} {suffix} {number} {term}"
+        found.extend(_complete(_ask(client, search), search))
     return [e for e in found if str(e["record_id"]) == suffix]
 
 
@@ -482,10 +497,6 @@ def _entry_order(e: PushEntry) -> tuple[int, int, int]:
     return (e.record_id, e.push_id, e.entry_id)
 
 
-def open_client() -> httpx.Client:
-    return httpx.Client(base_url=BASE_URL, headers={"User-Agent": USER_AGENT})
-
-
 def crawl_terms(
     client: httpx.Client,
     collector: PushCollector,
@@ -497,7 +508,7 @@ def crawl_terms(
     from `known`), and the split totals."""
     observed: dict[str, tuple[int, int]] = {}
     for term in terms or search_terms(collector.tables):
-        found, totals = _enumerate(client, collector.number, term.lower(), known)
+        found, totals = _enumerate(client, collector.number, term.lower(), known, collector.locales)
         collector.add(found)
         observed.update(totals)
     return observed
@@ -647,11 +658,11 @@ def layer_hotfix_push(
     the build's push into `<root>/<build>/raw/`, write the layer record to
     raw/ and `PUSH_RECORD` beside the build, and return the record.
 
-    Unless a `fetch` is given, the push is read over the one saved in
-    raw/wago-push/entries.json (`pipeline.hotfix_push_store`): only what is
-    new, or the full crawl when nothing is saved or `full` is set. Beside it
-    the entries that carry values, every locale, are read over
-    raw/wago-push/values.json: since 70938 the enUS copies carry none.
+    Unless a `fetch` is given, the push is read by `pipeline.hotfix_push_store.read_push`:
+    nothing at all when wago's totals are the committed record's, else the statuses
+    crawled over raw/wago-push/entries.json and the values of the records whose
+    enUS entries carry none looked up over raw/wago-push/values.json (since 70938
+    the enUS copies carry none). `offline` re-layers from those saved files.
 
     The totals are read before the push, so a push landing between the two
     reads shows as moved on the next check rather than as already layered."""
@@ -662,25 +673,20 @@ def layer_hotfix_push(
     record_path = push_dir / LAYER_RECORD
     previous = json.loads(record_path.read_text()) if record_path.exists() else {}
     present = tuple(t for t in tables if (raw / f"{t}.csv").exists())
+    # imported here: the store builds on this module
+    from pipeline import hotfix_push_store as store
+
+    committed = read_push_record(root / build) or {}
     if offline:
-        search = dict(previous.get("search_totals", {}))
-        pushed = _cached(push_dir, present)
+        search = dict(previous.get("search_totals") or committed.get("search_totals", {}))
+        pushed = store.read_saved_push(push_dir, present) or _cached(push_dir, present)
     else:
         search = dict(totals(build, present))
-        values: Mapping[str, list[PushEntry]] = {}
-        if fetch is None:
-            # imported here: the store builds on this module
-            from pipeline.hotfix_push_store import (
-                STORE,
-                VALUES_STORE,
-                saved_fetcher,
-                values_fetcher,
-            )
-
-            fetch = saved_fetcher(lambda _: push_dir / STORE, full=full)
-            values = values_fetcher(lambda _: push_dir / VALUES_STORE, full=full)(build, present)
-        statuses = fetch(build, present)
-        pushed = {t: [*statuses.get(t, []), *values.get(t, [])] for t in present}
+        if fetch is not None:
+            fetched = fetch(build, present)
+            pushed = {t: list(fetched.get(t, [])) for t in present}
+        else:
+            pushed = store.read_push(build, present, push_dir, full, search, committed)
         _cache(push_dir, {t: pushed.get(t, []) for t in present})
     summary: dict[str, Any] = {"build": build, "search_totals": search, "tables": {}}
     for table in present:

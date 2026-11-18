@@ -5,10 +5,16 @@ from pathlib import Path
 
 import httpx
 
+from pipeline.wago_http import open_client
+from pipeline.wago_tables import (
+    MISSING_TABLE_STATUSES,
+    TableCache,
+    get_table,
+    table_cache_from_env,
+)
+
 logger = logging.getLogger(__name__)
 
-BASE_URL = "https://wago.tools"
-USER_AGENT = "foreversixty-pipeline/0.1 (+https://foreversixty.gg)"
 TABLES = [
     "Map",
     "AreaTable",
@@ -158,12 +164,6 @@ OPTIONAL_TABLES = frozenset(
 )
 
 
-#: How wago answers for a table a build does not have: 404 for most, and 400 for the
-#: 1.60.1.70009 beta build's JournalInstance (2026-09-27). Both mean "no such table
-#: here", and both are tolerated only for OPTIONAL_TABLES.
-MISSING_TABLE_STATUSES = frozenset({400, 404})
-
-
 def latest_build(product: str, client: httpx.Client) -> str:
     r = client.get("/api/builds")
     r.raise_for_status()
@@ -176,11 +176,21 @@ def latest_build(product: str, client: httpx.Client) -> str:
     return builds[0]["version"]
 
 
-def download_table(table: str, build: str, dest: Path, client: httpx.Client) -> Path:
-    r = client.get(f"/db2/{table}/csv", params={"build": build}, timeout=120)
+def download_table(
+    table: str,
+    build: str,
+    dest: Path,
+    client: httpx.Client,
+    cache: TableCache | None = None,
+) -> Path:
+    """`table`'s shipped export for `build` into `dest/<table>.csv`, through `cache`
+    (WAGO_TABLE_CACHE when not given): a build's shipped tables never change, so a
+    cached one is never downloaded again. A missing table (MISSING_TABLE_STATUSES)
+    is tolerated only for OPTIONAL_TABLES."""
+    answer = get_table(client, table, build, cache=cache or table_cache_from_env())
     dest.mkdir(parents=True, exist_ok=True)
     path = dest / f"{table}.csv"
-    if r.status_code in MISSING_TABLE_STATUSES:
+    if answer.status in MISSING_TABLE_STATUSES:
         if table not in OPTIONAL_TABLES:
             raise SystemExit(f"{table} not found for build {build}; check TABLES for a typo")
         # Allowlisted: this table is known to be absent for some products/builds.
@@ -188,14 +198,13 @@ def download_table(table: str, build: str, dest: Path, client: httpx.Client) -> 
         logger.warning("table %s not found for build %s; writing empty table", table, build)
         path.write_text("ID\n", encoding="utf-8")
         return path
-    r.raise_for_status()
-    header = r.text.split("\n", 1)[0]
+    header = answer.text.split("\n", 1)[0]
     if "ID" not in header.split(","):
         raise SystemExit(
             f"{table} for build {build} did not return a CSV with an ID column; "
             f"got columns: {header!r}"
         )
-    path.write_text(r.text, encoding="utf-8")
+    path.write_text(answer.text, encoding="utf-8")
     return path
 
 
@@ -206,10 +215,7 @@ def fetch_build(
     client: httpx.Client | None = None,
 ) -> Path:
     own = client is None
-    client = client or httpx.Client(
-        base_url=BASE_URL,
-        headers={"User-Agent": USER_AGENT},
-    )
+    client = client or open_client()
     try:
         build = build or latest_build(product, client)
         raw = root / build / "raw"

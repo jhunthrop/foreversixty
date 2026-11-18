@@ -25,7 +25,7 @@ from pathlib import Path
 import httpx
 
 from pipeline.icons import CACHE_DIR, _atomic_write
-from pipeline.wago import BASE_URL, USER_AGENT
+from pipeline.wago_http import open_client
 
 logger = logging.getLogger(__name__)
 
@@ -106,7 +106,7 @@ def fetch_casc_file(
         return cached.read_bytes()
     own = client is None
     if client is None:
-        client = httpx.Client(base_url=BASE_URL, headers={"User-Agent": USER_AGENT})
+        client = open_client()
     try:
         response = _get_with_retries(client, f"/api/casc/{file_id}", {"version": build})
         if response.is_redirect:

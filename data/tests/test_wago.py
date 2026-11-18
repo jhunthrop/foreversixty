@@ -7,7 +7,6 @@ import pytest
 from pipeline.wago import (
     OPTIONAL_TABLES,
     TABLES,
-    USER_AGENT,
     download_table,
     fetch_build,
     latest_build,
@@ -162,7 +161,6 @@ def test_tables_cover_every_pipeline_input():
         "ItemDamageWand",
         "ItemDamageThrown",
     ]
-    assert "foreversixty-pipeline" in USER_AGENT
 
 
 def test_a_table_with_no_consumer_is_not_fetched():

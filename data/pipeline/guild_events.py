@@ -42,7 +42,8 @@ from pathlib import Path
 
 import httpx
 
-from pipeline.wago import BASE_URL, USER_AGENT, download_table
+from pipeline.wago import download_table
+from pipeline.wago_http import open_client
 
 #: The client tables this generator reads, fetched into `--raw`.
 TABLES: tuple[str, ...] = (
@@ -140,7 +141,7 @@ class GuildEventsError(SystemExit):
 def fetch(build: str, raw: Path, client: httpx.Client | None = None) -> None:
     """Download TABLES for build into raw (a directory of its own)."""
     own = client is None
-    client = client or httpx.Client(base_url=BASE_URL, headers={"User-Agent": USER_AGENT})
+    client = client or open_client()
     try:
         for table in TABLES:
             download_table(table, build, raw, client)

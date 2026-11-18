@@ -140,6 +140,8 @@ data/builds/*/raw/wago-push/*
 !data/builds/*/raw/wago-push/values.json
 data/.icon-cache/
 data/.wago-push-cache/
+# wago.tools table exports kept between runs (pipeline/wago_tables.py, WAGO_TABLE_CACHE).
+data/.wago-table-cache/
 
 # git worktrees for parallel plan execution
 .worktrees/

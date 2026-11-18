@@ -33,7 +33,7 @@ from PIL import Image, ImageEnhance
 
 from pipeline.casc import CascMissing, fetch_casc_file
 from pipeline.icons import CACHE_DIR, _atomic_write
-from pipeline.wago import BASE_URL, USER_AGENT
+from pipeline.wago_http import open_client
 
 logger = logging.getLogger(__name__)
 
@@ -258,7 +258,7 @@ def backgrounds_for_build(
     cache_dir.mkdir(parents=True, exist_ok=True)
     own = client is None
     if client is None:
-        client = httpx.Client(base_url=BASE_URL, headers={"User-Agent": USER_AGENT})
+        client = open_client()
     written = 0
     try:
         for background in wanted:

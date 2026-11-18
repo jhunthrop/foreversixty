@@ -73,7 +73,7 @@ from pipeline.classic_quest_levels import SOURCE_URL
 from pipeline.forkdb import REP_LEVELS, decode
 from pipeline.proficiency import CLASS_MASK_BIT, CLASS_SLUG_BY_ID
 from pipeline.sqldump import iter_table_records, unquote
-from pipeline.wago import USER_AGENT
+from pipeline.wago_http import USER_AGENT
 
 logger = logging.getLogger(__name__)
 

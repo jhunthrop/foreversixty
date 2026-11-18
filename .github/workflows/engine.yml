@@ -154,16 +154,34 @@ jobs:
             echo "skip=false" >> "$GITHUB_OUTPUT"
           fi
       # The raw tables are not committed; the relic mods and the set rows
-      # are generated from them, so every follow refetches them. `fetch` also
-      # layers the server's hotfix push into them (pipeline/hotfix_push.py),
-      # so relicmods, periodiccrit and eureka read the server's rows.
+      # are generated from them. They come from the wago.tools table cache that
+      # data.yml and bis.yml share (pipeline/wago_tables.py), so a follow downloads
+      # only what the cache lacks. `fetch --offline-push` layers the hotfix push
+      # committed under raw/wago-push/ (the one hotfix-push.json records) into them,
+      # so relicmods, periodiccrit and eureka read the server's rows without the
+      # follow reading wago's hotfix pages again.
+      - name: Restore the wago.tools table cache
+        if: steps.inputs.outputs.skip != 'true'
+        uses: actions/cache/restore@v4
+        with:
+          path: data/.wago-table-cache
+          key: wago-tables-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: wago-tables-
       - name: fetch the build's raw tables
         if: steps.inputs.outputs.skip != 'true'
         working-directory: data
         env:
           BUILD: ${{ steps.identity.outputs.build }}
           PRODUCT: ${{ steps.identity.outputs.product }}
-        run: uv run python -m pipeline fetch --product "$PRODUCT" --build "$BUILD"
+          WAGO_TABLE_CACHE: .wago-table-cache
+          WAGO_REQUEST_BUDGET: '500'
+        run: uv run python -m pipeline fetch --product "$PRODUCT" --build "$BUILD" --offline-push
+      - name: Save the wago.tools table cache
+        if: always() && steps.inputs.outputs.skip != 'true' && hashFiles('data/.wago-table-cache/**') != ''
+        uses: actions/cache/save@v4
+        with:
+          path: data/.wago-table-cache
+          key: wago-tables-${{ github.run_id }}-${{ github.run_attempt }}
       # The script, not `make follow`: make turns every failure into 2 and
       # the verdict lives in the exit code (0 clean, 3 review, 1 failure).
       - name: follow the build

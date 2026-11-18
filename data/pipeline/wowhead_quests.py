@@ -44,7 +44,7 @@ import httpx
 from pydantic import BaseModel
 
 from pipeline.classic_quest_levels import ClassicQuestLevel
-from pipeline.wago import USER_AGENT
+from pipeline.wago_http import USER_AGENT
 from pipeline.wowhead_item_sources import QUEST_SIDE_FACTION
 
 logger = logging.getLogger(__name__)

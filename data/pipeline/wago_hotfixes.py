@@ -29,7 +29,8 @@ from typing import Any
 
 import httpx
 
-from pipeline.wago import BASE_URL, USER_AGENT
+from pipeline.wago_http import open_client
+from pipeline.wago_tables import TableCache, get_table, table_cache_from_env
 
 #: Column naming the build whose hotfix push a row came from.
 HOTFIX_BUILD_COLUMN = "_HotfixBuild"
@@ -37,8 +38,6 @@ HOTFIX_BUILD_COLUMN = "_HotfixBuild"
 WAGO_HOTFIX_DIR = "wago-hotfixes"
 #: The tables `merge_hotfix_table` merges hotfixes for.
 TABLES: tuple[str, ...] = ("ItemSparse", "Item")
-
-_TIMEOUT_SECONDS = 180
 
 
 def _normalised(value: str | None) -> object:
@@ -96,11 +95,13 @@ def hotfix_builds(api_builds: dict[str, Any], product: str, build: str) -> list[
     return sorted(versions, key=_version)
 
 
-def _table(client: httpx.Client, table: str, build: str, hotfixed: bool) -> list[dict[str, str]]:
-    params = {"build": build, **({"useHotfixes": "1"} if hotfixed else {})}
-    response = client.get(f"/db2/{table}/csv", params=params, timeout=_TIMEOUT_SECONDS)
-    response.raise_for_status()
-    rows = [dict(row) for row in csv.DictReader(io.StringIO(response.text))]
+def _table(
+    client: httpx.Client, table: str, build: str, hotfixed: bool, cache: TableCache | None
+) -> list[dict[str, str]]:
+    answer = get_table(client, table, build, hotfixed=hotfixed, cache=cache)
+    if answer.status != 200:
+        raise SystemExit(f"{table} for build {build}: wago.tools answered {answer.status}")
+    rows = [dict(row) for row in csv.DictReader(io.StringIO(answer.text))]
     if rows and "ID" not in rows[0]:
         raise SystemExit(f"{table} for build {build} came back without an ID column")
     return rows
@@ -123,12 +124,14 @@ def fetch_wago_hotfixes(
     root: Path = Path("builds"),
     client: httpx.Client | None = None,
     tables: tuple[str, ...] = TABLES,
+    cache: TableCache | None = None,
 ) -> dict[str, int]:
     """`python -m pipeline fetch-wago-hotfixes`: write
     `<root>/<build>/raw/wago-hotfixes/<Table>.csv` for each table and return
     how many rows each carries."""
     own = client is None
-    client = client or httpx.Client(base_url=BASE_URL, headers={"User-Agent": USER_AGENT})
+    client = client or open_client()
+    cache = cache or table_cache_from_env()
     try:
         response = client.get("/api/builds")
         response.raise_for_status()
@@ -137,7 +140,13 @@ def fetch_wago_hotfixes(
         written: dict[str, int] = {}
         for table in tables:
             rows = layer_newest(
-                (b, changed_rows(_table(client, table, b, False), _table(client, table, b, True)))
+                (
+                    b,
+                    changed_rows(
+                        _table(client, table, b, False, cache),
+                        _table(client, table, b, True, cache),
+                    ),
+                )
                 for b in builds
             )
             _write(rows, out_dir / f"{table}.csv")
