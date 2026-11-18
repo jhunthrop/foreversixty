@@ -2,7 +2,7 @@
   "spec": "rogue-combat",
   "build": "1.60.1.70938",
   "engine_version": "f9385b498",
-  "generated_at": "2026-11-18T02:41:17Z",
+  "generated_at": "2026-11-18T15:41:39Z",
   "bands": [
     {
       "spec": "rogue-combat",
@@ -1174,8 +1174,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 6.153142993,
-      "verify_run_seconds": 16.774558999,
+      "weights_run_seconds": 4.693855636,
+      "verify_run_seconds": 12.722751033,
       "coverage": {
         "back": {
           "eligible": 104,
@@ -2416,8 +2416,8 @@
         "off_hand: Edward's Knife",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 6.153142993,
-      "verify_run_seconds": 16.176460798,
+      "weights_run_seconds": 4.693855636,
+      "verify_run_seconds": 12.305976487,
       "coverage": {
         "back": {
           "eligible": 105,
@@ -3790,8 +3790,8 @@
         "off_hand: Claw of the Shadowmancer",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 6.5425677669999995,
-      "verify_run_seconds": 11.958479778000001,
+      "weights_run_seconds": 4.996919972,
+      "verify_run_seconds": 9.279692539,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -5163,8 +5163,8 @@
         "off_hand: Claw of the Shadowmancer",
         "ranged: Golemsight Long Gun"
       ],
-      "weights_run_seconds": 6.5425677669999995,
-      "verify_run_seconds": 13.289765404,
+      "weights_run_seconds": 4.996919972,
+      "verify_run_seconds": 10.24868891,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -6563,8 +6563,8 @@
         "off_hand: Black Menace",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 6.987314576,
-      "verify_run_seconds": 27.506640866999998,
+      "weights_run_seconds": 5.451380756,
+      "verify_run_seconds": 20.717089079,
       "coverage": {
         "back": {
           "eligible": 257,
@@ -7956,8 +7956,8 @@
         "off_hand: Coldrage Dagger",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 6.987314576,
-      "verify_run_seconds": 27.657862446,
+      "weights_run_seconds": 5.451380756,
+      "verify_run_seconds": 20.947789,
       "coverage": {
         "back": {
           "eligible": 259,
@@ -9502,8 +9502,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 6.788521414,
-      "verify_run_seconds": 28.471616781,
+      "weights_run_seconds": 5.248456002,
+      "verify_run_seconds": 21.668127481000003,
       "coverage": {
         "back": {
           "eligible": 331,
@@ -11094,8 +11094,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 6.788521414,
-      "verify_run_seconds": 21.725240175000003,
+      "weights_run_seconds": 5.248456002,
+      "verify_run_seconds": 16.729373497,
       "coverage": {
         "back": {
           "eligible": 336,
@@ -12846,8 +12846,8 @@
         "off_hand: Alcor's Sunrazor",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 7.940805205,
-      "verify_run_seconds": 103.674250749,
+      "weights_run_seconds": 6.145439043,
+      "verify_run_seconds": 78.408946025,
       "coverage": {
         "back": {
           "eligible": 467,
@@ -14624,8 +14624,8 @@
         "off_hand: Alcor's Sunrazor",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 7.940805205,
-      "verify_run_seconds": 89.175321793,
+      "weights_run_seconds": 6.145439043,
+      "verify_run_seconds": 68.542693742,
       "coverage": {
         "back": {
           "eligible": 473,
@@ -16398,8 +16398,8 @@
         "off_hand: Alcor's Sunrazor",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 8.461271743,
-      "verify_run_seconds": 107.94915792100001,
+      "weights_run_seconds": 6.406480829,
+      "verify_run_seconds": 80.554863306,
       "coverage": {
         "back": {
           "eligible": 467,
@@ -18189,8 +18189,8 @@
         "off_hand: Alcor's Sunrazor",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 8.461271743,
-      "verify_run_seconds": 90.08268751,
+      "weights_run_seconds": 6.406480829,
+      "verify_run_seconds": 68.43141917499999,
       "coverage": {
         "back": {
           "eligible": 473,

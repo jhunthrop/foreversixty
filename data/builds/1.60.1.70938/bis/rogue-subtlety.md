@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat. An item's crit rating
 
 ### Band 20 (night-elf, 00000000000000000-0000000000000000000-035200001000000000)
 
-Set DPS (verified): 45.7. Weights run: 5.5s. Verify run: 14.6s. 275 eligible items had no known source.
+Set DPS (verified): 45.7. Weights run: 5.6s. Verify run: 14.6s. 275 eligible items had no known source.
 
 Race sweep: night-elf 45.7 ± 0.0, human 45.0 ± 0.0, high-order-skyborne 45.0 ± 0.0, gnome 44.8 ± 0.0, dwarf 44.3 ± 0.0 (dps); the guide race night-elf is best.
 
@@ -72,7 +72,7 @@ No-known-source sample (15 of 460, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (night-elf, 00000000000000000-0000000000000000000-035230031321001151)
 
-Set DPS (verified): 154.9. Weights run: 6.4s. Verify run: 19.9s. 662 eligible items had no known source.
+Set DPS (verified): 154.9. Weights run: 6.4s. Verify run: 20.1s. 662 eligible items had no known source.
 
 Race sweep: night-elf 154.9 ± 0.1, human 153.7 ± 0.1, high-order-skyborne 153.5 ± 0.1, gnome 153.1 ± 0.1, dwarf 151.8 ± 0.1 (dps); the guide race night-elf is best.
 
@@ -104,7 +104,7 @@ No-known-source sample (15 of 662, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (night-elf, 00530200000000000-0000000000000000000-035230031321001151)
 
-Set DPS (verified): 237.0. Weights run: 6.6s. Verify run: 19.0s. 850 eligible items had no known source.
+Set DPS (verified): 237.0. Weights run: 6.6s. Verify run: 19.1s. 850 eligible items had no known source.
 
 Race sweep: night-elf 237.0 ± 0.2, dwarf 235.8 ± 0.2, human 235.7 ± 0.2, high-order-skyborne 235.7 ± 0.2, gnome 234.6 ± 0.2 (dps); the guide race night-elf is best.
 
@@ -136,7 +136,7 @@ No-known-source sample (15 of 850, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (night-elf, 00530201100000000-3200030000000000000-035230031321001151)
 
-Set DPS (verified): 407.4. Weights run: 6.8s. Verify run: 63.2s. 1904 eligible items had no known source.
+Set DPS (verified): 407.4. Weights run: 6.8s. Verify run: 64.8s. 1904 eligible items had no known source.
 
 Race sweep: night-elf 407.4 ± 0.3, human 406.3 ± 0.3, high-order-skyborne 406.1 ± 0.3, dwarf 406.0 ± 0.3, gnome 404.3 ± 0.4 (dps); the guide race night-elf is best.
 
@@ -168,7 +168,7 @@ No-known-source sample (15 of 1904, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (night-elf, 00530201100000000-3200030000000000000-035230031321001151)
 
-Set DPS (verified): 926.0. Weights run: 7.2s. Verify run: 82.2s. 1904 eligible items had no known source.
+Set DPS (verified): 926.0. Weights run: 7.2s. Verify run: 83.1s. 1904 eligible items had no known source.
 
 Race sweep: high-order-skyborne 927.3 ± 0.7, night-elf 926.0 ± 0.7, gnome 925.7 ± 0.7, human 925.2 ± 0.7, dwarf 922.7 ± 0.7 (dps); high-order-skyborne beats the guide race night-elf by 1.3 (0.14%) ± 1.0, beyond error.
 
@@ -204,7 +204,7 @@ No-known-source sample (15 of 1904, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (undead, 00000000000000000-0000000000000000000-035200001000000000)
 
-Set DPS (verified): 46.6. Weights run: 5.5s. Verify run: 14.1s. 273 eligible items had no known source.
+Set DPS (verified): 46.6. Weights run: 5.6s. Verify run: 14.2s. 273 eligible items had no known source.
 
 Race sweep: undead 46.6 ± 0.0, troll 45.8 ± 0.0, windshaper-skyborne 45.8 ± 0.0, orc 45.5 ± 0.0 (dps); the guide race undead is best.
 
@@ -236,7 +236,7 @@ No-known-source sample (15 of 273, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (undead, 00000000000000000-0000000000000000000-035220031301000100)
 
-Set DPS (verified): 90.6. Weights run: 6.3s. Verify run: 13.0s. 460 eligible items had no known source.
+Set DPS (verified): 90.6. Weights run: 6.3s. Verify run: 13.2s. 460 eligible items had no known source.
 
 Race sweep: undead 90.6 ± 0.1, troll 90.0 ± 0.1, windshaper-skyborne 89.9 ± 0.1, orc 89.4 ± 0.1 (dps); the guide race undead is best.
 
@@ -268,7 +268,7 @@ No-known-source sample (15 of 460, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (undead, 00000000000000000-0000000000000000000-035230031321001151)
 
-Set DPS (verified): 154.8. Weights run: 6.4s. Verify run: 21.9s. 660 eligible items had no known source.
+Set DPS (verified): 154.8. Weights run: 6.4s. Verify run: 22.2s. 660 eligible items had no known source.
 
 Race sweep: undead 154.8 ± 0.1, windshaper-skyborne 153.0 ± 0.1, troll 153.0 ± 0.1, orc 152.7 ± 0.1 (dps); the guide race undead is best.
 
@@ -300,7 +300,7 @@ No-known-source sample (15 of 660, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (undead, 00530200000000000-0000000000000000000-035230031321001151)
 
-Set DPS (verified): 240.0. Weights run: 6.6s. Verify run: 16.0s. 848 eligible items had no known source.
+Set DPS (verified): 240.0. Weights run: 6.6s. Verify run: 15.7s. 848 eligible items had no known source.
 
 Race sweep: undead 240.0 ± 0.2, windshaper-skyborne 237.2 ± 0.2, troll 236.9 ± 0.2, orc 236.3 ± 0.2 (dps); the guide race undead is best.
 
@@ -332,7 +332,7 @@ No-known-source sample (15 of 848, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (undead, 00530201100000000-3200030000000000000-035230031321001151)
 
-Set DPS (verified): 412.2. Weights run: 6.8s. Verify run: 74.8s. 1907 eligible items had no known source.
+Set DPS (verified): 412.2. Weights run: 6.8s. Verify run: 75.3s. 1907 eligible items had no known source.
 
 Race sweep: undead 412.2 ± 0.3, windshaper-skyborne 408.4 ± 0.3, troll 407.2 ± 0.3, orc 406.6 ± 0.3 (dps); the guide race undead is best.
 
@@ -364,7 +364,7 @@ No-known-source sample (15 of 1907, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (undead, 00530201100000000-3200030000000000000-035230031321001151)
 
-Set DPS (verified): 931.8. Weights run: 7.2s. Verify run: 80.0s. 1907 eligible items had no known source.
+Set DPS (verified): 931.8. Weights run: 7.2s. Verify run: 81.7s. 1907 eligible items had no known source.
 
 Race sweep: undead 931.8 ± 0.7, windshaper-skyborne 929.5 ± 0.7, orc 929.3 ± 0.7, troll 926.4 ± 0.7 (dps); the guide race undead is best.
 
