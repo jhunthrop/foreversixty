@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat. An item's crit rating
 
 ### Band 20 (human, 020000000000000000-00000000000000000-40500000000000000)
 
-Set DPS (verified): 41.2. Weights run: 2.3s. Verify run: 2.3s. 203 eligible items had no known source.
+Set DPS (verified): 41.2. Weights run: 2.3s. Verify run: 2.0s. 203 eligible items had no known source.
 
 Race sweep: human 41.2 ± 0.0, gnome 41.0 ± 0.0, night-elf 40.5 ± 0.0, dwarf 40.5 ± 0.0 (dps); the guide race human is best.
 
@@ -40,7 +40,7 @@ No-known-source sample (15 of 203, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (human, 020000000000000000-00000000000000000-50542001200000000)
 
-Set DPS (verified): 66.1. Weights run: 2.3s. Verify run: 3.6s. 325 eligible items had no known source.
+Set DPS (verified): 66.1. Weights run: 2.2s. Verify run: 3.6s. 325 eligible items had no known source.
 
 Race sweep: gnome 66.2 ± 0.1, human 66.1 ± 0.1, dwarf 65.4 ± 0.1, night-elf 65.3 ± 0.1 (dps); gnome beats the guide race human by 0.1 (0.10%) ± 0.1, inside error.
 
@@ -72,7 +72,7 @@ No-known-source sample (15 of 325, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (human, 020000000000000000-00000000000000000-52542001201300040)
 
-Set DPS (verified): 95.7. Weights run: 2.4s. Verify run: 2.6s. 461 eligible items had no known source.
+Set DPS (verified): 95.7. Weights run: 2.4s. Verify run: 2.7s. 461 eligible items had no known source.
 
 Race sweep: gnome 96.9 ± 0.1, human 95.7 ± 0.1, dwarf 94.5 ± 0.1, night-elf 94.2 ± 0.1 (dps); gnome beats the guide race human by 1.3 (1.33%) ± 0.2, beyond error.
 
@@ -104,7 +104,7 @@ No-known-source sample (15 of 461, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (human, 025003000000000000-00000000000000000-52542001201300051)
 
-Set DPS (verified): 228.4. Weights run: 2.3s. Verify run: 4.5s. 607 eligible items had no known source.
+Set DPS (verified): 228.4. Weights run: 2.3s. Verify run: 4.7s. 607 eligible items had no known source.
 
 Race sweep: gnome 232.1 ± 0.3, human 228.4 ± 0.3, night-elf 223.9 ± 0.3, dwarf 223.2 ± 0.3 (dps); gnome beats the guide race human by 3.8 (1.65%) ± 0.4, beyond error.
 
@@ -136,39 +136,39 @@ No-known-source sample (15 of 607, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (human, 025105031030000000-00000000000000000-52542001201300051)
 
-Set DPS (verified): 429.5. Weights run: 2.5s. Verify run: 22.8s. 1503 eligible items had no known source.
+Set DPS (verified): 430.0. Weights run: 2.4s. Verify run: 24.2s. 1503 eligible items had no known source.
 
-Race sweep: gnome 430.5 ± 0.4, human 429.5 ± 0.5, dwarf 424.1 ± 0.5, night-elf 424.1 ± 0.5 (dps); gnome beats the guide race human by 1.1 (0.25%) ± 0.6, beyond error.
+Race sweep: human 430.0 ± 0.4, gnome 429.1 ± 0.4, night-elf 422.9 ± 0.4, dwarf 422.9 ± 0.4 (dps); the guide race human is best.
 
-Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.001, intellect=1.233 ± 0.025, crit=0.724 ± 0.015 per rating point (14 rating = 1%, 10.137 per %), hit=0.938 ± 0.037 per rating point (10 rating = 1%, 9.382 per %), spell_haste=not significant (0.285 ± 0.277), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.001, spirit=not significant (0.481 ± 0.328), mp5=1.924 ± 0.368
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.002, intellect=0.991 ± 0.038, crit=0.766 ± 0.016 per rating point (14 rating = 1%, 10.721 per %), hit=1.371 ± 0.048 per rating point (10 rating = 1%, 13.709 per %), spell_haste=not significant (0.617 ± 0.247), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.002, spirit=not significant (1.428 ± 0.615), mp5=4.924 ± 0.678
 
 | Slot | Item | Source | Score (spell_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Magister's Crown (16686) | Scholomance: Darkmaster Gandling [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Field Marshal's Headdress (17602, +0.00 DPS) [vendor]; Field Marshal's Satin Crown (231616, +0.00 DPS) [vendor]; The Postmaster's Band (13390, -11.62 DPS, sim-verified) [dungeon] |
-| neck | Lady Maye's Pendant (14558) | World drop [world_drop] | 34.4 spell_power points (11.28 DPS) | yes | Jeweled Amulet of Cainwyn (1443, -0.47 DPS) [world_drop]; Dark Advisor's Pendant (18691, -1.49 DPS) [dungeon]; Nacreous Shell Necklace (22403, -2.02 DPS) [dungeon] |
-| shoulder | Magister's Mantle (16689) | Scholomance: Ras Frostwhisper [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Mantle of the Timbermaw (19050, +0.00 DPS) [crafted]; Field Marshal's Satin Epaulets (231621, +0.00 DPS) [vendor]; Theramore Shoulderpads (271953, -10.14 DPS, sim-verified) [rep] |
-| back | Arcanoweave Cloak (272411) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Crystalline Threaded Cape (20697, -3.38 DPS) [world]; Royal Tribunal Cloak (13376, -3.45 DPS) [dungeon]; Shroud of the Exile (15421, -4.40 DPS, sim-verified) [quest] |
-| chest | Magister's Robes (16688) | Blackrock Spire: General Drakkisath [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Field Marshal's Satin Vestments (17605, +0.00 DPS) [vendor]; Field Marshal's Satin Robe (231618, +0.00 DPS) [vendor]; Robe of Winter Night (14136, -11.84 DPS, sim-verified) [crafted] |
-| wrist | Dryad's Wrist Bindings (19595) | Silverwing Sentinels [rep] | 35.2 spell_power points (11.54 DPS) | yes | Marshal's Satin Bracers (17606, -2.29 DPS) [pvp]; Manacle Cuffs (11962, -3.19 DPS) [quest]; Netherpearl Cuffs (254067, -3.67 DPS) [crafted] |
-| hands | Magister's Gloves (16684) | Scholomance: Doctor Theolen Krastinov [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Marshal's Satin Gloves (17608, +0.00 DPS) [vendor]; Theramore Handwraps (271945, +0.00 DPS) [rep]; Gloves of Spell Mastery (14146, -10.77 DPS, sim-verified) [crafted] |
-| waist | Magister's Belt (16685) | Blackrock Spire: Smolderthorn Mystic [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Devout Belt (16696, +0.00 DPS) [dungeon]; Marshal's Satin Sash (17609, +0.00 DPS) [pvp]; Ban'thok Sash (11662, -12.99 DPS, sim-verified) [dungeon] |
-| legs | Sentinel's Silk Leggings (237815) | Illiyana Moonblaze [vendor] | 64.6 spell_power points (21.16 DPS) | yes | Marshal's Satin Pants (17603, +0.00 DPS) [vendor]; Marshal's Satin Leggings (231619, +0.00 DPS) [vendor]; Leggings of Torment (22342, -3.56 DPS) [dungeon] |
-| feet | Dragonrider Boots (18102) | Blackrock Spire: Warchief Rend Blackhand [dungeon] | 37.7 spell_power points (12.36 DPS) | yes | Marshal's Satin Sandals (17607, +0.00 DPS) [vendor]; Kayser's Boots of Precision (22231, +0.00 DPS) [dungeon]; Marshal's Satin Treads (231620, +0.00 DPS) [vendor] |
-| finger1 | Channeler's Ring (272406) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Seal of Rivendare (13345, -3.45 DPS) [dungeon]; Songstone of Ironforge (12543, -4.21 DPS) [quest]; Naglering (11669, -15.97 DPS, sim-verified) [dungeon] |
-| finger2 | Maiden's Circle (13001) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Seal of Rivendare (13345, -0.18 DPS) [dungeon]; Songstone of Ironforge (12543, -0.95 DPS) [quest]; Brainlash (6440, -1.24 DPS) [dungeon] |
-| trinket1 | Second Wind (11819) | Blackrock Depths: Golem Lord Argelmach [dungeon] | sim-verified (+12.7 DPS vs the runner-up, not corroborated against the finished set) | yes | Shard of the Splithooves (10659, +0.00 DPS) [quest]; Enriched Seal (271903, +0.00 DPS) [rep]; Weakness Analyzer (272438, +0.00 DPS) [vendor] |
-| trinket2 | Burst of Knowledge (11832) | Blackrock Depths: Ambassador Flamelash [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Weakness Analyzer (272438, +0.00 DPS) [vendor]; Shard of the Splithooves (10659, -1.26 DPS) [quest]; Eye of the Beast (13968, -2.94 DPS, sim-verified) [quest] |
-| main_hand | Hand of Edward the Odd (2243) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Trindlehaven Staff (13161, +0.00 DPS) [dungeon]; Grand Marshal's Stave (234571, +0.00 DPS) [pvp]; Ironbark Staff (20069, -10.24 DPS, sim-verified) [rep] |
-| off_hand | Book of the Dead (13353) | Stratholme: Balnazzar [dungeon] | 39.3 spell_power points (12.87 DPS) | yes | Grand Marshal's Tome of Power (234589, +0.00 DPS) [pvp]; Grand Marshal's Tome of Restoration (234590, -2.31 DPS) [pvp]; Tome of Shadow Force (19309, -3.54 DPS, sim-verified) [rep] |
-| ranged | Oblivion's Touch (18761) | Scholomance: Death Knight Darkreaver [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Brilliant Wand (249385, -1.15 DPS) [crafted]; Ritssyn's Wand of Bad Mojo (22408, -1.64 DPS) [dungeon]; Bonecreeper Stylus (13938, -2.39 DPS, sim-verified) [dungeon] |
+| head | Virtuous Crown (226947) | Saving the Best for Last [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Field Marshal's Headdress (17602, +0.00 DPS) [vendor]; Field Marshal's Satin Crown (231616, +0.00 DPS) [vendor]; The Postmaster's Band (13390, -14.92 DPS, sim-verified) [dungeon] |
+| neck | Jeweled Amulet of Cainwyn (1443) | World drop [world_drop] | 38.1 spell_power points (7.23 DPS) | yes | Tooth of Gnarr (13141, -1.41 DPS) [dungeon]; Nacreous Shell Necklace (22403, -1.42 DPS) [dungeon]; Star of Mystaria (12103, -3.87 DPS, sim-verified) [dungeon] |
+| shoulder | Shroud of the Nathrezim (18720) | Stratholme: Balnazzar [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Highlander's Epaulets (20061, +0.00 DPS) [rep]; Lieutenant Commander's Satin Epaulets (227136, +0.00 DPS) [vendor]; Field Marshal's Satin Epaulets (231621, -0.03 DPS) [vendor] |
+| back | Arcanoweave Cloak (272411) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Shroud of the Exile (15421, -1.09 DPS) [quest]; Drape of Recovery (272413, -1.51 DPS) [vendor]; Gracious Cape (18743, -5.36 DPS, sim-verified) [dungeon] |
+| chest | Virtuous Robe (226945) | Saving the Best for Last [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Field Marshal's Satin Vestments (17605, +0.00 DPS) [vendor]; Field Marshal's Satin Robe (231618, +0.00 DPS) [vendor]; The Postmaster's Tunic (13388, -15.27 DPS, sim-verified) [dungeon] |
+| wrist | Dryad's Wrist Bindings (19595) | Silverwing Sentinels [rep] | 39.9 spell_power points (7.58 DPS) | yes | Marshal's Satin Bracers (17606, -1.29 DPS) [pvp]; Virtuous Bracers (226949, -1.76 DPS) [quest]; Wyrmthalak's Shackles (13958, -2.18 DPS) [quest] |
+| hands | Virtuous Mitts (226950) | Just Compensation [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Demonskin Gloves (13181, -0.24 DPS) [dungeon]; Dreadmist Wraps (16705, -0.38 DPS) [dungeon]; Hands of Power (13253, -11.09 DPS, sim-verified) [dungeon] |
+| waist | Virtuous Belt (226948) | Just Compensation [quest] | 46.9 spell_power points (8.89 DPS) | yes | Marshal's Satin Sash (17609, -0.50 DPS) [pvp]; Thuzadin Sash (18740, -1.38 DPS) [dungeon]; Penitent's Cinch (272394, -15.77 DPS, sim-verified) [vendor] |
+| legs | Sentinel's Silk Leggings (237815) | Illiyana Moonblaze [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Marshal's Satin Pants (17603, +0.00 DPS) [vendor]; Marshal's Satin Leggings (231619, +0.00 DPS) [vendor]; Magister's Leggings (16687, -8.16 DPS, sim-verified) [dungeon] |
+| feet | Wolfrunner Shoes (13101) | World drop [world_drop] | sim-verified (+1.3 DPS vs the runner-up, not corroborated against the finished set) | yes | Marshal's Satin Sandals (17607, +0.00 DPS) [vendor]; Marshal's Satin Treads (231620, +0.00 DPS) [vendor]; The Postmaster's Treads (13391, -1.33 DPS, sim-verified) [dungeon] |
+| finger1 | Channeler's Ring (272406) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Band of Rumination (18103, -2.40 DPS) [dungeon]; Lorekeeper's Ring (19522, -2.72 DPS) [rep]; Naglering (11669, -14.44 DPS, sim-verified) [dungeon] |
+| finger2 | Rosewine Circle (13178) | Blackrock Spire: Urok Doomhowl [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Band of Rumination (18103, -0.42 DPS) [dungeon]; Lorekeeper's Ring (19522, -0.73 DPS) [rep]; Maiden's Circle (13001, -0.77 DPS) [world_drop] |
+| trinket1 | Second Wind (11819) | Blackrock Depths: Golem Lord Argelmach [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Shard of the Splithooves (10659, +0.00 DPS) [quest]; Enriched Seal (271903, +0.00 DPS) [rep]; Burst of Knowledge (11832, -2.01 DPS, sim-verified) [dungeon] |
+| trinket2 | Eye of the Beast (13968) | General Drakkisath's Demise [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Shard of the Splithooves (10659, +0.00 DPS) [quest]; Burst of Knowledge (11832, +0.00 DPS) [dungeon]; Weakness Analyzer (272438, +0.00 DPS) [vendor] |
+| main_hand | Hand of Edward the Odd (2243) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Trindlehaven Staff (13161, +0.00 DPS) [dungeon]; Grand Marshal's Stave (234571, +0.00 DPS) [pvp]; Ironbark Staff (20069, -9.25 DPS, sim-verified) [rep] |
+| off_hand | Book of the Dead (13353) | Stratholme: Balnazzar [dungeon] | 45.1 spell_power points (8.57 DPS) | yes | Grand Marshal's Tome of Power (234589, -1.38 DPS) [pvp]; Scepter of Interminable Focus (22329, -2.22 DPS) [dungeon]; Lei of the Lifegiver (19312, -6.40 DPS, sim-verified) [rep] |
+| ranged | Oblivion's Touch (18761) | Scholomance: Death Knight Darkreaver [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Wand of Eternal Light (22254, -0.29 DPS) [dungeon]; Brilliant Wand (249385, -0.36 DPS) [crafted]; Bonecreeper Stylus (13938, -2.58 DPS, sim-verified) [dungeon] |
 
-**New at 60:** head: Magister's Crown; neck: Lady Maye's Pendant; shoulder: Magister's Mantle; back: Arcanoweave Cloak; chest: Magister's Robes; wrist: Dryad's Wrist Bindings; hands: Magister's Gloves; waist: Magister's Belt; legs: Sentinel's Silk Leggings; feet: Dragonrider Boots; finger1: Channeler's Ring; finger2: Maiden's Circle; trinket1: Second Wind; trinket2: Burst of Knowledge; main_hand: Hand of Edward the Odd; off_hand: Book of the Dead; ranged: Oblivion's Touch
+**New at 60:** head: Virtuous Crown; neck: Jeweled Amulet of Cainwyn; shoulder: Shroud of the Nathrezim; back: Arcanoweave Cloak; chest: Virtuous Robe; wrist: Dryad's Wrist Bindings; hands: Virtuous Mitts; waist: Virtuous Belt; legs: Sentinel's Silk Leggings; feet: Wolfrunner Shoes; finger1: Channeler's Ring; finger2: Rosewine Circle; trinket1: Second Wind; trinket2: Eye of the Beast; main_hand: Hand of Edward the Odd; off_hand: Book of the Dead; ranged: Oblivion's Touch
 
 No-known-source sample (15 of 1503, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 3222 Wicked Dagger; 3738 Brewing Rod; 4642 Star of Xil'yeh; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 4990 Scorched Bands; 5000 Coral Band; 5004 Mark of the Kirin Tor
 
 ### Band 60, raid preset (human, 005105031030000000-00000000000000000-50052201211312251)
 
-Set DPS (verified): 799.7. Weights run: 2.5s. Verify run: 21.6s. 1503 eligible items had no known source.
+Set DPS (verified): 799.7. Weights run: 2.7s. Verify run: 22.3s. 1503 eligible items had no known source.
 
 Race sweep: human 799.7 ± 0.5, night-elf 799.3 ± 0.5, dwarf 798.0 ± 0.5, gnome 796.7 ± 0.5 (dps); the guide race human is best.
 
@@ -202,7 +202,7 @@ No-known-source sample (15 of 1503, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (undead, 020000000000000000-00000000000000000-40500000000000000)
 
-Set DPS (verified): 44.1. Weights run: 2.3s. Verify run: 2.1s. 196 eligible items had no known source.
+Set DPS (verified): 44.1. Weights run: 2.3s. Verify run: 2.0s. 196 eligible items had no known source.
 
 Race sweep: undead 44.1 ± 0.0, troll 40.0 ± 0.0 (dps); the guide race undead is best.
 
@@ -234,7 +234,7 @@ No-known-source sample (15 of 196, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (undead, 020000000000000000-00000000000000000-50542001200000000)
 
-Set DPS (verified): 71.8. Weights run: 2.3s. Verify run: 3.3s. 318 eligible items had no known source.
+Set DPS (verified): 71.8. Weights run: 2.2s. Verify run: 3.3s. 318 eligible items had no known source.
 
 Race sweep: undead 71.8 ± 0.1, troll 64.7 ± 0.1 (dps); the guide race undead is best.
 
@@ -266,7 +266,7 @@ No-known-source sample (15 of 318, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (undead, 020000000000000000-00000000000000000-52542001201300040)
 
-Set DPS (verified): 107.1. Weights run: 2.4s. Verify run: 2.9s. 454 eligible items had no known source.
+Set DPS (verified): 107.1. Weights run: 2.4s. Verify run: 3.2s. 454 eligible items had no known source.
 
 Race sweep: undead 107.1 ± 0.1, troll 94.1 ± 0.1 (dps); the guide race undead is best.
 
@@ -298,7 +298,7 @@ No-known-source sample (15 of 454, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (undead, 025003000000000000-00000000000000000-52542001201300051)
 
-Set DPS (verified): 257.3. Weights run: 2.3s. Verify run: 4.5s. 600 eligible items had no known source.
+Set DPS (verified): 257.3. Weights run: 2.3s. Verify run: 4.6s. 600 eligible items had no known source.
 
 Race sweep: undead 257.3 ± 0.3, troll 221.6 ± 0.3 (dps); the guide race undead is best.
 
@@ -330,7 +330,7 @@ No-known-source sample (15 of 600, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (undead, 025105031030000000-00000000000000000-52542001201300051)
 
-Set DPS (verified): 451.9. Weights run: 2.5s. Verify run: 20.9s. 1498 eligible items had no known source.
+Set DPS (verified): 451.9. Weights run: 2.4s. Verify run: 21.4s. 1498 eligible items had no known source.
 
 Race sweep: undead 451.9 ± 0.4, troll 401.8 ± 0.4 (dps); the guide race undead is best.
 
@@ -362,7 +362,7 @@ No-known-source sample (15 of 1498, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (undead, 005105031030000000-00000000000000000-50052201211312251)
 
-Set DPS (verified): 786.2. Weights run: 2.5s. Verify run: 21.0s. 1498 eligible items had no known source.
+Set DPS (verified): 786.2. Weights run: 2.7s. Verify run: 21.2s. 1498 eligible items had no known source.
 
 Race sweep: undead 786.2 ± 0.5, troll 778.5 ± 0.5 (dps); the guide race undead is best.
 
