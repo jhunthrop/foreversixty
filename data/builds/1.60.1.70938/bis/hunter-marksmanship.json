@@ -2,7 +2,7 @@
   "spec": "hunter-marksmanship",
   "build": "1.60.1.70938",
   "engine_version": "f9385b498",
-  "generated_at": "2026-11-17T16:42:00Z",
+  "generated_at": "2026-11-18T15:43:02Z",
   "bands": [
     {
       "spec": "hunter-marksmanship",
@@ -1145,8 +1145,8 @@
         "main_hand: Impaling Harpoon",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 7.953540032,
-      "verify_run_seconds": 17.786842132,
+      "weights_run_seconds": 8.002157051,
+      "verify_run_seconds": 18.728441164,
       "coverage": {
         "back": {
           "eligible": 104,
@@ -2397,8 +2397,8 @@
         "main_hand: Impaling Harpoon",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 7.953540032,
-      "verify_run_seconds": 14.274033873,
+      "weights_run_seconds": 8.002157051,
+      "verify_run_seconds": 15.284365292,
       "coverage": {
         "back": {
           "eligible": 105,
@@ -3731,8 +3731,8 @@
         "finger2: Seal of Wrynn",
         "ranged: Crystalpine Stinger"
       ],
-      "weights_run_seconds": 7.419012658,
-      "verify_run_seconds": 24.576630329,
+      "weights_run_seconds": 7.640995701,
+      "verify_run_seconds": 25.219732743,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -5071,8 +5071,8 @@
         "main_hand: Crescent Staff",
         "ranged: Crystalpine Stinger"
       ],
-      "weights_run_seconds": 7.419012658,
-      "verify_run_seconds": 25.862768007,
+      "weights_run_seconds": 7.640995701,
+      "verify_run_seconds": 26.149668094,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -6443,8 +6443,8 @@
         "main_hand: Staff of Jordan",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 7.646598911,
-      "verify_run_seconds": 23.520305121,
+      "weights_run_seconds": 7.888178461,
+      "verify_run_seconds": 24.040143952999998,
       "coverage": {
         "back": {
           "eligible": 257,
@@ -7818,8 +7818,8 @@
         "main_hand: Staff of Jordan",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 7.646598911,
-      "verify_run_seconds": 23.026013372999998,
+      "weights_run_seconds": 7.888178461,
+      "verify_run_seconds": 23.627963949,
       "coverage": {
         "back": {
           "eligible": 259,
@@ -9287,8 +9287,8 @@
         "main_hand: Warmonger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 7.768389694,
-      "verify_run_seconds": 32.940819048,
+      "weights_run_seconds": 8.026833926,
+      "verify_run_seconds": 34.144633035,
       "coverage": {
         "back": {
           "eligible": 330,
@@ -10865,8 +10865,8 @@
         "main_hand: Warmonger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 7.768389694,
-      "verify_run_seconds": 32.311396808,
+      "weights_run_seconds": 8.026833926,
+      "verify_run_seconds": 32.989915043,
       "coverage": {
         "back": {
           "eligible": 335,
@@ -12504,8 +12504,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Eaglehorn Long Bow"
       ],
-      "weights_run_seconds": 7.20318477,
-      "verify_run_seconds": 84.076203163,
+      "weights_run_seconds": 7.297131422,
+      "verify_run_seconds": 86.137093291,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -14187,8 +14187,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Eaglehorn Long Bow"
       ],
-      "weights_run_seconds": 7.20318477,
-      "verify_run_seconds": 83.338214442,
+      "weights_run_seconds": 7.297131422,
+      "verify_run_seconds": 87.248847661,
       "coverage": {
         "back": {
           "eligible": 472,
@@ -15874,8 +15874,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Eaglehorn Long Bow"
       ],
-      "weights_run_seconds": 4.851017894,
-      "verify_run_seconds": 65.53711621699999,
+      "weights_run_seconds": 5.185430943,
+      "verify_run_seconds": 68.513038011,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -17560,8 +17560,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Eaglehorn Long Bow"
       ],
-      "weights_run_seconds": 4.851017894,
-      "verify_run_seconds": 66.052461499,
+      "weights_run_seconds": 5.185430943,
+      "verify_run_seconds": 68.885795547,
       "coverage": {
         "back": {
           "eligible": 472,
