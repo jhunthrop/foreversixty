@@ -1,5 +1,9 @@
 # Forever Sixty
 
+## 2.0.58
+
+Data for client build 1.60.1.70959: the item, talent and spell tables the addon ships were regenerated for the new client by the client watcher. Nothing else changed.
+
 ## 2.0.57
 
 - Gear whose hit or crit is an Equip percent, like Trueaim Gauntlets' 3% hit or tier set crit, now counts that percent in upgrade gains on tooltips, the Gear tab and the bag arrows. Before, those percents counted as nothing.
