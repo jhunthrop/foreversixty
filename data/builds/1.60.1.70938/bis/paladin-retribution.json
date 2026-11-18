@@ -2,7 +2,7 @@
   "spec": "paladin-retribution",
   "build": "1.60.1.70938",
   "engine_version": "f9385b498",
-  "generated_at": "2026-11-17T17:12:38Z",
+  "generated_at": "2026-11-18T16:30:20Z",
   "bands": [
     {
       "spec": "paladin-retribution",
@@ -1148,8 +1148,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Verigan's Fist"
       ],
-      "weights_run_seconds": 6.941186691,
-      "verify_run_seconds": 17.307725221000002,
+      "weights_run_seconds": 9.883990288,
+      "verify_run_seconds": 24.521724199,
       "coverage": {
         "back": {
           "eligible": 104,
@@ -2391,8 +2391,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Forsaken Greataxe"
       ],
-      "weights_run_seconds": 6.941186691,
-      "verify_run_seconds": 17.424103164,
+      "weights_run_seconds": 9.883990288,
+      "verify_run_seconds": 24.855449573,
       "coverage": {
         "back": {
           "eligible": 105,
@@ -3728,8 +3728,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 7.817637985,
-      "verify_run_seconds": 19.402276834000002,
+      "weights_run_seconds": 11.226413497,
+      "verify_run_seconds": 27.244507353,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -5045,8 +5045,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 7.817637985,
-      "verify_run_seconds": 18.310986451,
+      "weights_run_seconds": 11.226413497,
+      "verify_run_seconds": 25.308692337,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -6419,8 +6419,8 @@
         "main_hand: Fiery War Axe",
         "ranged: Libram of Invocation"
       ],
-      "weights_run_seconds": 7.618361883,
-      "verify_run_seconds": 17.684006068,
+      "weights_run_seconds": 11.013550651,
+      "verify_run_seconds": 24.446744758999998,
       "coverage": {
         "back": {
           "eligible": 257,
@@ -7777,8 +7777,8 @@
         "main_hand: Fiery War Axe",
         "ranged: Libram of Invocation"
       ],
-      "weights_run_seconds": 7.618361883,
-      "verify_run_seconds": 25.504460019,
+      "weights_run_seconds": 11.013550651,
+      "verify_run_seconds": 35.255982183,
       "coverage": {
         "back": {
           "eligible": 259,
@@ -9347,8 +9347,8 @@
         "trinket2: Thunderbrew's Boot Flask",
         "main_hand: Warmonger"
       ],
-      "weights_run_seconds": 7.780646663,
-      "verify_run_seconds": 29.982367992,
+      "weights_run_seconds": 10.771686167,
+      "verify_run_seconds": 40.962925114,
       "coverage": {
         "back": {
           "eligible": 330,
@@ -10890,8 +10890,8 @@
         "trinket2: Rune of the Guard Captain",
         "main_hand: Warmonger"
       ],
-      "weights_run_seconds": 7.780646663,
-      "verify_run_seconds": 25.891915927,
+      "weights_run_seconds": 10.771686167,
+      "verify_run_seconds": 34.314011268,
       "coverage": {
         "back": {
           "eligible": 335,
@@ -12579,8 +12579,8 @@
         "main_hand: Blade of Hanna",
         "ranged: Libram of Fervor"
       ],
-      "weights_run_seconds": 7.849922647,
-      "verify_run_seconds": 106.045544731,
+      "weights_run_seconds": 10.748789927,
+      "verify_run_seconds": 140.46983251,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -14259,8 +14259,8 @@
         "main_hand: Blade of Hanna",
         "ranged: Libram of Fervor"
       ],
-      "weights_run_seconds": 7.849922647,
-      "verify_run_seconds": 99.792841699,
+      "weights_run_seconds": 10.748789927,
+      "verify_run_seconds": 129.901990188,
       "coverage": {
         "back": {
           "eligible": 471,
@@ -15971,8 +15971,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Libram of Law"
       ],
-      "weights_run_seconds": 7.891553119,
-      "verify_run_seconds": 111.415002305,
+      "weights_run_seconds": 10.641646182,
+      "verify_run_seconds": 145.484094232,
       "coverage": {
         "back": {
           "eligible": 466,
@@ -17666,8 +17666,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Libram of Law"
       ],
-      "weights_run_seconds": 7.891553119,
-      "verify_run_seconds": 100.348116163,
+      "weights_run_seconds": 10.641646182,
+      "verify_run_seconds": 130.25883852200002,
       "coverage": {
         "back": {
           "eligible": 471,
