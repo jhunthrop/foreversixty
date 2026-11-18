@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat. An item's crit rating
 
 ### Band 20 (gnome, 000000000000000000-00000000000000000-053200010000000000)
 
-Set DPS (verified): 51.2. Weights run: 2.3s. Verify run: 2.1s. 198 eligible items had no known source.
+Set DPS (verified): 51.2. Weights run: 2.8s. Verify run: 2.5s. 198 eligible items had no known source.
 
 Race sweep: gnome 51.2 ± 0.1, high-order-skyborne 49.8 ± 0.1, human 49.4 ± 0.1 (dps); the guide race gnome is best.
 
@@ -40,7 +40,7 @@ No-known-source sample (15 of 198, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (gnome, 000000000000000000-00000000000000000-053510030100200100)
 
-Set DPS (verified): 88.9. Weights run: 2.3s. Verify run: 2.1s. 326 eligible items had no known source.
+Set DPS (verified): 88.9. Weights run: 2.7s. Verify run: 2.9s. 326 eligible items had no known source.
 
 Race sweep: gnome 88.9 ± 0.1, high-order-skyborne 88.0 ± 0.1, human 87.3 ± 0.1 (dps); the guide race gnome is best.
 
@@ -72,7 +72,7 @@ No-known-source sample (15 of 326, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (gnome, 000000000000000000-00000000000000000-253510130101301221)
 
-Set DPS (verified): 175.5. Weights run: 2.3s. Verify run: 3.2s. 456 eligible items had no known source.
+Set DPS (verified): 175.5. Weights run: 3.0s. Verify run: 4.1s. 456 eligible items had no known source.
 
 Race sweep: gnome 175.5 ± 0.2, human 173.5 ± 0.2, high-order-skyborne 172.8 ± 0.3 (dps); the guide race gnome is best.
 
@@ -104,7 +104,7 @@ No-known-source sample (15 of 456, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (gnome, 230005000000000000-00000000000000000-253510130101301221)
 
-Set DPS (verified): 267.6. Weights run: 2.4s. Verify run: 5.9s. 599 eligible items had no known source.
+Set DPS (verified): 267.6. Weights run: 3.1s. Verify run: 7.8s. 599 eligible items had no known source.
 
 Race sweep: human 267.8 ± 0.4, gnome 267.6 ± 0.4, high-order-skyborne 265.3 ± 0.4 (dps); human beats the guide race gnome by 0.2 (0.07%) ± 0.5, inside error.
 
@@ -136,7 +136,7 @@ No-known-source sample (15 of 599, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (gnome, 250005203000300000-00000000000000000-253510130101301221)
 
-Set DPS (verified): 428.9. Weights run: 2.8s. Verify run: 23.8s. 1438 eligible items had no known source.
+Set DPS (verified): 428.9. Weights run: 3.5s. Verify run: 27.9s. 1438 eligible items had no known source.
 
 Race sweep: gnome 428.9 ± 0.5, human 427.3 ± 0.5, high-order-skyborne 427.0 ± 0.5 (dps); the guide race gnome is best.
 
@@ -170,7 +170,7 @@ No-known-source sample (15 of 1438, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (gnome, 230005203000000000-50000000000000000-253510130101301221)
 
-Set DPS (verified): 700.8. Weights run: 3.0s. Verify run: 22.7s. 1438 eligible items had no known source.
+Set DPS (verified): 700.8. Weights run: 3.8s. Verify run: 27.3s. 1438 eligible items had no known source.
 
 Race sweep: high-order-skyborne 706.3 ± 0.6, gnome 700.8 ± 0.7, human 699.4 ± 0.6 (dps); high-order-skyborne beats the guide race gnome by 5.5 (0.78%) ± 0.9, beyond error.
 
@@ -204,7 +204,7 @@ No-known-source sample (15 of 1438, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (undead, 000000000000000000-00000000000000000-053200010000000000)
 
-Set DPS (verified): 50.0. Weights run: 2.3s. Verify run: 2.9s. 192 eligible items had no known source.
+Set DPS (verified): 50.0. Weights run: 2.8s. Verify run: 3.7s. 192 eligible items had no known source.
 
 Race sweep: undead 50.0 ± 0.1, orc 48.7 ± 0.1, troll 48.2 ± 0.1 (dps); the guide race undead is best.
 
@@ -236,7 +236,7 @@ No-known-source sample (15 of 192, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (undead, 000000000000000000-00000000000000000-053510030100200100)
 
-Set DPS (verified): 88.0. Weights run: 2.3s. Verify run: 2.4s. 318 eligible items had no known source.
+Set DPS (verified): 88.0. Weights run: 2.7s. Verify run: 3.3s. 318 eligible items had no known source.
 
 Race sweep: undead 88.0 ± 0.1, troll 86.6 ± 0.1, orc 86.5 ± 0.1 (dps); the guide race undead is best.
 
@@ -268,7 +268,7 @@ No-known-source sample (15 of 318, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (undead, 000000000000000000-00000000000000000-253510130101301221)
 
-Set DPS (verified): 173.7. Weights run: 2.3s. Verify run: 3.4s. 448 eligible items had no known source.
+Set DPS (verified): 173.7. Weights run: 3.0s. Verify run: 4.0s. 448 eligible items had no known source.
 
 Race sweep: undead 173.7 ± 0.2, orc 172.7 ± 0.2, troll 171.8 ± 0.2 (dps); the guide race undead is best.
 
@@ -300,7 +300,7 @@ No-known-source sample (15 of 448, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (undead, 230005000000000000-00000000000000000-253510130101301221)
 
-Set DPS (verified): 264.4. Weights run: 2.4s. Verify run: 5.9s. 591 eligible items had no known source.
+Set DPS (verified): 264.4. Weights run: 3.1s. Verify run: 8.2s. 591 eligible items had no known source.
 
 Race sweep: undead 264.4 ± 0.4, orc 262.0 ± 0.4, troll 261.8 ± 0.4 (dps); the guide race undead is best.
 
@@ -332,7 +332,7 @@ No-known-source sample (15 of 591, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (undead, 250005203000300000-00000000000000000-253510130101301221)
 
-Set DPS (verified): 425.1. Weights run: 2.8s. Verify run: 23.4s. 1432 eligible items had no known source.
+Set DPS (verified): 425.1. Weights run: 3.5s. Verify run: 27.1s. 1432 eligible items had no known source.
 
 Race sweep: undead 425.1 ± 0.4, troll 420.3 ± 0.4, orc 419.8 ± 0.4 (dps); the guide race undead is best.
 
@@ -364,7 +364,7 @@ No-known-source sample (15 of 1432, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (undead, 230005203000000000-50000000000000000-253510130101301221)
 
-Set DPS (verified): 692.3. Weights run: 3.0s. Verify run: 22.2s. 1432 eligible items had no known source.
+Set DPS (verified): 692.3. Weights run: 3.8s. Verify run: 26.4s. 1432 eligible items had no known source.
 
 Race sweep: undead 692.3 ± 0.6, orc 689.3 ± 0.6, troll 689.3 ± 0.6 (dps); the guide race undead is best.
 
