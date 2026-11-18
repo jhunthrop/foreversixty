@@ -2,7 +2,7 @@
   "spec": "druid-feral",
   "build": "1.60.1.70938",
   "engine_version": "f9385b498",
-  "generated_at": "2026-11-17T16:39:47Z",
+  "generated_at": "2026-11-18T15:39:57Z",
   "bands": [
     {
       "spec": "druid-feral",
@@ -1041,8 +1041,8 @@
         "finger2: Demon Band",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 8.374093223,
-      "verify_run_seconds": 13.905410683,
+      "weights_run_seconds": 8.051378312,
+      "verify_run_seconds": 13.300382074999998,
       "coverage": {
         "back": {
           "eligible": 104,
@@ -2196,8 +2196,8 @@
         "finger2: Demon Band",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 8.374093223,
-      "verify_run_seconds": 13.7826407,
+      "weights_run_seconds": 8.051378312,
+      "verify_run_seconds": 13.068658889,
       "coverage": {
         "back": {
           "eligible": 105,
@@ -3458,8 +3458,8 @@
         "finger2: Thunderbrow Ring",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 9.407509766,
-      "verify_run_seconds": 11.056983929000001,
+      "weights_run_seconds": 9.005871173,
+      "verify_run_seconds": 10.741200739,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -4723,8 +4723,8 @@
         "finger2: Thunderbrow Ring",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 9.407509766,
-      "verify_run_seconds": 11.017592665999999,
+      "weights_run_seconds": 9.005871173,
+      "verify_run_seconds": 10.598942606,
       "coverage": {
         "back": {
           "eligible": 186,
@@ -6020,8 +6020,8 @@
         "trinket1: Ankh of Life",
         "main_hand: Thornstone Sledgehammer"
       ],
-      "weights_run_seconds": 11.881336381,
-      "verify_run_seconds": 25.724094085,
+      "weights_run_seconds": 11.533118742,
+      "verify_run_seconds": 24.457599739,
       "coverage": {
         "back": {
           "eligible": 257,
@@ -7310,8 +7310,8 @@
         "trinket1: Ankh of Life",
         "main_hand: Thornstone Sledgehammer"
       ],
-      "weights_run_seconds": 11.881336381,
-      "verify_run_seconds": 29.469516998000003,
+      "weights_run_seconds": 11.533118742,
+      "verify_run_seconds": 28.658644465000002,
       "coverage": {
         "back": {
           "eligible": 259,
@@ -8727,8 +8727,8 @@
         "trinket2: Thunderbrew's Boot Flask",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 11.994931193,
-      "verify_run_seconds": 28.047020189999998,
+      "weights_run_seconds": 11.618972265,
+      "verify_run_seconds": 27.408672391,
       "coverage": {
         "back": {
           "eligible": 330,
@@ -10214,8 +10214,8 @@
         "trinket2: Molten Heart of the Mountain",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 11.994931193,
-      "verify_run_seconds": 25.888949446,
+      "weights_run_seconds": 11.618972265,
+      "verify_run_seconds": 26.035470534,
       "coverage": {
         "back": {
           "eligible": 335,
@@ -11902,8 +11902,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 11.987113803,
-      "verify_run_seconds": 47.140086544,
+      "weights_run_seconds": 11.928310825,
+      "verify_run_seconds": 45.74236513,
       "coverage": {
         "back": {
           "eligible": 467,
@@ -13601,8 +13601,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 11.987113803,
-      "verify_run_seconds": 45.790490029000004,
+      "weights_run_seconds": 11.928310825,
+      "verify_run_seconds": 44.640628281,
       "coverage": {
         "back": {
           "eligible": 473,
@@ -15293,8 +15293,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 11.689794471999999,
-      "verify_run_seconds": 80.88634157,
+      "weights_run_seconds": 11.452987671,
+      "verify_run_seconds": 79.57309854,
       "coverage": {
         "back": {
           "eligible": 467,
@@ -16951,8 +16951,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Dream"
       ],
-      "weights_run_seconds": 11.689794471999999,
-      "verify_run_seconds": 83.425270469,
+      "weights_run_seconds": 11.452987671,
+      "verify_run_seconds": 82.76968569099999,
       "coverage": {
         "back": {
           "eligible": 473,

@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat. An item's crit rating
 
 ### Band 20 (night-elf, 0000000000000000-00000000000000000000-2503000100000000)
 
-Set DPS (verified): 78.0. Weights run: 10.3s. Verify run: 79.7s. 251 eligible items had no known source.
+Set DPS (verified): 78.0. Weights run: 10.0s. Verify run: 78.1s. 251 eligible items had no known source.
 
 Race sweep: high-order-skyborne 78.4 ± 0.0, night-elf 78.0 ± 0.0 (heal_score); high-order-skyborne beats the guide race night-elf by 0.3 (0.43%) ± 0.0, beyond error.
 
@@ -40,7 +40,7 @@ No-known-source sample (15 of 251, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (night-elf, 0100000000000000-00000000000000000000-3503004103100000)
 
-Set DPS (verified): 130.0. Weights run: 14.2s. Verify run: 140.4s. 424 eligible items had no known source.
+Set DPS (verified): 130.0. Weights run: 14.2s. Verify run: 143.8s. 424 eligible items had no known source.
 
 Race sweep: high-order-skyborne 132.9 ± 0.1, night-elf 129.9 ± 0.1 (heal_score); high-order-skyborne beats the guide race night-elf by 3.0 (2.27%) ± 0.1, beyond error.
 
@@ -72,7 +72,7 @@ No-known-source sample (15 of 424, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (night-elf, 0500200000000000-00000000000000000000-3503005103103000)
 
-Set DPS (verified): 241.9. Weights run: 13.7s. Verify run: 118.9s. 607 eligible items had no known source.
+Set DPS (verified): 241.9. Weights run: 13.9s. Verify run: 122.6s. 607 eligible items had no known source.
 
 Race sweep: high-order-skyborne 246.7 ± 0.1, night-elf 241.7 ± 0.2 (heal_score); high-order-skyborne beats the guide race night-elf by 5.0 (2.08%) ± 0.2, beyond error.
 
@@ -104,7 +104,7 @@ No-known-source sample (15 of 607, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (night-elf, 0530200100000000-00000000000000000000-5503005113103210)
 
-Set DPS (verified): 378.6. Weights run: 11.4s. Verify run: 110.3s. 816 eligible items had no known source.
+Set DPS (verified): 378.6. Weights run: 11.6s. Verify run: 112.9s. 816 eligible items had no known source.
 
 Race sweep: high-order-skyborne 384.8 ± 0.2, night-elf 378.4 ± 0.2 (heal_score); high-order-skyborne beats the guide race night-elf by 6.4 (1.69%) ± 0.3, beyond error.
 
@@ -136,7 +136,7 @@ No-known-source sample (15 of 816, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (night-elf, 0530200100000000-00000000000000000000-5553005153113210)
 
-Set DPS (verified): 497.8. Weights run: 12.5s. Verify run: 458.1s. 1968 eligible items had no known source.
+Set DPS (verified): 497.8. Weights run: 12.9s. Verify run: 469.8s. 1968 eligible items had no known source.
 
 Race sweep: high-order-skyborne 504.1 ± 0.3, night-elf 498.0 ± 0.3 (heal_score); high-order-skyborne beats the guide race night-elf by 6.1 (1.22%) ± 0.4, beyond error.
 
@@ -144,23 +144,23 @@ Stat weights (normalized to healing_power = 1.0, error under 25% of the weight t
 
 | Slot | Item | Source | Score (healing_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Devout Crown (16693) | Scholomance: Darkmaster Gandling [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Feathermoon Headdress (13113, +0.00 DPS) [world_drop]; Living Crown (252561, +0.00 DPS) [crafted]; Wildheart Cowl (16720, -16.34 DPS, sim-verified) [dungeon] |
-| neck | Jeweled Amulet of Cainwyn (1443) | World drop [world_drop] | 170.8 healing_power points (14.47 DPS) | yes | Dragon's Eye (10829, -1.46 DPS, sim-verified) [dungeon]; Lei of Lilies (1315, -1.74 DPS) [world_drop]; Lady Alizabeth's Pendant (13002, -1.74 DPS) [world_drop] |
-| shoulder | Devout Mantle (16695) | Blackrock Spire: Solakar Flamewreath [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Lieutenant Commander's Dragonhide Pauldrons (227201, +0.00 DPS) [vendor]; Field Marshal's Dragonhide Pauldrons (231705, +0.00 DPS) [vendor]; Mantle of the Scarlet Crusade (22405, -18.05 DPS, sim-verified) [dungeon] |
-| back | Featherskin Cape (10843) | Avatar of Hakkar [world] | sim-decided (no score - a real sim tournament chose this pick) | yes | Ethereal Mist Cape (11873, -2.57 DPS) [quest]; Indomitable Cloak (14683, -3.31 DPS, sim-verified) [world_drop]; Arcane Cloak (8286, -3.31 DPS) [world_drop] |
-| chest | Embrace of the Wind Serpent (12462) | Avatar of Hakkar [world] | 362.7 healing_power points (30.74 DPS) | yes | Robes of the Exalted (13346, -4.15 DPS) [dungeon]; Ironfeather Breastplate (15066, -4.15 DPS, sim-verified) [crafted]; Ghostweave Vest (14141, -5.74 DPS) [crafted] |
-| wrist | Devout Bracers (16697) | Stratholme: Crimson Priest [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Wyrmthalak's Shackles (13958, +0.00 DPS) [quest]; Marshal's Dragonhide Bracers (16445, +0.00 DPS) [pvp]; Bleak Howler Armguards (13208, -14.32 DPS, sim-verified) [dungeon] |
-| hands | Devout Gloves (16692) | Stratholme: Archivist Galford [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Swarmtender's Gloves (275607, +0.00 DPS) [crafted]; Gloves of the Atal'ai Prophet (10808, -0.10 DPS) [dungeon]; Wildheart Gloves (16717, -16.29 DPS, sim-verified) [dungeon] |
-| waist | Caretaker's Cord (272398) | Pix Xizzix [vendor] | 263.4 healing_power points (22.32 DPS) | yes | Sash of Mercy (14553, -5.40 DPS, sim-verified) [world_drop]; Marshal's Dragonhide Waistguard (16447, -7.64 DPS) [pvp]; Grimgore Noose (13403, -8.44 DPS) [dungeon] |
-| legs | Devout Skirt (16694) | Stratholme: Baron Rivendare [dungeon] | sim-verified (+1.2 DPS vs the runner-up, not corroborated against the finished set) | yes | Haunting Specter Leggings (11929, -0.23 DPS) [dungeon]; Earthborn Kilt (9402, -0.66 DPS) [world_drop]; Leggings of Arcana (12756, -1.23 DPS, sim-verified) [quest] |
-| feet | Devout Sandals (16691) | Stratholme: Maleki the Pallid [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Wildheart Boots (16715, -0.25 DPS) [dungeon]; Mooncloth Boots (15802, -1.30 DPS) [crafted]; Sandals of the Insurgent (13111, -18.65 DPS, sim-verified) [world_drop] |
-| finger1 | The Postmaster's Seal (13392) | Stratholme: Postmaster Malown [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Eye of Adaegus (5266, -0.36 DPS) [world_drop]; Choking Band (11868, -1.00 DPS) [quest]; Naglering (11669, -13.76 DPS, sim-verified) [dungeon] |
-| finger2 | Band of the Hierophant (13096) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Eye of Adaegus (5266, -0.67 DPS, sim-verified) [world_drop]; Choking Band (11868, -0.78 DPS) [quest]; Channeler's Ring (272406, -0.79 DPS) [vendor] |
-| trinket1 | Ankh of Life (1713) | World drop [world_drop] | sim-verified (+12.6 DPS vs the runner-up, not corroborated against the finished set) | yes | Burst of Knowledge (11832, -2.93 DPS) [dungeon]; Thunderbrew's Boot Flask (744, -3.40 DPS) [quest]; Shard of the Splithooves (10659, -4.74 DPS) [quest] |
-| trinket2 | Evonice's Landin' Pilla (18951) | Look at the Size of It! [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Burst of Knowledge (11832, -0.95 DPS, sim-verified) [dungeon]; Thunderbrew's Boot Flask (744, -1.70 DPS) [quest]; Shard of the Splithooves (10659, -3.05 DPS) [quest] |
-| main_hand | Staff of Metanoia (22394) | Scholomance: Jandice Barov [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Dancing Sliver (15854, -0.48 DPS) [quest]; Hammer of the Grand Crusader (18717, -1.52 DPS) [dungeon]; Hand of Edward the Odd (2243, -4.02 DPS, sim-verified) [world_drop] |
+| head | Devout Crown (16693) | Scholomance: Darkmaster Gandling [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Feathermoon Headdress (13113, +0.00 DPS) [world_drop]; Living Crown (252561, +0.00 DPS) [crafted]; Wildheart Cowl (16720, -5.29 DPS, sim-verified) [dungeon] |
+| neck | Jeweled Amulet of Cainwyn (1443) | World drop [world_drop] | 170.8 healing_power points (14.47 DPS) | yes | Dragon's Eye (10829, -1.73 DPS, sim-verified) [dungeon]; Lei of Lilies (1315, -1.74 DPS) [world_drop]; Lady Alizabeth's Pendant (13002, -1.74 DPS) [world_drop] |
+| shoulder | Devout Mantle (16695) | Blackrock Spire: Solakar Flamewreath [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Lieutenant Commander's Dragonhide Pauldrons (227201, +0.00 DPS) [vendor]; Field Marshal's Dragonhide Pauldrons (231705, +0.00 DPS) [vendor]; Mantle of the Scarlet Crusade (22405, -6.19 DPS, sim-verified) [dungeon] |
+| back | Featherskin Cape (10843) | Avatar of Hakkar [world] | sim-decided (no score - a real sim tournament chose this pick) | yes | Ethereal Mist Cape (11873, -2.57 DPS) [quest]; Indomitable Cloak (14683, -3.28 DPS, sim-verified) [world_drop]; Arcane Cloak (8286, -3.31 DPS) [world_drop] |
+| chest | Embrace of the Wind Serpent (12462) | Avatar of Hakkar [world] | 362.7 healing_power points (30.74 DPS) | yes | Ironfeather Breastplate (15066, -3.40 DPS, sim-verified) [crafted]; Robes of the Exalted (13346, -4.15 DPS) [dungeon]; Ghostweave Vest (14141, -5.74 DPS) [crafted] |
+| wrist | Devout Bracers (16697) | Stratholme: Crimson Priest [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Wyrmthalak's Shackles (13958, +0.00 DPS) [quest]; Marshal's Dragonhide Bracers (16445, +0.00 DPS) [pvp]; Bleak Howler Armguards (13208, -3.29 DPS, sim-verified) [dungeon] |
+| hands | Devout Gloves (16692) | Stratholme: Archivist Galford [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Swarmtender's Gloves (275607, +0.00 DPS) [crafted]; Gloves of the Atal'ai Prophet (10808, -0.10 DPS) [dungeon]; Wildheart Gloves (16717, -5.70 DPS, sim-verified) [dungeon] |
+| waist | Caretaker's Cord (272398) | Pix Xizzix [vendor] | 263.4 healing_power points (22.32 DPS) | yes | Sash of Mercy (14553, -5.48 DPS, sim-verified) [world_drop]; Marshal's Dragonhide Waistguard (16447, -7.64 DPS) [pvp]; Grimgore Noose (13403, -8.44 DPS) [dungeon] |
+| legs | Devout Skirt (16694) | Stratholme: Baron Rivendare [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Haunting Specter Leggings (11929, -0.23 DPS) [dungeon]; Earthborn Kilt (9402, -0.66 DPS) [world_drop]; Leggings of Arcana (12756, -1.23 DPS, sim-verified) [quest] |
+| feet | Devout Sandals (16691) | Stratholme: Maleki the Pallid [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Wildheart Boots (16715, -0.25 DPS) [dungeon]; Mooncloth Boots (15802, -1.30 DPS) [crafted]; Sandals of the Insurgent (13111, -8.00 DPS, sim-verified) [world_drop] |
+| finger1 | The Postmaster's Seal (13392) | Stratholme: Postmaster Malown [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Eye of Adaegus (5266, -0.36 DPS) [world_drop]; Choking Band (11868, -1.00 DPS) [quest]; Naglering (11669, -13.04 DPS, sim-verified) [dungeon] |
+| finger2 | Band of the Hierophant (13096) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Eye of Adaegus (5266, -0.14 DPS) [world_drop]; Choking Band (11868, -0.78 DPS) [quest]; Channeler's Ring (272406, -0.79 DPS) [vendor] |
+| trinket1 | Ankh of Life (1713) | World drop [world_drop] | sim-verified (+12.5 DPS vs the runner-up, not corroborated against the finished set) | yes | Burst of Knowledge (11832, -2.93 DPS) [dungeon]; Thunderbrew's Boot Flask (744, -3.40 DPS) [quest]; Shard of the Splithooves (10659, -4.74 DPS) [quest] |
+| trinket2 | Evonice's Landin' Pilla (18951) | Look at the Size of It! [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Burst of Knowledge (11832, -1.23 DPS) [dungeon]; Thunderbrew's Boot Flask (744, -1.70 DPS) [quest]; Shard of the Splithooves (10659, -3.05 DPS) [quest] |
+| main_hand | Staff of Metanoia (22394) | Scholomance: Jandice Barov [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Dancing Sliver (15854, -0.48 DPS) [quest]; Hammer of the Grand Crusader (18717, -1.52 DPS) [dungeon]; Hand of Edward the Odd (2243, -4.13 DPS, sim-verified) [world_drop] |
 | off_hand | - | - |  |  |  |
-| ranged | Idol of Synthesis (272429) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Idol of the Moon (23197, -1.12 DPS, sim-verified) [world_drop] |
+| ranged | Idol of Synthesis (272429) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Idol of the Moon (23197, -0.97 DPS, sim-verified) [world_drop] |
 
 **New at 60:** head: Devout Crown; neck: Jeweled Amulet of Cainwyn; shoulder: Devout Mantle; wrist: Devout Bracers; hands: Devout Gloves; waist: Caretaker's Cord; legs: Devout Skirt; feet: Devout Sandals; finger1: The Postmaster's Seal; finger2: Band of the Hierophant; main_hand: Staff of Metanoia; ranged: Idol of Synthesis
 
@@ -168,7 +168,7 @@ No-known-source sample (15 of 1968, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 60, raid preset (night-elf, 0530200100000000-00000000000000000000-5553005153113210)
 
-Set DPS (verified): 1025.6. Weights run: 11.5s. Verify run: 396.2s. 1968 eligible items had no known source.
+Set DPS (verified): 1025.6. Weights run: 11.7s. Verify run: 413.7s. 1968 eligible items had no known source.
 
 Race sweep: high-order-skyborne 1033.2 ± 0.4, night-elf 1025.3 ± 0.5 (heal_score); high-order-skyborne beats the guide race night-elf by 7.9 (0.77%) ± 0.6, beyond error.
 
@@ -204,7 +204,7 @@ No-known-source sample (15 of 1968, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (tauren, 0000000000000000-00000000000000000000-2503000100000000)
 
-Set DPS (verified): 77.2. Weights run: 10.3s. Verify run: 82.6s. 247 eligible items had no known source.
+Set DPS (verified): 77.2. Weights run: 10.0s. Verify run: 81.3s. 247 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 77.4 ± 0.0, tauren 77.2 ± 0.0 (heal_score); windshaper-skyborne beats the guide race tauren by 0.2 (0.27%) ± 0.0, beyond error.
 
@@ -236,7 +236,7 @@ No-known-source sample (15 of 247, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (tauren, 0100000000000000-00000000000000000000-3503004103100000)
 
-Set DPS (verified): 128.8. Weights run: 14.2s. Verify run: 140.8s. 425 eligible items had no known source.
+Set DPS (verified): 128.8. Weights run: 14.2s. Verify run: 143.0s. 425 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 129.4 ± 0.1, tauren 128.8 ± 0.1 (heal_score); windshaper-skyborne beats the guide race tauren by 0.6 (0.47%) ± 0.1, beyond error.
 
@@ -268,7 +268,7 @@ No-known-source sample (15 of 425, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (tauren, 0500200000000000-00000000000000000000-3503005103103000)
 
-Set DPS (verified): 241.3. Weights run: 13.7s. Verify run: 124.3s. 606 eligible items had no known source.
+Set DPS (verified): 241.3. Weights run: 13.9s. Verify run: 129.2s. 606 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 241.8 ± 0.1, tauren 240.9 ± 0.2 (heal_score); windshaper-skyborne beats the guide race tauren by 0.8 (0.35%) ± 0.2, beyond error.
 
@@ -300,7 +300,7 @@ No-known-source sample (15 of 606, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (tauren, 0530200100000000-00000000000000000000-5503005113103210)
 
-Set DPS (verified): 376.0. Weights run: 11.4s. Verify run: 109.1s. 815 eligible items had no known source.
+Set DPS (verified): 376.0. Weights run: 11.6s. Verify run: 111.7s. 815 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 376.9 ± 0.2, tauren 376.0 ± 0.2 (heal_score); windshaper-skyborne beats the guide race tauren by 0.9 (0.24%) ± 0.3, beyond error.
 
@@ -332,39 +332,39 @@ No-known-source sample (15 of 815, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (tauren, 0530200100000000-00000000000000000000-5553005153113210)
 
-Set DPS (verified): 495.3. Weights run: 12.5s. Verify run: 459.0s. 1972 eligible items had no known source.
+Set DPS (verified): 494.9. Weights run: 12.9s. Verify run: 445.9s. 1972 eligible items had no known source.
 
-Race sweep: windshaper-skyborne 496.5 ± 0.3, tauren 495.7 ± 0.3 (heal_score); windshaper-skyborne beats the guide race tauren by 0.8 (0.16%) ± 0.5, beyond error.
+Race sweep: windshaper-skyborne 495.8 ± 0.3, tauren 495.2 ± 0.3 (heal_score); windshaper-skyborne beats the guide race tauren by 0.6 (0.13%) ± 0.4, beyond error.
 
-Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.147, intellect=2.924 ± 0.120, spirit=10.015 ± 0.121, mp5=10.704 ± 0.145, crit=0.602 ± 0.037 per rating point (14 rating = 1%, 8.430 per %), spell_haste=not significant (1.084 ± 1.204)
+Stat weights (normalized to healing_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): healing_power=1.000 ± 0.001, intellect=2.083 ± 0.124, spirit=5.428 ± 0.117, mp5=6.133 ± 0.125, crit=0.934 ± 0.038 per rating point (14 rating = 1%, 13.077 per %), spell_haste=not significant (1.089 ± 1.765)
 
 | Slot | Item | Source | Score (healing_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Devout Crown (16693) | Scholomance: Darkmaster Gandling [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Feathermoon Headdress (13113, +0.00 DPS) [world_drop]; Living Crown (252561, +0.00 DPS) [crafted]; Wildheart Cowl (16720, -15.70 DPS, sim-verified) [dungeon] |
-| neck | Jeweled Amulet of Cainwyn (1443) | World drop [world_drop] | 170.8 healing_power points (14.47 DPS) | yes | Dragon's Eye (10829, -0.64 DPS) [dungeon]; Lei of Lilies (1315, -1.74 DPS) [world_drop]; Lady Alizabeth's Pendant (13002, -1.74 DPS) [world_drop] |
-| shoulder | Devout Mantle (16695) | Blackrock Spire: Solakar Flamewreath [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Champion's Dragonhide Pauldrons (227207, +0.00 DPS) [vendor]; Warlord's Dragonhide Pauldrons (231672, +0.00 DPS) [vendor]; Mantle of the Scarlet Crusade (22405, -17.28 DPS, sim-verified) [dungeon] |
-| back | Featherskin Cape (10843) | Avatar of Hakkar [world] | sim-decided (no score - a real sim tournament chose this pick) | yes | Indomitable Cloak (14683, -2.46 DPS) [world_drop]; Cloak of Blight (6832, -2.84 DPS, sim-verified) [quest]; Arcane Cloak (8286, -3.31 DPS) [world_drop] |
-| chest | Embrace of the Wind Serpent (12462) | Avatar of Hakkar [world] | 362.7 healing_power points (30.74 DPS) | yes | Ironfeather Breastplate (15066, -2.85 DPS, sim-verified) [crafted]; Robes of the Exalted (13346, -4.15 DPS) [dungeon]; Ghostweave Vest (14141, -5.74 DPS) [crafted] |
-| wrist | Devout Bracers (16697) | Stratholme: Crimson Priest [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Wyrmthalak's Shackles (13958, +0.00 DPS) [quest]; General's Dragonhide Bracers (16553, +0.00 DPS) [pvp]; Bleak Howler Armguards (13208, -13.36 DPS, sim-verified) [dungeon] |
-| hands | Devout Gloves (16692) | Stratholme: Archivist Galford [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Swarmtender's Gloves (275607, +0.00 DPS) [crafted]; Gloves of the Atal'ai Prophet (10808, -0.10 DPS) [dungeon]; Wildheart Gloves (16717, -15.65 DPS, sim-verified) [dungeon] |
-| waist | Caretaker's Cord (272398) | Pix Xizzix [vendor] | 263.4 healing_power points (22.32 DPS) | yes | Sash of Mercy (14553, -5.10 DPS, sim-verified) [world_drop]; General's Dragonhide Belt (16556, -7.64 DPS) [pvp]; Grimgore Noose (13403, -8.44 DPS) [dungeon] |
-| legs | Devout Skirt (16694) | Stratholme: Baron Rivendare [dungeon] | sim-verified (+1.4 DPS vs the runner-up, not corroborated against the finished set) | yes | Haunting Specter Leggings (11929, -0.23 DPS) [dungeon]; Earthborn Kilt (9402, -0.66 DPS) [world_drop]; Leggings of Arcana (12756, -1.42 DPS, sim-verified) [quest] |
-| feet | Devout Sandals (16691) | Stratholme: Maleki the Pallid [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Wildheart Boots (16715, -0.25 DPS) [dungeon]; Mooncloth Boots (15802, -1.30 DPS) [crafted]; Sandals of the Insurgent (13111, -17.92 DPS, sim-verified) [world_drop] |
-| finger1 | The Postmaster's Seal (13392) | Stratholme: Postmaster Malown [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Eye of Adaegus (5266, -0.36 DPS) [world_drop]; Channeler's Ring (272406, -1.01 DPS) [vendor]; Naglering (11669, -12.79 DPS, sim-verified) [dungeon] |
-| finger2 | Band of the Hierophant (13096) | World drop [world_drop] | sim-decided (no score - a real sim tournament chose this pick) | yes | Eye of Adaegus (5266, -0.14 DPS) [world_drop]; Channeler's Ring (272406, -0.79 DPS) [vendor]; Band of Mending (22334, -2.36 DPS) [dungeon] |
-| trinket1 | Ankh of Life (1713) | World drop [world_drop] | sim-verified (+12.8 DPS vs the runner-up, not corroborated against the finished set) | yes | Burst of Knowledge (11832, -2.93 DPS) [dungeon]; Shard of the Splithooves (10659, -4.74 DPS) [quest]; Darkspear Voodoo Seal (272061, -5.65 DPS) [vendor] |
-| trinket2 | Evonice's Landin' Pilla (18951) | Look at the Size of It! [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Burst of Knowledge (11832, -1.23 DPS) [dungeon]; Shard of the Splithooves (10659, -3.05 DPS) [quest]; Darkspear Voodoo Seal (272061, -3.95 DPS) [vendor] |
-| main_hand | Staff of Metanoia (22394) | Scholomance: Jandice Barov [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Dancing Sliver (15854, -0.48 DPS) [quest]; Hammer of the Grand Crusader (18717, -1.52 DPS) [dungeon]; Hand of Edward the Odd (2243, -3.41 DPS, sim-verified) [world_drop] |
+| head | Living Crown (252561) | Leatherworking [crafted] | 186.5 healing_power points (29.50 DPS) | yes | Champion's Dragonhide Headdress (227205, -4.03 DPS) [vendor]; Warlord's Dragonhide Headdress (231675, -4.39 DPS) [vendor]; Wildheart Cowl (16720, -4.55 DPS, sim-verified) [dungeon] |
+| neck | Jeweled Amulet of Cainwyn (1443) | World drop [world_drop] | 109.8 healing_power points (17.36 DPS) | yes | Dragon's Eye (10829, -1.61 DPS, sim-verified) [dungeon]; Lei of Lilies (1315, -4.49 DPS) [world_drop]; Lady Alizabeth's Pendant (13002, -4.49 DPS) [world_drop] |
+| shoulder | Devout Mantle (16695) | Blackrock Spire: Solakar Flamewreath [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Champion's Dragonhide Pauldrons (227207, +0.00 DPS) [vendor]; Warlord's Dragonhide Pauldrons (231672, +0.00 DPS) [vendor]; Mantle of the Scarlet Crusade (22405, -18.34 DPS, sim-verified) [dungeon] |
+| back | Featherskin Cape (10843) | Avatar of Hakkar [world] | sim-decided (no score - a real sim tournament chose this pick) | yes | Cloak of Blight (6832, -3.14 DPS) [quest]; Indomitable Cloak (14683, -3.14 DPS) [world_drop]; Shroud of the Exile (15421, -4.04 DPS, sim-verified) [quest] |
+| chest | Embrace of the Wind Serpent (12462) | Avatar of Hakkar [world] | 216.7 healing_power points (34.27 DPS) | yes | Ironfeather Breastplate (15066, -3.39 DPS, sim-verified) [crafted]; Robes of the Exalted (13346, -3.84 DPS) [dungeon]; Mooncloth Vest (14138, -7.26 DPS) [crafted] |
+| wrist | Devout Bracers (16697) | Stratholme: Crimson Priest [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Wyrmthalak's Shackles (13958, +0.00 DPS) [quest]; General's Dragonhide Bracers (16553, +0.00 DPS) [pvp]; Bleak Howler Armguards (13208, -15.49 DPS, sim-verified) [dungeon] |
+| hands | Devout Gloves (16692) | Stratholme: Archivist Galford [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Swarmtender's Gloves (275607, -0.56 DPS) [crafted]; Hands of the Exalted Herald (12554, -0.77 DPS) [dungeon]; Wildheart Gloves (16717, -17.11 DPS, sim-verified) [dungeon] |
+| waist | Caretaker's Cord (272398) | Pix Xizzix [vendor] | 153.3 healing_power points (24.24 DPS) | yes | Sash of Mercy (14553, -5.66 DPS, sim-verified) [world_drop]; Wisdom of the Timbermaw (19047, -7.00 DPS) [crafted]; General's Dragonhide Belt (16556, -7.42 DPS) [pvp] |
+| legs | Devout Skirt (16694) | Stratholme: Baron Rivendare [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Haunting Specter Leggings (11929, -2.21 DPS) [dungeon]; Wolfshear Leggings (13206, -2.91 DPS) [dungeon]; Leggings of Arcana (12756, -13.13 DPS, sim-verified) [quest] |
+| feet | Devout Sandals (16691) | Stratholme: Maleki the Pallid [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Mooncloth Boots (15802, -0.06 DPS) [crafted]; Wildheart Boots (16715, -0.33 DPS) [dungeon]; Sandals of the Insurgent (13111, -19.53 DPS, sim-verified) [world_drop] |
+| finger1 | The Postmaster's Seal (13392) | Stratholme: Postmaster Malown [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Band of the Hierophant (13096, -0.61 DPS) [world_drop]; Band of Mending (22334, -0.99 DPS) [dungeon]; Naglering (11669, -13.21 DPS, sim-verified) [dungeon] |
+| finger2 | Channeler's Ring (272406) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Band of the Hierophant (13096, -0.17 DPS) [world_drop]; Band of Mending (22334, -0.54 DPS) [dungeon]; Eye of Adaegus (5266, -0.63 DPS) [world_drop] |
+| trinket1 | Ankh of Life (1713) | World drop [world_drop] | sim-verified (+13.4 DPS vs the runner-up, not corroborated against the finished set) | yes | Burst of Knowledge (11832, -2.54 DPS) [dungeon]; Shard of the Splithooves (10659, -4.48 DPS) [quest]; Darkspear Voodoo Seal (272061, -5.45 DPS) [vendor] |
+| trinket2 | Evonice's Landin' Pilla (18951) | Look at the Size of It! [quest] | sim-decided (no score - a real sim tournament chose this pick) | yes | Burst of Knowledge (11832, -0.90 DPS, sim-verified) [dungeon]; Shard of the Splithooves (10659, -2.76 DPS) [quest]; Darkspear Voodoo Seal (272061, -3.73 DPS) [vendor] |
+| main_hand | Staff of Metanoia (22394) | Scholomance: Jandice Barov [dungeon] | sim-decided (no score - a real sim tournament chose this pick) | yes | Hammer of the Grand Crusader (18717, -1.69 DPS, sim-verified) [dungeon]; Redemption (22406, -2.52 DPS) [dungeon]; Glowing Brightwood Staff (812, -4.17 DPS) [world_drop] |
 | off_hand | - | - |  |  |  |
-| ranged | Idol of Synthesis (272429) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Idol of the Moon (23197, +0.00 DPS) [world_drop] |
+| ranged | Idol of Synthesis (272429) | Pix Xizzix [vendor] | sim-decided (no score - a real sim tournament chose this pick) | yes | Idol of the Moon (23197, -0.99 DPS, sim-verified) [world_drop] |
 
-**New at 60:** head: Devout Crown; neck: Jeweled Amulet of Cainwyn; shoulder: Devout Mantle; wrist: Devout Bracers; hands: Devout Gloves; waist: Caretaker's Cord; legs: Devout Skirt; feet: Devout Sandals; finger1: The Postmaster's Seal; finger2: Band of the Hierophant; main_hand: Staff of Metanoia; ranged: Idol of Synthesis
+**New at 60:** head: Living Crown; neck: Jeweled Amulet of Cainwyn; shoulder: Devout Mantle; wrist: Devout Bracers; hands: Devout Gloves; waist: Caretaker's Cord; legs: Devout Skirt; feet: Devout Sandals; finger1: The Postmaster's Seal; finger2: Channeler's Ring; main_hand: Staff of Metanoia; ranged: Idol of Synthesis
 
 No-known-source sample (15 of 1972, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2314 Toughened Leather Armor; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3738 Brewing Rod; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 4990 Scorched Bands; 5000 Coral Band
 
 ### Band 60, raid preset (tauren, 0530200100000000-00000000000000000000-5553005153113210)
 
-Set DPS (verified): 1021.4. Weights run: 11.5s. Verify run: 396.5s. 1972 eligible items had no known source.
+Set DPS (verified): 1021.4. Weights run: 11.7s. Verify run: 414.2s. 1972 eligible items had no known source.
 
 Race sweep: windshaper-skyborne 1023.0 ± 0.4, tauren 1021.8 ± 0.6 (heal_score); windshaper-skyborne beats the guide race tauren by 1.2 (0.12%) ± 0.7, beyond error.
 

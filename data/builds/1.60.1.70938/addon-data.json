@@ -63550,14 +63550,14 @@
               "chance": 0.005,
               "alternatives": [
                 {
-                  "item_id": 13346,
-                  "source_kind": "dungeon",
-                  "source": "Stratholme: Baron Rivendare"
-                },
-                {
                   "item_id": 15066,
                   "source_kind": "crafted",
                   "source": "Leatherworking"
+                },
+                {
+                  "item_id": 13346,
+                  "source_kind": "dungeon",
+                  "source": "Stratholme: Baron Rivendare"
                 }
               ]
             },
@@ -63757,20 +63757,20 @@
           },
           "horde": {
             "head": {
-              "item_id": 16693,
-              "source_kind": "dungeon",
-              "source": "Scholomance: Darkmaster Gandling",
+              "item_id": 252561,
+              "source_kind": "crafted",
+              "source": "Leatherworking",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 13113,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 227205,
+                  "source_kind": "vendor",
+                  "source": "PvP rank 10 · Champion · Horde"
                 },
                 {
-                  "item_id": 252561,
-                  "source_kind": "crafted",
-                  "source": "Leatherworking"
+                  "item_id": 231675,
+                  "source_kind": "vendor",
+                  "source": "PvP rank 13 · Warlord · Horde"
                 }
               ]
             },
@@ -63817,14 +63817,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 14683,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
-                },
-                {
                   "item_id": 6832,
                   "source_kind": "quest",
                   "source": "Nothing But The Truth"
+                },
+                {
+                  "item_id": 14683,
+                  "source_kind": "world_drop",
+                  "source": "World drop"
                 }
               ]
             },
@@ -63876,9 +63876,9 @@
                   "source": "Tailoring"
                 },
                 {
-                  "item_id": 10808,
+                  "item_id": 12554,
                   "source_kind": "dungeon",
-                  "source": "Sunken Temple: Jammal'an the Prophet"
+                  "source": "Blackrock Depths: Princess Moira Bronzebeard "
                 }
               ]
             },
@@ -63894,9 +63894,9 @@
                   "source": "World drop"
                 },
                 {
-                  "item_id": 16556,
-                  "source_kind": "pvp",
-                  "source": "PvP rank 12 · General · Horde"
+                  "item_id": 19047,
+                  "source_kind": "crafted",
+                  "source": "Tailoring"
                 }
               ]
             },
@@ -63912,9 +63912,9 @@
                   "source": "Blackrock Depths"
                 },
                 {
-                  "item_id": 9402,
-                  "source_kind": "world_drop",
-                  "source": "World drop"
+                  "item_id": 13206,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: Gizrul the Slavener"
                 }
               ]
             },
@@ -63925,14 +63925,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 16715,
-                  "source_kind": "dungeon",
-                  "source": "Blackrock Spire: Mother Smolderweb"
-                },
-                {
                   "item_id": 15802,
                   "source_kind": "crafted",
                   "source": "Tailoring"
+                },
+                {
+                  "item_id": 16715,
+                  "source_kind": "dungeon",
+                  "source": "Blackrock Spire: Mother Smolderweb"
                 }
               ]
             },
@@ -63943,32 +63943,32 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 5266,
+                  "item_id": 13096,
                   "source_kind": "world_drop",
                   "source": "World drop"
                 },
                 {
-                  "item_id": 272406,
-                  "source_kind": "vendor",
-                  "source": "Pix Xizzix"
+                  "item_id": 22334,
+                  "source_kind": "dungeon",
+                  "source": "Stratholme: Balnazzar"
                 }
               ]
             },
             "finger2": {
-              "item_id": 13096,
-              "source_kind": "world_drop",
-              "source": "World drop",
+              "item_id": 272406,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 5266,
+                  "item_id": 13096,
                   "source_kind": "world_drop",
                   "source": "World drop"
                 },
                 {
-                  "item_id": 272406,
-                  "source_kind": "vendor",
-                  "source": "Pix Xizzix"
+                  "item_id": 22334,
+                  "source_kind": "dungeon",
+                  "source": "Stratholme: Balnazzar"
                 }
               ]
             },
@@ -64015,14 +64015,14 @@
               "chance": null,
               "alternatives": [
                 {
-                  "item_id": 15854,
-                  "source_kind": "quest",
-                  "source": "Dawn's Gambit"
-                },
-                {
                   "item_id": 18717,
                   "source_kind": "dungeon",
                   "source": "Stratholme: Balnazzar"
+                },
+                {
+                  "item_id": 22406,
+                  "source_kind": "dungeon",
+                  "source": "Stratholme: Cannon Master Willey"
                 }
               ]
             },
@@ -64057,7 +64057,7 @@
             272429
           ],
           "horde": [
-            16693,
+            252561,
             1443,
             16695,
             16697,
@@ -64066,7 +64066,7 @@
             16694,
             16691,
             13392,
-            13096,
+            272406,
             22394,
             272429
           ]
@@ -174472,6 +174472,7 @@
     "11962": "Manacle Cuffs",
     "11963": "Penance Spaulders",
     "12021": "Shieldplate Sabatons",
+    "12038": "Lagrave's Seal",
     "12041": "Windshear Leggings",
     "12049": "Splintsteel Armor",
     "12052": "Ring of the Moon",
@@ -174652,6 +174653,7 @@
     "13179": "Brazecore Armguards",
     "13199": "Crushridge Bindings",
     "13205": "Rhombeard Protector",
+    "13206": "Wolfshear Leggings",
     "13208": "Bleak Howler Armguards",
     "13210": "Pads of the Dread Wolf",
     "13211": "Slashclaw Bracers",
@@ -174956,7 +174958,6 @@
     "16547": "General's Plate Girdle",
     "16550": "Warlord's Dragonhide Helmet",
     "16553": "General's Dragonhide Bracers",
-    "16556": "General's Dragonhide Belt",
     "16557": "General's Leather Girdle",
     "16559": "General's Leather Armsplints",
     "16565": "Warlord's Chain Chestpiece",
@@ -176327,7 +176328,6 @@
     "272076": "Darkspear Raider's Cloak",
     "272077": "Darkspear Raider's Cloak",
     "272078": "Darkspear Raider's Cloak",
-    "272083": "Darkspear Insurgent's Spellblade",
     "272091": "Darkspear Skirmisher's Bludgeon",
     "272095": "Raider Gauntlets",
     "272097": "Raider Handwraps",
@@ -176900,7 +176900,6 @@
     "270018": 20.4,
     "271928": 27.5,
     "271936": 41.4,
-    "272083": 27.5,
     "272091": 41.4,
     "273029": 16.6,
     "273033": 15.4,
