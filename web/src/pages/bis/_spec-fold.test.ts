@@ -32,6 +32,10 @@ function specEntry(classSlug: string, specSlug: string) {
   return entry;
 }
 
+/** A spec page's first render loads the build's BiS and tooltip data: a few seconds alone, past
+ *  vitest's 5 s default when the activation gate runs the API packages beside it. */
+const SPEC_RENDER_TIMEOUT_MS = 30_000;
+
 describe.each(SPECS)('/bis/%s/%s', (classSlug, specSlug) => {
   const entry = specEntry(classSlug, specSlug);
   const panels = loadFoldedPanels(activeBuild.build, classSlug, entry.spec);
@@ -41,29 +45,37 @@ describe.each(SPECS)('/bis/%s/%s', (classSlug, specSlug) => {
     expect(new Set(panels.map((panel) => panel.faction))).toEqual(new Set(['alliance', 'horde']));
   });
 
-  it('opens on level 60 with no band in the path, so the selected character can still move it', async () => {
-    const html = await container.renderToString(SpecPage, { props: { spec: entry } });
-    expect(html).toContain('data-bis-band="60"');
-    expect(html).not.toContain('data-bis-path-band');
-  });
+  it(
+    'opens on level 60 with no band in the path, so the selected character can still move it',
+    async () => {
+      const html = await container.renderToString(SpecPage, { props: { spec: entry } });
+      expect(html).toContain('data-bis-band="60"');
+      expect(html).not.toContain('data-bis-path-band');
+    },
+    SPEC_RENDER_TIMEOUT_MS,
+  );
 
-  it('server-renders every folded pick in the Leveling section', async () => {
-    const html = await container.renderToString(SpecPage, { props: { spec: entry } });
-    const start = html.indexOf('data-testid="bis-leveling"');
-    expect(start).toBeGreaterThan(-1);
-    const section = html.slice(start);
-    expect(section).toContain('Leveling 20 to 59');
-    for (const panel of panels) {
-      expect(section).toMatch(new RegExp(`data-band="${panel.band}"[^>]*data-faction="${panel.faction}"`));
-      for (const row of listedBisRows(panel)) {
-        if (row.itemId !== undefined && !row.empty)
-          expect(section).toContain(`data-bis-item="${row.itemId}"`);
+  it(
+    'server-renders every folded pick in the Leveling section',
+    async () => {
+      const html = await container.renderToString(SpecPage, { props: { spec: entry } });
+      const start = html.indexOf('data-testid="bis-leveling"');
+      expect(start).toBeGreaterThan(-1);
+      const section = html.slice(start);
+      expect(section).toContain('Leveling 20 to 59');
+      for (const panel of panels) {
+        expect(section).toMatch(new RegExp(`data-band="${panel.band}"[^>]*data-faction="${panel.faction}"`));
+        for (const row of listedBisRows(panel)) {
+          if (row.itemId !== undefined && !row.empty)
+            expect(section).toContain(`data-bis-item="${row.itemId}"`);
+        }
       }
-    }
-    expect(html).toMatch(
-      new RegExp(`rel="canonical" href="https://foreversixty\\.gg/bis/${classSlug}/${specSlug}"`),
-    );
-  });
+      expect(html).toMatch(
+        new RegExp(`rel="canonical" href="https://foreversixty\\.gg/bis/${classSlug}/${specSlug}"`),
+      );
+    },
+    SPEC_RENDER_TIMEOUT_MS,
+  );
 });
 
 /** getStaticPaths builds every spec's page data: about 35 s on the test box. */
