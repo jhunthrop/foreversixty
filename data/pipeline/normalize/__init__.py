@@ -159,7 +159,12 @@ def normalize_build(
     from pipeline.normalize.dungeons import normalize_dungeons
     from pipeline.normalize.effects import EffectIndex
     from pipeline.normalize.factions import load_factions
-    from pipeline.normalize.gear import ItemDataError, build_class_items, build_item_sets
+    from pipeline.normalize.gear import (
+        ItemDataError,
+        build_class_items,
+        build_item_sets,
+        merge_sparse_set_members,
+    )
     from pipeline.normalize.item_curves import load_item_curves
     from pipeline.normalize.itemnames import write_item_names
     from pipeline.normalize.items import normalize_items
@@ -377,7 +382,9 @@ def normalize_build(
     shutil.rmtree(build_dir / "talents", ignore_errors=True)
     for record in talent_records:
         write_model(record, build_dir / "talents" / f"{record.class_slug}.json")
-    item_sets = build_item_sets(t("ItemSet"), t("ItemSetSpell"), spell_text)
+    item_sets = merge_sparse_set_members(
+        build_item_sets(t("ItemSet"), t("ItemSetSpell"), spell_text), t("ItemSparse")
+    )
     if wowhead_supplement is not None:
         item_sets = merge_sets(item_sets, wowhead_supplement)
     if classicdb_supplement is not None:

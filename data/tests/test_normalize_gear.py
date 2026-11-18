@@ -4,7 +4,7 @@ import pytest
 
 from pipeline.csvio import read_csv
 from pipeline.icons import PLACEHOLDER_ICON, icon_names
-from pipeline.models import ItemSetBonus
+from pipeline.models import ItemSetBonus, ItemSetRecord
 from pipeline.normalize import write_json, write_model
 from pipeline.normalize.effects import EffectIndex
 from pipeline.normalize.gear import (
@@ -13,6 +13,7 @@ from pipeline.normalize.gear import (
     build_class_items,
     build_item_sets,
     is_junk_name,
+    merge_sparse_set_members,
     resolve_item_values,
     resolve_required_level,
 )
@@ -976,6 +977,26 @@ def test_sets_match_golden(tmp_path: Path):
     out = tmp_path / "sets.json"
     write_json(records, out)
     assert out.read_text() == (HERE / "golden/sets.json").read_text()
+
+
+def test_an_item_whose_sparse_row_names_a_set_joins_its_item_ids():
+    # 1.60's ItemSet row 1676 (Darkmantle Armor) lists 226845-226852, while
+    # the pieces players wear, 226825-226832, name 1676 only in ItemSparse.
+    sparse = [
+        {"ID": "226829", "ItemSet": "1676"},
+        {"ID": "226825", "ItemSet": "1676"},
+        {"ID": "15056", "ItemSet": "142"},
+        {"ID": "99", "ItemSet": "0"},
+        {"ID": "98", "ItemSet": "4242"},
+    ]
+    records = merge_sparse_set_members(
+        [
+            ItemSetRecord(id=1676, name="Darkmantle Armor", item_ids=[226845, 226846], bonuses=[]),
+            ItemSetRecord(id=142, name="Stormshroud Armor", item_ids=[15056, 15057], bonuses=[]),
+        ],
+        sparse,
+    )
+    assert [r.item_ids for r in records] == [[226825, 226829, 226845, 226846], [15056, 15057]]
 
 
 def test_set_bonuses_are_sorted_by_piece_count_with_resolved_text():

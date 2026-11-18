@@ -1164,3 +1164,24 @@ def build_item_sets(
             )
         )
     return sorted(records, key=lambda r: r.id)
+
+
+def merge_sparse_set_members(
+    sets: list[ItemSetRecord], sparse_rows: list[dict[str, str]]
+) -> list[ItemSetRecord]:
+    """Each ItemSparse row whose `ItemSet` names a known set joins its `item_ids`
+    (sorted, deduped). The ItemSet table's own item columns are incomplete in 1.60:
+    row 1676 (Darkmantle Armor) lists 226845-226852, while the pieces players wear,
+    226825-226832, name the set only in ItemSparse, so a worn-piece count read from
+    `item_ids` alone found none of them."""
+    additions: dict[int, set[int]] = {record.id: set() for record in sets}
+    for row in sparse_rows:
+        set_id = int_column(row, "ItemSet")
+        if set_id in additions:
+            additions[set_id].add(int(row["ID"]))
+    return [
+        record.model_copy(update={"item_ids": sorted({*record.item_ids, *additions[record.id]})})
+        if additions[record.id] - set(record.item_ids)
+        else record
+        for record in sets
+    ]
