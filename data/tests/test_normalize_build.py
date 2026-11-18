@@ -6,11 +6,11 @@ from pathlib import Path
 import pytest
 
 from pipeline.__main__ import main
+from pipeline.client_tables import OPTIONAL_TABLES, TABLES
 from pipeline.models import ClassTalents
 from pipeline.normalize import normalize_build
 from pipeline.normalize.talents import flat_talents
 from pipeline.normalize.traits import TraitDataError
-from pipeline.wago import OPTIONAL_TABLES, TABLES
 
 HERE = Path(__file__).parent
 # classes.json and races.json are compared against the merged goldens below,

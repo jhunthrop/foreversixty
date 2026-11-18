@@ -254,26 +254,16 @@ def render(doc: dict) -> str:
     return json.dumps(doc, indent=2) + "\n"
 
 
-def fetch_missing_tables(build: str, raw: Path, client: object | None = None) -> list[str]:
-    """Download the client tables this step reads that `raw` lacks, from wago.tools for the
-    build; the Journal tables are optional there (a client without a Dungeon Journal answers
-    "Table not found" and gets an empty table). Lets tools/activate-build.sh make
-    raid-bosses.json itself when data.yml's fetch did not (the refresh hold keeps data.yml
-    off). Answers the tables it fetched."""
-    from pipeline import wago
-    from pipeline.wago_http import open_client
+def fetch_missing_tables(build: str, raw: Path) -> list[str]:
+    """Read the client tables this step reads that `raw` lacks off Blizzard's CDN for the
+    build; the Journal tables are optional (a client without a Dungeon Journal ships them
+    empty). Lets tools/activate-build.sh make raid-bosses.json itself when data.yml's fetch
+    did not. Answers the tables it fetched."""
+    from pipeline.cdn_tables import fetch_tables
 
     missing = [t for t in TABLES if not (raw / f"{t}.csv").exists()]
-    if not missing:
-        return []
-    own = client is None
-    http = client or open_client()
-    try:
-        for table in missing:
-            wago.download_table(table, build, raw, http)  # type: ignore[arg-type]
-    finally:
-        if own:
-            http.close()  # type: ignore[union-attr]
+    if missing:
+        fetch_tables(build, missing, raw)
     return missing
 
 

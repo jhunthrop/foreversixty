@@ -17,20 +17,23 @@ def build_parser() -> argparse.ArgumentParser:
 
     f = sub.add_parser(
         "fetch",
-        help="download DB2 CSV exports for a build, then layer the server's hotfix push "
-        "into them (pipeline.hotfix_push), fetch the item pair's pushes into "
-        "raw/wago-hotfixes/ (pipeline.wago_hotfixes) and the ItemSparse push from the "
-        "hotfix page into raw/wago-push/items.json (pipeline.item_push)",
+        help="read the build's client tables off Blizzard's CDN (pipeline.cdn_tables) into "
+        "raw/<Table>.csv, save the hotfix push Raidbots' DBCache.bin carries for the build into "
+        "raw/raidbots/push.json (pipeline.raidbots_hotfixes) and layer the saved push",
     )
-    f.add_argument("--product", required=True, help="wago.tools product key, e.g. wow_classic_era")
-    f.add_argument("--build", help="build string like 1.15.7.61582; default: latest for product")
-    f.add_argument("--full", action="store_true", help=_FULL_HELP)
+    f.add_argument("--product", default="wowf", help="TACT product, e.g. wowf")
+    f.add_argument("--build", help="build string like 1.60.1.70938; default: the newest")
     f.add_argument(
         "--offline-push",
         action="store_true",
-        help="layer the hotfix push committed under raw/wago-push/ instead of reading "
-        "wago.tools' hotfix pages (the nightly ranking and the engine follow: data.yml "
-        "owns the push read)",
+        help="layer the push already saved under raw/ without reading Raidbots' cache "
+        "(the nightly ranking and the engine follow: data.yml owns the push read)",
+    )
+    f.add_argument(
+        "--wago-tables",
+        action="store_true",
+        help="download the tables from wago.tools' CSV export instead of the CDN; wago.tools "
+        "has refused this pipeline since 2026-11-17, so only with their agreement",
     )
 
     lhp = sub.add_parser(
@@ -57,11 +60,18 @@ def build_parser() -> argparse.ArgumentParser:
 
     pc = sub.add_parser(
         "push-check",
-        help="whether wago.tools lists a hotfix push for the build that its committed "
-        "hotfix-push.json was not layered from; prints moved=true|false and writes it "
-        "to GITHUB_OUTPUT when set",
+        help="whether Raidbots' DBCache.bin holds a hotfix push for the build other than "
+        "the one committed in raw/raidbots/push.json; prints moved=true|false and writes "
+        "it to GITHUB_OUTPUT when set",
     )
     pc.add_argument("--build", required=True)
+
+    cp = sub.add_parser(
+        "cdn-prune",
+        help="drop every cached build's encoding and root from the CDN cache "
+        "(FOREVER_CDN_CACHE) but the named builds'; the workflows run it before saving it",
+    )
+    cp.add_argument("--build", action="append", required=True)
 
     fw = sub.add_parser(
         "fetch-wowhead",
@@ -444,7 +454,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     cc = sub.add_parser(
         "client-check",
-        help="ask wago.tools for the newest World of Warcraft: Forever client build "
+        help="ask Blizzard's version service for the newest World of Warcraft: Forever build "
         "(curated/client.json says which products and versions are Forever) and compare it "
         "with web/src/data/active-build.json; prints JSON, and writes step outputs when "
         "GITHUB_OUTPUT is set",
@@ -452,7 +462,7 @@ def build_parser() -> argparse.ArgumentParser:
     cc.add_argument("--active", help="override the active build (default: active-build.json)")
     cc.add_argument(
         "--builds-json",
-        help="read a saved /api/builds answer from this file instead of asking wago.tools",
+        help="read a saved {product: [{version, created_at}]} answer from this file instead",
     )
     cc.add_argument(
         "--no-blizzard",
@@ -507,6 +517,31 @@ def _log_layer(summary: dict) -> None:
     )
 
 
+def _fetch(args: argparse.Namespace) -> None:
+    """`fetch`: the tables, then the build's hotfix push, from what is saved for it."""
+    from pipeline import cdn_tables, hotfix_push, raidbots_hotfixes
+
+    if args.wago_tables:
+        from pipeline import wago
+
+        build_dir = wago.fetch_build(args.product, args.build)
+    else:
+        build_dir = cdn_tables.fetch_build(args.product, args.build)
+    build = build_dir.name
+    if not args.offline_push:
+        raidbots_hotfixes.save_push(build)
+    layered = raidbots_hotfixes.layer(build)
+    if layered is None and (build_dir / "raw" / hotfix_push.PUSH_DIR / "entries.json").exists():
+        # A build layered from wago.tools' push before 2026-11-18 (1.60.1.70938).
+        layered = hotfix_push.layer_hotfix_push(build, offline=True)
+    if layered is None:
+        logging.getLogger("pipeline.raidbots_hotfixes").warning(
+            "no hotfix push saved for %s; its tables are the shipped client's", build
+        )
+        return
+    _log_layer(layered)
+
+
 def _log_item_push(counts: dict[str, int]) -> None:
     """Logged, like the layer: stdout's last line is the build data.yml reads."""
     for table, count in counts.items():
@@ -517,39 +552,28 @@ def main(argv: list[str] | None = None) -> int:
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
     args = build_parser().parse_args(argv)
     if args.command == "fetch":
-        from pipeline import hotfix_push, item_push, wago, wago_hotfixes
-        from pipeline.hotfix_push_store import full_requested
-        from pipeline.wago_http import log_requests
-
-        build_dir = wago.fetch_build(args.product, args.build)
-        build = build_dir.name if build_dir is not None else args.build
-        log_requests("fetch: tables")
-        full = full_requested(args.full)
-        _log_layer(hotfix_push.layer_hotfix_push(build, offline=args.offline_push, full=full))
-        log_requests("fetch: tables and push")
-        # The item pair's pushes too (sim-accuracy round 11): without them a
-        # local fetch + normalize drops 165 hotfix-only items and puts 404 on
-        # wowhead or classic-db stats. Logged, like the layer: stdout's last
-        # line is the build data.yml reads.
-        for table, count in wago_hotfixes.fetch_wago_hotfixes(build, args.product).items():
-            logging.getLogger("pipeline.wago_hotfixes").info(
-                "fetch-wago-hotfixes %s: %d rows", table, count
-            )
-        log_requests("fetch: tables, push and item hotfix exports")
-        if not args.offline_push:
-            _log_item_push(item_push.fetch_item_push(build, full=full))
-        log_requests("fetch")
+        _fetch(args)
     elif args.command == "fetch-item-push":
         from pipeline import item_push
         from pipeline.hotfix_push_store import full_requested
 
         _log_item_push(item_push.fetch_item_push(args.build, full=full_requested(args.full)))
+    elif args.command == "cdn-prune":
+        from pipeline.blizzard_cdn import CdnClient, prune, resolve_build
+
+        client = CdnClient()
+        try:
+            keep = [resolve_build(client, version).build_config for version in args.build]
+        finally:
+            client.close()
+        for dropped in prune(client.cache, keep):
+            logging.getLogger("pipeline.blizzard_cdn").info("cdn-prune: dropped %s", dropped)
     elif args.command == "push-check":
         import os
 
-        from pipeline import hotfix_push
+        from pipeline import raidbots_hotfixes
 
-        line = f"moved={'true' if hotfix_push.check_push(args.build) else 'false'}"
+        line = f"moved={'true' if raidbots_hotfixes.push_moved(args.build) else 'false'}"
         print(line)
         if github_output := os.environ.get("GITHUB_OUTPUT"):
             with open(github_output, "a", encoding="utf-8") as f:
@@ -949,15 +973,16 @@ def main(argv: list[str] | None = None) -> int:
         )
 
         try:
+            config = load_config()
+            products = tuple(dict.fromkeys((*config.products, *config.blizzard_products)))
             builds = (
                 json.loads(Path(args.builds_json).read_text(encoding="utf-8"))
                 if args.builds_json
-                else fetch_builds()
+                else fetch_builds(products)
             )
             active = args.active or read_active_build()
-            config = load_config()
             blizzard = None
-            if not args.no_blizzard and not args.builds_json:
+            if not args.no_blizzard and args.builds_json:
                 blizzard = fetch_blizzard_versions(config.blizzard_products)
             out = report(check(builds, active, config, blizzard_versions=blizzard))
         except (ClientWatchError, OSError, httpx.HTTPError) as error:

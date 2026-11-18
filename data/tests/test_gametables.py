@@ -1,7 +1,7 @@
 import json
+from dataclasses import dataclass, field
 from pathlib import Path
 
-import httpx
 import pytest
 
 from pipeline.casc import CascError
@@ -16,6 +16,7 @@ from pipeline.gametables import (
     write_game_tables,
 )
 from pipeline.manifest import verify, write_manifest
+from tests.cdn_fakes import FakeSource
 
 BUILD = "9.9.9.9"
 
@@ -34,24 +35,36 @@ EXPECTED_STAT = (
     "4,60,8,0,1213,10,0.000514000026,0.000167999996\n"
 )
 
-EXPECTED_STAT_PATH = f"/db2/{EXPECTED_STAT_TABLE}/csv"
+
+def source(bodies: dict[int, bytes] | None = None) -> FakeSource:
+    """Every game table as BASE_MP unless `bodies` says otherwise."""
+    return FakeSource(
+        {fid: (bodies or {}).get(fid, BASE_MP.encode()) for fid in GAME_TABLE_IDS.values()}
+    )
 
 
-def transport(
-    calls: list[str],
-    bodies: dict[int, bytes] | None = None,
-    expected_stat: str = EXPECTED_STAT,
-) -> httpx.MockTransport:
-    def handler(request: httpx.Request) -> httpx.Response:
-        calls.append(str(request.url))
-        if request.url.path == EXPECTED_STAT_PATH:
-            return httpx.Response(200, text=expected_stat)
-        file_id = int(request.url.path.rsplit("/", 1)[-1])
-        if bodies is not None and file_id in bodies:
-            return httpx.Response(200, content=bodies[file_id])
-        return httpx.Response(200, content=BASE_MP.encode("utf-8"))
+@dataclass
+class ExpectedStatTable:
+    """What the faked `fetch_tables` serves for PlayerExpectedStat, and who asked."""
 
-    return httpx.MockTransport(handler)
+    text: str = EXPECTED_STAT
+    asked: list[tuple[str, list[str]]] = field(default_factory=list)
+
+
+@pytest.fixture(autouse=True)
+def expected_stat_table(monkeypatch: pytest.MonkeyPatch) -> ExpectedStatTable:
+    """`fetch_tables` writes the table's text instead of reading the CDN."""
+    table = ExpectedStatTable()
+
+    def fake(build: str, tables, dest: Path) -> list[Path]:
+        table.asked.append((build, list(tables)))
+        dest.mkdir(parents=True, exist_ok=True)
+        path = dest / f"{EXPECTED_STAT_TABLE}.csv"
+        path.write_text(table.text, encoding="utf-8")
+        return [path]
+
+    monkeypatch.setattr("pipeline.gametables.fetch_tables", fake)
+    return table
 
 
 def build_dir_with_manifest(tmp_path: Path) -> Path:
@@ -64,20 +77,10 @@ def build_dir_with_manifest(tmp_path: Path) -> Path:
     return build
 
 
-def run(
-    tmp_path: Path,
-    calls: list[str],
-    bodies: dict[int, bytes] | None = None,
-    expected_stat: str = EXPECTED_STAT,
-) -> Path:
-    client = httpx.Client(
-        transport=transport(calls, bodies, expected_stat), base_url="https://wago.tools"
+def run(tmp_path: Path, files: FakeSource | None = None) -> Path:
+    return write_game_tables(
+        BUILD, root=tmp_path, cache_dir=tmp_path / "cache", source=files or source()
     )
-    return write_game_tables(BUILD, root=tmp_path, cache_dir=tmp_path / "cache", client=client)
-
-
-def casc_calls(calls: list[str]) -> list[str]:
-    return [call for call in calls if EXPECTED_STAT_PATH not in call]
 
 
 def test_only_the_tables_this_lineage_serves_are_fetched():
@@ -133,20 +136,17 @@ def test_a_header_with_no_rows_is_an_error():
         parse_game_table("basemp.txt", "Level\tMage\r\n")
 
 
-def test_write_game_tables_pins_the_build_and_covers_the_files(tmp_path: Path):
+def test_write_game_tables_pins_the_build_and_covers_the_files(tmp_path: Path, expected_stat_table):
     build = build_dir_with_manifest(tmp_path)
-    calls: list[str] = []
-    out = run(tmp_path, calls)
+    files = source()
+    out = run(tmp_path, files)
     assert out == build / "gametables"
     assert {path.name for path in out.glob("*.txt")} == set(GAME_TABLE_IDS)
-    assert len(casc_calls(calls)) == len(GAME_TABLE_IDS)
-    assert all(call.endswith(f"?version={BUILD}") for call in casc_calls(calls)), calls
-    assert [call for call in calls if EXPECTED_STAT_PATH in call] == [
-        f"https://wago.tools{EXPECTED_STAT_PATH}?build={BUILD}"
-    ]
-    files = json.loads((build / "manifest.json").read_text())["files"]
-    assert "gametables/basemp.txt" in files
-    assert f"gametables/{EXPECTED_STAT_FILE}" in files
+    assert sorted(files.calls) == sorted(GAME_TABLE_IDS.values())
+    assert expected_stat_table.asked == [(BUILD, [EXPECTED_STAT_TABLE])]
+    files_json = json.loads((build / "manifest.json").read_text())["files"]
+    assert "gametables/basemp.txt" in files_json
+    assert f"gametables/{EXPECTED_STAT_FILE}" in files_json
     assert verify(build) == []
 
 
@@ -154,20 +154,22 @@ def test_the_expected_stat_table_is_written_as_served_under_its_own_name(tmp_pat
     """The CSV is the client's per-level crit curves; the engine's generator
     reads CritPerAgility and SpellCritPerIntellect from it by name."""
     build_dir_with_manifest(tmp_path)
-    out = run(tmp_path, [])
+    out = run(tmp_path)
     assert (out / EXPECTED_STAT_FILE).read_text(encoding="utf-8") == EXPECTED_STAT
     assert {path.name for path in out.iterdir()} == set(GAME_TABLE_IDS) | {EXPECTED_STAT_FILE}
     header = EXPECTED_STAT.split("\n", 1)[0].split(",")
     assert set(EXPECTED_STAT_COLUMNS) <= set(header)
 
 
-def test_an_expected_stat_table_missing_a_crit_column_is_an_error(tmp_path: Path):
+def test_an_expected_stat_table_missing_a_crit_column_is_an_error(
+    tmp_path: Path, expected_stat_table
+):
     """A build that renames or drops a column the engine reads is a schema
     change to look at, not a file to ship."""
     build_dir_with_manifest(tmp_path)
-    renamed = EXPECTED_STAT.replace("CritPerAgility", "Field_1_60_1_99999_007")
+    expected_stat_table.text = EXPECTED_STAT.replace("CritPerAgility", "Field_1_60_1_99999_007")
     with pytest.raises(GameTableError, match="CritPerAgility"):
-        run(tmp_path, [], expected_stat=renamed)
+        run(tmp_path)
     assert {path.name for path in (tmp_path / BUILD / "gametables").iterdir()} == set(
         GAME_TABLE_IDS
     )
@@ -178,31 +180,29 @@ def test_the_bytes_are_written_exactly_as_the_client_ships_them(tmp_path: Path):
     line ending or a re-serialised float would be our numbers, not the
     client's."""
     build_dir_with_manifest(tmp_path)
-    out = run(tmp_path, [])
+    out = run(tmp_path)
     assert (out / "basemp.txt").read_bytes() == BASE_MP.encode("utf-8")
 
 
 def test_a_second_run_serves_from_the_cache_and_re_emits(tmp_path: Path):
     build = build_dir_with_manifest(tmp_path)
-    first: list[str] = []
-    second: list[str] = []
+    first, second = source(), source()
     run(tmp_path, first)
     run(tmp_path, second)
-    assert len(casc_calls(first)) == len(GAME_TABLE_IDS)
-    assert casc_calls(second) == []
+    assert len(first.calls) == len(GAME_TABLE_IDS)
+    assert second.calls == []
     assert (build / "gametables" / "combatratings.txt").exists()
 
 
-def test_an_empty_download_fails_the_run_rather_than_writing_nothing(tmp_path: Path):
+def test_an_empty_file_fails_the_run_rather_than_writing_nothing(tmp_path: Path):
     """This is the failure the six absent ids produce, and the reason the
     absent list is a constant rather than something to rediscover."""
     build_dir_with_manifest(tmp_path)
     with pytest.raises(CascError, match=str(GAME_TABLE_IDS["combatratings.txt"])):
-        run(tmp_path, [], {GAME_TABLE_IDS["combatratings.txt"]: b""})
+        run(tmp_path, source({GAME_TABLE_IDS["combatratings.txt"]: b""}))
 
 
 def test_a_build_that_was_never_normalized_is_a_clear_error(tmp_path: Path):
     (tmp_path / "1.0.0.0").mkdir()
-    client = httpx.Client(transport=transport([]), base_url="https://wago.tools")
     with pytest.raises(SystemExit, match="normalize"):
-        write_game_tables("1.0.0.0", root=tmp_path, cache_dir=tmp_path / "cache", client=client)
+        write_game_tables("1.0.0.0", root=tmp_path, cache_dir=tmp_path / "cache", source=source())

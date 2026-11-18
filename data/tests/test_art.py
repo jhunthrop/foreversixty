@@ -2,7 +2,6 @@ import io
 import json
 from pathlib import Path
 
-import httpx
 import pytest
 from PIL import Image
 
@@ -20,6 +19,7 @@ from pipeline.art import (
     process_pixel,
     talent_frame_ids,
 )
+from tests.cdn_fakes import FakeSource
 
 COLOURS = {
     "TopLeft": (200, 40, 40),
@@ -234,21 +234,20 @@ def _write_tree_json(build_dir: Path, background: str = "testtree") -> None:
     )
 
 
-def frame_transport(
-    calls: list[str],
-    sizes: dict[int, tuple[int, int]],
-    fail: frozenset[int] = frozenset(),
-) -> httpx.MockTransport:
-    def handler(request: httpx.Request) -> httpx.Response:
-        calls.append(request.url.path)
-        file_id = int(request.url.path.rsplit("/", 1)[-1])
-        if file_id in fail:
-            return httpx.Response(500, text="boom")
-        buffer = io.BytesIO()
-        Image.new("RGB", sizes[file_id], (10, 20, 30)).save(buffer, "PNG")
-        return httpx.Response(200, content=buffer.getvalue())
+def frame_source(sizes: dict[int, tuple[int, int]], fail: frozenset[int] = frozenset()):
+    """Each quadrant's file as a solid PNG of its size; an id in `fail` raises."""
 
-    return httpx.MockTransport(handler)
+    def png(file_id: int):
+        def make() -> bytes:
+            if file_id in fail:
+                raise RuntimeError("CDN hosts answered [500]")
+            buffer = io.BytesIO()
+            Image.new("RGB", sizes[file_id], (10, 20, 30)).save(buffer, "PNG")
+            return buffer.getvalue()
+
+        return make
+
+    return FakeSource({file_id: png(file_id) for file_id in sizes})
 
 
 def _sizes_for(ids: dict[str, int]) -> dict[int, tuple[int, int]]:
@@ -262,62 +261,49 @@ def test_backgrounds_for_build_regenerates_the_webp_but_reuses_the_blp_cache(tmp
     sizes = _sizes_for(FRAME_IDS)
     cache_dir = tmp_path / "cache"
 
-    first_calls: list[str] = []
-    client = httpx.Client(transport=frame_transport(first_calls, sizes), base_url="https://x")
+    first = frame_source(sizes)
     written = backgrounds_for_build(
-        "1.0.0.1", root=tmp_path / "builds", cache_dir=cache_dir, client=client
+        "1.0.0.1", root=tmp_path / "builds", cache_dir=cache_dir, source=first
     )
     assert written == 1
-    assert len(first_calls) == 4  # one fetch per quadrant, nothing cached yet
+    assert len(first.calls) == 4  # one read per quadrant, nothing cached yet
 
     # Do not delete the output this time: the target already exists from the first run,
     # and the second run must still regenerate it from the cached BLPs -- with zero new
-    # HTTP calls -- rather than skipping because the file is already there. That skip is
-    # exactly what let TREATMENT changes go silently stale; a client that would fail this
-    # assertion the moment it is asked anything proves the cache, not the network, served it.
+    # reads -- rather than skipping because the file is already there. That skip is
+    # exactly what let TREATMENT changes go silently stale.
     target = build_dir / "trees" / "testtree.webp"
     before = target.read_bytes()
-    second_calls: list[str] = []
-    client_2 = httpx.Client(transport=frame_transport(second_calls, sizes), base_url="https://x")
+    second = frame_source(sizes)
     written_again = backgrounds_for_build(
-        "1.0.0.1", root=tmp_path / "builds", cache_dir=cache_dir, client=client_2
+        "1.0.0.1", root=tmp_path / "builds", cache_dir=cache_dir, source=second
     )
     assert written_again == 1
-    assert second_calls == []
+    assert second.calls == []
     assert target.exists()
     assert target.read_bytes() == before  # same BLP input -> byte-identical re-emit
 
 
-def test_backgrounds_for_build_pins_every_fetch_to_the_build(tmp_path: Path):
-    """A file data id is stable across builds but its bytes are not, so the version
-    rides on every request and an empty body is an error, not an empty texture."""
+def test_backgrounds_for_build_keys_the_cache_by_build_and_rejects_an_empty_file(
+    tmp_path: Path,
+):
+    """A file data id is stable across builds but its bytes are not, so the cache is
+    keyed by build and an empty file is an error, not an empty texture."""
     build_dir = tmp_path / "builds" / "1.0.0.1"
     _write_frame_manifest(build_dir / "raw", FRAME_IDS)
     _write_tree_json(build_dir)
-    sizes = _sizes_for(FRAME_IDS)
-    versions: list[str | None] = []
-
-    def handler(request: httpx.Request) -> httpx.Response:
-        versions.append(request.url.params.get("version"))
-        file_id = int(request.url.path.rsplit("/", 1)[-1])
-        buffer = io.BytesIO()
-        Image.new("RGB", sizes[file_id], (10, 20, 30)).save(buffer, "PNG")
-        return httpx.Response(200, content=buffer.getvalue())
-
-    client = httpx.Client(transport=httpx.MockTransport(handler), base_url="https://x")
     backgrounds_for_build(
-        "1.0.0.1", root=tmp_path / "builds", cache_dir=tmp_path / "c", client=client
+        "1.0.0.1",
+        root=tmp_path / "builds",
+        cache_dir=tmp_path / "c",
+        source=frame_source(_sizes_for(FRAME_IDS)),
     )
-    assert versions == ["1.0.0.1"] * 4
     assert (tmp_path / "c" / "1.0.0.1").is_dir(), "the cache is keyed by build as well as id"
 
-    empty = httpx.Client(
-        transport=httpx.MockTransport(lambda request: httpx.Response(200, content=b"")),
-        base_url="https://x",
-    )
+    empty = FakeSource({file_id: b"" for file_id in FRAME_IDS.values()})
     with pytest.raises(ArtDataError, match="no bytes"):
         backgrounds_for_build(
-            "1.0.0.1", root=tmp_path / "builds", cache_dir=tmp_path / "c2", client=empty
+            "1.0.0.1", root=tmp_path / "builds", cache_dir=tmp_path / "c2", source=empty
         )
 
 
@@ -326,24 +312,21 @@ def test_backgrounds_for_build_raises_naming_the_tree_and_missing_quadrant(tmp_p
     partial = {q: i for q, i in FRAME_IDS.items() if q != "TopRight"}
     _write_frame_manifest(build_dir / "raw", partial)
     _write_tree_json(build_dir)
-    client = httpx.Client(transport=frame_transport([], _sizes_for(partial)), base_url="https://x")
     with pytest.raises(ArtDataError, match=r"testtree.*TopRight"):
         backgrounds_for_build(
-            "1.0.0.1", root=tmp_path / "builds", cache_dir=tmp_path / "cache", client=client
+            "1.0.0.1",
+            root=tmp_path / "builds",
+            cache_dir=tmp_path / "cache",
+            source=frame_source(_sizes_for(partial)),
         )
 
 
-def test_backgrounds_for_build_raises_on_an_http_error(tmp_path: Path):
+def test_backgrounds_for_build_raises_on_a_cdn_error(tmp_path: Path):
     build_dir = tmp_path / "builds" / "1.0.0.1"
     _write_frame_manifest(build_dir / "raw", FRAME_IDS)
     _write_tree_json(build_dir)
-    client = httpx.Client(
-        transport=frame_transport(
-            [], _sizes_for(FRAME_IDS), fail=frozenset({FRAME_IDS["TopLeft"]})
-        ),
-        base_url="https://x",
-    )
-    with pytest.raises(httpx.HTTPStatusError):
+    source = frame_source(_sizes_for(FRAME_IDS), fail=frozenset({FRAME_IDS["TopLeft"]}))
+    with pytest.raises(RuntimeError, match="500"):
         backgrounds_for_build(
-            "1.0.0.1", root=tmp_path / "builds", cache_dir=tmp_path / "cache", client=client
+            "1.0.0.1", root=tmp_path / "builds", cache_dir=tmp_path / "cache", source=source
         )

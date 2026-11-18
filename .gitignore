@@ -138,6 +138,14 @@ data/builds/*/raw/wago-push/*
 # per record: the item tables' (pipeline.item_push) and the spell side's (hotfix_push_store).
 !data/builds/*/raw/wago-push/items.json
 !data/builds/*/raw/wago-push/values.json
+# 2026-11-18: the build's hotfix push decoded from Raidbots' DBCache.bin
+# (pipeline.raidbots_hotfixes), so bis.yml and engine.yml layer what data.yml layered.
+!data/builds/*/raw/raidbots/
+data/builds/*/raw/raidbots/*
+!data/builds/*/raw/raidbots/push.json
+# Blizzard CDN files, configs, archive indexes and the Raidbots cache
+# (pipeline.blizzard_cdn, FOREVER_CDN_CACHE), kept in actions/cache.
+data/.cdn-cache/
 data/.icon-cache/
 data/.wago-push-cache/
 # wago.tools table exports kept between runs (pipeline/wago_tables.py, WAGO_TABLE_CACHE).

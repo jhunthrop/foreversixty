@@ -1,31 +1,22 @@
 """One way to read a file out of the client's CASC, pinned to a build.
 
-wago.tools serves any client file by its file data id at
-`/api/casc/<file data id>`, and `?version=<build>` chooses the build. It is
-not optional. Measured on 2026-09-18 for `combatratings.txt`, file data id
-1391669: `?version=1.60.1.69893` returns 12,144 bytes, `?version=1.15.9.69722`
-returns 31,614, an unknown version answers 400 "Version not found", and a bare
-request returns whichever build wago currently defaults to -- which is retail,
-and which is how an earlier draft of `pipeline/gametables.py` came to read
-retail's stat curves and label them Forever's.
-
-So every caller passes the build, the cache is keyed by build as well as by
-id (the same id is not the same bytes twice), and anything other than a 2xx
-with a non-empty body raises: a 400 is a wrong build string, an empty body is
-a file the build does not ship, and a redirect is neither.
+The bytes come from Blizzard's CDN (`pipeline.blizzard_cdn`), the build's own
+root and encoding files resolving the file data id; wago.tools' `/api/casc`
+served them until it refused this pipeline on 2026-11-17. The same id is not
+the same bytes in two builds (`combatratings.txt` is 12,144 bytes on
+1.60.1.69893 and 31,614 on 1.15.9.69722), so the cache is keyed by build as
+well as by id, and a file the build does not ship raises `CascMissing`.
 """
 
 from __future__ import annotations
 
 import logging
-import time
 from enum import Enum
 from pathlib import Path
+from typing import Protocol
 
-import httpx
-
+from pipeline.blizzard_cdn import CdnMissing
 from pipeline.icons import CACHE_DIR, _atomic_write
-from pipeline.wago_http import open_client
 
 logger = logging.getLogger(__name__)
 
@@ -63,81 +54,48 @@ class CascMissing(CascError):
         self.reason = reason
 
 
-#: Transport failures (a dropped connection, a read timeout, a refused connect)
-#: are retried this many times with these pauses before they propagate. The
-#: client watcher's 2026-10-16 fetch of 1.60.1.70425 died in `icons` on one
-#: "Server disconnected without sending a response" a few hundred icons in;
-#: an unattended nightly must ride out a blip. HTTP statuses are never retried
-#: here: the caller reads them.
-RETRY_PAUSES_S = (2.0, 5.0, 10.0)
+class FileSource(Protocol):
+    """Where a client file's bytes come from: `pipeline.blizzard_cdn.ClientBuild`."""
+
+    def read(self, file_id: int) -> bytes: ...
 
 
-def _get_with_retries(client: httpx.Client, path: str, params: dict[str, str]) -> httpx.Response:
-    attempt = 0
-    while True:
-        try:
-            return client.get(path, params=params, timeout=60)
-        except httpx.TransportError as error:
-            if attempt >= len(RETRY_PAUSES_S):
-                raise
-            pause = RETRY_PAUSES_S[attempt]
-            attempt += 1
-            logger.warning(
-                "casc %s: %s; retry %d of %d in %.0fs",
-                path,
-                error,
-                attempt,
-                len(RETRY_PAUSES_S),
-                pause,
-            )
-            time.sleep(pause)
+_SOURCES: dict[str, FileSource] = {}
+
+
+def build_source(build: str) -> FileSource:
+    """The build's files on Blizzard's CDN, opened once per process."""
+    if build not in _SOURCES:
+        from pipeline.blizzard_cdn import open_build
+
+        _SOURCES[build] = open_build(build)
+    return _SOURCES[build]
 
 
 def fetch_casc_file(
     file_id: int,
     build: str,
     cache_dir: Path = CACHE_DIR,
-    client: httpx.Client | None = None,
+    source: FileSource | None = None,
     suffix: str = ".bin",
 ) -> bytes:
     """One file out of CASC, for one build, cached under `<cache_dir>/<build>/`."""
     cached = cache_dir / build / f"{file_id}{suffix}"
     if cached.exists():
         return cached.read_bytes()
-    own = client is None
-    if client is None:
-        client = open_client()
     try:
-        response = _get_with_retries(client, f"/api/casc/{file_id}", {"version": build})
-        if response.is_redirect:
-            raise CascError(
-                f"file data id {file_id} for build {build} redirected to "
-                f"{response.headers.get('location')!r}; CASC serves bytes, not redirects"
-            )
-        if response.status_code == 400:
-            raise CascError(
-                f"wago.tools does not know build {build!r} "
-                f"(file data id {file_id}): {response.text.strip()}"
-            )
-        if response.status_code == 404:
-            raise CascMissing(
-                f"file data id {file_id} is not in CASC at version {build}",
-                reason=CascMissingReason.NOT_FOUND,
-            )
-        # Anything else non-2xx stays an httpx.HTTPStatusError: that is what
-        # pipeline/art.py's own test already expects from a 500, and this
-        # migration does not get to change it.
-        response.raise_for_status()
-        if not response.content:
-            raise CascMissing(
-                f"file data id {file_id} is empty for build {build}; this build's "
-                f"client does not ship that file",
-                reason=CascMissingReason.EMPTY,
-            )
-        data = response.content
-    finally:
-        if own:
-            client.close()
+        data = (source or build_source(build)).read(file_id)
+    except CdnMissing as error:
+        raise CascMissing(
+            f"file data id {file_id} is not in CASC at version {build}",
+            reason=CascMissingReason.NOT_FOUND,
+        ) from error
+    if not data:
+        raise CascMissing(
+            f"file data id {file_id} is empty for build {build}; this build's "
+            f"client does not ship that file",
+            reason=CascMissingReason.EMPTY,
+        )
     cached.parent.mkdir(parents=True, exist_ok=True)
     _atomic_write(cached, data)
     logger.info("casc %s @ %s: %d bytes", file_id, build, len(data))

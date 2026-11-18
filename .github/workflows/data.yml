@@ -8,15 +8,15 @@ on:
     paths: ['data/**', 'sim/specs/**', 'sim/enginever/version.go', 'sim/request/IDS.md', 'web/src/lib/sim/specs.ts', 'web/src/data/phases.json', 'addon/**', 'web/src/content/guides/**', 'sim/cmd/addon-builds/**', 'sim/leveling/**', '.github/workflows/data.yml']
   workflow_dispatch:
     inputs:
-      product: { description: 'wago.tools product key', required: true, default: 'wow_classic_era' }
+      product: { description: 'TACT product (wowf is World of Warcraft: Forever)', required: true, default: 'wowf' }
       build: { description: 'build string (blank = latest)', required: false }
       allow_shrink:
         description: 'deliberate re-baseline: let normalize/loot write a catalogue smaller than the committed one (e.g. after dropping QA rows)'
         required: false
         default: false
         type: boolean
-  # client.yml (the client watcher) calls this workflow the morning a new Forever build
-  # appears on wago.tools, with the product and build it found; the fetch job below is
+  # client.yml (the client watcher) calls this workflow the morning Blizzard's version
+  # service names a new Forever build, with the product and build it found; the fetch job below is
   # the same one a hand dispatch runs.
   workflow_call:
     inputs:
@@ -187,66 +187,44 @@ jobs:
     if: inputs.product != ''
     needs: test
     runs-on: ubuntu-latest
-    # wago.tools is read one request at a time, a second apart, within a per-run budget
-    # (pipeline/wago_http.py; they blocked our User-Agent on 2026-11-17 after a run made
-    # ~62,000 requests six at a time). A run whose push did not move makes a few dozen
-    # requests; one whose push moved crawls only what moved, and at a request a second
-    # that can take hours, hence 300. Past WAGO_REQUEST_BUDGET the run fails loudly.
-    timeout-minutes: 300
+    # The tables come off Blizzard's CDN (pipeline/cdn_tables.py) and the hotfix push
+    # from Raidbots' public DBCache.bin (pipeline/raidbots_hotfixes.py): one request at a
+    # time with an honest User-Agent. A first run of a build downloads ~300 MB (the
+    # encoding and root files, the archive indexes, the tables); the CDN cache below keeps
+    # all of it, so a rerun downloads nothing and a new build only its own files.
+    timeout-minutes: 120
     # Two fetches never overlap (a hand dispatch and client.yml's refetch on 2026-11-17
     # ran side by side): the second waits for the first.
-    concurrency: { group: wago-fetch, cancel-in-progress: false }
+    concurrency: { group: client-fetch, cancel-in-progress: false }
     defaults: { run: { working-directory: data } }
     permissions: { contents: write }
     env:
-      WAGO_MIN_INTERVAL: '1.0'
-      WAGO_REQUEST_BUDGET: '12000'
-      WAGO_TABLE_CACHE: .wago-table-cache
+      FOREVER_CDN_CACHE: .cdn-cache
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v3
       - run: uv sync
-      # `fetch` downloads the shipped tables and then layers the server's hotfix
-      # push for the build into every spell-side, talent and skill table
-      # (pipeline/hotfix_push.py): round 6 found Ice Barrier, Frigid Power and
-      # Touch of the Grave among the pushed rows no generator read. A push it
-      # cannot read fails this step rather than leaving the build shipped-only.
-      # Since 70938 wago lists a push's values only on some locales' copies (every enUS
-      # entry carries none, issue #27), so `fetch` also reads the values other locales
-      # carry: the spell side's looked up one record at a time from the enUS statuses
-      # into raw/wago-push/values.json, and ItemSparse's and Item's crawled into
-      # raw/wago-push/items.json (pipeline.item_push, layered last over the item tables),
-      # both committed. When wago's totals are the committed hotfix-push.json's, nothing
-      # is crawled or looked up at all.
-      # The push read is saved in builds/<build>/raw/wago-push/entries.json, which
-      # the commit step's `git add builds` commits (a .gitignore exception), so the
-      # next run starts from it (pipeline/hotfix_push_store.py).
-      # That commit is the job's last step, so a later step failing lost a finished
-      # crawl (run 42739221308: 66 minutes, then normalize failed). The fetch also
-      # keeps a copy in data/.wago-push-cache (HOTFIX_PUSH_CACHE), saved with
-      # actions/cache straight after it whatever happens next and restored here, so
-      # a rerun of a build with no committed file starts from the last finished crawl.
-      # A build's shipped DB2 tables never change and the hotfixed exports carry a
-      # max-age and Last-Modified (pipeline/wago_tables.py): the table cache is shared
-      # with bis.yml and engine.yml, so each table is downloaded once, not once a run.
-      - name: Restore the wago.tools table cache
+      # Configs, archive indexes and fetched files are content-addressed and never change;
+      # a build's encoding and root are kept until a run for another build prunes them
+      # (pipeline/blizzard_cdn.py). Shared with bis.yml, engine.yml and client.yml.
+      - name: Restore the Blizzard CDN cache
         uses: actions/cache/restore@v4
         with:
-          path: data/.wago-table-cache
-          key: wago-tables-${{ github.run_id }}-${{ github.run_attempt }}
-          restore-keys: wago-tables-
-      - name: Restore the saved hotfix push
-        uses: actions/cache/restore@v4
-        with:
-          path: data/.wago-push-cache
-          key: wago-push-${{ inputs.product }}-${{ github.run_id }}-${{ github.run_attempt }}
-          restore-keys: wago-push-${{ inputs.product }}-
+          path: data/.cdn-cache
+          key: cdn-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: cdn-
+      # `fetch` reads the build's tables off the CDN, decodes the hotfix push Raidbots'
+      # DBCache.bin carries when its header names this build into
+      # builds/<build>/raw/raidbots/push.json (committed, so bis.yml and engine.yml layer
+      # the same push), and layers it: the spell-side tables in place
+      # (pipeline/hotfix_push.py's rule) and the item pair into raw/wago-hotfixes/ for the
+      # hotfix merge. A build whose push is not in Raidbots' cache keeps the push it has
+      # committed (1.60.1.70938's, read from wago.tools before 2026-11-18).
       - name: Fetch build
         env:
           PRODUCT: ${{ inputs.product }}
           BUILD_IN: ${{ inputs.build }}
           ALLOW_SHRINK: ${{ inputs.allow_shrink }}
-          HOTFIX_PUSH_CACHE: .wago-push-cache
         run: |
           # A deliberate re-baseline (dropping rows on purpose) passes --allow-shrink
           # to every gated stage below; the default keeps the no-shrink gates armed.
@@ -258,18 +236,16 @@ jobs:
           BUILD=$(uv run python -m pipeline fetch "${ARGS[@]}" | tail -1)
           echo "BUILD=$BUILD" >> "$GITHUB_ENV"
           echo "PRODUCT=$PRODUCT" >> "$GITHUB_ENV"
-      - name: Save the hotfix push
-        if: always() && hashFiles('data/.wago-push-cache/**') != ''
+      - name: Save the Blizzard CDN cache
+        if: always() && hashFiles('data/.cdn-cache/**') != ''
+        run: |
+          [ -n "$BUILD" ] && uv run python -m pipeline cdn-prune --build "$BUILD" || true
+          du -sh .cdn-cache || true
+      - if: always() && hashFiles('data/.cdn-cache/**') != ''
         uses: actions/cache/save@v4
         with:
-          path: data/.wago-push-cache
-          key: wago-push-${{ inputs.product }}-${{ github.run_id }}-${{ github.run_attempt }}
-      - name: Save the wago.tools table cache
-        if: always() && hashFiles('data/.wago-table-cache/**') != ''
-        uses: actions/cache/save@v4
-        with:
-          path: data/.wago-table-cache
-          key: wago-tables-${{ github.run_id }}-${{ github.run_attempt }}
+          path: data/.cdn-cache
+          key: cdn-${{ github.run_id }}-${{ github.run_attempt }}
       # A build directory that has never been built starts with none of the
       # nightly fill-in caches (bis.yml's quest-levels, item-sources and
       # loot-merge commit them under raw/ over many nights) nor the hotfix
@@ -302,15 +278,14 @@ jobs:
             done
           done
       # Wowhead's Forever gear planner carries the items Blizzard ships as hotfixes,
-      # which never reach the client files wago exports (4,712 of 11,239 items on
+      # which never reach the client's shipped files (4,712 of 11,239 items on
       # 2026-09-27). fetch-wowhead merges the live feed over the seeded
       # raw/wowhead/items.json, carrying the saved records of every item the feed no
       # longer lists, and refuses only a carried catalogue under 90% of the seeded
       # supplement (records really lost); normalize, icons and simdb read the merged file.
       - run: uv run python -m pipeline fetch-wowhead --build "$BUILD"
-      # raw/wago-hotfixes/ (wago.tools' item pushes per build, newest first, which the
-      # hotfix merge reads) is written by `fetch` above; a second
-      # `fetch-wago-hotfixes` step here downloaded it all again until 2026-11-17.
+      # raw/wago-hotfixes/ (the item pair's pushed rows, which the hotfix merge reads)
+      # is written by `fetch` above, from Raidbots' cache.
       # The classic-db extracts are re-read from the pinned dump (one ~13 MB download),
       # so a column the reader gained since the seed was written reaches this build:
       # Wave 3 F12, 2026-10-31, item_template.bonding is the Binds line of every item

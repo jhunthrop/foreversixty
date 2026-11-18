@@ -116,7 +116,7 @@ jobs:
       - uses: astral-sh/setup-uv@v3
       - run: uv sync
         working-directory: data
-      # The build to follow and the wago.tools product its raw tables come
+      # The build to follow and the TACT product its raw tables come
       # from, read the way bis.yml's identity step and data.yml's fetch do.
       - name: build identity
         id: identity
@@ -154,34 +154,33 @@ jobs:
             echo "skip=false" >> "$GITHUB_OUTPUT"
           fi
       # The raw tables are not committed; the relic mods and the set rows
-      # are generated from them. They come from the wago.tools table cache that
-      # data.yml and bis.yml share (pipeline/wago_tables.py), so a follow downloads
+      # are generated from them. They come off Blizzard's CDN through the cache
+      # data.yml and bis.yml share (pipeline/blizzard_cdn.py), so a follow downloads
       # only what the cache lacks. `fetch --offline-push` layers the hotfix push
-      # committed under raw/wago-push/ (the one hotfix-push.json records) into them,
-      # so relicmods, periodiccrit and eureka read the server's rows without the
-      # follow reading wago's hotfix pages again.
-      - name: Restore the wago.tools table cache
+      # committed under raw/ (the one hotfix-push.json records) into them, so
+      # relicmods, periodiccrit and eureka read the server's rows without the follow
+      # reading Raidbots' cache again.
+      - name: Restore the Blizzard CDN cache
         if: steps.inputs.outputs.skip != 'true'
         uses: actions/cache/restore@v4
         with:
-          path: data/.wago-table-cache
-          key: wago-tables-${{ github.run_id }}-${{ github.run_attempt }}
-          restore-keys: wago-tables-
+          path: data/.cdn-cache
+          key: cdn-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: cdn-
       - name: fetch the build's raw tables
         if: steps.inputs.outputs.skip != 'true'
         working-directory: data
         env:
           BUILD: ${{ steps.identity.outputs.build }}
           PRODUCT: ${{ steps.identity.outputs.product }}
-          WAGO_TABLE_CACHE: .wago-table-cache
-          WAGO_REQUEST_BUDGET: '500'
+          FOREVER_CDN_CACHE: .cdn-cache
         run: uv run python -m pipeline fetch --product "$PRODUCT" --build "$BUILD" --offline-push
-      - name: Save the wago.tools table cache
-        if: always() && steps.inputs.outputs.skip != 'true' && hashFiles('data/.wago-table-cache/**') != ''
+      - name: Save the Blizzard CDN cache
+        if: always() && steps.inputs.outputs.skip != 'true' && hashFiles('data/.cdn-cache/**') != ''
         uses: actions/cache/save@v4
         with:
-          path: data/.wago-table-cache
-          key: wago-tables-${{ github.run_id }}-${{ github.run_attempt }}
+          path: data/.cdn-cache
+          key: cdn-${{ github.run_id }}-${{ github.run_attempt }}
       # The script, not `make follow`: make turns every failure into 2 and
       # the verdict lives in the exit code (0 clean, 3 review, 1 failure).
       - name: follow the build

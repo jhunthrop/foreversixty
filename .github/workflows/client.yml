@@ -1,7 +1,7 @@
 # .github/workflows/client.yml
 #
-# The client watcher. Every morning it asks wago.tools for the newest World of
-# Warcraft: Forever client build (data/pipeline/clientwatch.py, ruled by
+# The client watcher. Every morning it asks Blizzard's version service for the newest
+# World of Warcraft: Forever client build (data/pipeline/clientwatch.py, ruled by
 # data/curated/client.json: known product keys OR a 1.60+ version under any key,
 # so a product rename or a launch renumbering is still found) and compares it with
 # web/src/data/active-build.json. When a newer build exists it:
@@ -20,11 +20,12 @@
 #
 # Scheduled before the other nightlies (addon-data-release 05:00, bis 06:23,
 # web's lhci 07:15 UTC) so they run against the new build. Dispatch with `build`
-# (and `product` when wago lists it under a key the config does not know) to move
+# (and `product` when Blizzard serves it under a key the config does not know) to move
 # to a specific build by hand; `inspect` stops before anything is committed.
 #
-#   push     -- when no newer build exists: asks whether the server pushed hotfixes for
-#               the active build since it was layered (pipeline push-check) and, if so,
+#   push     -- when no newer build exists: asks whether Raidbots' DBCache.bin holds a
+#               newer hotfix push for the active build than the one committed (pipeline
+#               push-check) and, if so,
 #               runs data.yml's fetch job for the active build again (refetch) and then
 #               dispatches the engine follow (engine.yml; its green pin dispatches the
 #               ranking with force), so the new rows reach the picks without waiting for
@@ -46,11 +47,11 @@ on:
   workflow_dispatch:
     inputs:
       build:
-        description: 'activate this build (blank = the newest Forever build on wago.tools)'
+        description: 'activate this build (blank = the newest Forever build Blizzard serves)'
         required: false
         default: ''
       product:
-        description: 'wago.tools product key for that build (blank = the one the watcher found)'
+        description: 'TACT product for that build (blank = the one the watcher found)'
         required: false
         default: ''
       inspect:
@@ -80,7 +81,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v3
       - run: uv sync
-      - name: the newest Forever build on wago.tools
+      - name: the newest Forever build Blizzard serves
         id: check
         run: uv run python -m pipeline client-check
       - name: decide
@@ -94,18 +95,14 @@ jobs:
           OUT_OF_ORDER: ${{ steps.check.outputs.out_of_order }}
           BLIZZARD_BUILD: ${{ steps.check.outputs.blizzard_build }}
           BLIZZARD_PRODUCT: ${{ steps.check.outputs.blizzard_product }}
-          WAGO_BEHIND: ${{ steps.check.outputs.wago_behind }}
           ASK_BUILD: ${{ inputs.build }}
           ASK_PRODUCT: ${{ inputs.product }}
         run: |
           if [ "$UNMATCHED" != "[]" ] && [ -n "$UNMATCHED" ]; then
-            echo "::warning title=unclaimed newer client builds::wago.tools lists builds newer than $ACTIVE that curated/client.json neither claims nor ignores: $UNMATCHED -- if one is Forever, add its product to client.json"
+            echo "::warning title=unclaimed newer client builds::Blizzard serves builds newer than $ACTIVE that curated/client.json neither claims nor ignores: $UNMATCHED -- if one is Forever, add its product to client.json"
           fi
           if [ "$OUT_OF_ORDER" != "[]" ] && [ -n "$OUT_OF_ORDER" ]; then
-            echo "::warning title=Forever build numbered below the active one::wago.tools ingested Forever builds after $ACTIVE whose version is not above it: $OUT_OF_ORDER -- a renumbering down is never activated by the watcher; dispatch client with build=<version> to move to it by hand"
-          fi
-          if [ "$WAGO_BEHIND" = true ]; then
-            echo "::warning title=Blizzard shipped a client wago.tools has not exported::Blizzard serves $BLIZZARD_BUILD on $BLIZZARD_PRODUCT; wago.tools' newest Forever export is ${FOUND_BUILD:-none}. The move waits for the export (the fetch reads wago's tables); nothing to do but check again tomorrow."
+            echo "::warning title=Forever build numbered below the active one::Blizzard serves Forever builds after $ACTIVE whose version is not above it: $OUT_OF_ORDER -- a renumbering down is never activated by the watcher; dispatch client with build=<version> to move to it by hand"
           fi
           build="$FOUND_BUILD"; product="$FOUND_PRODUCT"; newer="$NEWER"; resume=false
           if [ -n "$ASK_BUILD" ]; then
@@ -134,7 +131,7 @@ jobs:
           if [ "$newer" = true ]; then
             echo "::notice title=new Forever client::$build ($product) is newer than the active $ACTIVE; fetch needed: $needs_fetch"
           else
-            echo "the active build $ACTIVE is the newest Forever build wago.tools lists ($FOUND_BUILD)"
+            echo "the active build $ACTIVE is the newest Forever build Blizzard serves ($FOUND_BUILD)"
           fi
 
   fetch:
@@ -149,9 +146,9 @@ jobs:
 
   # A new hotfix push for the ACTIVE build. Blizzard changes most Forever spells by
   # server push, which no client build carries (pipeline/hotfix_push.py layers it
-  # into the raw tables at fetch time). push-check compares wago.tools' entry totals
-  # for the build with the committed data/builds/<build>/hotfix-push.json (about 15
-  # requests); when they moved, refetch runs data.yml's fetch job for the active
+  # into the raw tables at fetch time). push-check decodes Raidbots' DBCache.bin (one
+  # conditional request) and compares the active build's push with the committed
+  # data/builds/<build>/raw/raidbots/push.json; when they differ, refetch runs data.yml's fetch job for the active
   # build, which re-layers the push, regenerates every output and commits it as
   # forever-data-bot. Its new hotfix-push.json moves engine.yml's follow hash, so the
   # 05:07 follow regenerates the fork from it. Skipped while a newer build moves in.
@@ -160,8 +157,10 @@ jobs:
     needs: watch
     if: needs.watch.outputs.newer != 'true' && inputs.inspect != true
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 30
     permissions: { contents: read, actions: read }
+    env:
+      FOREVER_CDN_CACHE: .cdn-cache
     outputs:
       moved: ${{ steps.check.outputs.moved }}
       product: ${{ steps.check.outputs.product }}
@@ -171,6 +170,14 @@ jobs:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v3
       - run: uv sync
+      # push-check reads the build's DB2 headers and definitions off the CDN to decode
+      # the cache; data.yml's CDN cache has them.
+      - name: Restore the Blizzard CDN cache
+        uses: actions/cache/restore@v4
+        with:
+          path: data/.cdn-cache
+          key: cdn-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: cdn-
       - name: has the server pushed since the active build was layered?
         id: check
         env:
@@ -240,7 +247,7 @@ jobs:
           DATA_STATE: ${{ needs.push.outputs.data_state }}
         run: |
           if [ "$MOVED" = true ]; then
-            echo "::warning title=hotfix push not layered::wago.tools lists a hotfix push for $ACTIVE that is not layered, and the data workflow is $DATA_STATE"
+            echo "::warning title=hotfix push not layered::Raidbots' cache holds a hotfix push for $ACTIVE that is not layered, and the data workflow is $DATA_STATE"
             tools/client-alert.sh push "$ACTIVE"
           else
             tools/client-alert.sh push-layered "$ACTIVE"
@@ -286,6 +293,13 @@ jobs:
       # The gate's vitest run, the same install web.yml's build job makes.
       - run: npm ci
         working-directory: web
+      # raid-bosses --fetch reads a few client tables off the CDN; data.yml's cache has them.
+      - name: Restore the Blizzard CDN cache
+        uses: actions/cache/restore@v4
+        with:
+          path: data/.cdn-cache
+          key: cdn-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: cdn-
       - run: git config user.name forever-client-bot && git config user.email bot@foreversixty.gg
       # On a failure the script writes the step, the reason and the hand command that
       # finishes the move to this run's summary (and an error annotation).
@@ -379,13 +393,13 @@ jobs:
         run: |
           redo="gh workflow run client.yml -f build=${BUILD:-<build>}${PRODUCT:+ -f product=$PRODUCT}"
           if [ "$WATCH" = failure ]; then
-            step="watch: the newest Forever build on wago.tools (pipeline client-check)"
-            reason="client-check failed: wago.tools or Blizzard's version service did not answer, or curated/client.json did not load (its log names which)"
+            step="watch: the newest Forever build Blizzard serves (pipeline client-check)"
+            reason="client-check failed: Blizzard's version service did not answer, or curated/client.json did not load (its log names which)"
             hand="nothing has moved; the next 03:41 UTC run retries, or once the cause is fixed: gh workflow run client.yml"
           else
             step="fetch: data.yml's fetch of ${BUILD} (${PRODUCT})"
-            reason="data.yml's fetch job failed, so ${BUILD}'s tables were not committed and nothing moved; its log and summary name the gate (a shrunken catalogue, a truncated ItemSparse export, a wago.tools error)"
-            hand="gh workflow run data.yml -f product=${PRODUCT:-<wago product key>} -f build=${BUILD} (add -f allow_shrink=true only for a deliberate re-baseline), then ${redo}"
+            reason="data.yml's fetch job failed, so ${BUILD}'s tables were not committed and nothing moved; its log and summary name the gate (a shrunken catalogue, a truncated ItemSparse table, a CDN error)"
+            hand="gh workflow run data.yml -f product=${PRODUCT:-wowf} -f build=${BUILD} (add -f allow_shrink=true only for a deliberate re-baseline), then ${redo}"
           fi
           {
             echo "## Client move to ${BUILD:-a new build} stopped"

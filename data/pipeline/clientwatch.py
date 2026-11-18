@@ -1,6 +1,9 @@
 """Which client build is the newest World of Warcraft: Forever build, and is it ours yet.
 
-wago.tools lists every Blizzard client it has ingested, grouped by product key. Forever's
+Blizzard's version service (`us.version.battle.net/<product>/versions`) names the
+build each product serves; `fetch_builds` asks it for every product
+`curated/client.json` lists (wago.tools' `/api/builds` was the source until wago
+refused this pipeline on 2026-11-17), in the shape the rules below read. Forever's
 builds have already moved between keys once (`wow_classic_beta` in September 2026,
 `wow_cn_beta` and `wowf` by October), and the version line may be renumbered when the
 game goes live, so the pick is made two ways at once, from `curated/client.json`:
@@ -41,7 +44,7 @@ from typing import Any
 
 import httpx
 
-from pipeline.wago_http import USER_AGENT, open_client
+from pipeline.wago_http import USER_AGENT
 
 CONFIG_PATH = Path(__file__).resolve().parents[1] / "curated" / "client.json"
 ACTIVE_BUILD_PATH = (
@@ -311,16 +314,18 @@ def _newest_first(builds: Iterable[Build]) -> tuple[Build, ...]:
     return tuple(sorted(builds, key=lambda b: b.key, reverse=True))
 
 
-def fetch_builds(client: httpx.Client | None = None) -> dict[str, Any]:
-    own = client is None
-    client = client or open_client()
-    try:
-        r = client.get("/api/builds")
-        r.raise_for_status()
-        return r.json()
-    finally:
-        if own:
-            client.close()
+def fetch_builds(
+    products: tuple[str, ...], client: httpx.Client | None = None
+) -> dict[str, Any]:
+    """The build Blizzard's version service names for each product, in wago's old
+    `/api/builds` shape (`{product: [{"version", "created_at"}]}`) that `check` reads.
+    The service has no ingest time, so `created_at` is empty."""
+    out: dict[str, Any] = {}
+    for product, text in fetch_blizzard_versions(products, client).items():
+        build = parse_blizzard_versions(product, text)
+        if build is not None:
+            out[product] = [{"version": build.version, "created_at": ""}]
+    return out
 
 
 def report(result: Check, now: datetime | None = None) -> dict[str, Any]:

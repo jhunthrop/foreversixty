@@ -216,6 +216,8 @@ STAT_AURAS: dict[int, str] = {
 #: conditional modifier like 168), 245 dispel-type duration (1294777 poison,
 #: 1306607 disease, like 232) and 557 percentage ranged attack speed (the
 #: quivers' 14824 to 14828 "Haste", which the engine models itself, like 140).
+#: 172 is mounted speed too (MOD_MOUNTED_SPEED_NOT_STACK): the push Raidbots'
+#: 70959 cache carries moves 1314065 "Mount Speed" from aura 32 to 172.
 IGNORED_AURAS = frozenset(
     {
         32,
@@ -276,6 +278,7 @@ IGNORED_AURAS = frozenset(
         155,
         161,
         168,
+        172,
         180,
         187,
         194,

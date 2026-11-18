@@ -40,10 +40,7 @@ import re
 from dataclasses import dataclass
 from pathlib import Path
 
-import httpx
-
-from pipeline.wago import download_table
-from pipeline.wago_http import open_client
+from pipeline.cdn_tables import fetch_tables
 
 #: The client tables this generator reads, fetched into `--raw`.
 TABLES: tuple[str, ...] = (
@@ -138,16 +135,9 @@ class GuildEventsError(SystemExit):
     """The client tables say something this generator will not publish."""
 
 
-def fetch(build: str, raw: Path, client: httpx.Client | None = None) -> None:
-    """Download TABLES for build into raw (a directory of its own)."""
-    own = client is None
-    client = client or open_client()
-    try:
-        for table in TABLES:
-            download_table(table, build, raw, client)
-    finally:
-        if own:
-            client.close()
+def fetch(build: str, raw: Path) -> None:
+    """Read TABLES for build off Blizzard's CDN into raw (a directory of its own)."""
+    fetch_tables(build, TABLES, raw)
 
 
 def read_rows(raw: Path, table: str) -> list[dict[str, str]]:

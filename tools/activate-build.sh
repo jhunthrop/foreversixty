@@ -5,7 +5,7 @@
 # has already landed under data/builds/<build>/. This is the scripted form of the
 # 2026-10-14 move to 1.60.1.70374 (design/reviews/2026-10-14-build-70374-move.md) and of
 # step 10 of data/README.md's "New build checklist"; .github/workflows/client.yml runs it
-# the morning a new World of Warcraft: Forever client appears on wago.tools.
+# the morning Blizzard's version service names a new World of Warcraft: Forever client.
 #
 #   1. web/src/data/active-build.json names the new build.
 #   2. The ranking's outputs that no fetch produces are carried forward from the build
@@ -46,7 +46,7 @@
 # On a failure the script names the step, the reason (the step's output, or the failing
 # tests) and the exact hand command that finishes or redoes the move: on stderr,
 # and in the run summary and an error annotation under GitHub Actions. client.yml passes
-# PRODUCT (the wago.tools key) so the hand commands name it.
+# PRODUCT (the TACT product, wowf) so the hand commands name it.
 set -euo pipefail
 
 usage() { echo "usage: $0 <build> [--no-commit [--no-gate] | --no-publish] [--no-ranking]" >&2; exit 2; }
@@ -236,7 +236,7 @@ if [ "$NEW" = "$ACTIVE" ]; then resume_move; fi
 
 NEW_DIR="data/builds/$NEW"; OLD_DIR="data/builds/$ACTIVE"
 step "the fetched tables for $NEW" \
-  "gh workflow run data.yml -f product=${PRODUCT:-<wago product key>} -f build=$NEW, then $REDO"
+  "gh workflow run data.yml -f product=${PRODUCT:-wowf} -f build=$NEW, then $REDO"
 # spelltips/: every guide's spell, racial and enchant tooltips (70755 went live without it
 # on 2026-11-03 and no spell on a guide opened a tooltip).
 # raid-bosses.json: the first raid tier's bosses and loot (pipeline raid-bosses), which step 4c
@@ -264,7 +264,7 @@ python3 -c 'import json, sys; sys.exit(not json.load(open(sys.argv[1])).get("hot
 # (design/reviews/2026-10-30-70707-dps-drop.md). The fix is a new fetch, which carries
 # the lost items forward from raw/wowhead/items.json.
 step "checking $NEW's items against $ACTIVE's floors (pipeline build-floors)" \
-  "gh workflow run data.yml -f product=${PRODUCT:-<wago product key>} -f build=$NEW (its fetch-wowhead step carries the items the live feed lost), then $REDO"
+  "gh workflow run data.yml -f product=${PRODUCT:-wowf} -f build=$NEW (its fetch-wowhead step carries the items the live feed lost), then $REDO"
 run in_dir data uv run python -m pipeline build-floors --build "$NEW" --against "$ACTIVE"
 
 # The Interface number Blizzard's TOC convention gives this version (1.60.1 -> 16001).
@@ -404,7 +404,7 @@ MSG="$(mktemp)"
 cat > "$MSG" <<EOF
 chore(client): activate build $NEW
 
-The client watcher (client.yml) found $NEW on wago.tools, newer than the
+The client watcher (client.yml) found $NEW on Blizzard's version service, newer than the
 active $ACTIVE, and data.yml's fetch landed its tables. This commit moves
 the site, the addon and the guides to it: active-build.json, the build's
 weights copy, every guide's FS1 code carried onto the new trees by talent

@@ -1,0 +1,11 @@
+{
+  "_doc": "Build and CDN config hashes for Forever builds Blizzard's version service (us.version.battle.net/wowf/versions) no longer names in any region; pipeline.blizzard_cdn reads a build the service still names from the service itself. Add a build here before it rolls off the service if it may need refetching.",
+  "1.60.1.70938": {
+    "build_config": "3627b099867bfde3e37a17cf44f69cdc",
+    "cdn_config": "4831465d4b6a7db3302338ab0f1ac231"
+  },
+  "1.60.1.70959": {
+    "build_config": "ad887adcf63b8746155dd40e1930b80f",
+    "cdn_config": "4831465d4b6a7db3302338ab0f1ac231"
+  }
+}

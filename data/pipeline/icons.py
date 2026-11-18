@@ -20,11 +20,15 @@ import json
 import logging
 import os
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import httpx
 from PIL import Image
 
-from pipeline.wago_http import USER_AGENT, open_client
+from pipeline.wago_http import USER_AGENT
+
+if TYPE_CHECKING:
+    from pipeline.casc import FileSource
 
 logger = logging.getLogger(__name__)
 
@@ -193,7 +197,7 @@ def download_icons(
     wanted: dict[int, str],
     out_dir: Path,
     cache_dir: Path = CACHE_DIR,
-    client: httpx.Client | None = None,
+    source: FileSource | None = None,
     *,
     version: str,
 ) -> int:
@@ -210,50 +214,43 @@ def download_icons(
     # would make the two modules import each other at load time.
     from pipeline.casc import CascMissing, CascMissingReason, fetch_casc_file
 
-    own = client is None
-    if client is None:
-        client = open_client()
     out_dir.mkdir(parents=True, exist_ok=True)
     cache_dir.mkdir(parents=True, exist_ok=True)
     _warn_about_name_collisions(wanted)
     written = 0
-    try:
-        for file_id, name in sorted(wanted.items()):
-            target = out_dir / f"{name}.webp"
-            if target.exists():
-                continue
-            try:
-                blp = fetch_casc_file(
-                    file_id, version, cache_dir=cache_dir, client=client, suffix=".blp"
+    for file_id, name in sorted(wanted.items()):
+        target = out_dir / f"{name}.webp"
+        if target.exists():
+            continue
+        try:
+            blp = fetch_casc_file(
+                file_id, version, cache_dir=cache_dir, source=source, suffix=".blp"
+            )
+        except CascMissing as error:
+            # CascMissing covers both a 404 and an empty body; branch on
+            # its structured `reason` rather than its message text, so a
+            # reword of either message in casc.py can't silently misroute
+            # this. The wording below is this module's own, kept
+            # byte-for-byte what it was before the migration because
+            # tests/test_icons.py matches on the empty-body phrasing
+            # specifically.
+            if error.reason is CascMissingReason.EMPTY:
+                logger.warning(
+                    "icon %s (%s) is empty in CASC at version %s; skipping",
+                    file_id,
+                    name,
+                    version,
                 )
-            except CascMissing as error:
-                # CascMissing covers both a 404 and an empty body; branch on
-                # its structured `reason` rather than its message text, so a
-                # reword of either message in casc.py can't silently misroute
-                # this. The wording below is this module's own, kept
-                # byte-for-byte what it was before the migration because
-                # tests/test_icons.py matches on the empty-body phrasing
-                # specifically.
-                if error.reason is CascMissingReason.EMPTY:
-                    logger.warning(
-                        "icon %s (%s) is empty in CASC at version %s; skipping",
-                        file_id,
-                        name,
-                        version,
-                    )
-                else:
-                    logger.warning(
-                        "icon %s (%s) is not in CASC at version %s; skipping",
-                        file_id,
-                        name,
-                        version,
-                    )
-                continue
-            _atomic_write(target, blp_to_webp(blp))
-            written += 1
-    finally:
-        if own:
-            client.close()
+            else:
+                logger.warning(
+                    "icon %s (%s) is not in CASC at version %s; skipping",
+                    file_id,
+                    name,
+                    version,
+                )
+            continue
+        _atomic_write(target, blp_to_webp(blp))
+        written += 1
     return written
 
 
@@ -467,7 +464,11 @@ def icons_for_build(
     cache_dir: Path = CACHE_DIR,
     client: httpx.Client | None = None,
     curated_dir: Path = Path("curated"),
+    source: FileSource | None = None,
 ) -> int:
+    """The build's icons: the client's own art by file data id through `source`
+    (the build on Blizzard's CDN when None), wowhead's hosted copy through `client`
+    for a name the client lacks."""
     from pipeline.csvio import read_csv
 
     build_dir = root / build
@@ -517,7 +518,7 @@ def icons_for_build(
     # classic_ability_druid_demoralizingroar) falls back to wowhead's copy too.
     zamimg_names = not_in_client(supplement_names | simbuff_icon_names(build_dir), by_name)
 
-    written = download_icons(wanted, build_dir / "icons", cache_dir, client, version=build)
+    written = download_icons(wanted, build_dir / "icons", cache_dir, source, version=build)
     written += download_zamimg_icons(zamimg_names, build_dir / "icons", cache_dir, client)
 
     # Persist the same rotation-icon resolution rotation_icon_names just did

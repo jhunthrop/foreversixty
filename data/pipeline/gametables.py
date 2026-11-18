@@ -54,13 +54,10 @@ import shutil
 from dataclasses import dataclass
 from pathlib import Path
 
-import httpx
-
-from pipeline.casc import fetch_casc_file
+from pipeline.casc import FileSource, fetch_casc_file
+from pipeline.cdn_tables import fetch_tables
 from pipeline.icons import CACHE_DIR, _atomic_write
 from pipeline.manifest import refresh_manifest
-from pipeline.wago import download_table
-from pipeline.wago_http import open_client
 
 logger = logging.getLogger(__name__)
 
@@ -141,7 +138,7 @@ def parse_game_table(name: str, text: str) -> GameTable:
     return GameTable(name=name, columns=header, rows=rows)
 
 
-def write_expected_stat(build: str, out: Path, client: httpx.Client) -> Path:
+def write_expected_stat(build: str, out: Path) -> Path:
     """Fetch `PlayerExpectedStat` for the build into `out` as
     EXPECTED_STAT_FILE, checking it still carries the columns the engine
     reads."""
@@ -150,7 +147,7 @@ def write_expected_stat(build: str, out: Path, client: httpx.Client) -> Path:
     # EXPECTED_STAT_FILE are the same entry.
     scratch = out / "_download"
     try:
-        downloaded = download_table(EXPECTED_STAT_TABLE, build, scratch, client)
+        (downloaded,) = fetch_tables(build, [EXPECTED_STAT_TABLE], scratch)
         header = downloaded.read_text(encoding="utf-8").split("\n", 1)[0].split(",")
         missing = [column for column in EXPECTED_STAT_COLUMNS if column not in header]
         if missing:
@@ -166,7 +163,7 @@ def write_game_tables(
     build: str,
     root: Path = Path("builds"),
     cache_dir: Path = CACHE_DIR,
-    client: httpx.Client | None = None,
+    source: FileSource | None = None,
 ) -> Path:
     """Fetch this build's game tables and write them under its build directory.
 
@@ -185,21 +182,12 @@ def write_game_tables(
     # leave a stale file behind, exactly as simconst does for spellconst/.
     shutil.rmtree(out, ignore_errors=True)
     out.mkdir(parents=True, exist_ok=True)
-    own = client is None
-    if client is None:
-        client = open_client()
-    try:
-        for name, file_id in sorted(GAME_TABLE_IDS.items()):
-            data = fetch_casc_file(
-                file_id, build, cache_dir=cache_dir, client=client, suffix=".txt"
-            )
-            table = parse_game_table(name, data.decode("utf-8"))
-            logger.info("%s: %d columns, %d rows", name, len(table.columns), len(table.rows))
-            _atomic_write(out / name, data)
-        write_expected_stat(build, out, client)
-    finally:
-        if own:
-            client.close()
+    for name, file_id in sorted(GAME_TABLE_IDS.items()):
+        data = fetch_casc_file(file_id, build, cache_dir=cache_dir, source=source, suffix=".txt")
+        table = parse_game_table(name, data.decode("utf-8"))
+        logger.info("%s: %d columns, %d rows", name, len(table.columns), len(table.rows))
+        _atomic_write(out / name, data)
+    write_expected_stat(build, out)
     refresh_manifest(build_dir)
     logger.info("wrote %s: %d game tables and %s", out, len(GAME_TABLE_IDS), EXPECTED_STAT_FILE)
     return out

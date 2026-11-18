@@ -65,8 +65,8 @@ from typing import Any
 
 import httpx
 
+from pipeline.client_tables import TABLES
 from pipeline.csvio import read_csv
-from pipeline.wago import TABLES
 from pipeline.wago_hotfixes import TABLES as ITEM_HOTFIX_TABLES
 from pipeline.wago_http import open_client
 

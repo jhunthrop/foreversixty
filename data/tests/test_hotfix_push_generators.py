@@ -134,62 +134,58 @@ def test_trainables_follow_a_skill_line_row_the_push_removes_or_adds(mage_root):
 # --- the CLI: fetch never leaves a build shipped-only ------------------------
 
 
-def test_fetch_layers_the_push_and_the_item_pushes_after_the_download(monkeypatch, tmp_path):
-    """Sim-accuracy round 11, items lane: a local `fetch` + `normalize` without
-    `fetch-wago-hotfixes` lost 165 hotfix-only items (gated as a shrink) and put
-    404 more on wowhead or classic-db stats. The item pair's pushes are part of
-    the fetched build, the same as every other table's."""
-    calls: list[tuple] = []
-    monkeypatch.setattr(
-        "pipeline.wago.fetch_build",
-        lambda p, b: calls.append(("fetch", p, b)) or tmp_path / BUILD,
-    )
-    monkeypatch.setattr(
-        "pipeline.hotfix_push.layer_hotfix_push",
-        lambda build, offline=False, full=False: (
-            calls.append(("layer", build, offline, full)) or {"tables": {}}
-        ),
-    )
-    monkeypatch.setattr(
-        "pipeline.wago_hotfixes.fetch_wago_hotfixes",
-        lambda build, product: calls.append(("item-pushes", build, product)) or {},
-    )
-    monkeypatch.setattr(
-        "pipeline.item_push.fetch_item_push",
-        lambda build, full=False: calls.append(("item-push-page", build, full)) or {},
-    )
-    cli.main(["fetch", "--product", "wowf", "--build", BUILD])
-    assert calls == [
-        ("fetch", "wowf", BUILD),
-        ("layer", BUILD, False, False),
-        ("item-pushes", BUILD, "wowf"),
-        ("item-push-page", BUILD, False),
-    ]
-
-
-def test_fetch_prints_the_build_last_after_the_item_pushes(monkeypatch, tmp_path, capsys):
-    """data.yml reads the fetched build from the last line `fetch` prints. The
-    pre-launch refresh (2026-11-03) read "fetch-wago-hotfixes Item: 136 rows"
-    there instead and failed: the item layer's counts go to the log."""
-
+def _fake_fetch(monkeypatch, tmp_path, calls: list[tuple], layered: dict | None):
     def fetch_build(product, build):
+        calls.append(("tables", product, build))
         print(build)
         return tmp_path / BUILD
 
-    monkeypatch.setattr("pipeline.wago.fetch_build", fetch_build)
+    monkeypatch.setattr("pipeline.cdn_tables.fetch_build", fetch_build)
+    monkeypatch.setattr(
+        "pipeline.raidbots_hotfixes.save_push", lambda build: calls.append(("save", build))
+    )
+    monkeypatch.setattr(
+        "pipeline.raidbots_hotfixes.layer",
+        lambda build: calls.append(("layer", build)) or layered,
+    )
     monkeypatch.setattr(
         "pipeline.hotfix_push.layer_hotfix_push",
-        lambda build, offline=False, full=False: {"tables": {}},
+        lambda build, offline=False: calls.append(("wago-layer", build, offline)) or {"tables": {}},
     )
-    monkeypatch.setattr(
-        "pipeline.wago_hotfixes.fetch_wago_hotfixes",
-        lambda build, product: {"Item": 136, "ItemSparse": 165},
-    )
-    monkeypatch.setattr(
-        "pipeline.item_push.fetch_item_push",
-        lambda build, full=False: {"Item": 12, "ItemSparse": 2105},
-    )
+
+
+def test_fetch_reads_the_cdn_then_saves_and_layers_raidbots_push(monkeypatch, tmp_path):
+    """The tables come off the CDN, the push from Raidbots' cache; a build is never
+    left shipped-only when a push is saved for it."""
+    calls: list[tuple] = []
+    _fake_fetch(monkeypatch, tmp_path, calls, {"tables": {}})
     cli.main(["fetch", "--product", "wowf", "--build", BUILD])
+    assert calls == [("tables", "wowf", BUILD), ("save", BUILD), ("layer", BUILD)]
+
+
+def test_fetch_offline_layers_the_saved_push_without_reading_raidbots(monkeypatch, tmp_path):
+    calls: list[tuple] = []
+    _fake_fetch(monkeypatch, tmp_path, calls, {"tables": {}})
+    cli.main(["fetch", "--build", BUILD, "--offline-push"])
+    assert calls == [("tables", "wowf", BUILD), ("layer", BUILD)]
+
+
+def test_fetch_falls_back_to_the_committed_wago_push(monkeypatch, tmp_path):
+    """1.60.1.70938's push was read from wago.tools and is committed under raw/wago-push/."""
+    store = tmp_path / BUILD / "raw" / "wago-push" / "entries.json"
+    store.parent.mkdir(parents=True)
+    store.write_text("{}")
+    calls: list[tuple] = []
+    _fake_fetch(monkeypatch, tmp_path, calls, None)
+    cli.main(["fetch", "--build", BUILD, "--offline-push"])
+    assert calls == [("tables", "wowf", BUILD), ("layer", BUILD), ("wago-layer", BUILD, True)]
+
+
+def test_fetch_prints_the_build_last(monkeypatch, tmp_path, capsys):
+    """data.yml reads the fetched build from the last line `fetch` prints; the
+    layer's counts go to the log."""
+    _fake_fetch(monkeypatch, tmp_path, [], {"tables": {"Spell": {"changed": 3}}})
+    cli.main(["fetch", "--build", BUILD])
     assert capsys.readouterr().out.splitlines()[-1] == BUILD
 
 
@@ -240,9 +236,9 @@ def test_simconst_drops_a_spell_the_push_removes(build_root):  # noqa: F811
 def test_push_check_writes_the_step_output(monkeypatch, tmp_path):
     output = tmp_path / "out"
     monkeypatch.setenv("GITHUB_OUTPUT", str(output))
-    monkeypatch.setattr("pipeline.hotfix_push.check_push", lambda build: True)
+    monkeypatch.setattr("pipeline.raidbots_hotfixes.push_moved", lambda build: True)
     cli.main(["push-check", "--build", BUILD])
     assert output.read_text() == "moved=true\n"
-    monkeypatch.setattr("pipeline.hotfix_push.check_push", lambda build: False)
+    monkeypatch.setattr("pipeline.raidbots_hotfixes.push_moved", lambda build: False)
     cli.main(["push-check", "--build", BUILD])
     assert output.read_text() == "moved=true\nmoved=false\n"

@@ -20,6 +20,7 @@ from pipeline.icons import (
     icons_for_build,
     supplement_icon_names,
 )
+from tests.cdn_fakes import FakeSource
 
 HERE = Path(__file__).parent
 WOWHEAD_FIXTURE = HERE / "fixtures" / "wowhead-gear-planner.js"
@@ -203,26 +204,23 @@ def test_icons_for_build_routes_a_client_owned_supplement_icon_through_casc(
     # test_icons_for_build_downloads_what_the_build_refers_to uses.
     (build_dir / "spellranks.json").write_text(json.dumps({"build": "1.0.0.1", "classes": {}}))
 
-    casc_calls: list[str] = []
     zamimg_calls: list[str] = []
 
     def handler(request: httpx.Request) -> httpx.Response:
-        if request.url.host == "wago.tools":
-            casc_calls.append(request.url.path)
-            return httpx.Response(200, content=make_blp2())
         zamimg_calls.append(request.url.path)
         return httpx.Response(200, content=make_jpeg())
 
-    client = httpx.Client(transport=httpx.MockTransport(handler), base_url="https://wago.tools")
+    source = FakeSource({1: make_blp2})
     written = icons_for_build(
         "1.0.0.1",
         root=tmp_path / "builds",
         cache_dir=tmp_path / "cache",
-        client=client,
+        client=httpx.Client(transport=httpx.MockTransport(handler)),
         curated_dir=tmp_path / "curated",
+        source=source,
     )
     assert written == 2
-    assert casc_calls == ["/api/casc/1"]  # the cloak, through CASC
+    assert source.calls == [1]  # the cloak, through CASC
     assert zamimg_calls == ["/images/wow/icons/large/inv_sword_36.jpg"]  # the sword, via zamimg
     assert (build_dir / "icons" / "inv_misc_cape_10.webp").exists()
     assert (build_dir / "icons" / "inv_sword_36.webp").exists()
@@ -255,6 +253,7 @@ def test_icons_for_build_is_unaffected_by_a_build_with_no_wowhead_payload(tmp_pa
         cache_dir=tmp_path / "cache",
         client=client,
         curated_dir=tmp_path / "curated",
+        source=FakeSource({1: make_blp2}),
     )
     assert written == 0  # nothing referenced by the (empty) talents/items JSON
     assert not (build_dir / "icons").exists() or list((build_dir / "icons").iterdir()) == []

@@ -272,22 +272,21 @@ jobs:
             echo "resume=false" >> "$GITHUB_OUTPUT"
           fi
       - uses: astral-sh/setup-uv@v3
-      # The raw tables the full loot rebuild below reads, kept between runs by data.yml
-      # and engine.yml too (pipeline/wago_tables.py): a build's shipped tables never
-      # change, so a night with the cache warm downloads none of them.
-      - name: Restore the wago.tools table cache
+      # The raw tables the full loot rebuild below reads come off Blizzard's CDN through
+      # the cache data.yml and engine.yml keep too (pipeline/blizzard_cdn.py): a build's
+      # files never change, so a night with the cache warm downloads none of them.
+      - name: Restore the Blizzard CDN cache
         if: steps.resume.outputs.resume != 'true'
         uses: actions/cache/restore@v4
         with:
-          path: data/.wago-table-cache
-          key: wago-tables-${{ github.run_id }}-${{ github.run_attempt }}
-          restore-keys: wago-tables-
+          path: data/.cdn-cache
+          key: cdn-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: cdn-
       - name: fill in quest levels and item sources from wowhead, then regenerate loot.json
         if: steps.resume.outputs.resume != 'true'
         working-directory: data
         env:
-          WAGO_TABLE_CACHE: .wago-table-cache
-          WAGO_REQUEST_BUDGET: '500'
+          FOREVER_CDN_CACHE: .cdn-cache
         run: |
           uv sync
           summary=$(uv run python -m pipeline quest-levels --build "${{ steps.identity.outputs.build }}" --engine ../.engine --max-pages 200 | tee /dev/stderr | grep -E '^quest-levels: [0-9]+/' | tail -1)
@@ -309,8 +308,8 @@ jobs:
           # newly resolve) even on a night the gated rebuild cannot run.
           uv run python -m pipeline loot-merge --build "${{ steps.identity.outputs.build }}" --engine ../.engine
           # loot.json is then rebuilt IN FULL from the client's raw tables,
-          # which are not committed (data.yml's fetch job downloads them from
-          # wago.tools) -- this supersedes the merge-only pass above with the
+          # which are not committed (data.yml's fetch job reads them off
+          # Blizzard's CDN) -- this supersedes the merge-only pass above with the
           # complete one (real ItemSparse-derived PvP ranks, real Map.csv
           # instance zones) whenever raw tables are healthy enough to fetch.
           # Only a night that filled in at least one quest level or item
@@ -327,10 +326,9 @@ jobs:
           # crawl keeps its place) and the picks below still run on the merge-only
           # loot.json. The first night wago is complete again, the full rebuild
           # happens on its own.
-          # The fetch layers the hotfix push committed under raw/wago-push/
-          # (--offline-push): data.yml owns reading wago's hotfix pages, and the
-          # nightly re-read them on every night that filled anything in. The product
-          # is the build's own (its manifest), not Classic Era's.
+          # The fetch layers the hotfix push committed under raw/ (--offline-push):
+          # data.yml owns reading Raidbots' cache. The product is the build's own
+          # (its manifest).
           build="${{ steps.identity.outputs.build }}"
           product=$(sed -n 's/.*"product"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "builds/$build/manifest.json")
           if [ "${quests_fetched:-0}" -gt 0 ] || [ "${items_fetched:-0}" -gt 0 ]; then
@@ -343,12 +341,12 @@ jobs:
           else
             echo "no quest level or item source filled in tonight; loot-merge's own loot.json stands"
           fi
-      - name: Save the wago.tools table cache
-        if: always() && steps.resume.outputs.resume != 'true' && hashFiles('data/.wago-table-cache/**') != ''
+      - name: Save the Blizzard CDN cache
+        if: always() && steps.resume.outputs.resume != 'true' && hashFiles('data/.cdn-cache/**') != ''
         uses: actions/cache/save@v4
         with:
-          path: data/.wago-table-cache
-          key: wago-tables-${{ github.run_id }}-${{ github.run_attempt }}
+          path: data/.cdn-cache
+          key: cdn-${{ github.run_id }}-${{ github.run_attempt }}
       - name: commit quest-levels.json, item-sources.json and loot.json if they changed
         if: steps.resume.outputs.resume != 'true'
         id: crawl

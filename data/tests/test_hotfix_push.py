@@ -20,6 +20,7 @@ import httpx
 import pytest
 
 from pipeline import hotfix_push
+from pipeline.client_tables import TABLES
 from pipeline.csvio import read_csv
 from pipeline.hotfix_push import (
     LAYER_RECORD,
@@ -41,7 +42,6 @@ from pipeline.hotfix_push import (
     read_push_record,
     search_terms,
 )
-from pipeline.wago import TABLES
 from pipeline.wago_hotfixes import TABLES as ITEM_HOTFIX_TABLES
 
 COLUMNS = ["ID", "EffectBasePointsF", "EffectMiscValue_0", "EffectMiscValue_1", "SpellID"]

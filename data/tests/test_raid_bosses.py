@@ -238,34 +238,32 @@ def test_write_then_check(tmp_path):
         write_raid_bosses(BUILD, check=True, **kwargs)
 
 
-def test_fetch_downloads_only_the_tables_raw_lacks(tmp_path):
+def test_fetch_downloads_only_the_tables_raw_lacks(tmp_path, monkeypatch):
     # activate-build.sh runs the step with --fetch when data.yml's fetch did not write the file.
-    import httpx
-
     root = _layout(tmp_path)
     raw = root / "builds" / BUILD / "raw"
     (raw / "DungeonEncounter.csv").unlink()
-    asked = []
-
-    def handler(request):
-        asked.append(request.url.path)
-        if "Journal" in request.url.path:
-            return httpx.Response(400, text="Table not found")
-        return httpx.Response(200, text="ID,Name_lang,MapID,OrderIndex\n1084,Onyxia,249,0\n")
-
-    client = httpx.Client(base_url="https://wago.tools", transport=httpx.MockTransport(handler))
     for journal in ("JournalInstance", "JournalEncounter", "JournalEncounterItem"):
         (raw / f"{journal}.csv").unlink(missing_ok=True)
-    fetched = fetch_missing_tables(BUILD, raw, client)
+    asked: list[tuple[str, list[str]]] = []
+
+    def fetch_tables(build, tables, dest):
+        asked.append((build, list(tables)))
+        for table in tables:
+            (dest / f"{table}.csv").write_text("ID\n")
+        return [dest / f"{t}.csv" for t in tables]
+
+    monkeypatch.setattr("pipeline.cdn_tables.fetch_tables", fetch_tables)
+    fetched = fetch_missing_tables(BUILD, raw)
     assert set(fetched) == {
         "DungeonEncounter",
         "JournalInstance",
         "JournalEncounter",
         "JournalEncounterItem",
     }
-    assert asked and all(p.startswith("/db2/") for p in asked)
-    assert (raw / "DungeonEncounter.csv").read_text().startswith("ID,")
-    assert fetch_missing_tables(BUILD, raw, client) == []
+    assert asked == [(BUILD, fetched)]
+    assert (raw / "DungeonEncounter.csv").read_text().startswith("ID")
+    assert fetch_missing_tables(BUILD, raw) == []
 
 
 def test_the_committed_build_carries_the_first_tier():

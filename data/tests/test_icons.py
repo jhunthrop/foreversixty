@@ -2,7 +2,6 @@ import json
 import struct
 from pathlib import Path
 
-import httpx
 from PIL import Image
 
 from pipeline.csvio import read_csv
@@ -22,6 +21,7 @@ from pipeline.icons import (
     spelltip_icon_names,
     wanted_icons,
 )
+from tests.cdn_fakes import FakeSource
 
 HERE = Path(__file__).parent
 
@@ -100,25 +100,17 @@ def test_blp_to_webp_is_deterministic():
     assert blp_to_webp(blp) == blp_to_webp(blp)
 
 
-def blp_transport(calls: list[str], missing: frozenset[int] = frozenset()) -> httpx.MockTransport:
-    def handler(request: httpx.Request) -> httpx.Response:
-        calls.append(request.url.path)
-        file_id = int(request.url.path.rsplit("/", 1)[-1])
-        if file_id in missing:
-            return httpx.Response(404, json={"errors": "Not found."})
-        return httpx.Response(200, content=make_blp2())
-
-    return httpx.MockTransport(handler)
+def blp_source(missing: frozenset[int] = frozenset(), ids=(132154, 132156)) -> FakeSource:
+    return FakeSource({i: make_blp2 for i in ids if i not in missing})
 
 
 def test_download_icons_writes_one_webp_per_name(tmp_path: Path):
-    calls: list[str] = []
-    client = httpx.Client(transport=blp_transport(calls), base_url="https://wago.tools")
+    source = blp_source()
     written = download_icons(
         {132154: "ability_golemthunderclap", 132156: "ability_hibernation"},
         tmp_path / "icons",
         cache_dir=tmp_path / "cache",
-        client=client,
+        source=source,
         version="1.0.0.1",
     )
     assert written == 2
@@ -126,38 +118,33 @@ def test_download_icons_writes_one_webp_per_name(tmp_path: Path):
         "ability_golemthunderclap.webp",
         "ability_hibernation.webp",
     ]
-    assert calls == ["/api/casc/132154", "/api/casc/132156"]
+    assert source.calls == [132154, 132156]
 
 
 def test_download_icons_skips_work_that_is_already_done(tmp_path: Path):
-    calls: list[str] = []
-    client = httpx.Client(transport=blp_transport(calls), base_url="https://wago.tools")
+    source = blp_source()
     args = ({132154: "ability_golemthunderclap"}, tmp_path / "icons")
-    kwargs = {"cache_dir": tmp_path / "cache", "client": client}
+    kwargs = {"cache_dir": tmp_path / "cache", "source": source}
     assert download_icons(*args, **kwargs, version="1.0.0.1") == 1
     assert download_icons(*args, **kwargs, version="1.0.0.1") == 0
-    assert calls == ["/api/casc/132154"]
+    assert source.calls == [132154]
 
 
 def test_download_icons_reuses_the_cache_when_the_output_is_gone(tmp_path: Path):
-    calls: list[str] = []
-    client = httpx.Client(transport=blp_transport(calls), base_url="https://wago.tools")
-    kwargs = {"cache_dir": tmp_path / "cache", "client": client}
+    source = blp_source()
+    kwargs = {"cache_dir": tmp_path / "cache", "source": source}
     download_icons({132154: "a"}, tmp_path / "one", **kwargs, version="1.0.0.1")
     download_icons({132154: "a"}, tmp_path / "two", **kwargs, version="1.0.0.1")
-    assert calls == ["/api/casc/132154"]
+    assert source.calls == [132154]
     assert (tmp_path / "two" / "a.webp").exists()
 
 
 def test_download_icons_skips_a_missing_file_id(tmp_path: Path):
-    client = httpx.Client(
-        transport=blp_transport([], missing=frozenset({132154})), base_url="https://wago.tools"
-    )
     written = download_icons(
         {132154: "gone"},
         tmp_path / "icons",
         cache_dir=tmp_path / "cache",
-        client=client,
+        source=blp_source(missing=frozenset({132154})),
         version="1.0.0.1",
     )
     assert written == 0
@@ -282,13 +269,12 @@ def test_icons_for_build_downloads_what_the_build_refers_to(tmp_path: Path, monk
     # folder, resolves to "no rotation icons" rather than a missing-file
     # refusal.
     (build_dir / "spellranks.json").write_text(json.dumps({"build": "1.0.0.1", "classes": {}}))
-    client = httpx.Client(transport=blp_transport([]), base_url="https://wago.tools")
     written = icons_for_build(
         "1.0.0.1",
         root=tmp_path / "builds",
         cache_dir=tmp_path / "cache",
-        client=client,
         curated_dir=tmp_path / "curated",
+        source=blp_source(ids=(132154, 132544)),
     )
     assert written == 2
     assert (build_dir / "icons" / "ability_golemthunderclap.webp").exists()
@@ -296,46 +282,22 @@ def test_icons_for_build_downloads_what_the_build_refers_to(tmp_path: Path, monk
 
 
 def test_download_icons_warns_on_a_name_collision_and_keeps_the_lower_id(tmp_path: Path, caplog):
-    calls: list[str] = []
-    client = httpx.Client(transport=blp_transport(calls), base_url="https://wago.tools")
+    source = blp_source()
     with caplog.at_level("WARNING"):
         written = download_icons(
             {132156: "shared", 132154: "shared"},
             tmp_path / "icons",
             cache_dir=tmp_path / "cache",
-            client=client,
+            source=source,
             version="1.0.0.1",
         )
     assert written == 1
     assert (tmp_path / "icons" / "shared.webp").exists()
-    assert calls == ["/api/casc/132154"]
+    assert source.calls == [132154]
     assert any(
         "132154" in record.getMessage() and "132156" in record.getMessage()
         for record in caplog.records
     )
-
-
-def test_download_icons_creates_and_closes_its_own_client(tmp_path: Path, monkeypatch):
-    calls: list[str] = []
-    closed: list[bool] = []
-    real_client_cls = httpx.Client
-
-    class TrackingClient(real_client_cls):
-        def close(self):
-            closed.append(True)
-            super().close()
-
-    def fake_client(*args, **kwargs):
-        kwargs["transport"] = blp_transport(calls)
-        return TrackingClient(*args, **kwargs)
-
-    monkeypatch.setattr(httpx, "Client", fake_client)
-    written = download_icons(
-        {132154: "a"}, tmp_path / "icons", cache_dir=tmp_path / "cache", version="1.0.0.1"
-    )
-    assert written == 1
-    assert closed == [True]
-    assert calls == ["/api/casc/132154"]
 
 
 def test_wanted_icons_skips_an_icon_name_absent_from_the_manifest(tmp_path: Path, caplog):
@@ -549,37 +511,27 @@ def test_wanted_icons_keeps_the_lowest_file_id_for_a_shared_name(tmp_path: Path,
     assert any("inv_sword_04" in record.getMessage() for record in caplog.records)
 
 
-def test_download_icons_pins_every_fetch_to_the_version_and_keys_the_cache_by_it(tmp_path: Path):
-    """A file data id is stable across builds but its bytes are not, so the version rides
-    on every request and the cache cannot hand one build's bytes to another."""
-    versions: list[str | None] = []
-
-    def handler(request: httpx.Request) -> httpx.Response:
-        versions.append(request.url.params.get("version"))
-        return httpx.Response(200, content=make_blp2())
-
-    client = httpx.Client(transport=httpx.MockTransport(handler), base_url="https://wago.tools")
+def test_download_icons_keys_the_cache_by_the_version(tmp_path: Path):
+    """A file data id is stable across builds but its bytes are not, so the cache
+    cannot hand one build's bytes to another."""
+    source = blp_source()
     download_icons(
-        {132154: "a"}, tmp_path / "one", cache_dir=tmp_path / "c", client=client, version="1.0.0.1"
+        {132154: "a"}, tmp_path / "one", cache_dir=tmp_path / "c", source=source, version="1.0.0.1"
     )
     download_icons(
-        {132154: "a"}, tmp_path / "two", cache_dir=tmp_path / "c", client=client, version="2.0.0.1"
+        {132154: "a"}, tmp_path / "two", cache_dir=tmp_path / "c", source=source, version="2.0.0.1"
     )
-    assert versions == ["1.0.0.1", "2.0.0.1"]
+    assert source.calls == [132154, 132154]
     assert (tmp_path / "c" / "1.0.0.1" / "132154.blp").exists()
     assert (tmp_path / "c" / "2.0.0.1" / "132154.blp").exists()
 
 
 def test_download_icons_skips_an_icon_the_version_serves_empty(tmp_path: Path, caplog):
-    client = httpx.Client(
-        transport=httpx.MockTransport(lambda request: httpx.Response(200, content=b"")),
-        base_url="https://wago.tools",
-    )
     written = download_icons(
         {132154: "a"},
         tmp_path / "icons",
         cache_dir=tmp_path / "c",
-        client=client,
+        source=FakeSource({132154: b""}),
         version="1.0.0.1",
     )
     assert written == 0

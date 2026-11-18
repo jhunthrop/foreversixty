@@ -261,7 +261,6 @@ def fetch_missing_icons(
             {file_id: name for name, file_id in by_name.items()},
             icons_dir,
             cache_dir=cache_dir,
-            client=client,
             version=fallback_build,
         )
     finally:

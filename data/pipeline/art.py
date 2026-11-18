@@ -28,12 +28,10 @@ from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path
 
-import httpx
 from PIL import Image, ImageEnhance
 
-from pipeline.casc import CascMissing, fetch_casc_file
+from pipeline.casc import CascMissing, FileSource, fetch_casc_file
 from pipeline.icons import CACHE_DIR, _atomic_write
-from pipeline.wago_http import open_client
 
 logger = logging.getLogger(__name__)
 
@@ -232,7 +230,7 @@ def backgrounds_for_build(
     build: str,
     root: Path = Path("builds"),
     cache_dir: Path = CACHE_DIR,
-    client: httpx.Client | None = None,
+    source: FileSource | None = None,
 ) -> int:
     """Write one processed background per tree, regenerating every one on every call.
 
@@ -256,37 +254,30 @@ def backgrounds_for_build(
     out_dir = build_dir / "trees"
     out_dir.mkdir(parents=True, exist_ok=True)
     cache_dir.mkdir(parents=True, exist_ok=True)
-    own = client is None
-    if client is None:
-        client = open_client()
     written = 0
-    try:
-        for background in wanted:
-            target = out_dir / f"{background}.webp"
-            ids = frames.get(background)
-            if not ids or set(ids) != set(QUADRANTS):
-                raise ArtDataError(
-                    f"{background} has {sorted(ids or ())} in ManifestInterfaceData, "
-                    f"not the four quadrants {sorted(QUADRANTS)}"
+    for background in wanted:
+        target = out_dir / f"{background}.webp"
+        ids = frames.get(background)
+        if not ids or set(ids) != set(QUADRANTS):
+            raise ArtDataError(
+                f"{background} has {sorted(ids or ())} in ManifestInterfaceData, "
+                f"not the four quadrants {sorted(QUADRANTS)}"
+            )
+        quadrants: dict[str, bytes] = {}
+        for quadrant, file_id in ids.items():
+            try:
+                quadrants[quadrant] = fetch_casc_file(
+                    file_id, build, cache_dir=cache_dir, source=source, suffix=".blp"
                 )
-            quadrants: dict[str, bytes] = {}
-            for quadrant, file_id in ids.items():
-                try:
-                    quadrants[quadrant] = fetch_casc_file(
-                        file_id, build, cache_dir=cache_dir, client=client, suffix=".blp"
-                    )
-                except CascMissing as error:
-                    # The message is this module's, not the helper's: a tree is
-                    # named by its background and its quadrant, and
-                    # tests/test_art.py matches on "no bytes".
-                    raise ArtDataError(
-                        f"{background} {quadrant}: wago returned no bytes for file "
-                        f"{file_id} at version {build}"
-                    ) from error
-            _atomic_write(target, background_webp(quadrants))
-            written += 1
-    finally:
-        if own:
-            client.close()
+            except CascMissing as error:
+                # The message is this module's, not the helper's: a tree is
+                # named by its background and its quadrant, and
+                # tests/test_art.py matches on "no bytes".
+                raise ArtDataError(
+                    f"{background} {quadrant}: the client has no bytes for file "
+                    f"{file_id} at version {build}"
+                ) from error
+        _atomic_write(target, background_webp(quadrants))
+        written += 1
     print(f"{written} tree backgrounds written, {len(wanted)} referenced")
     return written
