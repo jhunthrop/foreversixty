@@ -1389,6 +1389,22 @@
           "stats_source": null,
           "client_unconfirmed": false,
           "superseded_by": null
+        },
+        {
+          "id": 291874,
+          "name": "Ruined Herb Seeds",
+          "quality": 0,
+          "item_level": 1,
+          "required_level": 0,
+          "class_id": 15,
+          "subclass_id": 0,
+          "inventory_type": 0,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
         }
       ],
       "removed": [
@@ -1459,6 +1475,122 @@
       ],
       "changed": [
         {
+          "id": 6786,
+          "before": {
+            "id": 6786,
+            "name": "Simple Dress",
+            "quality": 1,
+            "item_level": 10,
+            "required_level": 0,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 20,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 6786,
+            "name": "Simple Dress",
+            "quality": 1,
+            "item_level": 10,
+            "required_level": 0,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 20,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "subclass_id"
+          ]
+        },
+        {
+          "id": 10053,
+          "before": {
+            "id": 10053,
+            "name": "Simple Black Dress",
+            "quality": 1,
+            "item_level": 47,
+            "required_level": 0,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 20,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 10053,
+            "name": "Simple Black Dress",
+            "quality": 1,
+            "item_level": 47,
+            "required_level": 0,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 20,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "subclass_id"
+          ]
+        },
+        {
+          "id": 11603,
+          "before": {
+            "id": 11603,
+            "name": "Vilerend Slicer",
+            "quality": 3,
+            "item_level": 51,
+            "required_level": 46,
+            "class_id": 2,
+            "subclass_id": 13,
+            "inventory_type": 21,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "classic-db",
+            "stats_source": "classic-db",
+            "client_unconfirmed": true,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 11603,
+            "name": "Vilerend Slicer",
+            "quality": 3,
+            "item_level": 51,
+            "required_level": 46,
+            "class_id": 2,
+            "subclass_id": 13,
+            "inventory_type": 21,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "wowhead",
+            "stats_source": "wowhead",
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "client_unconfirmed",
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
           "id": 17074,
           "before": {
             "id": 17074,
@@ -1524,6 +1656,47 @@
             "class_id": 4,
             "subclass_id": 6,
             "inventory_type": 14,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level",
+            "required_level",
+            "required_level_source",
+            "stats_source"
+          ]
+        },
+        {
+          "id": 18674,
+          "before": {
+            "id": 18674,
+            "name": "Hardened Stone Band",
+            "quality": 2,
+            "item_level": 59,
+            "required_level": 54,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 11,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": "wowhead",
+            "stats_source": "wowhead",
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 18674,
+            "name": "Hardened Stone Band",
+            "quality": 2,
+            "item_level": 60,
+            "required_level": 55,
+            "class_id": 4,
+            "subclass_id": 0,
+            "inventory_type": 11,
             "suffixes": [],
             "faction_restriction": "",
             "required_level_source": null,
@@ -2366,8 +2539,8 @@
             "inventory_type": 17,
             "suffixes": [],
             "faction_restriction": "",
-            "required_level_source": "wowhead",
-            "stats_source": "wowhead",
+            "required_level_source": null,
+            "stats_source": null,
             "client_unconfirmed": false,
             "superseded_by": null
           },
@@ -3035,6 +3208,158 @@
           },
           "fields": [
             "quality"
+          ]
+        },
+        {
+          "id": 276538,
+          "before": {
+            "id": 276538,
+            "name": "Spiritcaller Kilt",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 7,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 276538,
+            "name": "Spiritcaller Kilt",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 7,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 276539,
+          "before": {
+            "id": 276539,
+            "name": "Spiritcaller Gloves",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 10,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 276539,
+            "name": "Spiritcaller Gloves",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 10,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 276540,
+          "before": {
+            "id": 276540,
+            "name": "Spiritcaller Mantle",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 3,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 276540,
+            "name": "Spiritcaller Mantle",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 3,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 276541,
+          "before": {
+            "id": 276541,
+            "name": "Spiritcaller Boots",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 8,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 276541,
+            "name": "Spiritcaller Boots",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 8,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
           ]
         },
         {
@@ -6942,12 +7267,52 @@
           "name": "Lash of the Dark Rider"
         },
         {
+          "id": 1330887,
+          "name": "Thorns Aura"
+        },
+        {
           "id": 1330904,
           "name": "[DNT] Scarlet Tracking"
         },
         {
           "id": 1330916,
           "name": "Howler's Cry"
+        },
+        {
+          "id": 1330970,
+          "name": "Fixate"
+        },
+        {
+          "id": 1331002,
+          "name": "Eternal Night"
+        },
+        {
+          "id": 1331006,
+          "name": "Umbral Pull"
+        },
+        {
+          "id": 1331071,
+          "name": "Wrath"
+        },
+        {
+          "id": 1331079,
+          "name": "Moonfire"
+        },
+        {
+          "id": 1331088,
+          "name": "Swipe"
+        },
+        {
+          "id": 1331089,
+          "name": "Berserk"
+        },
+        {
+          "id": 1331092,
+          "name": "Demoralizing Roar"
+        },
+        {
+          "id": 1331288,
+          "name": "Hate to Zero"
         },
         {
           "id": 1331318,
@@ -6976,6 +7341,20 @@
       ],
       "removed": [],
       "changed": [
+        {
+          "id": 1289451,
+          "before": {
+            "id": 1289451,
+            "name": "Lightning Bolt"
+          },
+          "after": {
+            "id": 1289451,
+            "name": "Wrath"
+          },
+          "fields": [
+            "name"
+          ]
+        },
         {
           "id": 1301708,
           "before": {

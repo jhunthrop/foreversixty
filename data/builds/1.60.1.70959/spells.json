@@ -118261,7 +118261,7 @@
   },
   {
     "id": 1289451,
-    "name": "Lightning Bolt"
+    "name": "Wrath"
   },
   {
     "id": 1289452,
@@ -129916,12 +129916,52 @@
     "name": "Lash of the Dark Rider"
   },
   {
+    "id": 1330887,
+    "name": "Thorns Aura"
+  },
+  {
     "id": 1330904,
     "name": "[DNT] Scarlet Tracking"
   },
   {
     "id": 1330916,
     "name": "Howler's Cry"
+  },
+  {
+    "id": 1330970,
+    "name": "Fixate"
+  },
+  {
+    "id": 1331002,
+    "name": "Eternal Night"
+  },
+  {
+    "id": 1331006,
+    "name": "Umbral Pull"
+  },
+  {
+    "id": 1331071,
+    "name": "Wrath"
+  },
+  {
+    "id": 1331079,
+    "name": "Moonfire"
+  },
+  {
+    "id": 1331088,
+    "name": "Swipe"
+  },
+  {
+    "id": 1331089,
+    "name": "Berserk"
+  },
+  {
+    "id": 1331092,
+    "name": "Demoralizing Roar"
+  },
+  {
+    "id": 1331288,
+    "name": "Hate to Zero"
   },
   {
     "id": 1331318,

@@ -21687,19 +21687,6 @@
           "trigger_spell": 0,
           "variance": 0.0,
           "points_per_level": 0.0
-        },
-        {
-          "index": 2,
-          "effect": 30,
-          "aura": 0,
-          "amount": 0,
-          "sp_coefficient": 0.0,
-          "ap_coefficient": 0.0,
-          "period_ms": 0,
-          "misc_value": 4,
-          "trigger_spell": 0,
-          "variance": 0.0,
-          "points_per_level": 0.0
         }
       ],
       "cost_pct": 0.0,
@@ -21776,7 +21763,7 @@
         {
           "index": 0,
           "effect": 6,
-          "aura": 4,
+          "aura": 42,
           "amount": 100,
           "sp_coefficient": 1.0,
           "ap_coefficient": 0.0,
@@ -21916,19 +21903,6 @@
           "ap_coefficient": 0.0,
           "period_ms": 0,
           "misc_value": 3,
-          "trigger_spell": 0,
-          "variance": 0.0,
-          "points_per_level": 0.0
-        },
-        {
-          "index": 2,
-          "effect": 30,
-          "aura": 0,
-          "amount": 0,
-          "sp_coefficient": 0.0,
-          "ap_coefficient": 0.0,
-          "period_ms": 0,
-          "misc_value": 4,
           "trigger_spell": 0,
           "variance": 0.0,
           "points_per_level": 0.0

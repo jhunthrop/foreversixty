@@ -16,10 +16,10 @@
   "ItemDamageThrown": 0,
   "ItemDamageTwoHand": 0,
   "ItemDamageWand": 0,
-  "ItemEffect": 64,
+  "ItemEffect": 66,
   "ItemSet": 9,
   "ItemSetSpell": 30,
-  "ItemXItemEffect": 42,
+  "ItemXItemEffect": 44,
   "JournalEncounter": 0,
   "JournalEncounterItem": 0,
   "JournalInstance": 0,
@@ -31,25 +31,25 @@
   "SkillLineAbility": 83,
   "SkillLineXTraitTree": 0,
   "SkillRaceClassInfo": 1,
-  "Spell": 1418,
-  "SpellAuraOptions": 162,
+  "Spell": 1440,
+  "SpellAuraOptions": 165,
   "SpellCastTimes": 0,
   "SpellClassOptions": 67,
-  "SpellCooldowns": 92,
+  "SpellCooldowns": 93,
   "SpellDescriptionVariables": 3,
   "SpellDuration": 1,
-  "SpellEffect": 1096,
-  "SpellEquippedItems": 78,
+  "SpellEffect": 1171,
+  "SpellEquippedItems": 79,
   "SpellItemEnchantment": 10,
-  "SpellLevels": 97,
-  "SpellMisc": 2032,
-  "SpellName": 1418,
-  "SpellPower": 106,
+  "SpellLevels": 100,
+  "SpellMisc": 2069,
+  "SpellName": 1440,
+  "SpellPower": 108,
   "SpellRadius": 1,
   "SpellRange": 0,
   "SpellReagents": 6,
   "SpellShapeshift": 30,
-  "SpellTargetRestrictions": 174,
+  "SpellTargetRestrictions": 183,
   "SpellXDescriptionVariables": 12,
   "Talent": 0,
   "TalentTab": 0,
@@ -171,10 +171,10 @@
    "withheld": 0
   },
   "ItemEffect": {
-   "added": 1,
-   "changed": 4,
-   "removed": 1,
-   "sha256": "8d2348a973d7400ef59b92b13b0b3933222d79838611e60e109b24cae196bfa7",
+   "added": 2,
+   "changed": 3,
+   "removed": 2,
+   "sha256": "aa50ae1367161ad3a9052b6ebf7274b612eb76826a2675af335fab74ae930537",
    "withheld": 1
   },
   "ItemSet": {
@@ -192,10 +192,10 @@
    "withheld": 0
   },
   "ItemXItemEffect": {
-   "added": 1,
+   "added": 2,
    "changed": 0,
-   "removed": 1,
-   "sha256": "81c8417756e7678130b229ed3c5d0ed7d2f1da363707fa19d6e7195f749a4802",
+   "removed": 2,
+   "sha256": "7674294a4ca166d6909c8c04625eec032a9beb349d6e246f73cd3b5b00ef57cd",
    "withheld": 0
   },
   "JournalEncounter": {
@@ -276,17 +276,17 @@
    "withheld": 0
   },
   "Spell": {
-   "added": 9,
-   "changed": 8,
+   "added": 19,
+   "changed": 14,
    "removed": 0,
-   "sha256": "efa20303feb11f92cd5d0e456a9a626afbaffe6313ab2558177ccbdfa0f6ebe3",
-   "withheld": 48
+   "sha256": "da207aa7d24d1bb021cd0793ba291bb3a3f8574170b67636eed5cb4ad77524be",
+   "withheld": 49
   },
   "SpellAuraOptions": {
-   "added": 3,
+   "added": 6,
    "changed": 6,
    "removed": 9,
-   "sha256": "946551fabb72f9356d5d7db68c5070a94f9928ea2bae0cad07eb4576410ce524",
+   "sha256": "5737bf4e4d6a3d0d123c07b84cf4fb442d9b068453d6ac79f3a13a376f8d34a6",
    "withheld": 1
   },
   "SpellCastTimes": {
@@ -304,10 +304,10 @@
    "withheld": 2
   },
   "SpellCooldowns": {
-   "added": 4,
+   "added": 5,
    "changed": 0,
    "removed": 7,
-   "sha256": "f6007a844ba8a61b3b69fb1d164c65b0179cf1d7a140920b47a85456d315c319",
+   "sha256": "5b157198c11ff2e6b0c10b32ae85fac1c2be23b1d42a1432843abf71ec7093e0",
    "withheld": 9
   },
   "SpellDescriptionVariables": {
@@ -325,17 +325,17 @@
    "withheld": 0
   },
   "SpellEffect": {
-   "added": 12,
-   "changed": 12,
-   "removed": 2,
-   "sha256": "51211297aacff64f0ae34155caf5aefd8aeed4dc6346a88e360641af77f43880",
-   "withheld": 30
+   "added": 31,
+   "changed": 64,
+   "removed": 7,
+   "sha256": "f80e082c3913611b5a0d5065f61c9b43618e2f0c72495ab758b177fe600cfcd0",
+   "withheld": 34
   },
   "SpellEquippedItems": {
-   "added": 1,
+   "added": 2,
    "changed": 0,
    "removed": 1,
-   "sha256": "ffde05605d5fda6406d950f812179768dae75c6b7665b05f31e50373678d1f2d",
+   "sha256": "0bdb723e843ec8e8db937fcdad80c163f804e27bb1dcc56c0e302bca0e604e8a",
    "withheld": 27
   },
   "SpellItemEnchantment": {
@@ -346,32 +346,32 @@
    "withheld": 0
   },
   "SpellLevels": {
-   "added": 4,
+   "added": 7,
    "changed": 0,
    "removed": 0,
-   "sha256": "9a127578ec2186362b80c558c458a932339eaf5a24a2e144519af32301aaadf7",
+   "sha256": "e52ee7ecce063d5eee9cef5dd43e4c232bb48aa6672caa09194b7368ba9c9cd8",
    "withheld": 7
   },
   "SpellMisc": {
-   "added": 9,
-   "changed": 65,
+   "added": 18,
+   "changed": 94,
    "removed": 0,
-   "sha256": "e63d9dc7d3696fd765dcc57f9b422c4c9957bb292165a939822f0ed230a66004",
-   "withheld": 24
+   "sha256": "9b36fab205832c1f08d71432fb47e6a22b42233249bfa1e03886f1106be5962d",
+   "withheld": 26
   },
   "SpellName": {
-   "added": 9,
-   "changed": 1,
+   "added": 19,
+   "changed": 2,
    "removed": 0,
-   "sha256": "73b38d29442ad0da940618be39031ace61d1938d700f1ce1f26dbadca03d55d5",
-   "withheld": 48
+   "sha256": "97c4c94f7e3b8f0547190e0b163e7ad3cb1479e9a534a5513226c9076b30c83d",
+   "withheld": 49
   },
   "SpellPower": {
-   "added": 0,
+   "added": 1,
    "changed": 0,
    "removed": 0,
-   "sha256": "bf1b66970d98f2c722b3081544cce9ded0f9c8db29177c971e5d867f1949eee7",
-   "withheld": 32
+   "sha256": "e4664a2018269dccb029098147ce5d9795a187cc044c73f16098da373229a8ce",
+   "withheld": 33
   },
   "SpellRadius": {
    "added": 0,
@@ -402,11 +402,11 @@
    "withheld": 1
   },
   "SpellTargetRestrictions": {
-   "added": 3,
-   "changed": 1,
+   "added": 4,
+   "changed": 4,
    "removed": 0,
-   "sha256": "2bcff51c949303ddf378b2e18204ac077ca6cde39f4b848f4ac6ada029f54a98",
-   "withheld": 2
+   "sha256": "5aabc8d441b3d9c2f48127e6dbae93a27dfe4185a2d66ff8b952f5252e84f193",
+   "withheld": 3
   },
   "SpellXDescriptionVariables": {
    "added": 0,
