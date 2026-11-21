@@ -1,0 +1,2735 @@
+{
+  "from": "1.60.1.70959",
+  "to": "1.60.1.71037",
+  "entities": {
+    "zones": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "dungeons": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "items": {
+      "added": [
+        {
+          "id": 11422,
+          "name": "Goblin Engineer's Renewal Gift",
+          "quality": 1,
+          "item_level": 1,
+          "required_level": 0,
+          "class_id": 15,
+          "subclass_id": 0,
+          "inventory_type": 0,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 11423,
+          "name": "Gnome Engineer's Renewal Gift",
+          "quality": 1,
+          "item_level": 1,
+          "required_level": 0,
+          "class_id": 15,
+          "subclass_id": 0,
+          "inventory_type": 0,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        },
+        {
+          "id": 219326,
+          "name": "Seed of Renewal",
+          "quality": 3,
+          "item_level": 50,
+          "required_level": 0,
+          "class_id": 4,
+          "subclass_id": 0,
+          "inventory_type": 12,
+          "suffixes": [],
+          "faction_restriction": "",
+          "required_level_source": null,
+          "stats_source": null,
+          "client_unconfirmed": false,
+          "superseded_by": null
+        }
+      ],
+      "removed": [],
+      "changed": [
+        {
+          "id": 273884,
+          "before": {
+            "id": 273884,
+            "name": "Grovekeeper Trousers",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 7,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273884,
+            "name": "Grovekeeper Trousers",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 7,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273885,
+          "before": {
+            "id": 273885,
+            "name": "Grovekeeper Grips",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 10,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273885,
+            "name": "Grovekeeper Grips",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 10,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273886,
+          "before": {
+            "id": 273886,
+            "name": "Grovekeeper Shoulderpads",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 3,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273886,
+            "name": "Grovekeeper Shoulderpads",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 3,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273887,
+          "before": {
+            "id": 273887,
+            "name": "Grovekeeper Stompers",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 8,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273887,
+            "name": "Grovekeeper Stompers",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 8,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273888,
+          "before": {
+            "id": 273888,
+            "name": "Grovekeeper Kilt",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 7,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273888,
+            "name": "Grovekeeper Kilt",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 7,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273889,
+          "before": {
+            "id": 273889,
+            "name": "Grovekeeper Mitts",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 10,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273889,
+            "name": "Grovekeeper Mitts",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 10,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273890,
+          "before": {
+            "id": 273890,
+            "name": "Grovekeeper Mantle",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 3,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273890,
+            "name": "Grovekeeper Mantle",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 3,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273891,
+          "before": {
+            "id": 273891,
+            "name": "Grovekeeper Sandals",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 8,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273891,
+            "name": "Grovekeeper Sandals",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 8,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273892,
+          "before": {
+            "id": 273892,
+            "name": "Grovekeeper Legguards",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 7,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273892,
+            "name": "Grovekeeper Legguards",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 7,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273893,
+          "before": {
+            "id": 273893,
+            "name": "Grovekeeper Handguards",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 10,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273893,
+            "name": "Grovekeeper Handguards",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 10,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273894,
+          "before": {
+            "id": 273894,
+            "name": "Grovekeeper Pauldrons",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 3,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273894,
+            "name": "Grovekeeper Pauldrons",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 3,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273895,
+          "before": {
+            "id": 273895,
+            "name": "Grovekeeper Boots",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 8,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273895,
+            "name": "Grovekeeper Boots",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 8,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273896,
+          "before": {
+            "id": 273896,
+            "name": "Grovekeeper Leggings",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 7,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273896,
+            "name": "Grovekeeper Leggings",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 7,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273897,
+          "before": {
+            "id": 273897,
+            "name": "Grovekeeper Gauntlets",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 10,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273897,
+            "name": "Grovekeeper Gauntlets",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 10,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273898,
+          "before": {
+            "id": 273898,
+            "name": "Grovekeeper Spaulders",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 3,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273898,
+            "name": "Grovekeeper Spaulders",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 3,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273899,
+          "before": {
+            "id": 273899,
+            "name": "Grovekeeper Treads",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 8,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273899,
+            "name": "Grovekeeper Treads",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 8,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273900,
+          "before": {
+            "id": 273900,
+            "name": "Wildstalker's Legguards",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 7,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273900,
+            "name": "Wildstalker's Legguards",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 7,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273901,
+          "before": {
+            "id": 273901,
+            "name": "Wildstalker's Gauntlets",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 10,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273901,
+            "name": "Wildstalker's Gauntlets",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 10,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273902,
+          "before": {
+            "id": 273902,
+            "name": "Wildstalker's Spaulders",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 3,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273902,
+            "name": "Wildstalker's Spaulders",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 3,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273903,
+          "before": {
+            "id": 273903,
+            "name": "Wildstalker's Greaves",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 8,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273903,
+            "name": "Wildstalker's Greaves",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 8,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273904,
+          "before": {
+            "id": 273904,
+            "name": "Manaflare Pants",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 7,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273904,
+            "name": "Manaflare Pants",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 7,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273905,
+          "before": {
+            "id": 273905,
+            "name": "Manaflare Gloves",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 10,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273905,
+            "name": "Manaflare Gloves",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 10,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273906,
+          "before": {
+            "id": 273906,
+            "name": "Manaflare Mantle",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 3,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273906,
+            "name": "Manaflare Mantle",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 3,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273907,
+          "before": {
+            "id": 273907,
+            "name": "Manaflare Boots",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 8,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273907,
+            "name": "Manaflare Boots",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 8,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273908,
+          "before": {
+            "id": 273908,
+            "name": "Justice Leggings",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 7,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273908,
+            "name": "Justice Leggings",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 7,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273909,
+          "before": {
+            "id": 273909,
+            "name": "Justice Gauntlets",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 10,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273909,
+            "name": "Justice Gauntlets",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 10,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273910,
+          "before": {
+            "id": 273910,
+            "name": "Justice Spaulders",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 3,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273910,
+            "name": "Justice Spaulders",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 3,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273911,
+          "before": {
+            "id": 273911,
+            "name": "Justice Greaves",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 8,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273911,
+            "name": "Justice Greaves",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 8,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273912,
+          "before": {
+            "id": 273912,
+            "name": "Justice Legplates",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 7,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273912,
+            "name": "Justice Legplates",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 7,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273913,
+          "before": {
+            "id": 273913,
+            "name": "Justice Gloves",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 10,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273913,
+            "name": "Justice Gloves",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 10,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273914,
+          "before": {
+            "id": 273914,
+            "name": "Justice Epaulets",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 3,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273914,
+            "name": "Justice Epaulets",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 3,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273915,
+          "before": {
+            "id": 273915,
+            "name": "Justice Treads",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 8,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273915,
+            "name": "Justice Treads",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 8,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273916,
+          "before": {
+            "id": 273916,
+            "name": "Justice Legguards",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 7,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273916,
+            "name": "Justice Legguards",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 7,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273917,
+          "before": {
+            "id": 273917,
+            "name": "Justice Handguards",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 10,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273917,
+            "name": "Justice Handguards",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 10,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273918,
+          "before": {
+            "id": 273918,
+            "name": "Justice Pauldrons",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 3,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273918,
+            "name": "Justice Pauldrons",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 3,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273919,
+          "before": {
+            "id": 273919,
+            "name": "Justice Sabatons",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 8,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273919,
+            "name": "Justice Sabatons",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 8,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273920,
+          "before": {
+            "id": 273920,
+            "name": "Pants of Conviction",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 7,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273920,
+            "name": "Pants of Conviction",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 7,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273921,
+          "before": {
+            "id": 273921,
+            "name": "Gloves of Conviction",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 10,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273921,
+            "name": "Gloves of Conviction",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 10,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273922,
+          "before": {
+            "id": 273922,
+            "name": "Mantle of Conviction",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 3,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273922,
+            "name": "Mantle of Conviction",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 3,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273923,
+          "before": {
+            "id": 273923,
+            "name": "Treads of Conviction",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 8,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273923,
+            "name": "Treads of Conviction",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 8,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273924,
+          "before": {
+            "id": 273924,
+            "name": "Leggings of Conviction",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 7,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273924,
+            "name": "Leggings of Conviction",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 7,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273925,
+          "before": {
+            "id": 273925,
+            "name": "Handguards of Conviction",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 10,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273925,
+            "name": "Handguards of Conviction",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 10,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273926,
+          "before": {
+            "id": 273926,
+            "name": "Pauldrons of Conviction",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 3,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273926,
+            "name": "Pauldrons of Conviction",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 3,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273927,
+          "before": {
+            "id": 273927,
+            "name": "Boots of Conviction",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 8,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273927,
+            "name": "Boots of Conviction",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 8,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273928,
+          "before": {
+            "id": 273928,
+            "name": "Grimstitch Pants",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 7,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273928,
+            "name": "Grimstitch Pants",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 7,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273929,
+          "before": {
+            "id": 273929,
+            "name": "Grimstitch Gloves",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 10,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273929,
+            "name": "Grimstitch Gloves",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 10,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273930,
+          "before": {
+            "id": 273930,
+            "name": "Grimstitch Spaulders",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 3,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273930,
+            "name": "Grimstitch Spaulders",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 3,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273931,
+          "before": {
+            "id": 273931,
+            "name": "Grimstitch Boots",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 8,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273931,
+            "name": "Grimstitch Boots",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 2,
+            "inventory_type": 8,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273932,
+          "before": {
+            "id": 273932,
+            "name": "Spiritcaller Leggings",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 7,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273932,
+            "name": "Spiritcaller Leggings",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 7,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273933,
+          "before": {
+            "id": 273933,
+            "name": "Spiritcaller Grips",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 10,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273933,
+            "name": "Spiritcaller Grips",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 10,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273934,
+          "before": {
+            "id": 273934,
+            "name": "Spiritcaller Spaulders",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 3,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273934,
+            "name": "Spiritcaller Spaulders",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 3,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273935,
+          "before": {
+            "id": 273935,
+            "name": "Spiritcaller Treads",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 8,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273935,
+            "name": "Spiritcaller Treads",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 8,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273936,
+          "before": {
+            "id": 273936,
+            "name": "Spiritcaller Pants",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 7,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273936,
+            "name": "Spiritcaller Pants",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 7,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273937,
+          "before": {
+            "id": 273937,
+            "name": "Spiritcaller Gauntlets",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 10,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273937,
+            "name": "Spiritcaller Gauntlets",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 10,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273938,
+          "before": {
+            "id": 273938,
+            "name": "Spiritcaller Epaulets",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 3,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273938,
+            "name": "Spiritcaller Epaulets",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 3,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273939,
+          "before": {
+            "id": 273939,
+            "name": "Spiritcaller Greaves",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 8,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273939,
+            "name": "Spiritcaller Greaves",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 3,
+            "inventory_type": 8,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273940,
+          "before": {
+            "id": 273940,
+            "name": "Demonheart Leggings",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 7,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273940,
+            "name": "Demonheart Leggings",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 7,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273941,
+          "before": {
+            "id": 273941,
+            "name": "Demonheart Gloves",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 10,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273941,
+            "name": "Demonheart Gloves",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 10,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273942,
+          "before": {
+            "id": 273942,
+            "name": "Demonheart Spaulders",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 3,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273942,
+            "name": "Demonheart Spaulders",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 3,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273943,
+          "before": {
+            "id": 273943,
+            "name": "Demonheart Boots",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 8,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273943,
+            "name": "Demonheart Boots",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 1,
+            "inventory_type": 8,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273944,
+          "before": {
+            "id": 273944,
+            "name": "Legplates of Glory",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 7,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273944,
+            "name": "Legplates of Glory",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 7,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273945,
+          "before": {
+            "id": 273945,
+            "name": "Gauntlets of Glory",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 10,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273945,
+            "name": "Gauntlets of Glory",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 10,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273946,
+          "before": {
+            "id": 273946,
+            "name": "Shoulders of Glory",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 3,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273946,
+            "name": "Shoulders of Glory",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 3,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273947,
+          "before": {
+            "id": 273947,
+            "name": "Greaves of Glory",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 8,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273947,
+            "name": "Greaves of Glory",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 8,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273948,
+          "before": {
+            "id": 273948,
+            "name": "Legguards of Glory",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 7,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273948,
+            "name": "Legguards of Glory",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 7,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273949,
+          "before": {
+            "id": 273949,
+            "name": "Handguards of Glory",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 10,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273949,
+            "name": "Handguards of Glory",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 10,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273950,
+          "before": {
+            "id": 273950,
+            "name": "Pauldrons of Glory",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 3,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273950,
+            "name": "Pauldrons of Glory",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 3,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        },
+        {
+          "id": 273951,
+          "before": {
+            "id": 273951,
+            "name": "Sabatons of Glory",
+            "quality": 4,
+            "item_level": 61,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 8,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "after": {
+            "id": 273951,
+            "name": "Sabatons of Glory",
+            "quality": 4,
+            "item_level": 60,
+            "required_level": 60,
+            "class_id": 4,
+            "subclass_id": 4,
+            "inventory_type": 8,
+            "suffixes": [],
+            "faction_restriction": "",
+            "required_level_source": null,
+            "stats_source": null,
+            "client_unconfirmed": false,
+            "superseded_by": null
+          },
+          "fields": [
+            "item_level"
+          ]
+        }
+      ]
+    },
+    "spells": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "classes": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "races": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "talents": {
+      "added": [],
+      "removed": [],
+      "changed": []
+    },
+    "sets": {
+      "added": [],
+      "removed": [],
+      "changed": [
+        {
+          "id": 142,
+          "before": {
+            "id": 142,
+            "name": "Stormshroud Armor",
+            "item_ids": [
+              15056,
+              15057,
+              15058,
+              21278
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "10% chance of dealing 15 to 25 Nature damage on a successful melee attack."
+              },
+              {
+                "pieces": 3,
+                "description": "4% chance on melee attack of restoring 30 energy."
+              },
+              {
+                "pieces": 4,
+                "description": "+14 Attack Power."
+              }
+            ]
+          },
+          "after": {
+            "id": 142,
+            "name": "Stormshroud Armor",
+            "item_ids": [
+              15056,
+              15057,
+              15058,
+              21278
+            ],
+            "bonuses": [
+              {
+                "pieces": 2,
+                "description": "10% chance of dealing 15 to 25 Nature damage on a successful melee attack."
+              },
+              {
+                "pieces": 3,
+                "description": "3% chance on melee attack of restoring 18 energy."
+              },
+              {
+                "pieces": 4,
+                "description": "+14 Attack Power."
+              }
+            ]
+          },
+          "fields": [
+            "bonuses"
+          ]
+        }
+      ]
+    }
+  }
+}
